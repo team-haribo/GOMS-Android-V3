@@ -73,20 +73,17 @@ class AppTextStyles {
     fontSize: 12,
     fontWeight: FontWeight.w500, // Medium
   );
+}
 
-  // ==================== Utility Methods ====================
-  /// 텍스트 스타일 복사 with 색상 변경
-  static TextStyle withColor(TextStyle style, Color color) {
-    return style.copyWith(color: color);
-  }
+// ==================== TextStyle Extensions ====================
+/// TextStyle 확장 메서드
+extension TextStyleExtensions on TextStyle {
+  /// 색상 변경
+  TextStyle withColor(Color color) => copyWith(color: color);
 
-  /// 텍스트 스타일 복사 with 폰트 굵기 변경
-  static TextStyle withWeight(TextStyle style, FontWeight weight) {
-    return style.copyWith(fontWeight: weight);
-  }
+  /// 폰트 굵기 변경
+  TextStyle withWeight(FontWeight weight) => copyWith(fontWeight: weight);
 
-  /// 텍스트 스타일 복사 with 폰트 크기 변경
-  static TextStyle withSize(TextStyle style, double size) {
-    return style.copyWith(fontSize: size);
-  }
+  /// 폰트 크기 변경
+  TextStyle withSize(double size) => copyWith(fontSize: size);
 }

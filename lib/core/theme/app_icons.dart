@@ -9,13 +9,11 @@ class AppIcons {
 
   /// 금지된 원형 아이콘
   static Widget bannedCircle({double? width, double? height, Color? color}) =>
-      SvgPicture.asset(
-        'assets/icons/banned_circle.svg',
+      Image.asset(
+        'assets/icons/banned_circle.png',
         width: width,
         height: height,
-        colorFilter: color != null
-            ? ColorFilter.mode(color, BlendMode.srcIn)
-            : null,
+        color: color,
       );
 
   /// 복귀 성공 아이콘
@@ -23,24 +21,20 @@ class AppIcons {
     double? width,
     double? height,
     Color? color,
-  }) => SvgPicture.asset(
-    'assets/icons/come_back_success.svg',
+  }) => Image.asset(
+    'assets/icons/come_back_success.png',
     width: width,
     height: height,
-    colorFilter: color != null
-        ? ColorFilter.mode(color, BlendMode.srcIn)
-        : null,
+    color: color,
   );
 
   /// 에러 원형 아이콘
   static Widget errorCircle({double? width, double? height, Color? color}) =>
-      SvgPicture.asset(
-        'assets/icons/error_circle.svg',
+      Image.asset(
+        'assets/icons/error_circle.png',
         width: width,
         height: height,
-        colorFilter: color != null
-            ? ColorFilter.mode(color, BlendMode.srcIn)
-            : null,
+        color: color,
       );
 
   /// 로고 원형 아이콘
@@ -89,12 +83,10 @@ class AppIcons {
 
   /// 성공 원형 아이콘
   static Widget successCircle({double? width, double? height, Color? color}) =>
-      SvgPicture.asset(
-        'assets/icons/success_circle.svg',
+      Image.asset(
+        'assets/icons/success_circle.png',
         width: width,
         height: height,
-        colorFilter: color != null
-            ? ColorFilter.mode(color, BlendMode.srcIn)
-            : null,
+        color: color,
       );
 }

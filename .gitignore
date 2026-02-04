@@ -66,4 +66,5 @@ google-services.json
 GoogleService-Info.plist
 
 # FVM (Flutter Version Management)
-.fvm/
+.fvm/flutter_sdk
+.fvm/versions

@@ -110,29 +110,26 @@ class AppIcons {
       );
 
   /// 홈 아이콘
-  static Widget home({double? width, double? height, Color? color}) =>
-      _loadSvg(
-        'assets/icons/home.svg',
-        width: width,
-        height: height,
-        color: color,
-      );
+  static Widget home({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/home.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
 
   /// 지도 아이콘
-  static Widget map({double? width, double? height, Color? color}) =>
-      _loadSvg(
-        'assets/icons/map.svg',
-        width: width,
-        height: height,
-        color: color,
-      );
+  static Widget map({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/map.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
 
   /// 사용자 아이콘
-  static Widget user({double? width, double? height, Color? color}) =>
-      _loadSvg(
-        'assets/icons/user.svg',
-        width: width,
-        height: height,
-        color: color,
-      );
+  static Widget user({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/user.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
 }

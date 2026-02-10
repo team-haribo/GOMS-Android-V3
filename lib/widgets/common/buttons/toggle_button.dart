@@ -1,27 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
+import 'package:project_setting/domain/enum/role_enum.dart';
 
-/// 토글 버튼 타입
-enum ToggleType {
-  /// User 토글 (주황색)
-  user,
-
-  /// Admin 토글 (보라색)
-  admin,
-}
-
-/// 토글 버튼 위젯
-///
-/// 활성화 상태:
-/// - User: 주황색 (primary)
-/// - Admin: 보라색 (admin)
-///
-/// 비활성화 상태:
-/// - Dark 모드: 어두운 회색
-/// - Light 모드: 밝은 회색 (button)
 class CustomToggleButton extends StatelessWidget {
-  /// 토글 타입 (User/Admin)
-  final ToggleType type;
+  final RoleEnum type;
 
   /// 토글 상태 (True/False)
   final bool value;
@@ -42,7 +24,7 @@ class CustomToggleButton extends StatelessWidget {
     final isEnabled = onChanged != null;
 
     // 활성화 색상 (User/Admin)
-    final activeColor = type == ToggleType.user
+    final activeColor = type == RoleEnum.user
         ? AppColors
               .mainColor // User: 주황색
         : AppColors.admin; // Admin: 보라색

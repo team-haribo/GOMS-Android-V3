@@ -132,4 +132,22 @@ class AppIcons {
     height: height,
     color: color,
   );
+
+  /// QR 코드 로드 아이콘
+  static Widget qrCodeLoad({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/qr_code_load.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// QR 코드 스캔 아이콘
+  static Widget qrCodeScan({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/qr_code_scan.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

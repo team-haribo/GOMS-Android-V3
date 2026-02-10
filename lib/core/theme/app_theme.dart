@@ -20,7 +20,7 @@ class _LightTheme {
     useMaterial3: true,
     brightness: Brightness.light,
     colorScheme: const ColorScheme.light(
-      primary: AppColors.primary,
+      primary: AppColors.mainColor,
       surface: AppColors.bgSurface,
       error: AppColors.negative,
     ),
@@ -36,7 +36,7 @@ class _DarkTheme {
     useMaterial3: true,
     brightness: Brightness.dark,
     colorScheme: const ColorScheme.dark(
-      primary: AppColors.primary,
+      primary: AppColors.mainColor,
       surface: AppColors.bgSurfaceDark,
       error: AppColors.negative,
     ),

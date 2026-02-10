@@ -6,7 +6,7 @@ class AppColors {
 
   // ==================== Themes ====================
   /// Primary
-  static const Color primary = Color(0xFFFFA500);
+  static const Color mainColor = Color(0xFFFFA500);
 
   /// Admin
   static const Color admin = Color(0xFFB486F9);

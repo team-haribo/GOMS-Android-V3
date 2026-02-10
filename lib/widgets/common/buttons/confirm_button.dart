@@ -40,7 +40,7 @@ class ConfirmButton extends StatelessWidget {
               // disabled: button 색상 (light/dark 모드 모두)
               return isDarkMode ? AppColors.buttonDark : AppColors.button;
             }
-            return AppColors.primary; // default: mainColor
+            return AppColors.mainColor; // default: mainColor
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color>((
             Set<WidgetState> states,

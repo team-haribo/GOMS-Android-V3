@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/domain/enum/role_enum.dart';
 
-class CustomToggleButton extends StatelessWidget {
+class ToggleButton extends StatelessWidget {
   final RoleEnum type;
 
   /// 토글 상태 (True/False)
@@ -11,7 +11,7 @@ class CustomToggleButton extends StatelessWidget {
   /// 상태 변경 콜백
   final ValueChanged<bool>? onChanged;
 
-  const CustomToggleButton({
+  const ToggleButton({
     super.key,
     required this.type,
     required this.value,

@@ -22,7 +22,6 @@ class _LightTheme {
     colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       surface: AppColors.bgSurface,
-      background: AppColors.background,
       error: AppColors.negative,
     ),
     scaffoldBackgroundColor: AppColors.background,

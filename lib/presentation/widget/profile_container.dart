@@ -20,7 +20,7 @@ class ProfileContainer extends StatefulWidget {
     required this.grade,
     required this.major,
     required this.lateCount,
-    required this.status,
+    required this.status, // 외출상태
     required this.onTime,
   });
 

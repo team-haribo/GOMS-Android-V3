@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class TimeDisplay extends StatefulWidget {
+class TimeDisplay extends StatefulWidget { // 타이머 위젯
   final bool onTime;
   final TextStyle style;
   final Color color;

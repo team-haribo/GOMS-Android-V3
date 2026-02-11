@@ -108,4 +108,46 @@ class AppIcons {
         height: height,
         color: color,
       );
+
+  /// 홈 아이콘
+  static Widget home({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/home.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
+
+  /// 지도 아이콘
+  static Widget map({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/map.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
+
+  /// 사용자 아이콘
+  static Widget user({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/user.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
+
+  /// QR 코드 로드 아이콘
+  static Widget qrCodeLoad({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/qr_code_load.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// QR 코드 스캔 아이콘
+  static Widget qrCodeScan({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/qr_code_scan.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

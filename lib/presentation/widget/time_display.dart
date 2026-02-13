@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:intl/intl.dart';
 
-class TimeDisplay extends StatefulWidget { // 타이머 위젯
-  final bool onTime;
+class TimeDisplay extends StatefulWidget {
   final TextStyle style;
   final Color color;
 
   const TimeDisplay({
-    required this.onTime,
+    super.key,
     required this.style,
     required this.color,
   });
@@ -25,19 +25,16 @@ class _TimeDisplayState extends State<TimeDisplay> {
     super.initState();
     _updateTime();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      setState(() {
-        _updateTime();
-      });
+      if (mounted) {
+        setState(() {
+          _updateTime();
+        });
+      }
     });
   }
 
   void _updateTime() {
-    final now = DateTime.now();
-    final ampm = now.hour < 12 ? 'AM' : 'PM';
-    final hour = now.hour % 12 == 0 ? 12 : now.hour % 12;
-    final minute = now.minute.toString().padLeft(2, '0');
-    final second = now.second.toString().padLeft(2, '0');
-    _formattedTime = '$ampm $hour:$minute:$second';
+    _formattedTime = DateFormat('a hh : mm : ss', 'en_US').format(DateTime.now());
   }
 
   @override
@@ -48,9 +45,7 @@ class _TimeDisplayState extends State<TimeDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.onTime
-        ? const SizedBox.shrink()
-        : Text(
+    return Text(
       _formattedTime,
       style: widget.style.copyWith(color: widget.color),
     );

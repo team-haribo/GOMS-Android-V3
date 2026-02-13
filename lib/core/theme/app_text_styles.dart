@@ -9,6 +9,12 @@ class AppTextStyles {
   static const String defaultFontFamily = 'suit';
 
   // ==================== Title Styles ====================
+  /// profile container dateTime 폰트
+  static const TextStyle heavy = TextStyle(
+    fontFamily: defaultFontFamily,
+    fontSize: 24,
+    fontWeight: FontWeight.w900,
+  );
   /// Title-1 (Bold, 24px)
   static const TextStyle title1 = TextStyle(
     fontFamily: defaultFontFamily,

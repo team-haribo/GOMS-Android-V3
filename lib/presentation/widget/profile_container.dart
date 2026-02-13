@@ -30,15 +30,13 @@ class ProfileContainer extends StatefulWidget {
 }
 
 class _ProfileContainerState extends State<ProfileContainer> {
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 84,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.surface : AppColors.surfaceDark,
+        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -50,7 +48,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
                   radius: 26,
-                  child: AppIcons.profileCircle()
+                  child: AppIcons.profileCircle(),
                 ),
               ),
             ],
@@ -67,14 +65,18 @@ class _ProfileContainerState extends State<ProfileContainer> {
                         Text(
                           widget.name,
                           style: AppTextStyles.title3.copyWith(
-                            color: isLight ? AppColors.textPrimary : AppColors.background
+                            color: isLight
+                                ? AppColors.mainColor
+                                : AppColors.background,
                           ),
                         ),
                         const SizedBox(width: 8),
                         Text(
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(
-                            color: isLight ? AppColors.textButton : AppColors.textTertiaryDark
+                            color: isLight
+                                ? AppColors.button
+                                : AppColors.sub2Dark,
                           ),
                         ),
                       ],
@@ -83,7 +85,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                   Text(
                     '지각횟수: ${widget.lateCount}회',
                     style: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.textTertiary : AppColors.textSecondaryDark
+                      color: isLight ? AppColors.sub2 : AppColors.sub1Dark,
                     ),
                   ),
                 ],
@@ -105,7 +107,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     Flexible(
                       child: TimeDisplay(
                         style: AppTextStyles.heavy,
-                        color: isLight ? AppColors.textButton : AppColors.textTertiaryDark,
+                        color: isLight ? AppColors.button : AppColors.sub2Dark,
                       ),
                     ),
                   ],

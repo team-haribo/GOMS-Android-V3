@@ -23,9 +23,9 @@ enum OutingStatus {
   Color get statusColor {
     switch (this) {
       case OutingStatus.waiting:
-        return AppColors.textSecondaryDark;
+        return AppColors.sub2;
       case OutingStatus.approved:
-        return AppColors.primary;
+        return AppColors.mainColor;
       case OutingStatus.rejected:
         return AppColors.negative;
       case OutingStatus.admin:
@@ -35,7 +35,7 @@ enum OutingStatus {
 
   Color getStatusColor(bool isLight) {
     return (this == OutingStatus.waiting && !isLight)
-        ? AppColors.textTertiary
+        ? AppColors.sub1Dark
         : statusColor;
   }
 }

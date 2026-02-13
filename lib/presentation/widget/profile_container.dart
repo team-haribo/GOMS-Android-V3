@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
@@ -97,9 +96,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    widget.status.StatusText,
+                    widget.status.statusText,
                     style: AppTextStyles.text1.copyWith(
-                      color: widget.status.StatusColor,
+                      color: widget.status.statusColor,
                     ),
                   ),
                   if (!widget.onTime) ...[

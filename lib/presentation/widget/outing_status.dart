@@ -7,7 +7,7 @@ enum OutingStatus {
   rejected,
   admin;
 
-  String get StatusText {
+  String get statusText {
     switch (this) {
       case OutingStatus.waiting:
         return '외출 대기 중';
@@ -20,7 +20,7 @@ enum OutingStatus {
     }
   }
 
-  Color get StatusColor {
+  Color get statusColor {
     switch (this) {
       case OutingStatus.waiting:
         return AppColors.textSecondaryDark;
@@ -36,6 +36,6 @@ enum OutingStatus {
   Color getStatusColor(bool isLight) {
     return (this == OutingStatus.waiting && !isLight)
         ? AppColors.textTertiary
-        : StatusColor;
+        : statusColor;
   }
 }

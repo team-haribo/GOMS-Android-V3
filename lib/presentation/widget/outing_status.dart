@@ -1,0 +1,41 @@
+import 'package:project_setting/core/theme/app_colors.dart';
+import 'package:flutter/material.dart';
+
+enum OutingStatus {
+  waiting,
+  approved,
+  rejected,
+  admin;
+
+  String get StatusText {
+    switch (this) {
+      case OutingStatus.waiting:
+        return '외출 대기 중';
+      case OutingStatus.approved:
+        return '외출중';
+      case OutingStatus.rejected:
+        return '외출 금지';
+      case OutingStatus.admin:
+        return '학생회';
+    }
+  }
+
+  Color get StatusColor {
+    switch (this) {
+      case OutingStatus.waiting:
+        return AppColors.textSecondaryDark;
+      case OutingStatus.approved:
+        return AppColors.primary;
+      case OutingStatus.rejected:
+        return AppColors.negative;
+      case OutingStatus.admin:
+        return AppColors.admin;
+    }
+  }
+
+  Color getStatusColor(bool isLight) {
+    return (this == OutingStatus.waiting && !isLight)
+        ? AppColors.textTertiary
+        : StatusColor;
+  }
+}

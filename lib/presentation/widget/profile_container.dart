@@ -5,8 +5,6 @@ import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'package:project_setting/presentation/widget/outing_status.dart';
 import 'package:project_setting/presentation/widget/time_display.dart';
 
-bool isLight = true;
-
 class ProfileContainer extends StatefulWidget {
   final String name;
   final int grade;
@@ -32,11 +30,13 @@ class ProfileContainer extends StatefulWidget {
 class _ProfileContainerState extends State<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    
     return Container(
       height: 84,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(

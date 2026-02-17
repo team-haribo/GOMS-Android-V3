@@ -30,7 +30,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
   Widget build(BuildContext context) {
     return Container(
       height: 93,
-      width: 327,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.bgMapContainerDark,
         borderRadius: BorderRadius.circular(8),

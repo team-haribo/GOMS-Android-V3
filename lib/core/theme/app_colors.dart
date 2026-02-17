@@ -56,5 +56,5 @@ class AppColors {
   static const Color bgMapContainerDark = Color(0xFF1F1F1F);
 
   /// g-3
-  static const Color g3 = Color(0xFFA1A1A1);
+  static const Color gray3 = Color(0xFFA1A1A1);
 }

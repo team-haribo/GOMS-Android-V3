@@ -60,7 +60,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
                         Text(
                           widget.category,
                           style: AppTextStyles.caption2.copyWith(
-                            color: AppColors.g3,
+                            color: AppColors.gray3,
                           ),
                         ),
                       ],

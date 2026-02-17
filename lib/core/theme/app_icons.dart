@@ -153,7 +153,7 @@ class AppIcons {
 
 
   /// 지도 즐겨찾기 하트 아이콘
-  static Widget heartIcon({double? width, double? height, Color? color}) =>
+  static Widget heart({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/heart.png',
         width: width,
@@ -161,9 +161,18 @@ class AppIcons {
         color: color,
       );
 
-  static Widget heartFilledIcon({double? width, double? height, Color? color}) =>
+  static Widget heartFilled({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/heart_filled.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 지도 댓글 삭제 아이콘
+  static Widget bin({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/bin.png',
         width: width,
         height: height,
         color: color,

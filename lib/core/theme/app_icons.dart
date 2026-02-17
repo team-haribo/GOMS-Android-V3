@@ -150,4 +150,22 @@ class AppIcons {
         height: height,
         color: color,
       );
+
+
+  /// 지도 즐겨찾기 하트 아이콘
+  static Widget heartIcon({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/heart.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  static Widget heartFilledIcon({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/heart_filled.png',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

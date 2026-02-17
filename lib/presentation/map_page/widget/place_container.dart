@@ -52,6 +52,8 @@ class _PlaceContainerState extends State<PlaceContainer> {
                       children: [
                         Text(
                           widget.placeName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.text2.copyWith(
                             color: AppColors.mainTextDark,
                           ),
@@ -68,6 +70,8 @@ class _PlaceContainerState extends State<PlaceContainer> {
                     const SizedBox(height: 4),
                     Text(
                       widget.address,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.caption2.copyWith(
                         color: AppColors.sub2Dark,
                       ),

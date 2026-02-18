@@ -151,7 +151,6 @@ class AppIcons {
         color: color,
       );
 
-
   /// 지도 즐겨찾기 하트 아이콘
   static Widget heart({double? width, double? height, Color? color}) =>
       _loadPng(

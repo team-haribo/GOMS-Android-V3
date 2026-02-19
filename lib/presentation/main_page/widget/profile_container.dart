@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
-import 'package:project_setting/presentation/widget/outing_status.dart';
-import 'package:project_setting/presentation/widget/time_display.dart';
+import 'package:project_setting/presentation/main_page/widget/outing_status.dart';
+import 'package:project_setting/presentation/main_page/widget/time_display.dart';
 
 class ProfileContainer extends StatefulWidget {
   final String name;

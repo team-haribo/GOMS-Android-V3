@@ -17,6 +17,7 @@ class SearchTextField extends StatefulWidget {
     this.onSubmitted,
     this.onBackPressed,
     this.showBackButton = false,
+    this.showLogo = true,
   });
 
   final TextEditingController? controller;
@@ -29,6 +30,7 @@ class SearchTextField extends StatefulWidget {
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onBackPressed;
   final bool showBackButton;
+  final bool showLogo;
 
   @override
   State<SearchTextField> createState() => _SearchTextFieldState();
@@ -60,15 +62,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
     });
   }
 
-  void _clearText() {
-    _controller.clear();
-    widget.onChanged?.call('');
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final hasError = widget.errorText != null && widget.errorText!.isNotEmpty;
     final iconColor = isDark ? AppColors.sub2Dark : AppColors.sub2;
 
     return BaseTextField(
@@ -82,15 +78,21 @@ class _SearchTextFieldState extends State<SearchTextField> {
       autofocus: widget.autofocus,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
-      prefixIcon: _showClearButton
-          ? IconButton(
-              icon: Icon(Icons.arrow_back_ios, size: 24, color: iconColor),
-              onPressed: widget.onBackPressed,
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: AppIcons.logoSmall(),
-            ),
+      prefixIcon: widget.showLogo
+          ? (_showClearButton
+                ? IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      size: 24,
+                      color: iconColor,
+                    ),
+                    onPressed: widget.onBackPressed,
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: AppIcons.logoSmall(),
+                  ))
+          : null,
       suffixIcon: Padding(
         padding: const EdgeInsets.only(right: 12),
         child: Icon(Icons.search, size: 24, color: iconColor),

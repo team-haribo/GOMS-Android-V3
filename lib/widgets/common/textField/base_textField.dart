@@ -64,7 +64,6 @@ class BaseTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasError = errorText != null && errorText!.isNotEmpty;
 
     return Column(

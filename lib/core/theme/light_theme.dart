@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'app_colors.dart';
 
 /// 라이트 테마 설정
@@ -14,7 +15,7 @@ class LightTheme {
       error: AppColors.negative,
     ),
     scaffoldBackgroundColor: AppColors.background,
-    
+
     // Bottom Navigation Bar
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: AppColors.bgSurface,
@@ -24,6 +25,35 @@ class LightTheme {
       type: BottomNavigationBarType.fixed,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+    ),
+
+    // Input Decoration
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: AppColors.bgSurface,
+      labelStyle: AppTextStyles.text2.withColor(AppColors.mainText),
+      hintStyle: AppTextStyles.text3.withColor(AppColors.sub2),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.negative, width: 1),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: AppColors.negative, width: 1),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide.none,
+      ),
     ),
   );
 }

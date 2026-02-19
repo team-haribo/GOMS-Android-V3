@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:project_setting/widgets/common/textField/base_textField.dart';
 import 'package:project_setting/core/constants/icon.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
@@ -83,32 +82,19 @@ class _SearchTextFieldState extends State<SearchTextField> {
       autofocus: widget.autofocus,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
-      prefixIcon: widget.showBackButton
+      prefixIcon: _showClearButton
           ? IconButton(
-              icon: Icon(Icons.arrow_back, size: 20, color: iconColor),
+              icon: Icon(Icons.arrow_back_ios, size: 24, color: iconColor),
               onPressed: widget.onBackPressed,
             )
           : Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: SvgPicture.asset(
-                AppIcons.logoSmall,
-                width: 20,
-                height: 20,
-              ),
+              child: AppIcons.logoSmall(),
             ),
-      suffixIcon: _showClearButton
-          ? IconButton(
-              icon: Icon(
-                Icons.close,
-                size: 20,
-                color: hasError ? AppColors.negative : iconColor,
-              ),
-              onPressed: _clearText,
-            )
-          : Padding(
-              padding: const EdgeInsets.only(right: 12),
-              child: Icon(Icons.search, size: 20, color: iconColor),
-            ),
+      suffixIcon: Padding(
+        padding: const EdgeInsets.only(right: 12),
+        child: Icon(Icons.search, size: 24, color: iconColor),
+      ),
     );
   }
 }

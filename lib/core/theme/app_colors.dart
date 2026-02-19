@@ -51,4 +51,10 @@ class AppColors {
 
   /// Main text
   static const Color mainTextDark = Color(0xFFFAFAFA);
+
+  /// 장소 컨테이너 배경색 다크모드
+  static const Color bgMapContainerDark = Color(0xFF1F1F1F);
+
+  /// g-3
+  static const Color gray3 = Color(0xFFA1A1A1);
 }

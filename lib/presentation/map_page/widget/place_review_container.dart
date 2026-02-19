@@ -21,13 +21,12 @@ class PlaceReviewContainer extends StatelessWidget {
     required this.createdAt,
   });
 
-  final bool isLiked = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 93,
-      width: 327,
+      width: double.infinity,
       decoration: BoxDecoration(
         color: AppColors.bgMapContainerDark,
         borderRadius: BorderRadius.circular(8),
@@ -55,7 +54,7 @@ class PlaceReviewContainer extends StatelessWidget {
                             color: AppColors.mainTextDark,
                           ),
                         ),
-                        const SizedBox(width: 4),
+                        AppGap.h4,
                         Text(
                           category,
                           style: AppTextStyles.caption2.copyWith(
@@ -64,7 +63,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
+                    AppGap.v4,
                     Text(
                       address,
                       maxLines: 1,
@@ -73,7 +72,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         color: AppColors.sub2Dark,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    AppGap.v4,
                     Row(
                       children: [
                         Text(

@@ -22,13 +22,13 @@ class AppColors {
 
   // ==================== Light mode ====================
   /// bg-surface
-  static const Color bgSurface = Color(0xFFF7F7F8);
+  static const Color bgSurface = Color(0xFFF3F3F3);
 
   /// Button
-  static const Color button = Color(0xFFCACACA);
+  static const Color button = Color(0xFFDEDEDE);
 
   /// sub-2
-  static const Color sub2 = Color(0xFF969696);
+  static const Color sub2 = Color(0xFFC8C8C8);
 
   /// sub-1
   static const Color sub1 = Color(0xFF737373);

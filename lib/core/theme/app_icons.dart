@@ -82,6 +82,24 @@ class AppIcons {
         color: color,
       );
 
+  /// 로고 작은 아이콘
+  static Widget logoSmall({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/logo_small.svg',
+        width: width ?? 24,
+        height: height ?? 24,
+        color: color,
+      );
+
+  /// GOMS 로고 작은 아이콘 (곰 + 텍스트)
+  static Widget gomsLogoSmall({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/goms_logo_small.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
   /// 로고 사각형 아이콘
   static Widget logoSquare({double? width, double? height, Color? color}) =>
       _loadSvg(
@@ -169,11 +187,10 @@ class AppIcons {
       );
 
   /// 지도 댓글 삭제 아이콘
-  static Widget bin({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/bin.png',
-        width: width,
-        height: height,
-        color: color,
-      );
+  static Widget bin({double? width, double? height, Color? color}) => _loadPng(
+    'assets/icons/bin.png',
+    width: width,
+    height: height,
+    color: color,
+  );
 }

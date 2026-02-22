@@ -69,11 +69,19 @@ flutter:
   fonts:
     - family: suit
       fonts:
-        - asset: assets/suit/SUIT-Regular.ttf
+        - asset: assets/fonts/suit/SUIT-Regular.ttf
           weight: 400
-        - asset: assets/suit/SUIT-Medium.ttf
+        - asset: assets/fonts/suit/SUIT-Medium.ttf
           weight: 500
-        - asset: assets/suit/SUIT-SemiBold.ttf
+        - asset: assets/fonts/suit/SUIT-SemiBold.ttf
           weight: 600
-        - asset: assets/suit/SUIT-Bold.ttf
+        - asset: assets/fonts/suit/SUIT-Bold.ttf
+          weight: 700
+    - family: gmarketSans
+      fonts:
+        - asset: assets/fonts/gmarketSans/GmarketSansTTFLight.ttf
+          weight: 300
+        - asset: assets/fonts/gmarketSans/GmarketSansTTFMedium.ttf
+          weight: 500
+        - asset: assets/fonts/gmarketSans/GmarketSansTTFBold.ttf
           weight: 700

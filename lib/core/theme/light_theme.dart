@@ -16,6 +16,17 @@ class LightTheme {
     ),
     scaffoldBackgroundColor: AppColors.background,
 
+    // AppBar
+    appBarTheme: AppBarTheme(
+      backgroundColor: AppColors.background,
+      elevation: 0,
+      centerTitle: false,
+      iconTheme: const IconThemeData(
+        color: AppColors.mainColor,
+      ),
+      titleTextStyle: AppTextStyles.title2.withColor(AppColors.mainColor),
+    ),
+
     // Bottom Navigation Bar
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: AppColors.bgSurface,

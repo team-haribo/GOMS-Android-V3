@@ -91,15 +91,6 @@ class AppIcons {
         color: color,
       );
 
-  /// GOMS 로고 작은 아이콘 (곰 + 텍스트)
-  static Widget gomsLogoSmall({double? width, double? height, Color? color}) =>
-      _loadSvg(
-        'assets/icons/goms_logo_small.svg',
-        width: width,
-        height: height,
-        color: color,
-      );
-
   /// 로고 사각형 아이콘
   static Widget logoSquare({double? width, double? height, Color? color}) =>
       _loadSvg(

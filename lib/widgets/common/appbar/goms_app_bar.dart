@@ -50,10 +50,14 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   color: isDark ? AppColors.sub2Dark : AppColors.button,
                 ),
                 const SizedBox(width: 8),
-                AppIcons.gomsLogoSmall(
-                  width: 59,
-                  height: 20,
-                  color: isDark ? AppColors.sub2Dark : AppColors.button,
+                Text(
+                  'GOMS',
+                  style: TextStyle(
+                    fontFamily: 'gmarketSans',
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? AppColors.sub2Dark : AppColors.button,
+                  ),
                 ),
               ],
             )

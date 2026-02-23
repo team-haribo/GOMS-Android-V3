@@ -59,17 +59,8 @@ class LoginNotifier extends Notifier<LoginState> {
       // TODO: 실제 로그인 API 호출
       await Future.delayed(const Duration(seconds: 2));
 
-      // 임시: 실패 응답 시뮬레이션 (나중에 API 연동 시 제거)
-      // 실제로는 API 응답에 따라 처리
-      const bool isEmailValid = false; // API 응답에서 판단
-
-      if (!isEmailValid) {
-        state = state.copyWith(
-          status: LoginStatus.initial,
-          emailError: '잘못된 형식의 이메일입니다.',
-        );
-        return;
-      }
+      // 임시: 성공 처리
+      state = LoginState.success(email);
     } catch (e) {
       state = LoginState.failure('로그인에 실패했습니다. 다시 시도해주세요.');
     }

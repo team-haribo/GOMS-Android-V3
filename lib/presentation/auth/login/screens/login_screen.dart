@@ -51,12 +51,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _onEmailChanged(String value) {
-    setState(() {});
     ref.read(loginProvider.notifier).validateEmail(value);
   }
 
   void _onPasswordChanged(String value) {
-    setState(() {});
     ref.read(loginProvider.notifier).validatePassword(value);
   }
 

@@ -62,7 +62,7 @@ class OnboardingScreen extends StatelessWidget {
           // 로그인 버튼
           ConfirmButton(
             text: '로그인',
-            onPressed: () => context.go(RoutePath.login),
+            onPressed: () => context.push(RoutePath.login),
           ),
           const SizedBox(height: 16),
           // 구분선

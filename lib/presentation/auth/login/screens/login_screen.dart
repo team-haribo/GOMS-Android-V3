@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_setting/core/provider/auth_provider.dart';
 import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
@@ -58,6 +59,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     ref.listen(loginProvider, (previous, next) {
       if (next.status == LoginStatus.success) {
+        ref.read(authProvider.notifier).setAuthenticated();
         context.go(RoutePath.home);
       } else if (next.status == LoginStatus.failure &&
           next.errorMessage != null) {

@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:project_setting/core/utils/token_storage.dart';
 import 'package:project_setting/presentation/auth/login/state/login_state.dart';
 
 /// 로그인 Provider
@@ -60,7 +61,16 @@ class LoginNotifier extends Notifier<LoginState> {
       // TODO: 실제 로그인 API 호출
       await Future.delayed(const Duration(seconds: 2));
 
-      // 임시: 성공 처리
+      // TODO: API 응답에서 실제 토큰 받아오기
+      // 임시: 더미 토큰
+      const accessToken = 'dummy_access_token';
+      const refreshToken = 'dummy_refresh_token';
+
+      // 토큰 저장
+      await TokenStorage.saveAccessToken(accessToken);
+      await TokenStorage.saveRefreshToken(refreshToken);
+
+      // 성공 처리
       state = LoginState.success(email);
     } catch (e) {
       state = LoginState.failure('로그인에 실패했습니다. 다시 시도해주세요.');

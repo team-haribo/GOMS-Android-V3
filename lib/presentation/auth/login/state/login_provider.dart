@@ -14,44 +14,45 @@ class LoginNotifier extends Notifier<LoginState> {
   }
 
   /// 이메일 유효성 검사
-  void validateEmail(String email) {
+  String? _validateEmailLogic(String email) {
     if (email.isEmpty) {
-      state = state.copyWith(emailError: '이메일을 입력해주세요');
+      return '이메일을 입력해주세요';
     } else if (email.contains('@') && !email.endsWith('@gsm.hs.kr')) {
-      state = state.copyWith(emailError: '잘못된 형식의 이메일입니다.');
-    } else {
-      state = state.copyWith(emailError: null);
+      return '잘못된 형식의 이메일입니다.';
     }
+    return null;
+  }
+
+  /// 비밀번호 유효성 검사
+  String? _validatePasswordLogic(String password) {
+    if (password.isEmpty) {
+      return '비밀번호를 입력해주세요';
+    }
+    return null;
+  }
+
+  /// 이메일 유효성 검사
+  void validateEmail(String email) {
+    state = state.copyWith(emailError: _validateEmailLogic(email));
   }
 
   /// 비밀번호 유효성 검사
   void validatePassword(String password) {
-    if (password.isEmpty) {
-      state = state.copyWith(passwordError: '비밀번호를 입력해주세요');
-    } else {
-      state = state.copyWith(passwordError: null);
-    }
+    state = state.copyWith(passwordError: _validatePasswordLogic(password));
   }
 
   /// 로그인
   Future<void> login(String email, String password) async {
     // 유효성 검사
-    state = state.copyWith(emailError: null, passwordError: null);
+    final emailError = _validateEmailLogic(email);
+    final passwordError = _validatePasswordLogic(password);
 
-    bool hasError = false;
-    if (email.isEmpty) {
-      state = state.copyWith(emailError: '이메일을 입력해주세요');
-      hasError = true;
-    } else if (email.contains('@') && !email.endsWith('@gsm.hs.kr')) {
-      state = state.copyWith(emailError: '잘못된 형식의 이메일입니다.');
-      hasError = true;
-    }
-    if (password.isEmpty) {
-      state = state.copyWith(passwordError: '비밀번호를 입력해주세요');
-      hasError = true;
-    }
+    state = state.copyWith(
+      emailError: emailError,
+      passwordError: passwordError,
+    );
 
-    if (hasError) return;
+    if (emailError != null || passwordError != null) return;
 
     state = LoginState.loading();
 

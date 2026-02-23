@@ -50,14 +50,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // TODO: 비밀번호 찾기 구현
   }
 
-  void _onEmailChanged(String value) {
-    ref.read(loginProvider.notifier).validateEmail(value);
-  }
-
-  void _onPasswordChanged(String value) {
-    ref.read(loginProvider.notifier).validatePassword(value);
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -102,7 +94,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       hintText: '이메일을 입력해주세요',
                       errorText: loginState.emailError,
                       enabled: !isLoading,
-                      onChanged: _onEmailChanged,
+                      onChanged: ref.read(loginProvider.notifier).validateEmail,
                       onSubmitted: (_) => _handleLogin(),
                     ),
                     const SizedBox(height: 16),
@@ -111,7 +103,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       hintText: '비밀번호를 입력해주세요',
                       errorText: loginState.passwordError,
                       enabled: !isLoading,
-                      onChanged: _onPasswordChanged,
+                      onChanged: ref
+                          .read(loginProvider.notifier)
+                          .validatePassword,
                       onSubmitted: (_) => _handleLogin(),
                     ),
                     const SizedBox(height: 12),

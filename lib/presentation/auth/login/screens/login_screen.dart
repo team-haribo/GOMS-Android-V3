@@ -120,7 +120,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(
-                        onTap: isLoading ? null : _handleFindPassword,
+                        onTap: _handleFindPassword,
                         child: Text(
                           '비밀번호 찾기',
                           style: AppTextStyles.text3.withColor(

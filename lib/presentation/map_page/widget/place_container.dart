@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_setting/core/constants/spacing_constants.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 
 class PlaceContainer extends StatefulWidget {
@@ -37,7 +37,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(SpacingConstants.v16),
         child: Row(
           children: [
             Expanded(
@@ -59,7 +59,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
                             color: AppColors.mainTextDark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           widget.category,
                           style: AppTextStyles.caption2.copyWith(
@@ -68,7 +68,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
                         ),
                       ],
                     ),
-                    AppGap.v4,
+                    SizedBox(height: SpacingConstants.v4),
                     Text(
                       widget.address,
                       maxLines: 1,
@@ -77,7 +77,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
                         color: AppColors.sub2Dark,
                       ),
                     ),
-                    AppGap.v4,
+                    SizedBox(height: SpacingConstants.v4),
                     Row(
                       children: [
                         Text(
@@ -86,7 +86,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           widget.review >= 10
                               ? '${widget.review}+'
@@ -95,21 +95,21 @@ class _PlaceContainerState extends State<PlaceContainer> {
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           '|',
                           style: AppTextStyles.caption2.copyWith(
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           '추천',
                           style: AppTextStyles.caption2.copyWith(
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           widget.recommended >= 10
                               ? '${widget.recommended}+'
@@ -125,7 +125,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: EdgeInsets.only(left: SpacingConstants.h8),
               child: IconButton(
                 onPressed: () {
                   setState(() {

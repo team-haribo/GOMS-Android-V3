@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_setting/core/constants/spacing_constants.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
@@ -31,7 +32,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    
+
     return Container(
       height: 84,
       width: double.infinity,
@@ -40,7 +41,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(SpacingConstants.v16),
         child: Row(
           children: [
             if (widget.onTime) ...[
@@ -52,7 +53,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 ),
               ),
             ],
-            if (widget.onTime) ...[const SizedBox(width: 12)],
+            if (widget.onTime) ...[SizedBox(width: SpacingConstants.h12)],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +71,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                 : AppColors.background,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        SizedBox(width: SpacingConstants.h8),
                         Text(
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(
@@ -92,7 +93,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 16),
+              padding: EdgeInsets.only(left: SpacingConstants.h16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,

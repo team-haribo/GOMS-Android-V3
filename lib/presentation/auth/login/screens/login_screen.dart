@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_setting/core/constants/spacing_constants.dart';
 import 'package:project_setting/core/provider/auth_provider.dart';
 import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
@@ -90,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isDark ? AppColors.mainTextDark : AppColors.mainText,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: SpacingConstants.v24),
                     EmailTextField(
                       controller: _emailController,
                       hintText: '이메일을 입력해주세요',
@@ -99,7 +100,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onChanged: ref.read(loginProvider.notifier).validateEmail,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: SpacingConstants.v16),
                     PasswordTextField(
                       controller: _passwordController,
                       hintText: '비밀번호를 입력해주세요',
@@ -110,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           .validatePassword,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: SpacingConstants.v12),
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(

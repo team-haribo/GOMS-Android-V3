@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:project_setting/core/constants/spacing_constants.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'package:intl/intl.dart';
 
@@ -21,7 +21,6 @@ class PlaceReviewContainer extends StatelessWidget {
     required this.createdAt,
   });
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,7 +31,7 @@ class PlaceReviewContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(SpacingConstants.v16),
         child: Row(
           children: [
             Expanded(
@@ -54,7 +53,7 @@ class PlaceReviewContainer extends StatelessWidget {
                             color: AppColors.mainTextDark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           category,
                           style: AppTextStyles.caption2.copyWith(
@@ -63,7 +62,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    AppGap.v4,
+                    SizedBox(height: SpacingConstants.v4),
                     Text(
                       address,
                       maxLines: 1,
@@ -72,7 +71,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         color: AppColors.sub2Dark,
                       ),
                     ),
-                    AppGap.v4,
+                    SizedBox(height: SpacingConstants.v4),
                     Row(
                       children: [
                         Text(
@@ -83,7 +82,7 @@ class PlaceReviewContainer extends StatelessWidget {
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        AppGap.h4,
+                        SizedBox(width: SpacingConstants.h4),
                         Text(
                           '작성일: ${DateFormat('yy.MM.dd').format(createdAt)}',
                           style: AppTextStyles.caption1.copyWith(
@@ -97,7 +96,7 @@ class PlaceReviewContainer extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: EdgeInsets.only(left: SpacingConstants.h8),
               child: IconButton(onPressed: () {}, icon: AppIcons.bin()),
             ),
           ],

@@ -31,7 +31,7 @@ class PlaceReviewContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: EdgeInsets.all(SpacingConstants.v16),
+        padding: const EdgeInsets.all(SpacingConstants.v16),
         child: Row(
           children: [
             Expanded(
@@ -53,7 +53,7 @@ class PlaceReviewContainer extends StatelessWidget {
                             color: AppColors.mainTextDark,
                           ),
                         ),
-                        SizedBox(width: SpacingConstants.h4),
+                        const SizedBox(width: SpacingConstants.h4),
                         Text(
                           category,
                           style: AppTextStyles.caption2.copyWith(
@@ -62,7 +62,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: SpacingConstants.v4),
+                    const SizedBox(height: SpacingConstants.v4),
                     Text(
                       address,
                       maxLines: 1,
@@ -71,7 +71,7 @@ class PlaceReviewContainer extends StatelessWidget {
                         color: AppColors.sub2Dark,
                       ),
                     ),
-                    SizedBox(height: SpacingConstants.v4),
+                    const SizedBox(height: SpacingConstants.v4),
                     Row(
                       children: [
                         Text(
@@ -82,7 +82,7 @@ class PlaceReviewContainer extends StatelessWidget {
                             color: AppColors.sub2Dark,
                           ),
                         ),
-                        SizedBox(width: SpacingConstants.h4),
+                        const SizedBox(width: SpacingConstants.h4),
                         Text(
                           '작성일: ${DateFormat('yy.MM.dd').format(createdAt)}',
                           style: AppTextStyles.caption1.copyWith(
@@ -96,7 +96,7 @@ class PlaceReviewContainer extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: SpacingConstants.h8),
+              padding: const EdgeInsets.only(left: SpacingConstants.h8),
               child: IconButton(onPressed: () {}, icon: AppIcons.bin()),
             ),
           ],

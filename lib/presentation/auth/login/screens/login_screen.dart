@@ -91,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isDark ? AppColors.mainTextDark : AppColors.mainText,
                       ),
                     ),
-                    SizedBox(height: SpacingConstants.v24),
+                    const SizedBox(height: SpacingConstants.v24),
                     EmailTextField(
                       controller: _emailController,
                       hintText: '이메일을 입력해주세요',
@@ -100,7 +100,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onChanged: ref.read(loginProvider.notifier).validateEmail,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    SizedBox(height: SpacingConstants.v16),
+                    const SizedBox(height: SpacingConstants.v16),
                     PasswordTextField(
                       controller: _passwordController,
                       hintText: '비밀번호를 입력해주세요',
@@ -111,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           .validatePassword,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    SizedBox(height: SpacingConstants.v12),
+                    const SizedBox(height: SpacingConstants.v12),
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(

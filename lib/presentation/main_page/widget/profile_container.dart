@@ -41,7 +41,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: EdgeInsets.all(SpacingConstants.v16),
+        padding: const EdgeInsets.all(SpacingConstants.v16),
         child: Row(
           children: [
             if (widget.onTime) ...[
@@ -53,7 +53,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 ),
               ),
             ],
-            if (widget.onTime) ...[SizedBox(width: SpacingConstants.h12)],
+            if (widget.onTime) ...[const SizedBox(width: SpacingConstants.h12)],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +71,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                 : AppColors.background,
                           ),
                         ),
-                        SizedBox(width: SpacingConstants.h8),
+                        const SizedBox(width: SpacingConstants.h8),
                         Text(
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(
@@ -93,7 +93,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: SpacingConstants.h16),
+              padding: const EdgeInsets.only(left: SpacingConstants.h16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,

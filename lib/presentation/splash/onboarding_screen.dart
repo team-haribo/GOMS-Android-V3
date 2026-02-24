@@ -22,7 +22,7 @@ class OnboardingScreen extends StatelessWidget {
           const Spacer(flex: 2),
           // 로고
           AppIcons.gomsLogo(width: 80, height: 80),
-          SizedBox(height: SpacingConstants.v12),
+          const SizedBox(height: SpacingConstants.v12),
           // 타이틀
           RichText(
             textAlign: TextAlign.center,
@@ -39,7 +39,7 @@ class OnboardingScreen extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: SpacingConstants.v16),
+          const SizedBox(height: SpacingConstants.v16),
           // 설명
           Column(
             children: [
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
             text: '로그인',
             onPressed: () => context.push(RoutePath.login),
           ),
-          SizedBox(height: SpacingConstants.v16),
+          const SizedBox(height: SpacingConstants.v16),
           // 구분선
           Row(
             children: [
@@ -76,7 +76,7 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: SpacingConstants.h4),
+                padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.h4),
                 child: Text(
                   'GOMS가 처음이신가요?',
                   style: AppTextStyles.caption3.withColor(
@@ -92,7 +92,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: SpacingConstants.v12),
+          const SizedBox(height: SpacingConstants.v12),
           // 회원가입 하기
           GestureDetector(
             onTap: () {

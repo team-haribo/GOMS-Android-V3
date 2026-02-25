@@ -91,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isDark ? AppColors.mainTextDark : AppColors.mainText,
                       ),
                     ),
-                  AppGap.v4,
+                  AppGap.v24,
                     EmailTextField(
                       controller: _emailController,
                       hintText: '이메일을 입력해주세요',

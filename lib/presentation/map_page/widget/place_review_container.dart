@@ -97,7 +97,7 @@ class PlaceReviewContainer extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.s16),
+              padding: const EdgeInsets.only(left: AppSpacing.s8),
               child: IconButton(onPressed: () {}, icon: AppIcons.bin()),
             ),
           ],

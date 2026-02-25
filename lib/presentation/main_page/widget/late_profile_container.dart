@@ -18,29 +18,26 @@ class LateProfileContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       height: 133,
       width: 101,
       decoration: BoxDecoration(
-        color: AppColors.bgSurface,
+        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s12, horizontal: AppSpacing.s20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
                 CircleAvatar(radius: 28, child: AppIcons.profileCircle()),
-              ],
-            ),
+
             AppGap.v8, // 12 -> 8
             Text(
               name,
               style: AppTextStyles.title1.copyWith(
-                color: AppColors.sub1,
+                color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
                 fontSize: 16,
               ),
             ),
@@ -49,7 +46,7 @@ class LateProfileContainer extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 '$grade기 | $major',
-                style: AppTextStyles.caption1.copyWith(color: AppColors.sub2),
+                style: AppTextStyles.caption1.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
               ),
             ),
           ],

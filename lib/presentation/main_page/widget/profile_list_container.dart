@@ -23,7 +23,7 @@ class ProfileListContainer extends StatelessWidget {
           color: AppColors.background,
           height: 44,
           width: 327,
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(AppSpacing.s8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -1,5 +1,6 @@
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/utils/token_storage.dart';
+
 
 /// 인증 상태
 enum AuthStatus {
@@ -14,13 +15,14 @@ enum AuthStatus {
 }
 
 /// 인증 상태 provider
-final authProvider = StateNotifierProvider<AuthNotifier, AuthStatus>((ref) {
+final authProvider = NotifierProvider<AuthNotifier, AuthStatus>(() {
   return AuthNotifier();
 });
 
 /// 인증 Notifier
-class AuthNotifier extends StateNotifier<AuthStatus> {
-  AuthNotifier() : super(AuthStatus.checking);
+class AuthNotifier extends Notifier<AuthStatus> {
+  @override
+  AuthStatus build() => AuthStatus.checking;
 
   /// 토큰 유효성 확인
   Future<bool> checkToken() async {

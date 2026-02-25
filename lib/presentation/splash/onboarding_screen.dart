@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
+import 'package:project_setting/core/theme/app_layout.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
@@ -21,7 +22,7 @@ class OnboardingScreen extends StatelessWidget {
           const Spacer(flex: 2),
           // 로고
           AppIcons.gomsLogo(width: 80, height: 80),
-          const SizedBox(height: 12),
+          AppGap.v12,
           // 타이틀
           RichText(
             textAlign: TextAlign.center,
@@ -38,7 +39,7 @@ class OnboardingScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          AppGap.v16,
           // 설명
           Column(
             children: [
@@ -91,7 +92,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          AppGap.v12,
           // 회원가입 하기
           GestureDetector(
             onTap: () {

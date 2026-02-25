@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
+import 'package:project_setting/core/theme/app_layout.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'package:project_setting/presentation/main_page/widget/outing_status.dart';
 import 'package:project_setting/presentation/main_page/widget/time_display.dart';
@@ -52,7 +53,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 ),
               ),
             ],
-            if (widget.onTime) ...[const SizedBox(width: 12)],
+            if (widget.onTime) ...[AppGap.h12],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +71,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                 : AppColors.background,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        AppGap.h8,
                         Text(
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(

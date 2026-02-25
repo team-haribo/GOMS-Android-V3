@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:project_setting/core/provider/auth_provider.dart';
 import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
+import 'package:project_setting/core/theme/app_layout.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 import 'package:project_setting/presentation/auth/login/state/login_provider.dart';
 import 'package:project_setting/presentation/auth/login/state/login_state.dart';
@@ -90,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isDark ? AppColors.mainTextDark : AppColors.mainText,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                  AppGap.v4,
                     EmailTextField(
                       controller: _emailController,
                       hintText: '이메일을 입력해주세요',
@@ -99,7 +100,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       onChanged: ref.read(loginProvider.notifier).validateEmail,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    const SizedBox(height: 16),
+                    AppGap.v16,
                     PasswordTextField(
                       controller: _passwordController,
                       hintText: '비밀번호를 입력해주세요',
@@ -110,7 +111,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           .validatePassword,
                       onSubmitted: (_) => _handleLogin(),
                     ),
-                    const SizedBox(height: 12),
+                    AppGap.v12,
                     Align(
                       alignment: Alignment.centerRight,
                       child: GestureDetector(

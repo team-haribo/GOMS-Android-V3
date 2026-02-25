@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_icons.dart';
+import 'package:project_setting/core/theme/app_layout.dart';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const GomsAppBar({
@@ -33,7 +34,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showLogo
           ? null
           : Padding(
-              padding: const EdgeInsets.only(left: 24),
+              padding: EdgeInsets.only(left: AppSpacing.s24),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -49,7 +50,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 AppIcons.logoSmall(
                   color: isDark ? AppColors.sub2Dark : AppColors.button,
                 ),
-                const SizedBox(width: 8),
+                AppGap.h8,
                 Text(
                   'GOMS',
                   style: TextStyle(

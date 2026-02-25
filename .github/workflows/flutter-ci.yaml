@@ -51,7 +51,10 @@ jobs:
         run: fvm flutter --version || flutter --version
 
       - name: Install dependencies
-        run: fvm flutter pub get || flutter pub get
+        run:  |
+          fvm flutter clean
+          fvm flutter pub upgrade --major-versions
+          fvm flutter pub get
 
       - name: Analyze project source
         run: fvm flutter analyze --no-fatal-infos || flutter analyze --no-fatal-infos

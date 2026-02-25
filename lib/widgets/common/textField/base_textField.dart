@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/app_colors.dart';
-import 'package:project_setting/core/theme/app_text_styles.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 
 class BaseTextField extends StatelessWidget {
   const BaseTextField({

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/utils/token_storage.dart';
-import 'package:project_setting/presentation/auth/login/state/login_state.dart';
+import 'package:project_setting/presentation/auth/login/model/login_state.dart';
 
 /// 로그인 Provider
 final loginProvider = NotifierProvider<LoginNotifier, LoginState>(

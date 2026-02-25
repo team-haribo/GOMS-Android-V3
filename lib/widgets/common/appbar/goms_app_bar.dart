@@ -34,7 +34,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showLogo
           ? null
           : Padding(
-              padding: EdgeInsets.only(left: AppSpacing.s24),
+              padding: const EdgeInsets.only(left: AppSpacing.s24),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),

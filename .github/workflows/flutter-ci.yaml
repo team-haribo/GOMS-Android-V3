@@ -30,9 +30,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: 'stable'
-          cache: true
+          flutter-version: '3.41.2'  # 로컬 Flutter 버전과 동일하게 지정
 
       - name: Install FVM
         run: |

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/widgets/common/textField/base_textField.dart';
+import 'package:project_setting/core/theme/app_layout.dart';
+import 'package:project_setting/widgets/common/textField/base_text_field.dart';
 import 'package:project_setting/core/theme/app_colors.dart';
 import 'package:project_setting/core/theme/app_text_styles.dart';
 
@@ -46,7 +47,7 @@ class EmailTextField extends StatelessWidget {
       validator: validator,
       suffixIcon: suffixText != null
           ? Padding(
-              padding: const EdgeInsets.only(right: 16, top: 14),
+              padding: const EdgeInsets.only(right: AppSpacing.s16, top: AppSpacing.s14),
               child: Text(
                 suffixText!,
                 style: hasError

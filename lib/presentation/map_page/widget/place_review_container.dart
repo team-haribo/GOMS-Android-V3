@@ -32,7 +32,7 @@ class PlaceReviewContainer extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         child: Row(
           children: [
             Expanded(
@@ -97,7 +97,7 @@ class PlaceReviewContainer extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsets.only(left: AppSpacing.s8),
               child: IconButton(onPressed: () {}, icon: AppIcons.bin()),
             ),
           ],

@@ -37,7 +37,7 @@ class _PlaceContainerState extends State<PlaceContainer> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         child: Row(
           children: [
             Expanded(

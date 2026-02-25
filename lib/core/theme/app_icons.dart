@@ -100,6 +100,15 @@ class AppIcons {
         color: color,
       );
 
+  /// GOMS 로고 (큰 로고)
+  static Widget gomsLogo({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/goms_logo.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
   /// 프로필 원형 아이콘
   static Widget profileCircle({double? width, double? height, Color? color}) =>
       _loadSvg(

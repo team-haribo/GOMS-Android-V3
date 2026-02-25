@@ -15,12 +15,16 @@ class ConfirmButton extends StatelessWidget {
   /// 버튼 높이 (기본값: 44)
   final double? height;
 
+  /// 로딩 상태
+  final bool isLoading;
+
   const ConfirmButton({
     super.key,
     required this.text,
     this.onPressed,
     this.width,
     this.height,
+    this.isLoading = false,
   });
 
   @override
@@ -57,7 +61,16 @@ class ConfirmButton extends StatelessWidget {
           ),
           overlayColor: WidgetStateProperty.all(Colors.transparent),
         ),
-        child: Text(text, style: AppTextStyles.text2),
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(text, style: AppTextStyles.text2),
       ),
     );
   }

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/widgets/common/textField/base_textField.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/widgets/common/textField/base_text_field.dart';
 
 /// 검색 텍스트 필드
 class SearchTextField extends StatefulWidget {
@@ -89,7 +90,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
                     onPressed: widget.onBackPressed,
                   )
                 : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
                     child: AppIcons.logoSmall(),
                   ))
           : null,

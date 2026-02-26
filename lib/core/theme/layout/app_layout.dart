@@ -5,9 +5,11 @@ class AppSpacing {
   static const double s4 = 4;
   static const double s8 = 8;
   static const double s12 = 12;
+  static const double s14 = 14;
   static const double s16 = 16;
   static const double s20 = 20;
   static const double s24 = 24;
+  static const double s52 = 52;
 }
 
 class AppGap {
@@ -19,10 +21,14 @@ class AppGap {
   static const SizedBox v8 = SizedBox(height: AppSpacing.s8);
   static const SizedBox h12 = SizedBox(width: AppSpacing.s12);
   static const SizedBox v12 = SizedBox(height: AppSpacing.s12);
+  static const SizedBox h14 = SizedBox(width: AppSpacing.s14);
+  static const SizedBox v14 = SizedBox(height: AppSpacing.s14);
   static const SizedBox h16 = SizedBox(width: AppSpacing.s16);
   static const SizedBox v16 = SizedBox(height: AppSpacing.s16);
   static const SizedBox h20 = SizedBox(width: AppSpacing.s20);
   static const SizedBox v20 = SizedBox(height: AppSpacing.s20);
   static const SizedBox h24 = SizedBox(width: AppSpacing.s24);
   static const SizedBox v24 = SizedBox(height: AppSpacing.s24);
+  static const SizedBox h52 = SizedBox(width: AppSpacing.s52);
+  static const SizedBox v52 = SizedBox(height: AppSpacing.s52);
 }

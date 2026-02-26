@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/constants/spacing_constants.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
@@ -22,7 +22,7 @@ class OnboardingScreen extends StatelessWidget {
           const Spacer(flex: 2),
           // 로고
           AppIcons.gomsLogo(width: 80, height: 80),
-          const SizedBox(height: SpacingConstants.v12),
+          AppGap.v12,
           // 타이틀
           RichText(
             textAlign: TextAlign.center,
@@ -39,7 +39,7 @@ class OnboardingScreen extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: SpacingConstants.v16),
+          AppGap.v16,
           // 설명
           Column(
             children: [
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
             text: '로그인',
             onPressed: () => context.push(RoutePath.login),
           ),
-          const SizedBox(height: SpacingConstants.v16),
+          AppGap.v16,
           // 구분선
           Row(
             children: [
@@ -77,7 +77,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: SpacingConstants.h4,
+                  horizontal: AppSpacing.s4,
                 ),
                 child: Text(
                   'GOMS가 처음이신가요?',
@@ -94,7 +94,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: SpacingConstants.v12),
+          AppGap.v12,
           // 회원가입 하기
           GestureDetector(
             onTap: () {

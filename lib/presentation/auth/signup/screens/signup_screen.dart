@@ -12,8 +12,8 @@ import 'package:project_setting/presentation/auth/signup/viewModels/signup_provi
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 import 'package:project_setting/widgets/common/select_field.dart';
-import 'package:project_setting/widgets/common/textField/base_textField.dart';
-import 'package:project_setting/widgets/common/textField/email_textField.dart';
+import 'package:project_setting/widgets/common/textfield/base_text_field.dart';
+import 'package:project_setting/widgets/common/textfield/email_text_field.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});

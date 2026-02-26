@@ -43,33 +43,29 @@ class LightTheme {
         ),
 
         // Input Decoration
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: AppColors.bgSurface,
-          labelStyle: AppTextStyles.text2.withColor(AppColors.mainText),
-          hintStyle: AppTextStyles.text3.withColor(AppColors.sub2),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+        inputDecorationTheme: (() {
+          final borderRadius = BorderRadius.circular(12);
+          final noneBorder = OutlineInputBorder(
+            borderRadius: borderRadius,
             borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+          );
+          final errorBorder = OutlineInputBorder(
+            borderRadius: borderRadius,
             borderSide: const BorderSide(color: AppColors.negative, width: 1),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.negative, width: 1),
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-        ),
+          );
+          return InputDecorationTheme(
+            filled: true,
+            fillColor: AppColors.bgSurface,
+            labelStyle: AppTextStyles.text2.withColor(AppColors.mainText),
+            hintStyle: AppTextStyles.text3.withColor(AppColors.sub2),
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            border: noneBorder,
+            enabledBorder: noneBorder,
+            errorBorder: errorBorder,
+            focusedErrorBorder: errorBorder,
+            disabledBorder: noneBorder,
+          );
+        })(),
       );
 }

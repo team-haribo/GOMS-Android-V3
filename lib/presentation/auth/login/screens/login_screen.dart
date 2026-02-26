@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/provider/auth_provider.dart';
 import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/app_colors.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
-import 'package:project_setting/core/theme/app_text_styles.dart';
-import 'package:project_setting/presentation/auth/login/state/login_provider.dart';
-import 'package:project_setting/presentation/auth/login/state/login_state.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/presentation/auth/auth_provider.dart';
+import 'package:project_setting/presentation/auth/login/model/login_state.dart';
+import 'package:project_setting/presentation/auth/login/viewModel/login_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
-import 'package:project_setting/widgets/common/textField/email_text_field.dart';
-import 'package:project_setting/widgets/common/textField/password_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/email_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -91,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         isDark ? AppColors.mainTextDark : AppColors.mainText,
                       ),
                     ),
-                  AppGap.v24,
+                    AppGap.v24,
                     EmailTextField(
                       controller: _emailController,
                       hintText: '이메일을 입력해주세요',
@@ -106,9 +106,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       hintText: '비밀번호를 입력해주세요',
                       errorText: loginState.passwordError,
                       enabled: !isLoading,
-                      onChanged: ref
-                          .read(loginProvider.notifier)
-                          .validatePassword,
+                      onChanged:
+                          ref.read(loginProvider.notifier).validatePassword,
                       onSubmitted: (_) => _handleLogin(),
                     ),
                     AppGap.v12,

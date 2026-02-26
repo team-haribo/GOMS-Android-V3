@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
-import 'package:project_setting/widgets/common/textField/base_text_field.dart';
-import 'package:project_setting/core/theme/app_colors.dart';
-import 'package:project_setting/core/theme/app_text_styles.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/widgets/common/text_fields/base_text_field.dart';
 
 /// 이메일 입력 텍스트 필드
 class EmailTextField extends StatelessWidget {
@@ -47,7 +47,8 @@ class EmailTextField extends StatelessWidget {
       validator: validator,
       suffixIcon: suffixText != null
           ? Padding(
-              padding: const EdgeInsets.only(right: AppSpacing.s16, top: AppSpacing.s14),
+              padding: const EdgeInsets.only(
+                  right: AppSpacing.s16, top: AppSpacing.s14),
               child: Text(
                 suffixText!,
                 style: hasError

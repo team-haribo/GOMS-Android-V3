@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/app_colors.dart';
-import 'package:project_setting/core/theme/app_icons.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
-import 'package:project_setting/core/theme/app_text_styles.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 
@@ -65,7 +65,7 @@ class OnboardingScreen extends StatelessWidget {
             text: '로그인',
             onPressed: () => context.push(RoutePath.login),
           ),
-          const SizedBox(height: 16),
+          AppGap.v16,
           // 구분선
           Row(
             children: [
@@ -76,7 +76,9 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.s4,
+                ),
                 child: Text(
                   'GOMS가 처음이신가요?',
                   style: AppTextStyles.caption3.withColor(
@@ -96,8 +98,7 @@ class OnboardingScreen extends StatelessWidget {
           // 회원가입 하기
           GestureDetector(
             onTap: () {
-              // TODO: 회원가입 페이지로 이동
-              // context.go(RoutePath.signup);
+              context.push(RoutePath.signUp);
             },
             child: Text(
               '회원가입 하기',

@@ -13,10 +13,10 @@ class AppSpacing {
 }
 
 class AppGap {
-  static const SizedBox h2  = SizedBox(width: AppSpacing.s2);
-  static const SizedBox v2  = SizedBox(height: AppSpacing.s2);
-  static const SizedBox h4  = SizedBox(width: AppSpacing.s4);
-  static const SizedBox v4  = SizedBox(height: AppSpacing.s4);
+  static const SizedBox h2 = SizedBox(width: AppSpacing.s2);
+  static const SizedBox v2 = SizedBox(height: AppSpacing.s2);
+  static const SizedBox h4 = SizedBox(width: AppSpacing.s4);
+  static const SizedBox v4 = SizedBox(height: AppSpacing.s4);
   static const SizedBox h8 = SizedBox(width: AppSpacing.s8);
   static const SizedBox v8 = SizedBox(height: AppSpacing.s8);
   static const SizedBox h12 = SizedBox(width: AppSpacing.s12);
@@ -31,5 +31,4 @@ class AppGap {
   static const SizedBox v24 = SizedBox(height: AppSpacing.s24);
   static const SizedBox h52 = SizedBox(width: AppSpacing.s52);
   static const SizedBox v52 = SizedBox(height: AppSpacing.s52);
-
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/app_colors.dart';
-import 'package:project_setting/core/theme/app_icons.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
-import 'package:project_setting/core/theme/app_text_styles.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:intl/intl.dart';
 
 class PlaceReviewContainer extends StatelessWidget {
@@ -20,7 +20,6 @@ class PlaceReviewContainer extends StatelessWidget {
     required this.reviewDetailContent,
     required this.createdAt,
   });
-
 
   @override
   Widget build(BuildContext context) {

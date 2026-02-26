@@ -76,7 +76,9 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: SpacingConstants.h4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: SpacingConstants.h4,
+                ),
                 child: Text(
                   'GOMS가 처음이신가요?',
                   style: AppTextStyles.caption3.withColor(
@@ -96,8 +98,7 @@ class OnboardingScreen extends StatelessWidget {
           // 회원가입 하기
           GestureDetector(
             onTap: () {
-              // TODO: 회원가입 페이지로 이동
-              // context.go(RoutePath.signup);
+              context.push(RoutePath.signUp);
             },
             child: Text(
               '회원가입 하기',

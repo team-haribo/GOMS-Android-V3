@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/core/theme/app_layout.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/widgets/common/appbar/goms_app_bar.dart';
 
 class BaseScaffold extends ConsumerWidget {

@@ -6,7 +6,7 @@ import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
-import 'package:project_setting/widgets/common/textField/password_textField.dart';
+import 'package:project_setting/widgets/common/textField/password_text_field.dart';
 
 class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});

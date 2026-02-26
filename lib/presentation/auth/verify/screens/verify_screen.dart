@@ -10,7 +10,7 @@ import 'package:project_setting/presentation/auth/verify/viewModel/verify_provid
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
-import 'package:project_setting/widgets/common/textField/base_textField.dart';
+import 'package:project_setting/widgets/common/textField/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   const VerifyScreen({super.key});

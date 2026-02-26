@@ -3,118 +3,45 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/presentation/auth/signup/models/signup_state.dart';
+import 'package:project_setting/presentation/auth/signup/viewModels/signup_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
 import 'package:project_setting/widgets/common/textField/password_text_field.dart';
 
-class PasswordScreen extends ConsumerStatefulWidget {
+class PasswordScreen extends ConsumerWidget {
   const PasswordScreen({super.key});
 
   @override
-  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
-}
-
-class _PasswordScreenState extends ConsumerState<PasswordScreen> {
-  final _passwordController = TextEditingController();
-  final _passwordConfirmController = TextEditingController();
-
-  /// 비밀번호: 6자 이상, 대/소문자, 숫자, 특수문자 포함
-  static final _passwordRegex = RegExp(
-    r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&?~])[a-zA-Z\d!@#$%^&?~]{6,}$',
-  );
-
-  String? _passwordError;
-  String? _passwordConfirmError;
-  bool _isLoading = false;
-
-  @override
-  void dispose() {
-    _passwordController.dispose();
-    _passwordConfirmController.dispose();
-    super.dispose();
-  }
-
-  bool get _isFormValid =>
-      _passwordController.text.isNotEmpty &&
-      _passwordError == null &&
-      _passwordConfirmController.text.isNotEmpty &&
-      _passwordConfirmError == null;
-
-  void _validatePassword(String password) {
-    setState(() {
-      if (password.isNotEmpty && !_passwordRegex.hasMatch(password)) {
-        _passwordError = '잘못된 형식의 비밀번호입니다';
-      } else {
-        _passwordError = null;
-      }
-      // 비밀번호 확인도 재검증
-      if (_passwordConfirmController.text.isNotEmpty) {
-        _revalidatePasswordConfirm();
-      }
-    });
-  }
-
-  void _validatePasswordConfirm(String passwordConfirm) {
-    setState(() {
-      if (passwordConfirm.isNotEmpty &&
-          passwordConfirm != _passwordController.text) {
-        _passwordConfirmError = '비밀번호가 일치하지 않습니다';
-      } else {
-        _passwordConfirmError = null;
-      }
-    });
-  }
-
-  void _revalidatePasswordConfirm() {
-    if (_passwordConfirmController.text.isNotEmpty &&
-        _passwordConfirmController.text != _passwordController.text) {
-      _passwordConfirmError = '비밀번호가 일치하지 않습니다';
-    } else {
-      _passwordConfirmError = null;
-    }
-  }
-
-  Future<void> _handleSubmit() async {
-    if (!_isFormValid) return;
-
-    setState(() => _isLoading = true);
-
-    try {
-      // TODO: 실제 비밀번호 설정 API 호출
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (!mounted) return;
-
-      // 회원가입 완료 다이얼로그
-      _showSuccessDialog();
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('비밀번호 설정에 실패했습니다. 다시 시도해주세요.'),
-          backgroundColor: AppColors.negative,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _isLoading = false);
-    }
-  }
-
-  void _showSuccessDialog() {
-    GomsDialog.show(
-      context: context,
-      title: '회원가입 완료',
-      content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
-      onConfirm: () {
-        // TODO: 로그인 화면으로 이동
-      },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final signupState = ref.watch(signupProvider);
+    final notifier = ref.read(signupProvider.notifier);
+    final isLoading = signupState.status == SignupStatus.loading;
+
+    ref.listen(signupProvider, (previous, next) {
+      if (next.status == SignupStatus.success) {
+        notifier.clearError();
+        GomsDialog.show(
+          context: context,
+          title: '회원가입 완료',
+          content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
+          onConfirm: () {
+            // TODO: 로그인 화면으로 이동
+          },
+        );
+      } else if (next.status == SignupStatus.failure &&
+          next.errorMessage != null) {
+        notifier.clearError();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
 
     return BaseScaffold(
       showAppBar: true,
@@ -139,21 +66,21 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
 
                     /// 비밀번호 입력
                     PasswordTextField(
-                      controller: _passwordController,
+                      controller: notifier.passwordController,
                       hintText: '비밀번호를 입력해주세요',
-                      errorText: _passwordError,
-                      enabled: !_isLoading,
-                      onChanged: _validatePassword,
+                      errorText: signupState.passwordError,
+                      enabled: !isLoading,
+                      onChanged: notifier.validatePassword,
                     ),
                     AppGap.h16,
 
                     /// 비밀번호 확인
                     PasswordTextField(
-                      controller: _passwordConfirmController,
+                      controller: notifier.passwordConfirmController,
                       hintText: '비밀번호를 다시 입력해주세요',
-                      errorText: _passwordConfirmError,
-                      enabled: !_isLoading,
-                      onChanged: _validatePasswordConfirm,
+                      errorText: signupState.passwordConfirmError,
+                      enabled: !isLoading,
+                      onChanged: notifier.validatePasswordConfirm,
                     ),
                     AppGap.v12,
 
@@ -167,13 +94,15 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
 
                     const Spacer(),
 
-                    /// 인증번호 받기 버튼
+                    /// 회원가입 완료 버튼
                     ConfirmButton(
                       text: '로그인',
-                      isLoading: _isLoading,
-                      onPressed: _isLoading
+                      isLoading: isLoading,
+                      onPressed: isLoading
                           ? null
-                          : (_isFormValid ? _handleSubmit : null),
+                          : (notifier.isPasswordFormValid
+                              ? notifier.submitSignup
+                              : null),
                     ),
                   ],
                 ),

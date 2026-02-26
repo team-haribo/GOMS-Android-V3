@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/constants/spacing_constants.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/presentation/main_page/widget/outing_status.dart';
 import 'package:project_setting/presentation/main_page/widget/time_display.dart';
@@ -41,7 +41,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(SpacingConstants.v16),
+        padding: const EdgeInsets.all(AppSpacing.s16),
         child: Row(
           children: [
             if (widget.onTime) ...[
@@ -53,7 +53,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 ),
               ),
             ],
-            if (widget.onTime) ...[const SizedBox(width: SpacingConstants.h12)],
+            if (widget.onTime) ...[AppGap.h12],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -71,13 +71,12 @@ class _ProfileContainerState extends State<ProfileContainer> {
                                 : AppColors.background,
                           ),
                         ),
-                        const SizedBox(width: SpacingConstants.h8),
+                        AppGap.h8,
                         Text(
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(
-                            color: isLight
-                                ? AppColors.button
-                                : AppColors.sub2Dark,
+                            color:
+                                isLight ? AppColors.button : AppColors.sub2Dark,
                           ),
                         ),
                       ],
@@ -93,7 +92,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: SpacingConstants.h16),
+              padding: const EdgeInsets.only(left: AppSpacing.s16),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,

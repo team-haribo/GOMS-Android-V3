@@ -38,7 +38,9 @@ class SelectField<T> extends StatelessWidget {
           value != null ? itemLabel(value as T) : hintText,
           style: value != null
               ? AppTextStyles.text2.withColor(
-                  isDark ? AppColors.mainTextDark : AppColors.mainText,
+                  enabled
+                      ? (isDark ? AppColors.mainTextDark : AppColors.mainText)
+                      : (isDark ? AppColors.sub2Dark : AppColors.sub2),
                 )
               : AppTextStyles.text2.withColor(
                   isDark ? AppColors.sub2Dark : AppColors.sub2,

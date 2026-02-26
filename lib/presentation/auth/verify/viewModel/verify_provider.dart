@@ -105,13 +105,11 @@ class VerifyNotifier extends Notifier<VerifyState> {
     _startTimer();
   }
 
-  /// 에러 메시지 클리어
-  void clearError() {
-    if (state.errorMessage != null) {
-      state = state.copyWith(
-        status: VerifyStatus.initial,
-        errorMessage: null,
-      );
-    }
+  /// 상태 초기화 (success/failure 처리 후 호출)
+  void resetStatus() {
+    state = state.copyWith(
+      status: VerifyStatus.initial,
+      errorMessage: null,
+    );
   }
 }

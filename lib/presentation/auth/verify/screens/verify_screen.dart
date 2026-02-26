@@ -9,6 +9,7 @@ import 'package:project_setting/presentation/auth/verify/states/verify_state.dar
 import 'package:project_setting/presentation/auth/verify/viewModel/verify_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
+import 'package:project_setting/widgets/common/goms_dialog.dart';
 import 'package:project_setting/widgets/common/textField/base_textField.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
@@ -36,9 +37,18 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
 
     ref.listen(verifyProvider, (previous, next) {
       if (next.status == VerifyStatus.success) {
-        context.go(RoutePath.password);
+        notifier.resetStatus();
+        GomsDialog.show(
+          context: context,
+          title: '인증 확인',
+          content: '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
+          onConfirm: () {
+            context.push(RoutePath.password);
+          },
+        );
       } else if (next.status == VerifyStatus.failure &&
           next.errorMessage != null) {
+        notifier.resetStatus();
         // 에러 호출
       }
     });

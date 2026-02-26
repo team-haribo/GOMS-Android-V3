@@ -125,7 +125,8 @@ class BaseTextField extends StatelessWidget {
         ),
         if (hasError)
           Padding(
-            padding: const EdgeInsets.only(top: AppSpacing.s4, right: AppSpacing.s4),
+            padding:
+                const EdgeInsets.only(top: AppSpacing.s4, right: AppSpacing.s4),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(

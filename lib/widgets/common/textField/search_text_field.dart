@@ -81,18 +81,19 @@ class _SearchTextFieldState extends State<SearchTextField> {
       onSubmitted: widget.onSubmitted,
       prefixIcon: widget.showLogo
           ? (_showClearButton
-                ? IconButton(
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      size: 24,
-                      color: iconColor,
-                    ),
-                    onPressed: widget.onBackPressed,
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
-                    child: AppIcons.logoSmall(),
-                  ))
+              ? IconButton(
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    size: 24,
+                    color: iconColor,
+                  ),
+                  onPressed: widget.onBackPressed,
+                )
+              : Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: AppSpacing.s12),
+                  child: AppIcons.logoSmall(),
+                ))
           : null,
       suffixIcon: Padding(
         padding: const EdgeInsets.only(right: 12),

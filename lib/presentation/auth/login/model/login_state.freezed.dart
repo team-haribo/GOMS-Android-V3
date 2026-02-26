@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,52 +9,69 @@ part of 'login_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
 
 /// @nodoc
 mixin _$LoginState {
-  LoginStatus get status => throw _privateConstructorUsedError;
-  String? get errorMessage => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError;
-  String? get emailError => throw _privateConstructorUsedError;
-  String? get passwordError => throw _privateConstructorUsedError;
+  LoginStatus get status;
+  String? get errorMessage;
+  String? get email;
+  String? get emailError;
+  String? get passwordError;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $LoginStateCopyWith<LoginState> get copyWith =>
-      throw _privateConstructorUsedError;
+      _$LoginStateCopyWithImpl<LoginState>(this as LoginState, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is LoginState &&
+            (identical(other.status, status) || other.status == status) &&
+            (identical(other.errorMessage, errorMessage) ||
+                other.errorMessage == errorMessage) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.emailError, emailError) ||
+                other.emailError == emailError) &&
+            (identical(other.passwordError, passwordError) ||
+                other.passwordError == passwordError));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, status, errorMessage, email, emailError, passwordError);
+
+  @override
+  String toString() {
+    return 'LoginState(status: $status, errorMessage: $errorMessage, email: $email, emailError: $emailError, passwordError: $passwordError)';
+  }
 }
 
 /// @nodoc
-abstract class $LoginStateCopyWith<$Res> {
+abstract mixin class $LoginStateCopyWith<$Res> {
   factory $LoginStateCopyWith(
-    LoginState value,
-    $Res Function(LoginState) then,
-  ) = _$LoginStateCopyWithImpl<$Res, LoginState>;
+          LoginState value, $Res Function(LoginState) _then) =
+      _$LoginStateCopyWithImpl;
   @useResult
-  $Res call({
-    LoginStatus status,
-    String? errorMessage,
-    String? email,
-    String? emailError,
-    String? passwordError,
-  });
+  $Res call(
+      {LoginStatus status,
+      String? errorMessage,
+      String? email,
+      String? emailError,
+      String? passwordError});
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
-    implements $LoginStateCopyWith<$Res> {
-  _$LoginStateCopyWithImpl(this._value, this._then);
+class _$LoginStateCopyWithImpl<$Res> implements $LoginStateCopyWith<$Res> {
+  _$LoginStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final LoginState _self;
+  final $Res Function(LoginState) _then;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
@@ -67,109 +84,206 @@ class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
     Object? emailError = freezed,
     Object? passwordError = freezed,
   }) {
-    return _then(
-      _value.copyWith(
-            status: null == status
-                ? _value.status
-                : status // ignore: cast_nullable_to_non_nullable
-                      as LoginStatus,
-            errorMessage: freezed == errorMessage
-                ? _value.errorMessage
-                : errorMessage // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            email: freezed == email
-                ? _value.email
-                : email // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            emailError: freezed == emailError
-                ? _value.emailError
-                : emailError // ignore: cast_nullable_to_non_nullable
-                      as String?,
-            passwordError: freezed == passwordError
-                ? _value.passwordError
-                : passwordError // ignore: cast_nullable_to_non_nullable
-                      as String?,
-          )
-          as $Val,
-    );
+    return _then(_self.copyWith(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as LoginStatus,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      emailError: freezed == emailError
+          ? _self.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _self.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
   }
 }
 
-/// @nodoc
-abstract class _$$LoginStateImplCopyWith<$Res>
-    implements $LoginStateCopyWith<$Res> {
-  factory _$$LoginStateImplCopyWith(
-    _$LoginStateImpl value,
-    $Res Function(_$LoginStateImpl) then,
-  ) = __$$LoginStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    LoginStatus status,
-    String? errorMessage,
-    String? email,
-    String? emailError,
-    String? passwordError,
-  });
-}
+/// Adds pattern-matching-related methods to [LoginState].
+extension LoginStatePatterns on LoginState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
-/// @nodoc
-class __$$LoginStateImplCopyWithImpl<$Res>
-    extends _$LoginStateCopyWithImpl<$Res, _$LoginStateImpl>
-    implements _$$LoginStateImplCopyWith<$Res> {
-  __$$LoginStateImplCopyWithImpl(
-    _$LoginStateImpl _value,
-    $Res Function(_$LoginStateImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of LoginState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? status = null,
-    Object? errorMessage = freezed,
-    Object? email = freezed,
-    Object? emailError = freezed,
-    Object? passwordError = freezed,
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_LoginState value)? $default, {
+    required TResult orElse(),
   }) {
-    return _then(
-      _$LoginStateImpl(
-        status: null == status
-            ? _value.status
-            : status // ignore: cast_nullable_to_non_nullable
-                  as LoginStatus,
-        errorMessage: freezed == errorMessage
-            ? _value.errorMessage
-            : errorMessage // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        email: freezed == email
-            ? _value.email
-            : email // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        emailError: freezed == emailError
-            ? _value.emailError
-            : emailError // ignore: cast_nullable_to_non_nullable
-                  as String?,
-        passwordError: freezed == passwordError
-            ? _value.passwordError
-            : passwordError // ignore: cast_nullable_to_non_nullable
-                  as String?,
-      ),
-    );
+    final _that = this;
+    switch (_that) {
+      case _LoginState() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_LoginState value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LoginState():
+        return $default(_that);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_LoginState value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LoginState() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(LoginStatus status, String? errorMessage, String? email,
+            String? emailError, String? passwordError)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _LoginState() when $default != null:
+        return $default(_that.status, _that.errorMessage, _that.email,
+            _that.emailError, _that.passwordError);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(LoginStatus status, String? errorMessage, String? email,
+            String? emailError, String? passwordError)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LoginState():
+        return $default(_that.status, _that.errorMessage, _that.email,
+            _that.emailError, _that.passwordError);
+      case _:
+        throw StateError('Unexpected subclass');
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(LoginStatus status, String? errorMessage, String? email,
+            String? emailError, String? passwordError)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _LoginState() when $default != null:
+        return $default(_that.status, _that.errorMessage, _that.email,
+            _that.emailError, _that.passwordError);
+      case _:
+        return null;
+    }
   }
 }
 
 /// @nodoc
 
-class _$LoginStateImpl implements _LoginState {
-  const _$LoginStateImpl({
-    this.status = LoginStatus.initial,
-    this.errorMessage,
-    this.email,
-    this.emailError,
-    this.passwordError,
-  });
+class _LoginState implements LoginState {
+  const _LoginState(
+      {this.status = LoginStatus.initial,
+      this.errorMessage,
+      this.email,
+      this.emailError,
+      this.passwordError});
 
   @override
   @JsonKey()
@@ -183,16 +297,19 @@ class _$LoginStateImpl implements _LoginState {
   @override
   final String? passwordError;
 
+  /// Create a copy of LoginState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'LoginState(status: $status, errorMessage: $errorMessage, email: $email, emailError: $emailError, passwordError: $passwordError)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$LoginStateCopyWith<_LoginState> get copyWith =>
+      __$LoginStateCopyWithImpl<_LoginState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoginStateImpl &&
+            other is _LoginState &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.errorMessage, errorMessage) ||
                 other.errorMessage == errorMessage) &&
@@ -205,47 +322,71 @@ class _$LoginStateImpl implements _LoginState {
 
   @override
   int get hashCode => Object.hash(
-    runtimeType,
-    status,
-    errorMessage,
-    email,
-    emailError,
-    passwordError,
-  );
+      runtimeType, status, errorMessage, email, emailError, passwordError);
+
+  @override
+  String toString() {
+    return 'LoginState(status: $status, errorMessage: $errorMessage, email: $email, emailError: $emailError, passwordError: $passwordError)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$LoginStateCopyWith<$Res>
+    implements $LoginStateCopyWith<$Res> {
+  factory _$LoginStateCopyWith(
+          _LoginState value, $Res Function(_LoginState) _then) =
+      __$LoginStateCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {LoginStatus status,
+      String? errorMessage,
+      String? email,
+      String? emailError,
+      String? passwordError});
+}
+
+/// @nodoc
+class __$LoginStateCopyWithImpl<$Res> implements _$LoginStateCopyWith<$Res> {
+  __$LoginStateCopyWithImpl(this._self, this._then);
+
+  final _LoginState _self;
+  final $Res Function(_LoginState) _then;
 
   /// Create a copy of LoginState
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
-      __$$LoginStateImplCopyWithImpl<_$LoginStateImpl>(this, _$identity);
+  $Res call({
+    Object? status = null,
+    Object? errorMessage = freezed,
+    Object? email = freezed,
+    Object? emailError = freezed,
+    Object? passwordError = freezed,
+  }) {
+    return _then(_LoginState(
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as LoginStatus,
+      errorMessage: freezed == errorMessage
+          ? _self.errorMessage
+          : errorMessage // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      emailError: freezed == emailError
+          ? _self.emailError
+          : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      passwordError: freezed == passwordError
+          ? _self.passwordError
+          : passwordError // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
 }
 
-abstract class _LoginState implements LoginState {
-  const factory _LoginState({
-    final LoginStatus status,
-    final String? errorMessage,
-    final String? email,
-    final String? emailError,
-    final String? passwordError,
-  }) = _$LoginStateImpl;
-
-  @override
-  LoginStatus get status;
-  @override
-  String? get errorMessage;
-  @override
-  String? get email;
-  @override
-  String? get emailError;
-  @override
-  String? get passwordError;
-
-  /// Create a copy of LoginState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LoginStateImplCopyWith<_$LoginStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

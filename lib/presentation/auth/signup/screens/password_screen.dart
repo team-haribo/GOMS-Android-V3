@@ -8,7 +8,7 @@ import 'package:project_setting/presentation/auth/signup/viewModels/signup_provi
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
-import 'package:project_setting/widgets/common/textField/password_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
 
 class PasswordScreen extends ConsumerWidget {
   const PasswordScreen({super.key});

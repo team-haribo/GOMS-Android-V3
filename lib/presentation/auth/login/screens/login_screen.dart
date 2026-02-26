@@ -10,8 +10,8 @@ import 'package:project_setting/presentation/auth/login/model/login_state.dart';
 import 'package:project_setting/presentation/auth/login/viewModel/login_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
-import 'package:project_setting/widgets/common/textField/email_text_field.dart';
-import 'package:project_setting/widgets/common/textField/password_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/email_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});

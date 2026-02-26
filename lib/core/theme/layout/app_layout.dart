@@ -7,6 +7,7 @@ class AppSpacing {
   static const double s12 = 12;
   static const double s16 = 16;
   static const double s20 = 20;
+  static const double s24 = 24;
 }
 
 class AppGap {
@@ -22,4 +23,6 @@ class AppGap {
   static const SizedBox v16 = SizedBox(height: AppSpacing.s16);
   static const SizedBox h20 = SizedBox(width: AppSpacing.s20);
   static const SizedBox v20 = SizedBox(height: AppSpacing.s20);
+  static const SizedBox h24 = SizedBox(width: AppSpacing.s24);
+  static const SizedBox v24 = SizedBox(height: AppSpacing.s24);
 }

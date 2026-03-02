@@ -12,7 +12,9 @@ import 'package:project_setting/widgets/common/goms_dialog.dart';
 import 'package:project_setting/widgets/common/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
-  const VerifyScreen({super.key});
+  final String? redirectPath;
+
+  const VerifyScreen({super.key, this.redirectPath});
 
   @override
   ConsumerState<VerifyScreen> createState() => _VerifyScreenState();
@@ -47,12 +49,15 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
         ref.listen(verifyProvider, (previous, next) async {
           if (next.status == VerifyStatus.success) {
             notifier.resetStatus();
+            final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
             await GomsDialog.show(
               context: context,
               title: '인증 확인',
-              content: '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
+              content: isResetFlow
+                  ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
+                  : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
               onConfirm: () {
-                context.push(RoutePath.password);
+                context.push(widget.redirectPath ?? RoutePath.password);
               },
             );
             notifier.reset();

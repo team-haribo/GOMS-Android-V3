@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
@@ -27,7 +29,7 @@ class PasswordScreen extends ConsumerWidget {
           title: '회원가입 완료',
           content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
           onConfirm: () {
-            // TODO: 로그인 화면으로 이동
+            context.go(RoutePath.login);
           },
         );
       } else if (next.status == SignupStatus.failure &&

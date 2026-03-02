@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_setting/presentation/auth/login/screens/login_screen.dart';
+import 'package:project_setting/presentation/auth/reset_password/screens/find_password_screen.dart';
+import 'package:project_setting/presentation/auth/reset_password/screens/reset_password_screen.dart';
 import 'package:project_setting/presentation/auth/signup/screens/signup_screen.dart';
 import 'package:project_setting/presentation/auth/signup/screens/password_screen.dart';
 import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
@@ -42,7 +44,19 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.verify,
       name: 'verify',
-      builder: (context, state) => const VerifyScreen(),
+      builder: (context, state) => VerifyScreen(
+        redirectPath: state.extra as String?,
+      ),
+    ),
+    GoRoute(
+      path: RoutePath.findPassword,
+      name: 'findPassword',
+      builder: (context, state) => const FindPasswordScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.resetPassword,
+      name: 'resetPassword',
+      builder: (context, state) => const ResetPasswordScreen(),
     ),
     GoRoute(
       path: RoutePath.qr,

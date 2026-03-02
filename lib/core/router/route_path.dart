@@ -7,6 +7,8 @@ class RoutePath {
   static const String signUp = '/signup';
   static const String password = '/password';
   static const String verify = '/verify';
+  static const String findPassword = '/find-password';
+  static const String resetPassword = '/reset-password';
   static const String qr = '/qr';
   static const String home = '/home';
   static const String myPage = '/mypage';

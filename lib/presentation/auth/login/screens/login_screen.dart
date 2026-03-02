@@ -48,7 +48,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _handleFindPassword() {
-    // TODO: 비밀번호 찾기 구현
+    context.push(RoutePath.findPassword);
   }
 
   @override

@@ -35,6 +35,20 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final notifier = ref.read(signupProvider.notifier);
     final isLoading = signupState.status == SignupStatus.loading;
 
+    ref.listen(signupProvider, (previous, next) {
+      if (next.status == SignupStatus.success) {
+        context.push(RoutePath.verify);
+      } else if (next.status == SignupStatus.failure &&
+          next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
+
     return AuthBaseScreen(
       title: '회원가입',
       confirmText: '인증번호 받기',
@@ -43,23 +57,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           notifier.isFormValid && !isLoading ? notifier.submitSignup : null,
       showAppBar: true,
       showAppBarLogo: false,
-      provider: signupProvider,
       isLoading: isLoading,
-      listen: (context, provider, ref) {
-        ref.listen(signupProvider, (previous, next) {
-          if (next.status == SignupStatus.success) {
-            context.push(RoutePath.verify);
-          } else if (next.status == SignupStatus.failure &&
-              next.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(next.errorMessage!),
-                backgroundColor: AppColors.negative,
-              ),
-            );
-          }
-        });
-      },
       children: [
         BaseTextField(
           controller: notifier.nameController,

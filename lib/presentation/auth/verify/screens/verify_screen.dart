@@ -36,6 +36,28 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
     final notifier = ref.read(verifyProvider.notifier);
     final isLoading = verifyState.status == VerifyStatus.loading;
 
+    ref.listen(verifyProvider, (previous, next) async {
+      if (next.status == VerifyStatus.success) {
+        notifier.resetStatus();
+        final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
+        await GomsDialog.show(
+          context: context,
+          title: '인증 확인',
+          content: isResetFlow
+              ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
+              : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
+          onConfirm: () {
+            context.push(widget.redirectPath ?? RoutePath.password);
+          },
+        );
+        notifier.reset();
+      } else if (next.status == VerifyStatus.failure &&
+          next.errorMessage != null) {
+        notifier.resetStatus();
+        // 에러 호출
+      }
+    });
+
     return AuthBaseScreen(
       title: '인증번호',
       confirmText: '인증',
@@ -43,31 +65,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       onConfirm: notifier.isFormValid && !isLoading ? notifier.verify : null,
       showAppBar: true,
       showAppBarLogo: false,
-      provider: verifyProvider,
       isLoading: isLoading,
-      listen: (context, provider, ref) {
-        ref.listen(verifyProvider, (previous, next) async {
-          if (next.status == VerifyStatus.success) {
-            notifier.resetStatus();
-            final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
-            await GomsDialog.show(
-              context: context,
-              title: '인증 확인',
-              content: isResetFlow
-                  ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
-                  : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
-              onConfirm: () {
-                context.push(widget.redirectPath ?? RoutePath.password);
-              },
-            );
-            notifier.reset();
-          } else if (next.status == VerifyStatus.failure &&
-              next.errorMessage != null) {
-            notifier.resetStatus();
-            // 에러 호출
-          }
-        });
-      },
       children: [
         BaseTextField(
           controller: notifier.codeController,

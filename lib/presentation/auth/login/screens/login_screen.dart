@@ -55,29 +55,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
     final isLoading = loginState.status == LoginStatus.loading;
+
+    ref.listen(loginProvider, (previous, next) {
+      if (next.status == LoginStatus.success) {
+        ref.read(authProvider.notifier).setAuthenticated();
+        context.go(RoutePath.home);
+      } else if (next.status == LoginStatus.failure &&
+          next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
+
     return AuthBaseScreen(
       title: '로그인',
       confirmText: '로그인',
       isConfirmEnabled: _isButtonEnabled,
       isLoading: isLoading,
       onConfirm: _handleLogin,
-      provider: loginProvider,
-      listen: (context, provider, ref) {
-        ref.listen(loginProvider, (previous, next) {
-          if (next.status == LoginStatus.success) {
-            ref.read(authProvider.notifier).setAuthenticated();
-            context.go(RoutePath.home);
-          } else if (next.status == LoginStatus.failure &&
-              next.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(next.errorMessage!),
-                backgroundColor: AppColors.negative,
-              ),
-            );
-          }
-        });
-      },
       children: [
         EmailTextField(
           controller: _emailController,

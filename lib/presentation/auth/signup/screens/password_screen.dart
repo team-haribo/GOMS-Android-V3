@@ -19,6 +19,29 @@ class PasswordScreen extends ConsumerWidget {
     final notifier = ref.read(signupProvider.notifier);
     final isLoading = signupState.status == SignupStatus.loading;
 
+    ref.listen(signupProvider, (previous, next) {
+      if (next.status == SignupStatus.success) {
+        notifier.clearError();
+        GomsDialog.show(
+          context: context,
+          title: '회원가입 완료',
+          content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
+          onConfirm: () {
+            // TODO: 로그인 화면으로 이동
+          },
+        );
+      } else if (next.status == SignupStatus.failure &&
+          next.errorMessage != null) {
+        notifier.clearError();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
+
     return AuthBaseScreen(
       title: '비밀번호 설정',
       confirmText: '로그인',
@@ -28,32 +51,7 @@ class PasswordScreen extends ConsumerWidget {
           : null,
       showAppBar: true,
       showAppBarLogo: false,
-      provider: signupProvider,
       isLoading: isLoading,
-      listen: (context, provider, ref) {
-        ref.listen(signupProvider, (previous, next) {
-          if (next.status == SignupStatus.success) {
-            notifier.clearError();
-            GomsDialog.show(
-              context: context,
-              title: '회원가입 완료',
-              content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
-              onConfirm: () {
-                // TODO: 로그인 화면으로 이동
-              },
-            );
-          } else if (next.status == SignupStatus.failure &&
-              next.errorMessage != null) {
-            notifier.clearError();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(next.errorMessage!),
-                backgroundColor: AppColors.negative,
-              ),
-            );
-          }
-        });
-      },
       children: [
         PasswordTextField(
           controller: notifier.passwordController,

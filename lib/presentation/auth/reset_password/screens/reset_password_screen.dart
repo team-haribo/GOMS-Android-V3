@@ -35,6 +35,29 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     final notifier = ref.read(resetPasswordProvider.notifier);
     final isLoading = resetPasswordState.status == ResetPasswordStatus.loading;
 
+    ref.listen(resetPasswordProvider, (previous, next) async {
+      if (next.status == ResetPasswordStatus.success) {
+        notifier.clearError();
+        await GomsDialog.show(
+          context: context,
+          title: '재설정 완료',
+          content: '비밀번호가 성공적으로 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
+          onConfirm: () {
+            context.go(RoutePath.login);
+          },
+        );
+      } else if (next.status == ResetPasswordStatus.failure &&
+          next.errorMessage != null) {
+        notifier.clearError();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
+
     return AuthBaseScreen(
       title: '비밀번호 재설정',
       confirmText: '로그인',
@@ -43,32 +66,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
           notifier.isFormValid && !isLoading ? notifier.resetPassword : null,
       showAppBar: true,
       showAppBarLogo: false,
-      provider: resetPasswordProvider,
       isLoading: isLoading,
-      listen: (context, provider, ref) {
-        ref.listen(resetPasswordProvider, (previous, next) async {
-          if (next.status == ResetPasswordStatus.success) {
-            notifier.clearError();
-            await GomsDialog.show(
-              context: context,
-              title: '재설정 완료',
-              content: '비밀번호가 성공적으로 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
-              onConfirm: () {
-                context.go(RoutePath.login);
-              },
-            );
-          } else if (next.status == ResetPasswordStatus.failure &&
-              next.errorMessage != null) {
-            notifier.clearError();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(next.errorMessage!),
-                backgroundColor: AppColors.negative,
-              ),
-            );
-          }
-        });
-      },
       children: [
         PasswordTextField(
           controller: notifier.passwordController,

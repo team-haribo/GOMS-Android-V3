@@ -30,6 +30,22 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
     final notifier = ref.read(findPasswordProvider.notifier);
     final isLoading = findPasswordState.status == FindPasswordStatus.loading;
 
+    ref.listen(findPasswordProvider, (previous, next) {
+      if (next.status == FindPasswordStatus.success) {
+        notifier.clearError();
+        context.push(RoutePath.verify, extra: RoutePath.resetPassword);
+      } else if (next.status == FindPasswordStatus.failure &&
+          next.errorMessage != null) {
+        notifier.clearError();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
+
     return AuthBaseScreen(
       title: '비밀번호 찾기',
       confirmText: '인증번호 받기',
@@ -38,25 +54,7 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
           notifier.isFormValid && !isLoading ? notifier.findPassword : null,
       showAppBar: true,
       showAppBarLogo: false,
-      provider: findPasswordProvider,
       isLoading: isLoading,
-      listen: (context, provider, ref) {
-        ref.listen(findPasswordProvider, (previous, next) {
-          if (next.status == FindPasswordStatus.success) {
-            notifier.clearError();
-            context.push(RoutePath.verify, extra: RoutePath.resetPassword);
-          } else if (next.status == FindPasswordStatus.failure &&
-              next.errorMessage != null) {
-            notifier.clearError();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(next.errorMessage!),
-                backgroundColor: AppColors.negative,
-              ),
-            );
-          }
-        });
-      },
       children: [
         EmailTextField(
           controller: notifier.emailController,

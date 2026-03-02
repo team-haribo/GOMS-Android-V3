@@ -34,9 +34,8 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
       title: '비밀번호 찾기',
       confirmText: '인증번호 받기',
       isConfirmEnabled: notifier.isFormValid,
-      onConfirm: notifier.isFormValid && !isLoading
-          ? notifier.findPassword
-          : null,
+      onConfirm:
+          notifier.isFormValid && !isLoading ? notifier.findPassword : null,
       showAppBar: true,
       showAppBarLogo: false,
       provider: findPasswordProvider,

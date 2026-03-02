@@ -30,7 +30,7 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
   void validateEmail(String email) {
     String? error;
     if (email.isNotEmpty && !_emailRegex.hasMatch(email)) {
-      error = '잘못된 형식의 이메일입니다.';
+      error = '잘못된 형식의 이메일입니다';
     }
     state = state.copyWith(email: email, emailError: error);
   }
@@ -46,7 +46,7 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
     if (!_emailRegex.hasMatch(state.email)) {
       state = state.copyWith(
         status: FindPasswordStatus.failure,
-        emailError: '학교 이메일 형식이 올바르지 않습니다',
+        emailError: '잘못된 형식의 이메일입니다',
       );
       return;
     }

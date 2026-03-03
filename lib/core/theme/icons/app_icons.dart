@@ -193,4 +193,12 @@ class AppIcons {
     height: height,
     color: color,
   );
+
+  /// 편집 아이콘
+  static Widget edit({double? width, double? height, Color? color}) => _loadSvg(
+    'assets/icons/edit_icon.svg',
+    width: width,
+    height: height,
+    color: color,
+  );
 }

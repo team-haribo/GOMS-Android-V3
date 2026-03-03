@@ -10,6 +10,7 @@ class RoutePath {
   static const String findPassword = '/find-password';
   static const String resetPassword = '/reset-password';
   static const String qr = '/qr';
+  static const String map = '/map';
   static const String home = '/home';
   static const String myPage = '/mypage';
 }

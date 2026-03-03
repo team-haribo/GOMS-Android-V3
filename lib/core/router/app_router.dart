@@ -6,6 +6,8 @@ import 'package:project_setting/presentation/auth/reset_password/screens/reset_p
 import 'package:project_setting/presentation/auth/signup/screens/signup_screen.dart';
 import 'package:project_setting/presentation/auth/signup/screens/password_screen.dart';
 import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
+import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
+import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
 import 'package:project_setting/presentation/splash/onboarding_screen.dart';
 import 'package:project_setting/presentation/splash/splash_screen.dart';
 import 'route_path.dart';
@@ -63,15 +65,39 @@ final GoRouter router = GoRouter(
       name: 'qr',
       builder: (context, state) => const Placeholder(),
     ),
-    GoRoute(
-      path: RoutePath.home,
-      name: 'home',
-      builder: (context, state) => const Placeholder(),
-    ),
-    GoRoute(
-      path: RoutePath.myPage,
-      name: 'myPage',
-      builder: (context, state) => const Placeholder(),
+    // ==================== 바텀 네비게이션 쉘 ====================
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) =>
+          MainShell(navigationShell: navigationShell),
+      branches: [
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: RoutePath.map,
+              name: 'map',
+              builder: (context, state) => const Placeholder(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: RoutePath.home,
+              name: 'home',
+              builder: (context, state) => const Placeholder(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: RoutePath.myPage,
+              name: 'myPage',
+              builder: (context, state) => const MyPageScreen(),
+            ),
+          ],
+        ),
+      ],
     ),
   ],
 );

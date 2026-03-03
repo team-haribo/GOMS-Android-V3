@@ -243,9 +243,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             Positioned(
               bottom: 0,
               right: 0,
-              child: Center(
-                child: AppIcons.edit(),
-              ),
+              child: AppIcons.edit(),
             ),
           ],
         ),

@@ -8,6 +8,7 @@ import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/domain/enum/role_enum.dart';
+import 'package:project_setting/presentation/auth/auth_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/toggle_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
@@ -105,11 +106,13 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             ),
             AppGap.v12,
             GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () => _showThemePicker(context),
               child: Container(
+                width: double.infinity,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.s16,
-                  vertical: AppSpacing.s14,
+                  horizontal: AppSpacing.s12,
+                  vertical: AppSpacing.s12,
                 ),
                 decoration: BoxDecoration(
                   color: surfaceColor,
@@ -189,8 +192,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                 title: '로그아웃',
                 content: '로그아웃 하시겠습니까?',
                 confirmText: '로그아웃',
-                onConfirm: () {
-                  context.go(RoutePath.onboarding);
+                onConfirm: () async {
+                  await ref.read(authProvider.notifier).logout();
+                  if (context.mounted) context.go(RoutePath.onboarding);
                 },
               ),
             ),

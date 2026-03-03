@@ -181,7 +181,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               icon: Icons.settings_outlined,
               title: '비밀번호 재설정',
               textColor: textColor,
-              onTap: () {},
+              onTap: () {
+                context.go(RoutePath.resetPassword);
+              },
             ),
             _buildMenuRow(
               icon: Icons.logout_outlined,

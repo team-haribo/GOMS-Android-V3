@@ -144,9 +144,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               textColor: textColor,
               subColor: sub2Color,
             ),
-            const SizedBox(
-              height: 36,
-            ),
+            AppGap.v36,
             _buildToggleItem(
               title: '외출제 푸시 알림',
               description: '외출할 시간이 될 때마다 알려드려요',
@@ -156,9 +154,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               textColor: textColor,
               subColor: sub2Color,
             ),
-            const SizedBox(
-              height: 36,
-            ),
+            AppGap.v36,
             _buildToggleItem(
               title: '카메라 바로 켜기',
               description: '앱을 실행하면 즉시 카메라가 켜져요',

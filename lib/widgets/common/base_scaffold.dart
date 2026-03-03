@@ -39,9 +39,7 @@ class BaseScaffold extends ConsumerWidget {
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s24, vertical: AppSpacing.s24),
-        child: SingleChildScrollView(
-          child: body,
-        ),
+        child: body,
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,

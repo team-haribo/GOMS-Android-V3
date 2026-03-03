@@ -101,8 +101,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             // ==================== 앱 테마 설정 ====================
             Text(
               '앱 테마 설정',
-              style: AppTextStyles.caption1.withColor(
-                  isDark ? AppColors.mainTextDark : AppColors.mainText),
+              style: AppTextStyles.caption1.withColor(textColor),
             ),
             AppGap.v12,
             GestureDetector(
@@ -189,6 +188,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               icon: Icons.logout_outlined,
               title: '로그아웃',
               textColor: AppColors.negative,
+              chevronColor: textColor,
               onTap: () => GomsDialog.showConfirm(
                 context: context,
                 title: '로그아웃',
@@ -204,6 +204,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               icon: Icons.person_remove_outlined,
               title: '회원탈퇴',
               textColor: AppColors.negative,
+              chevronColor: textColor,
               onTap: () => GomsDialog.showConfirm(
                 context: context,
                 title: '회원 탈퇴',
@@ -326,8 +327,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     required String title,
     required Color textColor,
     required VoidCallback onTap,
+    Color? chevronColor,
   }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveChevronColor = chevronColor ?? textColor;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -347,7 +349,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             Icon(
               Icons.chevron_right,
               size: 24,
-              color: isDark ? AppColors.mainTextDark : AppColors.mainText,
+              color: effectiveChevronColor,
             ),
           ],
         ),

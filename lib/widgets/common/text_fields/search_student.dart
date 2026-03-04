@@ -37,29 +37,21 @@ class SearchStudentField extends StatefulWidget {
 
 class _SearchStudentFieldState extends State<SearchStudentField> {
   late TextEditingController _controller;
-  bool _showClearButton = false;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-    _controller.addListener(_updateClearButton);
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_updateClearButton);
     if (widget.controller == null) {
       _controller.dispose();
     }
     super.dispose();
   }
 
-  void _updateClearButton() {
-    setState(() {
-      _showClearButton = _controller.text.isNotEmpty;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

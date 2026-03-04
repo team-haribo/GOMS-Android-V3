@@ -19,15 +19,16 @@ void main() async {
     MaterialApp(
       theme: LightTheme.theme,
       themeMode: ThemeMode.light,
-      home: const OutingWaitingScreen(approvedStudentCount: 66),
+      home: const OutingWaitingScreen(approvedStudentCount: 66, hasLateStudents: true,),
     ),
   );
 }
 
 class OutingWaitingScreen extends StatefulWidget {
   final int approvedStudentCount;
+  final bool hasLateStudents;// 여기서 true, false 조절
 
-  const OutingWaitingScreen({super.key, required this.approvedStudentCount});
+  const OutingWaitingScreen({super.key, required this.approvedStudentCount, required this.hasLateStudents});
 
   @override
   State<OutingWaitingScreen> createState() => _OutingWaitingScreenState();
@@ -37,7 +38,6 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    bool hasLateStudents = false; // 여기서 true, false 조절
 
     return BaseScaffold(
       showAppBar: true,
@@ -69,7 +69,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                         .copyWith(color: AppColors.mainText),
                   ),
                   AppGap.v12,
-                  if (hasLateStudents)// true false로 조정
+                  widget.hasLateStudents ?
                     const Row(
                       children: [
                         Expanded(
@@ -96,8 +96,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                           ),
                         ),
                       ],
-                    )
-                  else
+                    ) :
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

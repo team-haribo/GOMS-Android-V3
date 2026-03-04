@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 
@@ -16,7 +17,7 @@ class ReturnSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QrBaseScreen(
-      icon: AppIcons.successCircle(),
+      icon: AppIcons.comeBackSuccessCircle(width: 150, height: 150),
       title: '복귀에 성공했어요!',
       subtitle: '제 때 복귀하셨군요!\n다음 외출제 때 또 만나요!',
       buttonText: '확인',

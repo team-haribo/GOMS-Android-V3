@@ -13,14 +13,14 @@ class AppIcons {
     double? width,
     double? height,
     Color? color,
-  }) => SvgPicture.asset(
-    assetPath,
-    width: width,
-    height: height,
-    colorFilter: color != null
-        ? ColorFilter.mode(color, BlendMode.srcIn)
-        : null,
-  );
+  }) =>
+      SvgPicture.asset(
+        assetPath,
+        width: width,
+        height: height,
+        colorFilter:
+            color != null ? ColorFilter.mode(color, BlendMode.srcIn) : null,
+      );
 
   /// PNG 아이콘 로드 헬퍼
   static Widget _loadPng(
@@ -28,7 +28,8 @@ class AppIcons {
     double? width,
     double? height,
     Color? color,
-  }) => Image.asset(assetPath, width: width, height: height, color: color);
+  }) =>
+      Image.asset(assetPath, width: width, height: height, color: color);
 
   // ==================== PNG Icons ====================
 
@@ -42,16 +43,17 @@ class AppIcons {
       );
 
   /// 복귀 성공 아이콘
-  static Widget comeBackSuccess({
+  static Widget comeBackSuccessCircle({
     double? width,
     double? height,
     Color? color,
-  }) => _loadPng(
-    'assets/icons/come_back_success.png',
-    width: width,
-    height: height,
-    color: color,
-  );
+  }) =>
+      _loadPng(
+        'assets/icons/success_circle.png',
+        width: width,
+        height: height,
+        color: color,
+      );
 
   /// 에러 원형 아이콘
   static Widget errorCircle({double? width, double? height, Color? color}) =>
@@ -63,9 +65,9 @@ class AppIcons {
       );
 
   /// 성공 원형 아이콘
-  static Widget successCircle({double? width, double? height, Color? color}) =>
+  static Widget OutingSuccess({double? width, double? height, Color? color}) =>
       _loadPng(
-        'assets/icons/success_circle.png',
+        'assets/icons/come_back_success.png',
         width: width,
         height: height,
         color: color,
@@ -129,27 +131,27 @@ class AppIcons {
 
   /// 홈 아이콘
   static Widget home({double? width, double? height, Color? color}) => _loadSvg(
-    'assets/icons/home.svg',
-    width: width,
-    height: height,
-    color: color,
-  );
+        'assets/icons/home.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 
   /// 지도 아이콘
   static Widget map({double? width, double? height, Color? color}) => _loadSvg(
-    'assets/icons/map.svg',
-    width: width,
-    height: height,
-    color: color,
-  );
+        'assets/icons/map.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 
   /// 사용자 아이콘
   static Widget user({double? width, double? height, Color? color}) => _loadSvg(
-    'assets/icons/user.svg',
-    width: width,
-    height: height,
-    color: color,
-  );
+        'assets/icons/user.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 
   /// QR 코드 로드 아이콘
   static Widget qrCodeLoad({double? width, double? height, Color? color}) =>
@@ -188,9 +190,34 @@ class AppIcons {
 
   /// 지도 댓글 삭제 아이콘
   static Widget bin({double? width, double? height, Color? color}) => _loadPng(
-    'assets/icons/bin.png',
-    width: width,
-    height: height,
-    color: color,
-  );
+        'assets/icons/bin.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 지각자 없을 때 아이콘
+  static Widget fire({double? width, double? height, Color? color}) => _loadPng(
+        'assets/icons/fire.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 앱바 돌아가기 아이콘
+  static Widget back({double? width, double? height, Color? color}) => _loadPng(
+        'assets/icons/back.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 외출하는 날이 아닐 때 뜨는 커피 아이콘
+  static Widget coffee({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/coffee.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

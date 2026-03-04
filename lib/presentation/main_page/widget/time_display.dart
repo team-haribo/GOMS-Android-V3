@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 
 class TimeDisplay extends StatefulWidget {
-  final TextStyle style;
-  final Color color;
-
-  const TimeDisplay({
-    super.key,
-    required this.style,
-    required this.color,
-  });
+  const TimeDisplay({super.key});
 
   @override
   State<TimeDisplay> createState() => _TimeDisplayState();
@@ -18,7 +13,8 @@ class TimeDisplay extends StatefulWidget {
 
 class _TimeDisplayState extends State<TimeDisplay> {
   late Timer _timer;
-  late String _formattedTime;
+  late String _ampm;
+  late String _time;
 
   @override
   void initState() {
@@ -34,7 +30,9 @@ class _TimeDisplayState extends State<TimeDisplay> {
   }
 
   void _updateTime() {
-    _formattedTime = DateFormat('a hh : mm : ss', 'en_US').format(DateTime.now());
+    final now = DateTime.now();
+    _ampm = DateFormat('a', 'en_US').format(now);
+    _time = DateFormat('h : mm : ss').format(now);
   }
 
   @override
@@ -45,9 +43,21 @@ class _TimeDisplayState extends State<TimeDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      _formattedTime,
-      style: widget.style.copyWith(color: widget.color),
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$_ampm ',
+            style: AppTextStyles.dateTimeAmPm.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+          ),
+          TextSpan(
+            text: _time,
+            style: AppTextStyles.dateTime.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+          ),
+        ],
+      ),
     );
   }
 }

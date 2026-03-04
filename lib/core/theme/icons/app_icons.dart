@@ -49,9 +49,7 @@ class AppIcons {
     Color? color,
   }) =>
       _loadPng(
-
-        'assets/icons/success_circle.png'
-        'assets/icons/come_back_success.png',
+        'assets/icons/comeback_success_circle.png',
         width: width,
         height: height,
         color: color,
@@ -66,10 +64,10 @@ class AppIcons {
         color: color,
       );
 
-  /// 성공 원형 아이콘
+  /// 외출 성공 원형 아이콘
   static Widget outingSuccess({double? width, double? height, Color? color}) =>
       _loadPng(
-        'assets/icons/come_back_success.png',
+        'assets/icons/OutingSuccess.png',
         width: width,
         height: height,
         color: color,
@@ -219,6 +217,9 @@ class AppIcons {
   static Widget coffee({double? width, double? height, Color? color}) =>
       _loadSvg(
         'assets/icons/coffee.svg',
+          width: width,
+          height: height,
+          color: color,);
 
   /// 편집 아이콘
   static Widget edit({double? width, double? height, Color? color}) => _loadSvg(

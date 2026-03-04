@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 

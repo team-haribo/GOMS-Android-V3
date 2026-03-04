@@ -24,7 +24,7 @@ class QRButton extends StatelessWidget {
     this.onPressed,
     this.size,
     this.iconSize,
-    this.floatingActionButton
+    this.floatingActionButton,
   });
 
   @override

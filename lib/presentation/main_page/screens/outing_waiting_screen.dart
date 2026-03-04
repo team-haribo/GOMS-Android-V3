@@ -69,7 +69,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                         .copyWith(color: AppColors.mainText),
                   ),
                   AppGap.v12,
-                  if (hasLateStudents)
+                  if (hasLateStudents)// true false로 조정
                     const Row(
                       children: [
                         Expanded(

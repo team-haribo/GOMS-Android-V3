@@ -38,7 +38,7 @@ class BaseScaffold extends ConsumerWidget {
       appBar: effectiveAppBar,
       body: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s24, vertical: AppSpacing.s52),
+            horizontal: AppSpacing.s24,),
         child: body,
       ),
       bottomNavigationBar: bottomNavigationBar,

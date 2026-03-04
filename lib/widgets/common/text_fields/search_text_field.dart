@@ -82,11 +82,9 @@ class _SearchTextFieldState extends State<SearchTextField> {
       prefixIcon: widget.showLogo
           ? (_showClearButton
               ? IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios,
-                    size: 24,
+                  icon:
+                    AppIcons.back(width: 24, height: 24),
                     color: iconColor,
-                  ),
                   onPressed: widget.onBackPressed,
                 )
               : Padding(

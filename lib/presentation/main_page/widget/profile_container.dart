@@ -37,7 +37,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
       height: 84,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+      color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -67,8 +67,8 @@ class _ProfileContainerState extends State<ProfileContainer> {
                           widget.name,
                           style: AppTextStyles.title3.copyWith(
                             color: isLight
-                                ? AppColors.mainColor
-                                : AppColors.background,
+                                ? AppColors.mainText
+                                : AppColors.mainTextDark,
                           ),
                         ),
                         AppGap.h8,
@@ -76,16 +76,16 @@ class _ProfileContainerState extends State<ProfileContainer> {
                           '${widget.grade}기 | ${widget.major}과',
                           style: AppTextStyles.caption1.copyWith(
                             color:
-                                isLight ? AppColors.button : AppColors.sub2Dark,
+                                isLight ? AppColors.sub2 : AppColors.sub2Dark,
                           ),
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    '지각횟수: ${widget.lateCount}회',
+                    '지각 횟수: ${widget.lateCount}회',
                     style: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub1Dark,
+                      color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
                     ),
                   ),
                 ],
@@ -104,11 +104,9 @@ class _ProfileContainerState extends State<ProfileContainer> {
                     ),
                   ),
                   if (!widget.onTime) ...[
-                    Flexible(
-                      child: TimeDisplay(
-                        style: AppTextStyles.heavy,
-                        color: isLight ? AppColors.button : AppColors.sub2Dark,
-                      ),
+                    AppGap.v2,
+                    const Flexible(
+                      child: TimeDisplay(),
                     ),
                   ],
                 ],

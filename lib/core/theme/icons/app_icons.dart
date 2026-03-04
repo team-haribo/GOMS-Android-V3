@@ -65,7 +65,7 @@ class AppIcons {
       );
 
   /// 성공 원형 아이콘
-  static Widget OutingSuccess({double? width, double? height, Color? color}) =>
+  static Widget outingSuccess({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/come_back_success.png',
         width: width,

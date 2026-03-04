@@ -17,6 +17,13 @@ class LightTheme {
         ),
         scaffoldBackgroundColor: AppColors.background,
 
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          highlightElevation: 0,
+          shape: CircleBorder(),
+        ),
+
         // Cursor / Text Selection
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: CupertinoColors.systemBlue,

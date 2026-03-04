@@ -42,144 +42,135 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 16, bottom: 24),
-                  child: ProfileContainer(
-                    name: '류수연',
-                    grade: 9,
-                    major: 'SW개발',
-                    lateCount: 0,
-                    status: OutingStatus.waiting,
-                    onTime: true,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(top: 16, bottom: 24),
+              child: ProfileContainer(
+                name: '류수연',
+                grade: 9,
+                major: 'SW개발',
+                lateCount: 0,
+                status: OutingStatus.waiting,
+                onTime: true,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                bottom: 24,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '지각자 TOP 3',
+                    style: AppTextStyles.title3
+                        .copyWith(color: AppColors.mainText),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 24,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '지각자 TOP 3',
-                        style: AppTextStyles.title3
-                            .copyWith(color: AppColors.mainText),
-                      ),
-                      AppGap.v12,
-                      if (hasLateStudents)
-                        const Row(
-                          children: [
-                            Expanded(
-                              child: LateProfileContainer(
-                                name: '류수연',
-                                grade: 9,
-                                major: 'SW개발',
-                              ),
-                            ),
-                            AppGap.h12,
-                            Expanded(
-                              child: LateProfileContainer(
-                                name: '류수연',
-                                grade: 9,
-                                major: 'SW개발',
-                              ),
-                            ),
-                            AppGap.h12,
-                            Expanded(
-                              child: LateProfileContainer(
-                                name: '류수연',
-                                grade: 9,
-                                major: 'SW개발',
-                              ),
-                            ),
-                          ],
-                        )
-                      else
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            AppIcons.fire(
-                              width: 24,
-                              height: 24,
-                              color:
-                                  isDark ? AppColors.sub2 : AppColors.sub1Dark,
-                            ),
-                            AppGap.v2,
-                            Text(
-                              '이번주 지각자가 없어요 축하해요!',
-                              style: AppTextStyles.text1.copyWith(
-                                fontSize: 15,
-                                color: isDark
-                                    ? AppColors.sub2
-                                    : AppColors.sub1Dark,
-                              ),
-                            ),
-                          ],
-                        ),
-                      AppGap.v24,
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                  AppGap.v12,
+                  if (hasLateStudents)
+                    const Row(
                       children: [
-                        Text(
-                          '외출 현황',
-                          style: AppTextStyles.title3
-                              .copyWith(color: AppColors.mainText),
+                        Expanded(
+                          child: LateProfileContainer(
+                            name: '류수연',
+                            grade: 9,
+                            major: 'SW개발',
+                          ),
                         ),
-                        AppGap.h8,
-                        Text(
-                          '${widget.approvedStudentCount}',
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.mainColor),
+                        AppGap.h12,
+                        Expanded(
+                          child: LateProfileContainer(
+                            name: '류수연',
+                            grade: 9,
+                            major: 'SW개발',
+                          ),
                         ),
+                        AppGap.h12,
+                        Expanded(
+                          child: LateProfileContainer(
+                            name: '류수연',
+                            grade: 9,
+                            major: 'SW개발',
+                          ),
+                        ),
+                      ],
+                    )
+                  else
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppIcons.fire(
+                          width: 24,
+                          height: 24,
+                          color: isDark ? AppColors.sub2 : AppColors.sub1Dark,
+                        ),
+                        AppGap.v2,
                         Text(
-                          "명이 외출중",
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.sub2),
+                          '이번주 지각자가 없어요 축하해요!',
+                          style: AppTextStyles.text1.copyWith(
+                            fontSize: 15,
+                            color: isDark ? AppColors.sub2 : AppColors.sub1Dark,
+                          ),
                         ),
                       ],
                     ),
-                    const ViewMoreUsers(),
+                  AppGap.v24,
+                ],
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      '외출 현황',
+                      style: AppTextStyles.title3
+                          .copyWith(color: AppColors.mainText),
+                    ),
+                    AppGap.h8,
+                    Text(
+                      '${widget.approvedStudentCount}',
+                      style: AppTextStyles.caption1
+                          .copyWith(color: AppColors.mainColor),
+                    ),
+                    Text(
+                      "명이 외출중",
+                      style: AppTextStyles.caption1
+                          .copyWith(color: AppColors.sub2),
+                    ),
                   ],
                 ),
-                AppGap.v12,
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: widget.approvedStudentCount,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return const Column(
-                      children: [
-                        ProfileListContainer(
-                          name: '류수연',
-                          grade: 9,
-                          major: 'SW개발',
-                        ),
-                        AppGap.v4,
-                      ],
-                    );
-                  },
-                ),
+                const ViewMoreUsers(),
               ],
             ),
-          ),
-          Positioned(
-            left: 297,
-            top: 660,
-            child: QRButton(type: RoleEnum.user,
-            onPressed: () {},),
-          ),
-        ],
+            AppGap.v12,
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: widget.approvedStudentCount,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return const Column(
+                  children: [
+                    ProfileListContainer(
+                      name: '류수연',
+                      grade: 9,
+                      major: 'SW개발',
+                    ),
+                    AppGap.v4,
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: QRButton(
+        type: RoleEnum.user,
+        onPressed: () {},
       ),
       bottomNavigationBar: GomsBottomNavigation(
         currentIndex: 2,

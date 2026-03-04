@@ -17,9 +17,6 @@ class OutingStartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final subtitleColor = isDark ? AppColors.sub1Dark : AppColors.sub2;
-
     return QrBaseScreen(
       icon: AppIcons.comeBackSuccess(),
       title: '외출을 시작해 봐요!',
@@ -37,7 +34,11 @@ class OutingStartScreen extends StatelessWidget {
             ),
             TextSpan(
               text: ' 까지 꼭 복귀해 주세요.',
-              style: AppTextStyles.text2.withColor(subtitleColor),
+              style: AppTextStyles.text2.withColor(
+                Theme.of(context).brightness == Brightness.dark
+                    ? AppColors.sub1Dark
+                    : AppColors.sub2,
+              ),
             ),
           ],
         ),

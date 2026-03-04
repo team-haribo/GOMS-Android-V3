@@ -75,5 +75,11 @@ class DarkTheme {
             disabledBorder: noneBorder,
           );
         })(),
+        dividerTheme: const DividerThemeData(
+          color: Colors.white,
+          thickness: 1,
+          indent: 0,
+          endIndent: 0,
+        ),
       );
 }

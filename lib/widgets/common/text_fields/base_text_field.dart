@@ -67,6 +67,15 @@ class BaseTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasError = errorText != null && errorText!.isNotEmpty;
 
+    final theme = Theme.of(context);
+    final base =
+        const InputDecoration().applyDefaults(theme.inputDecorationTheme);
+
+    InputBorder? errBorder() => OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: AppColors.negative, width: 1),
+        );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -90,37 +99,28 @@ class BaseTextField extends StatelessWidget {
           style: hasError
               ? AppTextStyles.text2.withColor(AppColors.negative)
               : null,
-          decoration: InputDecoration(
+          decoration: base.copyWith(
             hintText: hintText,
             labelText: labelText,
-            errorText: null, // errorText는 별도로 표시
+            errorText: null,
             suffixIcon: suffixIcon,
             prefixIcon: prefixIcon,
-            filled: fillColor != null,
-            fillColor: fillColor,
-            contentPadding: contentPadding,
-            border: border,
-            enabledBorder: hasError
-                ? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: AppColors.negative,
-                      width: 1,
-                    ),
-                  )
-                : enabledBorder,
-            focusedBorder: hasError
-                ? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(
-                      color: AppColors.negative,
-                      width: 1,
-                    ),
-                  )
-                : focusedBorder,
-            errorBorder: errorBorder,
-            focusedErrorBorder: focusedErrorBorder,
-            disabledBorder: disabledBorder,
+
+            // ✅ 테마 filled 유지 + 필요할 때만 override
+            filled: fillColor != null ? true : base.filled,
+            fillColor: fillColor ?? base.fillColor,
+
+            contentPadding: contentPadding ?? base.contentPadding,
+
+            // ✅ 테마 border류 유지 + 필요할 때만 override
+            border: border ?? base.border,
+            enabledBorder:
+                hasError ? errBorder() : (enabledBorder ?? base.enabledBorder),
+            focusedBorder:
+                hasError ? errBorder() : (focusedBorder ?? base.focusedBorder),
+            disabledBorder: disabledBorder ?? base.disabledBorder,
+            errorBorder: errorBorder ?? base.errorBorder,
+            focusedErrorBorder: focusedErrorBorder ?? base.focusedErrorBorder,
           ),
         ),
         if (hasError)

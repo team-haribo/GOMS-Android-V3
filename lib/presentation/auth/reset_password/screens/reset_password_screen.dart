@@ -6,33 +6,47 @@ import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/presentation/auth/auth_base_screen.dart';
-import 'package:project_setting/presentation/auth/signup/models/signup_state.dart';
-import 'package:project_setting/presentation/auth/signup/viewModels/signup_provider.dart';
+import 'package:project_setting/presentation/auth/reset_password/models/reset_password_state.dart';
+import 'package:project_setting/presentation/auth/reset_password/viewModels/reset_password_provider.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
 import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
 
-class PasswordScreen extends ConsumerWidget {
-  const PasswordScreen({super.key});
+class ResetPasswordScreen extends ConsumerStatefulWidget {
+  const ResetPasswordScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final signupState = ref.watch(signupProvider);
-    final notifier = ref.read(signupProvider.notifier);
-    final isLoading = signupState.status == SignupStatus.loading;
+  ConsumerState<ResetPasswordScreen> createState() =>
+      _ResetPasswordScreenState();
+}
 
-    ref.listen(signupProvider, (previous, next) {
-      if (next.status == SignupStatus.success) {
+class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(resetPasswordProvider.notifier).reset();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final resetPasswordState = ref.watch(resetPasswordProvider);
+    final notifier = ref.read(resetPasswordProvider.notifier);
+    final isLoading = resetPasswordState.status == ResetPasswordStatus.loading;
+
+    ref.listen(resetPasswordProvider, (previous, next) async {
+      if (next.status == ResetPasswordStatus.success) {
         notifier.clearError();
-        GomsDialog.show(
+        await GomsDialog.show(
           context: context,
-          title: '회원가입 완료',
-          content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
+          title: '재설정 완료',
+          content: '비밀번호가 성공적으로 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
           onConfirm: () {
             context.go(RoutePath.login);
           },
         );
-      } else if (next.status == SignupStatus.failure &&
+      } else if (next.status == ResetPasswordStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -45,12 +59,11 @@ class PasswordScreen extends ConsumerWidget {
     });
 
     return AuthBaseScreen(
-      title: '비밀번호 설정',
+      title: '비밀번호 재설정',
       confirmText: '로그인',
-      isConfirmEnabled: notifier.isPasswordFormValid,
-      onConfirm: notifier.isPasswordFormValid && !isLoading
-          ? notifier.submitSignup
-          : null,
+      isConfirmEnabled: notifier.isFormValid,
+      onConfirm:
+          notifier.isFormValid && !isLoading ? notifier.resetPassword : null,
       showAppBar: true,
       showAppBarLogo: false,
       isLoading: isLoading,
@@ -58,15 +71,15 @@ class PasswordScreen extends ConsumerWidget {
         PasswordTextField(
           controller: notifier.passwordController,
           hintText: '비밀번호를 입력해주세요',
-          errorText: signupState.passwordError,
+          errorText: resetPasswordState.passwordError,
           enabled: !isLoading,
           onChanged: notifier.validatePassword,
         ),
-        AppGap.h16,
+        AppGap.v16,
         PasswordTextField(
           controller: notifier.passwordConfirmController,
           hintText: '비밀번호를 다시 입력해주세요',
-          errorText: signupState.passwordConfirmError,
+          errorText: resetPasswordState.passwordConfirmError,
           enabled: !isLoading,
           onChanged: notifier.validatePasswordConfirm,
         ),

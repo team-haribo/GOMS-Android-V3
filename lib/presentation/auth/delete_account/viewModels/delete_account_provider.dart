@@ -41,9 +41,7 @@ class DeleteAccountNotifier extends Notifier<DeleteAccountState> {
 
   /// 폼 유효성 여부
   bool get isFormValid =>
-      state.password.isNotEmpty &&
-      state.passwordError == null &&
-      _passwordRegex.hasMatch(state.password);
+      state.password.isNotEmpty && state.passwordError == null;
 
   // ==================== Actions ====================
 

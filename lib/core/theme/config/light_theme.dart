@@ -26,6 +26,7 @@ class LightTheme {
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.background,
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: false,
           iconTheme: const IconThemeData(color: AppColors.mainColor),
           titleTextStyle: AppTextStyles.title2.withColor(AppColors.mainColor),

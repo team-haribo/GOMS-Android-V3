@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 
 /// 외출에 실패했어요.. 화면
 /// 예기치 못한 오류 발생 시 표시되는 화면
-class OutingFailedScreen extends ConsumerWidget {
+class OutingFailedScreen extends StatelessWidget {
   /// 카메라로 돌아가기 버튼 콜백
   final VoidCallback? onRetryWithCamera;
 
@@ -15,7 +14,7 @@ class OutingFailedScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return QrBaseScreen(
       icon: AppIcons.errorCircle(),
       title: '외출에 실패했어요..',

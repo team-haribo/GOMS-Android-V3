@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
@@ -10,7 +9,7 @@ import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 ///
 /// 아이콘 / 제목 / 부제목 / 버튼 구조가 동일한 5개 화면에서 공유한다.
 /// [extraContent]를 통해 부제목 아래에 추가 위젯(예: 복귀 시간 RichText)을 삽입할 수 있다.
-class QrBaseScreen extends ConsumerWidget {
+class QrBaseScreen extends StatelessWidget {
   /// 상단 아이콘 위젯
   final Widget icon;
 
@@ -40,7 +39,7 @@ class QrBaseScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final titleColor = isDark ? AppColors.mainTextDark : AppColors.mainText;
     final subtitleColor = isDark ? AppColors.sub1Dark : AppColors.sub2;

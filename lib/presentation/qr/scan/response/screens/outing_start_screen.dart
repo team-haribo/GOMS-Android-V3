@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
@@ -7,7 +6,7 @@ import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_sc
 
 /// 외출을 시작해 봐요! 화면
 /// QR 스캔 후 외출 성공 시 표시되는 화면
-class OutingStartScreen extends ConsumerWidget {
+class OutingStartScreen extends StatelessWidget {
   /// 확인 버튼 콜백
   final VoidCallback? onConfirm;
 
@@ -17,7 +16,7 @@ class OutingStartScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final subtitleColor = isDark ? AppColors.sub1Dark : AppColors.sub2;
 

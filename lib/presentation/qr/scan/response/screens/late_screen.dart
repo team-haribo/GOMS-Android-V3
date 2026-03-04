@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 
 /// 지각하셨네요.. 화면
 /// 복귀 시간을 초과했을 때 표시되는 화면 (1주간 외출 금지)
-class LateScreen extends ConsumerWidget {
+class LateScreen extends StatelessWidget {
   /// 확인 버튼 콜백
   final VoidCallback? onConfirm;
 
@@ -15,7 +14,7 @@ class LateScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return QrBaseScreen(
       icon: AppIcons.bannedCircle(),
       title: '지각하셨네요..',

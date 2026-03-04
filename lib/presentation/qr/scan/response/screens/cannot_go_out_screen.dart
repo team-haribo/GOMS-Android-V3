@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 
 /// 외출하실 수 없어요 화면
 /// 외출 금지 상태일 때 표시되는 화면
-class CannotGoOutScreen extends ConsumerWidget {
+class CannotGoOutScreen extends StatelessWidget {
   /// 홈으로 돌아가기 버튼 콜백
   final VoidCallback? onGoHome;
 
@@ -15,7 +14,7 @@ class CannotGoOutScreen extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return QrBaseScreen(
       icon: AppIcons.bannedCircle(),
       title: '외출하실 수 없어요',

@@ -201,16 +201,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               title: '회원탈퇴',
               textColor: AppColors.negative,
               chevronColor: textColor,
-              onTap: () => GomsDialog.showConfirm(
-                context: context,
-                title: '회원 탈퇴',
-                content: '정말로 회원을 탈퇴하시겠습니까?',
-                confirmText: '탈퇴 하기',
-                isDestructive: true,
-                onConfirm: () {
-                  //TODO: 회원탈퇴 페이지 구현
-                },
-              ),
+              onTap: () => context.push(RoutePath.deleteAccount),
             ),
           ],
         ),

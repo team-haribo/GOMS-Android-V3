@@ -23,7 +23,7 @@ enum OutingStatus {
   Color get statusColor {
     switch (this) {
       case OutingStatus.waiting:
-        return AppColors.sub2;
+        return AppColors.sub1;
       case OutingStatus.approved:
         return AppColors.mainColor;
       case OutingStatus.rejected:

@@ -42,7 +42,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('${widget.name}',
+                  Text(widget.name,
                       style: AppTextStyles.text1.copyWith(
                           color:
                               isLight ? AppColors.sub1 : AppColors.sub1Dark,),),

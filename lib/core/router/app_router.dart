@@ -8,6 +8,7 @@ import 'package:project_setting/presentation/auth/signup/screens/password_screen
 import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
 import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
+import 'package:project_setting/presentation/qr/qr_preview_screen.dart';
 import 'package:project_setting/presentation/splash/onboarding_screen.dart';
 import 'package:project_setting/presentation/splash/splash_screen.dart';
 import 'route_path.dart';
@@ -63,7 +64,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.qr,
       name: 'qr',
-      builder: (context, state) => const Placeholder(),
+      builder: (context, state) => const QrPreviewScreen(),
     ),
     // ==================== 바텀 네비게이션 쉘 ====================
     StatefulShellRoute.indexedStack(

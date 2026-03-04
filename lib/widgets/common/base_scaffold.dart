@@ -36,10 +36,19 @@ class BaseScaffold extends ConsumerWidget {
 
     return Scaffold(
       appBar: effectiveAppBar,
+
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: AppSpacing.s24,),
         child: body,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.s24,
+            vertical: AppSpacing.s24,
+          ),
+          child: body,
+        ),
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,

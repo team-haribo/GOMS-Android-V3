@@ -68,5 +68,12 @@ class LightTheme {
             disabledBorder: noneBorder,
           );
         })(),
+
+        dividerTheme: const DividerThemeData(
+          color: AppColors.button,
+          thickness: 1,
+          indent: 0,
+          endIndent: 0,
+        ),
       );
 }

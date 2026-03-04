@@ -49,7 +49,9 @@ class AppIcons {
     Color? color,
   }) =>
       _loadPng(
-        'assets/icons/success_circle.png',
+
+        'assets/icons/success_circle.png'
+        'assets/icons/come_back_success.png',
         width: width,
         height: height,
         color: color,
@@ -196,6 +198,7 @@ class AppIcons {
         color: color,
       );
 
+
   /// 지각자 없을 때 아이콘
   static Widget fire({double? width, double? height, Color? color}) => _loadPng(
         'assets/icons/fire.png',
@@ -216,6 +219,11 @@ class AppIcons {
   static Widget coffee({double? width, double? height, Color? color}) =>
       _loadSvg(
         'assets/icons/coffee.svg',
+
+  /// 편집 아이콘
+  static Widget edit({double? width, double? height, Color? color}) => _loadSvg(
+        'assets/icons/edit_icon.svg',
+
         width: width,
         height: height,
         color: color,

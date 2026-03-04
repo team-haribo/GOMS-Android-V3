@@ -145,19 +145,16 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(
-            DeleteAccountStatus status,
-            String password,
-            String? passwordError,
-            String? errorMessage)?
+    TResult Function(DeleteAccountStatus status, String password,
+            String? passwordError, String? errorMessage)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _DeleteAccountState() when $default != null:
-        return $default(
-            _that.status, _that.password, _that.passwordError, _that.errorMessage);
+        return $default(_that.status, _that.password, _that.passwordError,
+            _that.errorMessage);
       case _:
         return orElse();
     }
@@ -165,18 +162,15 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(
-            DeleteAccountStatus status,
-            String password,
-            String? passwordError,
-            String? errorMessage)
+    TResult Function(DeleteAccountStatus status, String password,
+            String? passwordError, String? errorMessage)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DeleteAccountState():
-        return $default(
-            _that.status, _that.password, _that.passwordError, _that.errorMessage);
+        return $default(_that.status, _that.password, _that.passwordError,
+            _that.errorMessage);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -184,18 +178,15 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(
-            DeleteAccountStatus status,
-            String password,
-            String? passwordError,
-            String? errorMessage)?
+    TResult? Function(DeleteAccountStatus status, String password,
+            String? passwordError, String? errorMessage)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _DeleteAccountState() when $default != null:
-        return $default(
-            _that.status, _that.password, _that.passwordError, _that.errorMessage);
+        return $default(_that.status, _that.password, _that.passwordError,
+            _that.errorMessage);
       case _:
         return null;
     }

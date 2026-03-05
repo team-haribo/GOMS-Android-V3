@@ -105,29 +105,32 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                 ),
                               ],
                             )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                AppIcons.fire(
-                                  width: 24,
-                                  height: 24,
-                                  color: isDark
-                                      ? AppColors.sub2
-                                      : AppColors.sub1Dark,
-                                ),
-                                AppGap.v2,
-                                Text(
-                                  '이번주 지각자가 없어요 축하해요!',
-                                  style: AppTextStyles.text1.copyWith(
-                                    fontSize: 15,
+                          : Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  AppIcons.fire(
+                                    width: 24,
+                                    height: 24,
                                     color: isDark
                                         ? AppColors.sub2
                                         : AppColors.sub1Dark,
                                   ),
-                                ),
-                              ],
-                            ),
-                      AppGap.v24,
+                                  AppGap.v2,
+                                  Text(
+                                    '이번주 지각자가 없어요 축하해요!',
+                                    style: AppTextStyles.text1.copyWith(
+                                      fontSize: 15,
+                                      color: isDark
+                                          ? AppColors.sub2
+                                          : AppColors.sub1Dark,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ),
+                      AppGap.v12,
                     ],
                   ),
                 ),

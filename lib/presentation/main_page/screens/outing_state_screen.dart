@@ -15,7 +15,6 @@ import 'package:project_setting/presentation/main_page/widget/search_profile_con
 
 final searchTextProvider = StateProvider<String>((ref) => '');
 
-
 void main() async {
   runApp(
     MaterialApp(
@@ -34,7 +33,7 @@ class OutingStateScreen extends ConsumerStatefulWidget {
 }
 
 class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
-  bool isOutingDay = true;
+  bool isOutingDay = false;
   String searchText = "";
 
   List<SearchProfileContainerModel> outingMembers = [
@@ -60,13 +59,13 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
       showAppBar: true,
       body: Column(
         children: [
-          AppGap.v24,
           Align(
             alignment: Alignment.topLeft,
             child: Text(
               '외출 현황',
               style: AppTextStyles.title1.copyWith(
-                  color: isLight ? AppColors.mainText : AppColors.mainTextDark,),
+                color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+              ),
             ),
           ),
           AppGap.v24,
@@ -86,19 +85,20 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             ),
           ),
           if (!isOutingDay)
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                children: [
-                  AppGap.v190,
-                  AppIcons.coffee(),
-                  AppGap.v8,
-                  Text(
-                    '오늘은 외출하는 날이 아니에요!',
-                    style: AppTextStyles.title1
-                        .copyWith(fontSize: 14, color: AppColors.sub2),
+            Expanded(
+              child: Center(
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AppIcons.coffee(),
+                      AppGap.v8,
+                      Text(
+                        '오늘은 외출하는 날이 아니에요!',
+                        style: AppTextStyles.title1
+                            .copyWith(fontSize: 14, color: AppColors.sub2),
+                      ),
+                    ],
                   ),
-                ],
               ),
             )
           else ...[
@@ -109,9 +109,9 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 child: Text(
                   '검색결과',
                   style: AppTextStyles.title3.copyWith(
-                      color: isLight
-                          ? AppColors.mainText
-                          : AppColors.mainTextDark,),
+                    color:
+                        isLight ? AppColors.mainText : AppColors.mainTextDark,
+                  ),
                 ),
               ),
             ),
@@ -137,8 +137,12 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           ],
         ],
       ),
-      floatingActionButton: QRButton(type: RoleEnum.user, onPressed: () {},),
-
+      floatingActionButton: QRButton(
+        type: RoleEnum.user,
+        onPressed: () {
+          //TODO: QR 스크린으로 이동 로직 추가
+        },
+      ),
     );
   }
 }

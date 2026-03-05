@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
@@ -11,6 +13,9 @@ import 'package:project_setting/widgets/common/buttons/qr_button.dart';
 import 'package:project_setting/widgets/common/text_fields/search_student.dart';
 import 'package:project_setting/presentation/main_page/widget/search_profile_container_model.dart';
 
+final searchTextProvider = StateProvider<String>((ref) => '');
+
+
 void main() async {
   runApp(
     MaterialApp(
@@ -21,25 +26,24 @@ void main() async {
   );
 }
 
-class OutingStateScreen extends StatefulWidget {
+class OutingStateScreen extends ConsumerStatefulWidget {
   const OutingStateScreen({super.key});
 
   @override
-  State<OutingStateScreen> createState() => _OutingStateScreenState();
+  ConsumerState<OutingStateScreen> createState() => _OutingStateScreenState();
 }
 
-class _OutingStateScreenState extends State<OutingStateScreen> {
+class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   bool isOutingDay = true;
-
   String searchText = "";
 
   List<SearchProfileContainerModel> outingMembers = [
-    SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
-    SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
-    SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
-    SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
-    SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
-    SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
+    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
+    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
+    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
+    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
+    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
+    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
   ];
 
   @override
@@ -76,9 +80,7 @@ class _OutingStateScreenState extends State<OutingStateScreen> {
               ),
               child: SearchStudentField(
                 onChanged: (value) {
-                  setState(() {
-                    searchText = value;
-                  });
+                  ref.read(searchTextProvider.notifier).state = value;
                 },
               ),
             ),

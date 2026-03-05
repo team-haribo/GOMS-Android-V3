@@ -14,16 +14,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      # Flutter 세팅 (버전 고정 권장)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.38.0
+          cache: true
+          cache-key: flutter-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          pub-cache-key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
 
       - name: Flutter version check
         run: flutter --version
 
-      # GitHub Secrets로 .env 파일 생성
       - name: Create .env file
         run: |
           echo "GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}" >> .env
@@ -35,22 +36,15 @@ jobs:
           echo "FIREBASE_IOS_APP_ID=${{ secrets.FIREBASE_IOS_APP_ID }}" >> .env
           echo "FIREBASE_IOS_BUNDLE_ID=${{ secrets.FIREBASE_IOS_BUNDLE_ID }}" >> .env
 
-      # 의존성 설치 (upgrade 제거)
       - name: Install dependencies
-        run: |
-          flutter clean
-          flutter pub get
+        run: flutter pub get
 
-      # 정적 분석 (실패하면 CI 실패)
       - name: Analyze project source
         run: flutter analyze --no-fatal-infos
 
-      # 테스트 실행 (실패해도 넘어감)
-      - name: Run tests (allow fail)
+      - name: Run tests
         run: flutter test
-        continue-on-error: true
 
-      # main 브랜치 push일 때만 빌드
       - name: Build Android APK
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: flutter build apk --release

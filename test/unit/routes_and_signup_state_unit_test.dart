@@ -4,45 +4,29 @@ import 'package:project_setting/presentation/auth/signup/models/signup_state.dar
 
 void main() {
   group('RoutePath', () {
-    test('all route constants start with slash', () {
-      const routes = [
-        RoutePath.splash,
-        RoutePath.onboarding,
-        RoutePath.login,
-        RoutePath.signUp,
-        RoutePath.password,
-        RoutePath.verify,
-        RoutePath.findPassword,
-        RoutePath.resetPassword,
-        RoutePath.qr,
-        RoutePath.deleteAccount,
-        RoutePath.map,
-        RoutePath.home,
-        RoutePath.myPage,
-      ];
+    const routes = [
+      RoutePath.splash,
+      RoutePath.onboarding,
+      RoutePath.login,
+      RoutePath.signUp,
+      RoutePath.password,
+      RoutePath.verify,
+      RoutePath.findPassword,
+      RoutePath.resetPassword,
+      RoutePath.qr,
+      RoutePath.deleteAccount,
+      RoutePath.map,
+      RoutePath.home,
+      RoutePath.myPage,
+    ];
 
+    test('all route constants start with slash', () {
       for (final route in routes) {
         expect(route.startsWith('/'), isTrue, reason: 'route: $route');
       }
     });
 
     test('route constants are unique', () {
-      const routes = [
-        RoutePath.splash,
-        RoutePath.onboarding,
-        RoutePath.login,
-        RoutePath.signUp,
-        RoutePath.password,
-        RoutePath.verify,
-        RoutePath.findPassword,
-        RoutePath.resetPassword,
-        RoutePath.qr,
-        RoutePath.deleteAccount,
-        RoutePath.map,
-        RoutePath.home,
-        RoutePath.myPage,
-      ];
-
       expect(routes.toSet().length, routes.length);
     });
   });

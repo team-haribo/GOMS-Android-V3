@@ -6,15 +6,23 @@ import 'package:project_setting/widgets/common/text_fields/email_text_field.dart
 import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
 
 void main() {
+  const emailFieldKey = Key('email_field');
+  const passwordFieldKey = Key('password_field');
+
   testWidgets('auth widgets work together in a single form', (
     WidgetTester tester,
   ) async {
-    await tester.pumpWidget(const _AuthFormHarness());
+    await tester.pumpWidget(
+      const _AuthFormHarness(
+        emailFieldKey: emailFieldKey,
+        passwordFieldKey: passwordFieldKey,
+      ),
+    );
 
     expect(find.text('@gsm.hs.kr'), findsOneWidget);
 
-    await tester.enterText(find.byType(TextFormField).at(0), 'student');
-    await tester.enterText(find.byType(TextFormField).at(1), 'secret123');
+    await tester.enterText(find.byKey(emailFieldKey), 'student');
+    await tester.enterText(find.byKey(passwordFieldKey), 'secret123');
 
     expect(find.byIcon(Icons.visibility_off), findsOneWidget);
     await tester.tap(find.byIcon(Icons.visibility_off));
@@ -33,7 +41,13 @@ void main() {
 }
 
 class _AuthFormHarness extends StatefulWidget {
-  const _AuthFormHarness();
+  const _AuthFormHarness({
+    required this.emailFieldKey,
+    required this.passwordFieldKey,
+  });
+
+  final Key emailFieldKey;
+  final Key passwordFieldKey;
 
   @override
   State<_AuthFormHarness> createState() => _AuthFormHarnessState();
@@ -50,9 +64,9 @@ class _AuthFormHarnessState extends State<_AuthFormHarness> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              const EmailTextField(),
+              EmailTextField(key: widget.emailFieldKey),
               const SizedBox(height: 16),
-              const PasswordTextField(),
+              PasswordTextField(key: widget.passwordFieldKey),
               const SizedBox(height: 16),
               ToggleButton(
                 type: RoleEnum.user,

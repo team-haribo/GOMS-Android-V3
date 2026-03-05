@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
+
+
+void main() async {
+  runApp(
+    MaterialApp(
+      home: const OutingStartScreen(),
+      themeMode: ThemeMode.dark,
+      theme: DarkTheme.theme,
+    ),
+  );
+}
 
 /// 외출을 시작해 봐요! 화면
 /// QR 스캔 후 외출 성공 시 표시되는 화면
@@ -18,7 +30,7 @@ class OutingStartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QrBaseScreen(
-      icon: AppIcons.comeBackSuccess(),
+      icon: AppIcons.outingSuccess(width: 150, height: 150,),
       title: '외출을 시작해 봐요!',
       subtitle: '지금부터 외출하실 수 있어요.',
       buttonText: '확인',

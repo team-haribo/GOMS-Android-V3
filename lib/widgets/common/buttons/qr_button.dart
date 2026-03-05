@@ -16,12 +16,15 @@ class QRButton extends StatelessWidget {
   /// 아이콘 크기 (기본값: 36)
   final double? iconSize;
 
+  final Widget? floatingActionButton;
+
   const QRButton({
     super.key,
     required this.type,
     this.onPressed,
     this.size,
     this.iconSize,
+    this.floatingActionButton,
   });
 
   @override

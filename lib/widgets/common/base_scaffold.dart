@@ -10,7 +10,7 @@ class BaseScaffold extends ConsumerWidget {
   final VoidCallback? onBackPressed;
   final List<Widget>? appBarActions;
   final Widget? bottomNavigationBar;
-  final FloatingActionButton? floatingActionButton;
+  final Widget? floatingActionButton;
 
   const BaseScaffold({
     super.key,
@@ -47,6 +47,8 @@ class BaseScaffold extends ConsumerWidget {
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+
     );
   }
 }

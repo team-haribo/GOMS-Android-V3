@@ -10,11 +10,18 @@ class AppTextStyles {
 
   // ==================== Title Styles ====================
   /// profile container dateTime 폰트
-  static const TextStyle heavy = TextStyle(
+  static const TextStyle dateTimeAmPm = TextStyle(
+    fontFamily: defaultFontFamily,
+    fontSize: 18,
+    fontWeight: FontWeight.w900,
+  );
+
+  static const TextStyle dateTime = TextStyle(
     fontFamily: defaultFontFamily,
     fontSize: 24,
     fontWeight: FontWeight.w900,
   );
+
   /// Title-1 (Bold, 24px)
   static const TextStyle title1 = TextStyle(
     fontFamily: defaultFontFamily,

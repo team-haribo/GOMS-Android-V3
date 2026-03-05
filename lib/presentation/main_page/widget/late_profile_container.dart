@@ -20,7 +20,7 @@ class LateProfileContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      height: 133,
+      height: 140,
       width: 101,
       decoration: BoxDecoration(
         color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,

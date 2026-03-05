@@ -83,8 +83,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
           ? (_showClearButton
               ? IconButton(
                   icon:
-                    AppIcons.back(width: 24, height: 24),
-                    color: iconColor,
+                    AppIcons.back(width: 24, height: 24, color: iconColor),
                   onPressed: widget.onBackPressed,
                 )
               : Padding(

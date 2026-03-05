@@ -14,7 +14,7 @@ class ViewMoreUsers extends StatelessWidget {
       child: ElevatedButton(
         onPressed: () {},
         style: ElevatedButton.styleFrom(
-          backgroundColor: isLight ? AppColors.bgSurface : AppColors.bgSurface,
+          backgroundColor: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),

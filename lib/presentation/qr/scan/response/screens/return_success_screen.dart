@@ -16,7 +16,7 @@ class ReturnSuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QrBaseScreen(
-      icon: AppIcons.successCircle(),
+      icon: AppIcons.comeBackSuccessCircle(width: 150, height: 150),
       title: '복귀에 성공했어요!',
       subtitle: '제 때 복귀하셨군요!\n다음 외출제 때 또 만나요!',
       buttonText: '확인',

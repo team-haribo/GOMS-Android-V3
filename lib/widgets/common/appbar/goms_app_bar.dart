@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const GomsAppBar({
@@ -38,7 +39,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: AppIcons.back(width: 24, height: 24),
                 onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
@@ -65,7 +66,10 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ],
             )
-          : const Text('돌아가기'),
+          : Text(
+              '돌아가기',
+              style: AppTextStyles.text2.copyWith(color: AppColors.mainColor),
+            ),
       actions: actions,
     );
   }

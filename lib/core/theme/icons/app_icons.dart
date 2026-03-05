@@ -43,13 +43,13 @@ class AppIcons {
       );
 
   /// 복귀 성공 아이콘
-  static Widget comeBackSuccess({
+  static Widget comeBackSuccessCircle({
     double? width,
     double? height,
     Color? color,
   }) =>
       _loadPng(
-        'assets/icons/come_back_success.png',
+        'assets/icons/comeback_success_circle.png',
         width: width,
         height: height,
         color: color,
@@ -64,10 +64,10 @@ class AppIcons {
         color: color,
       );
 
-  /// 성공 원형 아이콘
-  static Widget successCircle({double? width, double? height, Color? color}) =>
+  /// 외출 성공 원형 아이콘
+  static Widget outingSuccess({double? width, double? height, Color? color}) =>
       _loadPng(
-        'assets/icons/success_circle.png',
+        'assets/icons/OutingSuccess.png',
         width: width,
         height: height,
         color: color,
@@ -196,9 +196,35 @@ class AppIcons {
         color: color,
       );
 
+
+  /// 지각자 없을 때 아이콘
+  static Widget fire({double? width, double? height, Color? color}) => _loadPng(
+        'assets/icons/fire.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 앱바 돌아가기 아이콘
+  static Widget back({double? width, double? height, Color? color}) => _loadPng(
+        'assets/icons/back.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 외출하는 날이 아닐 때 뜨는 커피 아이콘
+  static Widget coffee({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/coffee.svg',
+          width: width,
+          height: height,
+          color: color,);
+
   /// 편집 아이콘
   static Widget edit({double? width, double? height, Color? color}) => _loadSvg(
         'assets/icons/edit_icon.svg',
+
         width: width,
         height: height,
         color: color,

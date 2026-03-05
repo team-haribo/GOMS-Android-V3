@@ -17,6 +17,13 @@ class LightTheme {
         ),
         scaffoldBackgroundColor: AppColors.background,
 
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          highlightElevation: 0,
+          shape: CircleBorder(),
+        ),
+
         // Cursor / Text Selection
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: CupertinoColors.systemBlue,
@@ -26,6 +33,7 @@ class LightTheme {
         appBarTheme: AppBarTheme(
           backgroundColor: AppColors.background,
           elevation: 0,
+          scrolledUnderElevation: 0,
           centerTitle: false,
           iconTheme: const IconThemeData(color: AppColors.mainColor),
           titleTextStyle: AppTextStyles.title2.withColor(AppColors.mainColor),

@@ -24,18 +24,20 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     // 스플래시 화면 최소 표시 시간
     await Future.delayed(const Duration(seconds: 2));
 
-    if (!mounted) return;
-
     // 토큰 확인
     final hasToken = await ref.read(authProvider.notifier).checkToken();
 
-    if (hasToken) {
-      // 토큰이 있으면 홈으로 이동
-      context.go(RoutePath.home);
-    } else {
-      // 토큰이 없으면 온보딩으로 이동
-      context.go(RoutePath.onboarding);
-    }
+    if (!mounted) return;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (hasToken) {
+        // 토큰이 있으면 홈으로 이동
+        context.go(RoutePath.home);
+      } else {
+        // 토큰이 없으면 온보딩으로 이동
+        context.go(RoutePath.onboarding);
+      }
+    });
   }
 
   @override

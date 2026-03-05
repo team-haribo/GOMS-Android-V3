@@ -3,7 +3,7 @@ class SearchProfileContainerModel {
   final int grade;
   final String major;
 
-  SearchProfileContainerModel({
+  const SearchProfileContainerModel({
     required this.name,
     required this.grade,
     required this.major,

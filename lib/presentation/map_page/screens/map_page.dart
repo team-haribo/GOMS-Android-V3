@@ -36,17 +36,43 @@ class MapPage extends StatefulWidget {
     this.placeReviewCount = 0,
   });
 
+
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
   final DraggableScrollableController sheetController =
-      DraggableScrollableController();
+  DraggableScrollableController();
+
+  final List<PopularPlace> popularPlaces = [
+    PopularPlace(
+      name: '메가MGC커피 광주송정시장점',
+      category: '카페',
+      address: '광주 광산구 내상로 23 가동 1층',
+      review: 10,
+      recommended: 20,
+    ),
+  ];
+
+
+
+  final List<MapPageReviewModels> reviewModels = [
+    MapPageReviewModels(
+      placeName: '봉명동 커피',
+      category: '카페',
+      address: '광주소프트웨어마이스터고',
+      reviewDetailContent: '굳굳굳굳',
+      createdAt: DateTime.now(),
+    ),
+  ];
+
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = Theme
+        .of(context)
+        .brightness == Brightness.light;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
@@ -103,14 +129,14 @@ class _MapPageState extends State<MapPage> {
                                   child: SizedBox(
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Text(
                                               '최근 인기 장소',
                                               style:
-                                                  AppTextStyles.title3.copyWith(
+                                              AppTextStyles.title3.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -127,12 +153,11 @@ class _MapPageState extends State<MapPage> {
                                           return Column(
                                             children: [
                                               PlaceContainer(
-                                                placeName: place['placeName'],
-                                                category: place['category'],
-                                                address: place['address'],
-                                                review: place['review'],
-                                                recommended:
-                                                    place['recommended'],
+                                                placeName: place.name,
+                                                category: place.category,
+                                                address: place.address,
+                                                review: place.review,
+                                                recommended: place.recommended,
                                               ),
                                               AppGap.v12,
                                             ],
@@ -153,7 +178,7 @@ class _MapPageState extends State<MapPage> {
                                             Text(
                                               '추천한 가게',
                                               style:
-                                                  AppTextStyles.text1.copyWith(
+                                              AppTextStyles.text1.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -165,7 +190,8 @@ class _MapPageState extends State<MapPage> {
                                                 children: [
                                                   TextSpan(
                                                     text:
-                                                        '${widget.placeRecommendCount}',
+                                                    '${widget
+                                                        .placeRecommendCount}',
                                                     style: AppTextStyles.text3
                                                         .copyWith(
                                                       color: isLight
@@ -192,12 +218,11 @@ class _MapPageState extends State<MapPage> {
                                             children: [
                                               AppGap.v12,
                                               PlaceContainer(
-                                                placeName: place['placeName'],
-                                                category: place['category'],
-                                                address: place['address'],
-                                                review: place['review'],
-                                                recommended:
-                                                    place['recommended'],
+                                                placeName: place.name,
+                                                category: place.category,
+                                                address: place.address,
+                                                review: place.review,
+                                                recommended: place.recommended,
                                               ),
                                             ],
                                           );
@@ -208,7 +233,7 @@ class _MapPageState extends State<MapPage> {
                                             Text(
                                               '작성한 후기',
                                               style:
-                                                  AppTextStyles.text3.copyWith(
+                                              AppTextStyles.text3.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -220,11 +245,12 @@ class _MapPageState extends State<MapPage> {
                                                 children: [
                                                   TextSpan(
                                                     text:
-                                                        '${widget.placeReviewCount}',
+                                                    '${widget
+                                                        .placeReviewCount}',
                                                     style: AppTextStyles.text1
                                                         .copyWith(
                                                       color:
-                                                          AppColors.mainColor,
+                                                      AppColors.mainColor,
                                                     ),
                                                   ),
                                                   TextSpan(
@@ -246,11 +272,12 @@ class _MapPageState extends State<MapPage> {
                                             children: [
                                               AppGap.v12,
                                               PlaceReviewContainer(
-                                                  placeName: place['placeName'],
-                                                  category: place['category'],
-                                                  address: place['address'],
-                                                  reviewDetailContent: place['reviewDetailContent'],
-                                                  createdAt: place['createdAt'],),
+                                                placeName: place.placeName,
+                                                category: place.category,
+                                                address: place.address,
+                                                reviewDetailContent: place
+                                                    .reviewDetailContent,
+                                                createdAt: place.createdAt,),
                                             ],
                                           );
                                         }),
@@ -294,7 +321,7 @@ class _MapPageState extends State<MapPage> {
         ],
       ),
       bottomNavigationBar:
-          GomsBottomNavigation(currentIndex: 2, onTap: (index) {}),
+      GomsBottomNavigation(currentIndex: 2, onTap: (index) {}),
     );
   }
 }

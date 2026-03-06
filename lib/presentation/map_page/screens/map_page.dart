@@ -1,30 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/map_page/widget/map_page_review_models.dart';
+import 'package:project_setting/presentation/map_page/widget/map_page_data.dart';
 import 'package:project_setting/presentation/map_page/widget/drag_handle_header.dart';
-import 'package:project_setting/presentation/map_page/widget/map_page_models.dart';
 import 'package:project_setting/presentation/map_page/widget/place_container.dart';
 import 'package:project_setting/presentation/map_page/widget/place_review_container.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/text_fields/search_text_field.dart';
 import 'package:project_setting/widgets/goms_bottom_navigation.dart';
-
-void main() async {
-  runApp(
-    MaterialApp(
-      home: const MapPage(
-        placeRecommendCount: 1,
-        placeReviewCount: 2,
-      ),
-      themeMode: ThemeMode.dark,
-      theme: DarkTheme.theme,
-    ),
-  );
-}
 
 class MapPage extends StatefulWidget {
   final int placeRecommendCount;
@@ -45,27 +30,6 @@ class _MapPageState extends State<MapPage> {
   final DraggableScrollableController sheetController =
   DraggableScrollableController();
 
-  final List<PopularPlace> popularPlaces = [
-    PopularPlace(
-      name: '메가MGC커피 광주송정시장점',
-      category: '카페',
-      address: '광주 광산구 내상로 23 가동 1층',
-      review: 10,
-      recommended: 20,
-    ),
-  ];
-
-
-
-  final List<MapPageReviewModels> reviewModels = [
-    MapPageReviewModels(
-      placeName: '봉명동 커피',
-      category: '카페',
-      address: '광주소프트웨어마이스터고',
-      reviewDetailContent: '굳굳굳굳',
-      createdAt: DateTime.now(),
-    ),
-  ];
 
 
   @override

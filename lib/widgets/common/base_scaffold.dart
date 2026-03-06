@@ -22,7 +22,7 @@ class BaseScaffold extends ConsumerWidget {
     this.appBarActions,
     this.bottomNavigationBar,
     this.floatingActionButton,
-    this.contentPadding
+    this.contentPadding,
   });
 
   @override

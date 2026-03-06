@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/config/light_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
@@ -13,18 +12,6 @@ import 'package:project_setting/presentation/main_page/widget/view_more_users.da
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/qr_button.dart';
 
-void main() async {
-  runApp(
-    MaterialApp(
-      theme: LightTheme.theme,
-      themeMode: ThemeMode.light,
-      home: const OutingWaitingScreen(
-        approvedStudentCount: 66,
-        hasLateStudents: true,
-      ),
-    ),
-  );
-}
 
 class OutingWaitingScreen extends StatefulWidget {
   final int approvedStudentCount;

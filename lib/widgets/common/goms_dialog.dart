@@ -57,6 +57,11 @@ class GomsDialog {
   final bool isDestructive;
 
   Future<void> show(BuildContext context) {
+    void onConfirmPressed() {
+      Navigator.of(context).pop();
+      onConfirm?.call();
+    }
+
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
@@ -67,33 +72,18 @@ class GomsDialog {
             ? [
                 CupertinoDialogAction(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    cancelText!,
-                    style: const TextStyle(color: CupertinoColors.systemBlue),
-                  ),
+                  child: Text(cancelText!),
                 ),
                 CupertinoDialogAction(
                   isDestructiveAction: isDestructive,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    onConfirm?.call();
-                  },
-                  child: Text(
-                    confirmText,
-                    style: const TextStyle(color: CupertinoColors.systemBlue),
-                  ),
+                  onPressed: onConfirmPressed,
+                  child: Text(confirmText),
                 ),
               ]
             : [
                 CupertinoDialogAction(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    onConfirm?.call();
-                  },
-                  child: Text(
-                    confirmText,
-                    style: const TextStyle(color: CupertinoColors.systemBlue),
-                  ),
+                  onPressed: onConfirmPressed,
+                  child: Text(confirmText),
                 ),
               ],
       ),

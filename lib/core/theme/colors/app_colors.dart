@@ -55,6 +55,9 @@ class AppColors {
   /// 장소 컨테이너 배경색 다크모드
   static const Color bgMapContainerDark = Color(0xFF1F1F1F);
 
+  /// 장소 컨테이너 배경색
+  static const Color bgMapContainer = Color(0xFFEBEBEB);
+
   /// g-3
   static const Color gray3 = Color(0xFFA1A1A1);
 }

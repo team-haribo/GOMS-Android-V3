@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/config/dark_theme.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
@@ -14,16 +13,6 @@ import 'package:project_setting/widgets/common/text_fields/search_student.dart';
 import 'package:project_setting/presentation/main_page/widget/search_profile_container_model.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
-
-void main() async {
-  runApp(
-    MaterialApp(
-      home: const OutingStateScreen(),
-      themeMode: ThemeMode.dark,
-      theme: DarkTheme.theme,
-    ),
-  );
-}
 
 class OutingStateScreen extends ConsumerStatefulWidget {
   const OutingStateScreen({super.key});

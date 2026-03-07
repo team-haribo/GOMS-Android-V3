@@ -42,6 +42,9 @@ dependencies:
   json_annotation: ^4.9.0
   flutter_secure_storage: ^10.0.0
   state_notifier: ^1.0.0
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.5
+  flutter_dotenv: ^5.2.1
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +74,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/icons/
+    - .env
   
   # To add custom fonts to your application, add a fonts section here,
   fonts:

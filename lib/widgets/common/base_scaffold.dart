@@ -11,6 +11,7 @@ class BaseScaffold extends ConsumerWidget {
   final List<Widget>? appBarActions;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
+  final EdgeInsets? contentPadding;
 
   const BaseScaffold({
     super.key,
@@ -21,6 +22,7 @@ class BaseScaffold extends ConsumerWidget {
     this.appBarActions,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.contentPadding,
   });
 
   @override
@@ -38,7 +40,7 @@ class BaseScaffold extends ConsumerWidget {
       appBar: effectiveAppBar,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
+          padding: contentPadding ?? const EdgeInsets.symmetric(
             horizontal: AppSpacing.s24,
             vertical: AppSpacing.s24,
           ),

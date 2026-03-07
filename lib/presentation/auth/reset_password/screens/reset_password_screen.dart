@@ -38,14 +38,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     ref.listen(resetPasswordProvider, (previous, next) async {
       if (next.status == ResetPasswordStatus.success) {
         notifier.clearError();
-        await GomsDialog.show(
-          context: context,
+        await GomsDialog.single(
           title: '재설정 완료',
           content: '비밀번호가 성공적으로 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
           onConfirm: () {
             context.go(RoutePath.login);
           },
-        );
+        ).show(context);
       } else if (next.status == ResetPasswordStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

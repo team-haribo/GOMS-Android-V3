@@ -185,8 +185,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               title: '로그아웃',
               textColor: AppColors.negative,
               chevronColor: textColor,
-              onTap: () => GomsDialog.showConfirm(
-                context: context,
+              onTap: () => GomsDialog.confirm(
                 title: '로그아웃',
                 content: '로그아웃 하시겠습니까?',
                 confirmText: '로그아웃',
@@ -194,7 +193,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                   await ref.read(authProvider.notifier).logout();
                   if (context.mounted) context.go(RoutePath.onboarding);
                 },
-              ),
+              ).show(context),
             ),
             _buildMenuRow(
               icon: Icons.person_remove_outlined,

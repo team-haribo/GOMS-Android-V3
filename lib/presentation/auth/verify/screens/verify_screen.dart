@@ -40,8 +40,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       if (next.status == VerifyStatus.success) {
         notifier.resetStatus();
         final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
-        await GomsDialog.show(
-          context: context,
+        await GomsDialog.single(
           title: '인증 확인',
           content: isResetFlow
               ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
@@ -49,7 +48,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
           onConfirm: () {
             context.push(widget.redirectPath ?? RoutePath.password);
           },
-        );
+        ).show(context);
         notifier.reset();
       } else if (next.status == VerifyStatus.failure &&
           next.errorMessage != null) {

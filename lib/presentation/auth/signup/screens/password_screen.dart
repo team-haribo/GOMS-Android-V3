@@ -24,14 +24,13 @@ class PasswordScreen extends ConsumerWidget {
     ref.listen(signupProvider, (previous, next) {
       if (next.status == SignupStatus.success) {
         notifier.clearError();
-        GomsDialog.show(
-          context: context,
+        GomsDialog.single(
           title: '회원가입 완료',
           content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
           onConfirm: () {
             context.go(RoutePath.login);
           },
-        );
+        ).show(context);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

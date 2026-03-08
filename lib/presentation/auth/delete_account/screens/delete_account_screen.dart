@@ -35,8 +35,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
     ref.listen(deleteAccountProvider, (previous, next) async {
       if (!mounted) return;
       if (next.status == DeleteAccountStatus.success) {
-        await GomsDialog.show(
-          context: context,
+        await GomsDialog.single(
           title: '회원 탈퇴 완료',
           content: '그동안 GOMS를 이용해주셔서 감사합니다.\n안녕히 가세요.',
           confirmText: '완료',
@@ -45,7 +44,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
               context.go(RoutePath.onboarding);
             }
           },
-        );
+        ).show(context);
       } else if (next.status == DeleteAccountStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

@@ -197,7 +197,6 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
               ),
             ),
           ),
-          const Spacer(),
           ConfirmButton(
             text: '다음',
             onPressed: notifier.isFormValid && !isLoading

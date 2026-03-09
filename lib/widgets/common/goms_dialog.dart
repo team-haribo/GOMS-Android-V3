@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
 
 /// 공통 확인 다이얼로그 (Cupertino 스타일)
 class GomsDialog {
@@ -57,6 +59,9 @@ class GomsDialog {
   final bool isDestructive;
 
   Future<void> show(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+    final textColor = isLight ? AppColors.mainText : AppColors.mainTextDark;
+
     void onConfirmPressed() {
       Navigator.of(context).pop();
       onConfirm?.call();
@@ -66,13 +71,18 @@ class GomsDialog {
       context: context,
       barrierDismissible: barrierDismissible,
       builder: (context) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(content),
+        title: Text(title, style: TextStyle(color: textColor)),
+        content: Text(content, style: TextStyle(color: textColor)),
         actions: cancelText != null
             ? [
                 CupertinoDialogAction(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text(cancelText!),
+                  child: Text(
+                    cancelText!,
+                    style: isDestructive
+                        ? null
+                        : const TextStyle(color: AppColors.negative),
+                  ),
                 ),
                 CupertinoDialogAction(
                   isDestructiveAction: isDestructive,

@@ -58,8 +58,11 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                     children: [
                       Text(
                         '지각자 TOP 3',
-                        style: AppTextStyles.title3
-                            .copyWith(color: AppColors.mainText),
+                        style: AppTextStyles.title3.copyWith(
+                          color: isDark
+                              ? AppColors.mainTextDark
+                              : AppColors.mainText,
+                        ),
                       ),
                       AppGap.v12,
                       widget.hasLateStudents
@@ -99,8 +102,8 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                     width: 24,
                                     height: 24,
                                     color: isDark
-                                        ? AppColors.sub2
-                                        : AppColors.sub1Dark,
+                                        ? AppColors.sub1Dark
+                                        : AppColors.sub2,
                                   ),
                                   AppGap.v2,
                                   Text(
@@ -108,8 +111,8 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                     style: AppTextStyles.text1.copyWith(
                                       fontSize: 15,
                                       color: isDark
-                                          ? AppColors.sub2
-                                          : AppColors.sub1Dark,
+                                          ? AppColors.sub1Dark
+                                          : AppColors.sub2,
                                     ),
                                   ),
                                 ],
@@ -127,8 +130,11 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                       children: [
                         Text(
                           '외출 현황',
-                          style: AppTextStyles.title3
-                              .copyWith(color: AppColors.mainText),
+                          style: AppTextStyles.title3.copyWith(
+                            color: isDark
+                                ? AppColors.mainTextDark
+                                : AppColors.mainText,
+                          ),
                         ),
                         AppGap.h8,
                         Text(
@@ -138,8 +144,9 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                         ),
                         Text(
                           "명이 외출중",
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.sub2),
+                          style: AppTextStyles.caption1.copyWith(
+                            color: isDark ? AppColors.sub1Dark : AppColors.sub2,
+                          ),
                         ),
                       ],
                     ),

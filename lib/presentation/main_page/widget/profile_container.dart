@@ -32,7 +32,7 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    final onTime = switch (ref.watch(settingsProvider)) {
+    final showClock = switch (ref.watch(settingsProvider)) {
       AsyncData(:final value) => value.showClock,
       _ => false,
     };
@@ -48,7 +48,7 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
         padding: const EdgeInsets.all(AppSpacing.s16),
         child: Row(
           children: [
-            if (!onTime) ...[
+            if (!showClock) ...[
               Container(
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
@@ -57,7 +57,7 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                 ),
               ),
             ],
-            if (!onTime) ...[AppGap.h12],
+            if (!showClock) ...[AppGap.h12],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                       color: widget.status.statusColor,
                     ),
                   ),
-                  if (onTime) ...[
+                  if (showClock) ...[
                     AppGap.v2,
                     const Flexible(
                       child: TimeDisplay(),

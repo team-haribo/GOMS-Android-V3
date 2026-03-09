@@ -9,44 +9,33 @@ class SettingsStorage {
   static const _keyCameraLaunch = 'settings_camera_launch';
   static const _keyThemeMode = 'settings_theme_mode';
 
-  static Future<bool> getShowClock() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyShowClock) ?? false;
-  }
+  static SharedPreferences? _prefs;
 
-  static Future<void> setShowClock(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyShowClock, value);
-  }
+  static Future<SharedPreferences> get _instance async =>
+      _prefs ??= await SharedPreferences.getInstance();
 
-  static Future<bool> getOutingPushAlarm() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyOutingPushAlarm) ?? true;
-  }
+  static Future<bool> getShowClock() async =>
+      (await _instance).getBool(_keyShowClock) ?? false;
 
-  static Future<void> setOutingPushAlarm(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyOutingPushAlarm, value);
-  }
+  static Future<void> setShowClock(bool value) async =>
+      (await _instance).setBool(_keyShowClock, value);
 
-  static Future<bool> getCameraLaunch() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool(_keyCameraLaunch) ?? false;
-  }
+  static Future<bool> getOutingPushAlarm() async =>
+      (await _instance).getBool(_keyOutingPushAlarm) ?? true;
 
-  static Future<void> setCameraLaunch(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_keyCameraLaunch, value);
-  }
+  static Future<void> setOutingPushAlarm(bool value) async =>
+      (await _instance).setBool(_keyOutingPushAlarm, value);
+
+  static Future<bool> getCameraLaunch() async =>
+      (await _instance).getBool(_keyCameraLaunch) ?? false;
+
+  static Future<void> setCameraLaunch(bool value) async =>
+      (await _instance).setBool(_keyCameraLaunch, value);
 
   /// ThemeMode 인덱스 저장 (0=system, 1=light, 2=dark)
-  static Future<int> getThemeMode() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt(_keyThemeMode) ?? 0;
-  }
+  static Future<int> getThemeMode() async =>
+      (await _instance).getInt(_keyThemeMode) ?? 0;
 
-  static Future<void> setThemeMode(int value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_keyThemeMode, value);
-  }
+  static Future<void> setThemeMode(int value) async =>
+      (await _instance).setInt(_keyThemeMode, value);
 }

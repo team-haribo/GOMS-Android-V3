@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 
@@ -12,9 +14,12 @@ class ViewMoreUsers extends StatelessWidget {
       width: 51,
       height: 24,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () {
+          context.push(RoutePath.outingState);
+        },
         style: ElevatedButton.styleFrom(
-          backgroundColor: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+          backgroundColor:
+              isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),

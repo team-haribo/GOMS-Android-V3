@@ -13,5 +13,6 @@ class RoutePath {
   static const String deleteAccount = '/delete-account';
   static const String map = '/map';
   static const String home = '/home';
+  static const String outingState = '/outing-state';
   static const String myPage = '/mypage';
 }

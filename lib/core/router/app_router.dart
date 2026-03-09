@@ -6,6 +6,7 @@ import 'package:project_setting/presentation/auth/reset_password/screens/reset_p
 import 'package:project_setting/presentation/auth/signup/screens/signup_screen.dart';
 import 'package:project_setting/presentation/auth/signup/screens/password_screen.dart';
 import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
+import 'package:project_setting/presentation/main_page/screens/outing_state_screen.dart';
 import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
 import 'package:project_setting/presentation/map_page/screens/map_page.dart';
@@ -68,6 +69,11 @@ final GoRouter router = GoRouter(
       path: RoutePath.qr,
       name: 'qr',
       builder: (context, state) => const QrScanScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.outingState,
+      name: 'outingState',
+      builder: (context, state) => const OutingStateScreen(),
     ),
     GoRoute(
       path: RoutePath.deleteAccount,

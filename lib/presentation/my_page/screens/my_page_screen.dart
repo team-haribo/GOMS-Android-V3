@@ -6,9 +6,11 @@ import 'package:project_setting/core/router/route_path.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/theme_provider.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
 import 'package:project_setting/domain/enum/role_enum.dart';
 import 'package:project_setting/presentation/auth/auth_provider.dart';
+import 'package:project_setting/presentation/my_page/settings_provider.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/toggle_button.dart';
 import 'package:project_setting/widgets/common/goms_dialog.dart';
@@ -26,6 +28,31 @@ extension AppThemeOptionLabel on AppThemeOption {
         return '다크 모드';
     }
   }
+
+  /// AppThemeOption → ThemeMode 변환
+  ThemeMode get themeMode {
+    switch (this) {
+      case AppThemeOption.system:
+        return ThemeMode.system;
+      case AppThemeOption.light:
+        return ThemeMode.light;
+      case AppThemeOption.dark:
+        return ThemeMode.dark;
+    }
+  }
+}
+
+extension ThemeModeToOption on ThemeMode {
+  AppThemeOption get option {
+    switch (this) {
+      case ThemeMode.system:
+        return AppThemeOption.system;
+      case ThemeMode.light:
+        return AppThemeOption.light;
+      case ThemeMode.dark:
+        return AppThemeOption.dark;
+    }
+  }
 }
 
 class MyPageScreen extends ConsumerStatefulWidget {
@@ -36,16 +63,16 @@ class MyPageScreen extends ConsumerStatefulWidget {
 }
 
 class _MyPageScreenState extends ConsumerState<MyPageScreen> {
-  AppThemeOption _selectedTheme = AppThemeOption.system;
-
-  void _showThemePicker(BuildContext context) {
+  void _showThemePicker(BuildContext context, AppThemeOption current) {
     showCupertinoModalPopup<void>(
       context: context,
       builder: (_) => CupertinoActionSheet(
         actions: AppThemeOption.values.map((option) {
           return CupertinoActionSheetAction(
             onPressed: () {
-              setState(() => _selectedTheme = option);
+              ref
+                  .read(themeModeProvider.notifier)
+                  .setThemeMode(option.themeMode);
               context.pop();
             },
             child: Text(
@@ -65,15 +92,17 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     );
   }
 
-  bool _showClock = false;
-  bool _outingPushAlarm = true;
-  bool _cameraLaunch = true;
-
   // TODO: 실제 데이터 연동 시 교체
   final String _name = '김민솔';
   final int _grade = 8;
   final String _major = 'AI';
   final int _lateCount = 11;
+
+  void _showPermissionDeniedSnackBar(String feature) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('$feature 기능을 사용하려면 권한이 필요합니다.')),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +111,20 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     final subColor = isDark ? AppColors.sub1Dark : AppColors.sub1;
     final sub2Color = isDark ? AppColors.sub2Dark : AppColors.sub2;
     final surfaceColor = isDark ? AppColors.bgSurfaceDark : AppColors.bgSurface;
+
+    final currentThemeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final selectedThemeOption = currentThemeMode.option;
+
+    final settings = switch (ref.watch(settingsProvider)) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
+    final showClock = settings?.showClock ?? false;
+    final outingPushAlarm = settings?.outingPushAlarm ?? true;
+    final cameraLaunch = settings?.cameraLaunch ?? false;
 
     return BaseScaffold(
       showAppBarLogo: true,
@@ -106,7 +149,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             AppGap.v12,
             GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () => _showThemePicker(context),
+              onTap: () => _showThemePicker(context, selectedThemeOption),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(
@@ -121,7 +164,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                   children: [
                     Expanded(
                       child: Text(
-                        _selectedTheme.label,
+                        selectedThemeOption.label,
                         style: AppTextStyles.text2.withColor(subColor),
                       ),
                     ),
@@ -138,9 +181,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             _buildToggleItem(
               title: '시계 나타내기',
               description: '프로필 카드에 초 단위의 시간을 나타내요',
-              value: _showClock,
+              value: showClock,
               onChanged: (v) =>
-                  setState(() => _showClock = v), // TODO: API 연결시 기능 구현
+                  ref.read(settingsProvider.notifier).setShowClock(v),
               textColor: textColor,
               subColor: sub2Color,
             ),
@@ -148,9 +191,15 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             _buildToggleItem(
               title: '외출제 푸시 알림',
               description: '외출할 시간이 될 때마다 알려드려요',
-              value: _outingPushAlarm,
-              onChanged: (v) =>
-                  setState(() => _outingPushAlarm = v), // TODO: API 연결시 기능 구현
+              value: outingPushAlarm,
+              onChanged: (v) async {
+                final granted = await ref
+                    .read(settingsProvider.notifier)
+                    .setOutingPushAlarm(v);
+                if (!granted && mounted) {
+                  _showPermissionDeniedSnackBar('외출제 푸시 알림');
+                }
+              },
               textColor: textColor,
               subColor: sub2Color,
             ),
@@ -158,9 +207,15 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             _buildToggleItem(
               title: '카메라 바로 켜기',
               description: '앱을 실행하면 즉시 카메라가 켜져요',
-              value: _cameraLaunch,
-              onChanged: (v) =>
-                  setState(() => _cameraLaunch = v), // TODO: API 연결시 기능 구현
+              value: cameraLaunch,
+              onChanged: (v) async {
+                final granted = await ref
+                    .read(settingsProvider.notifier)
+                    .setCameraLaunch(v);
+                if (!granted && mounted) {
+                  _showPermissionDeniedSnackBar('카메라 바로 켜기');
+                }
+              },
               textColor: textColor,
               subColor: sub2Color,
             ),

@@ -29,28 +29,29 @@ class BaseScaffold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // showAppBar가 true면 GomsAppBar 사용
     final effectiveAppBar = showAppBar
-        ? GomsAppBar(
-            showLogo: showAppBarLogo,
-            onBackPressed: onBackPressed,
-            actions: appBarActions,
-          )
+        ? (showAppBarLogo
+            ? GomsAppBar.logo(actions: appBarActions)
+            : GomsAppBar.back(
+                onBackPressed: onBackPressed,
+                actions: appBarActions,
+              ))
         : null;
 
     return Scaffold(
       appBar: effectiveAppBar,
       body: SafeArea(
         child: Padding(
-          padding: contentPadding ?? const EdgeInsets.symmetric(
-            horizontal: AppSpacing.s24,
-            vertical: AppSpacing.s24,
-          ),
+          padding: contentPadding ??
+              const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s24,
+                vertical: AppSpacing.s24,
+              ),
           child: body,
         ),
       ),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
     );
   }
 }

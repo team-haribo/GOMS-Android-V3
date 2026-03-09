@@ -94,96 +94,59 @@ class _ScanOverlay extends StatelessWidget {
     const boxSize = 220.0;
     final boxLeft = (size.width - boxSize) / 2;
     final boxTop = (size.height - boxSize) / 2 - 40;
+    final scanRect = Rect.fromLTWH(boxLeft, boxTop, boxSize, boxSize);
 
-    return Stack(
-      children: [
-        // 네 방향 어두운 마스크
-        // 위
-        Positioned(
-          top: 0,
-          left: 0,
-          right: 0,
-          height: boxTop,
-          child: _darkMask(),
-        ),
-        // 아래
-        Positioned(
-          top: boxTop + boxSize,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: _darkMask(),
-        ),
-        // 왼쪽
-        Positioned(
-          top: boxTop,
-          left: 0,
-          width: boxLeft,
-          height: boxSize,
-          child: _darkMask(),
-        ),
-        // 오른쪽
-        Positioned(
-          top: boxTop,
-          right: 0,
-          width: boxLeft,
-          height: boxSize,
-          child: _darkMask(),
-        ),
-
-        // ==================== 흰색 모서리 브라켓 ====================
-        Positioned(
-          left: boxLeft,
-          top: boxTop,
-          width: boxSize,
-          height: boxSize,
-          child: const _CornerBrackets(),
-        ),
-      ],
+    return CustomPaint(
+      size: size,
+      painter: _OverlayPainter(scanRect: scanRect),
     );
   }
-
-  Widget _darkMask() =>
-      Container(color: Colors.black.withAlpha(153)); // 60% opacity
 }
 
-/// 네 모서리 흰 브라켓
-class _CornerBrackets extends StatelessWidget {
-  const _CornerBrackets();
+class _OverlayPainter extends CustomPainter {
+  const _OverlayPainter({required this.scanRect});
 
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(painter: _BracketPainter());
-  }
-}
+  final Rect scanRect;
 
-class _BracketPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
+    final overlayPaint = Paint()..color = Colors.black.withAlpha(153);
+    final fullRect = Rect.fromLTWH(0, 0, size.width, size.height);
+    // 전체에서 스캔 영역을 뺀 어두운 마스크
+    final path = Path()
+      ..addRect(fullRect)
+      ..addRect(scanRect)
+      ..fillType = PathFillType.evenOdd;
+    canvas.drawPath(path, overlayPaint);
+
+    // 네 모서리 흰 브라켓
+    final bracketPaint = Paint()
       ..color = Colors.white
       ..strokeWidth = 8
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    const len = 56.0; // 브라켓 길이
-    final w = size.width;
-    final h = size.height;
+    const len = 56.0;
+    final l = scanRect.left;
+    final t = scanRect.top;
+    final r = scanRect.right;
+    final b = scanRect.bottom;
 
     // 좌상단
-    canvas.drawLine(const Offset(0, len), const Offset(0, 0), paint);
-    canvas.drawLine(const Offset(0, 0), const Offset(len, 0), paint);
+    canvas.drawLine(Offset(l, t + len), Offset(l, t), bracketPaint);
+    canvas.drawLine(Offset(l, t), Offset(l + len, t), bracketPaint);
     // 우상단
-    canvas.drawLine(Offset(w - len, 0), Offset(w, 0), paint);
-    canvas.drawLine(Offset(w, 0), Offset(w, len), paint);
+    canvas.drawLine(Offset(r - len, t), Offset(r, t), bracketPaint);
+    canvas.drawLine(Offset(r, t), Offset(r, t + len), bracketPaint);
     // 우하단
-    canvas.drawLine(Offset(w, h - len), Offset(w, h), paint);
-    canvas.drawLine(Offset(w, h), Offset(w - len, h), paint);
+    canvas.drawLine(Offset(r, b - len), Offset(r, b), bracketPaint);
+    canvas.drawLine(Offset(r, b), Offset(r - len, b), bracketPaint);
     // 좌하단
-    canvas.drawLine(Offset(len, h), Offset(0, h), paint);
-    canvas.drawLine(Offset(0, h), Offset(0, h - len), paint);
+    canvas.drawLine(Offset(l + len, b), Offset(l, b), bracketPaint);
+    canvas.drawLine(Offset(l, b), Offset(l, b - len), bracketPaint);
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _OverlayPainter oldDelegate) =>
+      oldDelegate.scanRect != scanRect;
 }

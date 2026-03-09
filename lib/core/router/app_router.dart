@@ -10,6 +10,8 @@ import 'package:project_setting/presentation/main_page/screens/outing_state_scre
 import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
 import 'package:project_setting/presentation/map_page/screens/map_page.dart';
+import 'package:project_setting/presentation/map_page/screens/write_review_screen.dart';
+import 'package:project_setting/presentation/map_page/widget/map_page_models.dart';
 import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
 import 'package:project_setting/presentation/auth/delete_account/screens/delete_account_screen.dart';
 import 'package:project_setting/presentation/qr/scan/screens/qr_scan_screen.dart';
@@ -21,7 +23,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: RoutePath.splash,
+  initialLocation: RoutePath.writeReview,
   routes: [
     GoRoute(
       path: RoutePath.splash,
@@ -79,6 +81,28 @@ final GoRouter router = GoRouter(
       path: RoutePath.deleteAccount,
       name: 'deleteAccount',
       builder: (context, state) => const DeleteAccountScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.writeReview,
+      name: 'writeReview',
+      builder: (context, state) {
+        final place = state.extra is PopularPlace
+            ? state.extra as PopularPlace
+            : const PopularPlace(
+                name: '테스트 가게',
+                category: '카페',
+                address: '광주광역시 광산구 송정동',
+                review: 5,
+                recommended: 10,
+              );
+        return WriteReviewScreen(
+          placeName: place.name,
+          category: place.category,
+          address: place.address,
+          review: place.review,
+          recommended: place.recommended,
+        );
+      },
     ),
     // ==================== 바텀 네비게이션 쉘 ====================
     StatefulShellRoute.indexedStack(

@@ -72,6 +72,8 @@ class _$DeleteAccountStateCopyWithImpl<$Res>
   final DeleteAccountState _self;
   final $Res Function(DeleteAccountState) _then;
 
+  /// Create a copy of DeleteAccountState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -103,6 +105,18 @@ class _$DeleteAccountStateCopyWithImpl<$Res>
 
 /// Adds pattern-matching-related methods to [DeleteAccountState].
 extension DeleteAccountStatePatterns on DeleteAccountState {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
     TResult Function(_DeleteAccountState value)? $default, {
@@ -117,6 +131,19 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
     }
   }
 
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
     TResult Function(_DeleteAccountState value) $default,
@@ -130,6 +157,18 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
     }
   }
 
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
     TResult? Function(_DeleteAccountState value)? $default,
@@ -142,6 +181,18 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
         return null;
     }
   }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
@@ -160,6 +211,19 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
     }
   }
 
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(DeleteAccountStatus status, String password,
@@ -175,6 +239,18 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
         throw StateError('Unexpected subclass');
     }
   }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
@@ -194,6 +270,7 @@ extension DeleteAccountStatePatterns on DeleteAccountState {
 }
 
 /// @nodoc
+
 class _DeleteAccountState implements DeleteAccountState {
   const _DeleteAccountState(
       {this.status = DeleteAccountStatus.initial,
@@ -212,6 +289,8 @@ class _DeleteAccountState implements DeleteAccountState {
   @override
   final String? errorMessage;
 
+  /// Create a copy of DeleteAccountState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
@@ -265,6 +344,8 @@ class __$DeleteAccountStateCopyWithImpl<$Res>
   final _DeleteAccountState _self;
   final $Res Function(_DeleteAccountState) _then;
 
+  /// Create a copy of DeleteAccountState
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({

@@ -23,7 +23,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: RoutePath.writeReview,
+  initialLocation: RoutePath.splash,
   routes: [
     GoRoute(
       path: RoutePath.splash,

@@ -9,7 +9,6 @@ import 'package:project_setting/presentation/map_page/widget/place_container.dar
 import 'package:project_setting/presentation/map_page/widget/place_review_container.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/text_fields/search_text_field.dart';
-import 'package:project_setting/widgets/goms_bottom_navigation.dart';
 
 class MapPage extends StatefulWidget {
   final int placeRecommendCount;
@@ -21,22 +20,17 @@ class MapPage extends StatefulWidget {
     this.placeReviewCount = 0,
   });
 
-
   @override
   State<MapPage> createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
   final DraggableScrollableController sheetController =
-  DraggableScrollableController();
-
-
+      DraggableScrollableController();
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme
-        .of(context)
-        .brightness == Brightness.light;
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
@@ -93,14 +87,14 @@ class _MapPageState extends State<MapPage> {
                                   child: SizedBox(
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
                                             Text(
                                               '최근 인기 장소',
                                               style:
-                                              AppTextStyles.title3.copyWith(
+                                                  AppTextStyles.title3.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -142,7 +136,7 @@ class _MapPageState extends State<MapPage> {
                                             Text(
                                               '추천한 가게',
                                               style:
-                                              AppTextStyles.text1.copyWith(
+                                                  AppTextStyles.text1.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -154,8 +148,7 @@ class _MapPageState extends State<MapPage> {
                                                 children: [
                                                   TextSpan(
                                                     text:
-                                                    '${widget
-                                                        .placeRecommendCount}',
+                                                        '${widget.placeRecommendCount}',
                                                     style: AppTextStyles.text3
                                                         .copyWith(
                                                       color: isLight
@@ -197,7 +190,7 @@ class _MapPageState extends State<MapPage> {
                                             Text(
                                               '작성한 후기',
                                               style:
-                                              AppTextStyles.text3.copyWith(
+                                                  AppTextStyles.text3.copyWith(
                                                 color: isLight
                                                     ? AppColors.mainText
                                                     : AppColors.mainTextDark,
@@ -209,12 +202,11 @@ class _MapPageState extends State<MapPage> {
                                                 children: [
                                                   TextSpan(
                                                     text:
-                                                    '${widget
-                                                        .placeReviewCount}',
+                                                        '${widget.placeReviewCount}',
                                                     style: AppTextStyles.text1
                                                         .copyWith(
                                                       color:
-                                                      AppColors.mainColor,
+                                                          AppColors.mainColor,
                                                     ),
                                                   ),
                                                   TextSpan(
@@ -239,9 +231,10 @@ class _MapPageState extends State<MapPage> {
                                                 placeName: place.placeName,
                                                 category: place.category,
                                                 address: place.address,
-                                                reviewDetailContent: place
-                                                    .reviewDetailContent,
-                                                createdAt: place.createdAt,),
+                                                reviewDetailContent:
+                                                    place.reviewDetailContent,
+                                                createdAt: place.createdAt,
+                                              ),
                                             ],
                                           );
                                         }),
@@ -284,8 +277,6 @@ class _MapPageState extends State<MapPage> {
           ),
         ],
       ),
-      bottomNavigationBar:
-      GomsBottomNavigation(currentIndex: 2, onTap: (index) {}),
     );
   }
 }

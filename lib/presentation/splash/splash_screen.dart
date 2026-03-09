@@ -29,14 +29,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     if (!mounted) return;
 
+    String destination = RoutePath.onboarding;
+
+    if (hasToken) {
+      destination = RoutePath.home;
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (hasToken) {
-        // 토큰이 있으면 홈으로 이동
-        context.go(RoutePath.home);
-      } else {
-        // 토큰이 없으면 온보딩으로 이동
-        context.go(RoutePath.onboarding);
-      }
+      context.go(destination);
     });
   }
 

@@ -6,9 +6,12 @@ import 'package:project_setting/presentation/auth/reset_password/screens/reset_p
 import 'package:project_setting/presentation/auth/signup/screens/signup_screen.dart';
 import 'package:project_setting/presentation/auth/signup/screens/password_screen.dart';
 import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
+import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
+import 'package:project_setting/presentation/map_page/screens/map_page.dart';
 import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
 import 'package:project_setting/presentation/auth/delete_account/screens/delete_account_screen.dart';
+import 'package:project_setting/presentation/qr/scan/screens/qr_scan_screen.dart';
 import 'package:project_setting/presentation/splash/onboarding_screen.dart';
 import 'package:project_setting/presentation/splash/splash_screen.dart';
 import 'route_path.dart';
@@ -64,7 +67,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.qr,
       name: 'qr',
-      builder: (context, state) => const Placeholder(),
+      builder: (context, state) => const QrScanScreen(),
     ),
     GoRoute(
       path: RoutePath.deleteAccount,
@@ -81,7 +84,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.map,
               name: 'map',
-              builder: (context, state) => const Placeholder(),
+              builder: (context, state) => const MapPage(),
             ),
           ],
         ),
@@ -90,7 +93,10 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.home,
               name: 'home',
-              builder: (context, state) => const Placeholder(),
+              builder: (context, state) => const OutingWaitingScreen(
+                approvedStudentCount: 0,
+                hasLateStudents: false,
+              ),
             ),
           ],
         ),

@@ -12,7 +12,6 @@ import 'package:project_setting/presentation/main_page/widget/view_more_users.da
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/buttons/qr_button.dart';
 
-
 class OutingWaitingScreen extends StatefulWidget {
   final int approvedStudentCount;
   final bool hasLateStudents; // 여기서 true, false 조절
@@ -48,7 +47,6 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                     major: 'SW개발',
                     lateCount: 0,
                     status: OutingStatus.waiting,
-                    onTime: true,
                   ),
                 ),
                 Padding(
@@ -93,8 +91,8 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                               ],
                             )
                           : Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Row(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   AppIcons.fire(
@@ -116,7 +114,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                   ),
                                 ],
                               ),
-                          ),
+                            ),
                       AppGap.v12,
                     ],
                   ),
@@ -167,9 +165,8 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
           ),
         ],
       ),
-      floatingActionButton: QRButton(
+      floatingActionButton: const QRButton(
         type: RoleEnum.user,
-        onPressed: () {},
       ),
     );
   }

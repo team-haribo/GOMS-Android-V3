@@ -560,7 +560,8 @@ class _DirectionDetailSheet extends StatelessWidget {
       _DirectionStepData(
         icon: Icons.location_on_outlined,
         title: _labelDeparture,
-        description: departureName.isEmpty ? _labelDefaultDeparture : departureName,
+        description:
+            departureName.isEmpty ? _labelDefaultDeparture : departureName,
       ),
       _DirectionStepData(
         icon: Icons.straight_rounded,

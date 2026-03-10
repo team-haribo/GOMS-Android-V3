@@ -9,9 +9,9 @@ import 'package:project_setting/presentation/auth/verify/screens/verify_screen.d
 import 'package:project_setting/presentation/main_page/screens/outing_state_screen.dart';
 import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
-import 'package:project_setting/presentation/map_page/screens/map_page.dart';
-import 'package:project_setting/presentation/map_page/screens/write_review_screen.dart';
-import 'package:project_setting/presentation/map_page/widget/map_page_models.dart';
+import 'package:project_setting/presentation/map/main/screens/map_page.dart';
+import 'package:project_setting/presentation/map/review/screens/write_review_screen.dart';
+import 'package:project_setting/presentation/map/widget/map_page_models.dart';
 import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
 import 'package:project_setting/presentation/auth/delete_account/screens/delete_account_screen.dart';
 import 'package:project_setting/presentation/qr/scan/screens/qr_scan_screen.dart';

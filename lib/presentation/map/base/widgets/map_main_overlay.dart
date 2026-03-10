@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
@@ -266,10 +267,7 @@ class _ReviewCard extends StatelessWidget {
           ),
           AppGap.v12,
           Text(
-            review.createdAt
-                .toIso8601String()
-                .substring(2, 10)
-                .replaceAll('-', '.'),
+            DateFormat('yy.MM.dd').format(review.createdAt),
             style: AppTextStyles.caption2.copyWith(
               color: _subTextColor(isLight),
             ),

@@ -9,6 +9,8 @@ import 'package:project_setting/presentation/auth/verify/screens/verify_screen.d
 import 'package:project_setting/presentation/main_page/screens/outing_state_screen.dart';
 import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
+import 'package:project_setting/presentation/map/base/models/map_screen_type.dart';
+import 'package:project_setting/presentation/map/base/screens/map_base_screen.dart';
 import 'package:project_setting/presentation/map/direction/screens/direction_screen.dart';
 import 'package:project_setting/presentation/map/main/screens/map_page.dart';
 import 'package:project_setting/presentation/map/review/screens/write_review_screen.dart';
@@ -132,7 +134,10 @@ final GoRouter router = GoRouter(
               name: 'mapDetail',
               builder: (context, state) {
                 final place = state.extra as PopularPlace;
-                return DirectionScreen(place: place);
+                return MapBaseScreen(
+                  type: MapScreenType.detail,
+                  place: place,
+                );
               },
             ),
           ],

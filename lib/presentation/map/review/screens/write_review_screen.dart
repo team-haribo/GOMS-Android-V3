@@ -150,53 +150,48 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             ],
           ),
           AppGap.v16,
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(AppSpacing.s16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: notifier.controller,
-                      maxLength: WriteReviewNotifier.maxLength,
-                      maxLines: null,
-                      expands: true,
-                      textAlignVertical: TextAlignVertical.top,
-                      enabled: !isLoading,
-                      onChanged: notifier.onTextChanged,
-                      decoration: InputDecoration(
-                        hintText: '가게 이용 후기를 남겨주세요!',
-                        hintStyle: AppTextStyles.text3.copyWith(
-                          color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
-                        ),
-                        border: InputBorder.none,
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      style: AppTextStyles.text2.copyWith(
-                        color: isLight
-                            ? AppColors.mainText
-                            : AppColors.mainTextDark,
-                      ),
-                    ),
-                  ),
-                  AppGap.v4,
-                  Text(
-                    '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
-                    style: AppTextStyles.caption3.copyWith(
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(AppSpacing.s16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                TextField(
+                  controller: notifier.controller,
+                  maxLength: WriteReviewNotifier.maxLength,
+                  maxLines: 5,
+                  textAlignVertical: TextAlignVertical.top,
+                  enabled: !isLoading,
+                  onChanged: notifier.onTextChanged,
+                  decoration: InputDecoration(
+                    hintText: '가게 이용 후기를 남겨주세요!',
+                    hintStyle: AppTextStyles.text3.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
+                    border: InputBorder.none,
+                    counterText: '',
+                    contentPadding: EdgeInsets.zero,
                   ),
-                ],
-              ),
+                  style: AppTextStyles.text2.copyWith(
+                    color:
+                        isLight ? AppColors.mainText : AppColors.mainTextDark,
+                  ),
+                ),
+                AppGap.v4,
+                Text(
+                  '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
+                  style: AppTextStyles.caption3.copyWith(
+                    color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                  ),
+                ),
+              ],
             ),
           ),
+          const Spacer(),
           ConfirmButton(
             text: '다음',
             onPressed: notifier.isFormValid && !isLoading

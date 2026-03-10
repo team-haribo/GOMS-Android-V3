@@ -64,7 +64,10 @@ class _QrScanScreenState extends State<QrScanScreen> {
               child: Row(
                 children: [
                   AppIcons.gomsLogo(
-                      width: 32, height: 32, color: AppColors.mainTextDark),
+                    width: 32,
+                    height: 32,
+                    color: AppColors.mainTextDark,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'GOMS',

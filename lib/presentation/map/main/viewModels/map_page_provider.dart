@@ -10,7 +10,7 @@ final mapPageProvider = NotifierProvider<MapPageNotifier, MapPageState>(
 class MapPageNotifier extends Notifier<MapPageState> {
   @override
   MapPageState build() {
-    fetchData();
+    Future.microtask(() => fetchData());
     return MapPageState.initial();
   }
 

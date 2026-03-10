@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:project_setting/presentation/auth/login/screens/login_screen.dart';
 import 'package:project_setting/presentation/auth/reset_password/screens/find_password_screen.dart';
@@ -9,6 +9,7 @@ import 'package:project_setting/presentation/auth/verify/screens/verify_screen.d
 import 'package:project_setting/presentation/main_page/screens/outing_state_screen.dart';
 import 'package:project_setting/presentation/main_page/screens/outing_waiting_screen.dart';
 import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
+import 'package:project_setting/presentation/map/direction/screens/direction_screen.dart';
 import 'package:project_setting/presentation/map/main/screens/map_page.dart';
 import 'package:project_setting/presentation/map/review/screens/write_review_screen.dart';
 import 'package:project_setting/presentation/map/widget/map_page_models.dart';
@@ -115,6 +116,24 @@ final GoRouter router = GoRouter(
               path: RoutePath.map,
               name: 'map',
               builder: (context, state) => const MapPage(),
+              routes: [
+                GoRoute(
+                  path: 'direction',
+                  name: 'direction',
+                  builder: (context, state) {
+                    final place = state.extra as PopularPlace;
+                    return DirectionScreen(place: place);
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: RoutePath.mapDetail,
+              name: 'mapDetail',
+              builder: (context, state) {
+                final place = state.extra as PopularPlace;
+                return DirectionScreen(place: place);
+              },
             ),
           ],
         ),

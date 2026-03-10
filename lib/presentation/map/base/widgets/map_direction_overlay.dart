@@ -542,6 +542,15 @@ class _DirectionDetailSheet extends StatelessWidget {
     required this.onClose,
   });
 
+  static const _labelDeparture = '출발';
+  static const _labelArrival = '도착';
+  static const _labelDefaultDeparture = '학교';
+  static const _labelTurnLeft = '좌회전';
+  static const _labelTurnRight = '우회전';
+  static const _labelStraight = '직진';
+  static const _labelMove = '이동';
+  static const _labelTowardSuffix = '방면 이동';
+
   List<_DirectionStepData> _buildSteps() {
     final firstDistance = (option.meters * 0.42).round();
     final secondDistance = (option.meters * 0.33).round();
@@ -550,27 +559,27 @@ class _DirectionDetailSheet extends StatelessWidget {
     return [
       _DirectionStepData(
         icon: Icons.location_on_outlined,
-        title: '���',
-        description: departureName.isEmpty ? '�б�' : departureName,
+        title: _labelDeparture,
+        description: departureName.isEmpty ? _labelDefaultDeparture : departureName,
       ),
       _DirectionStepData(
         icon: Icons.straight_rounded,
-        title: '$destinationName ��� �̵�',
-        description: '${firstDistance}m ����',
+        title: '$destinationName $_labelTowardSuffix',
+        description: '${firstDistance}m $_labelStraight',
       ),
       _DirectionStepData(
         icon: Icons.turn_left_rounded,
-        title: '��Ÿ����� ��ȸ��',
-        description: '${secondDistance}m �̵�',
+        title: _labelTurnLeft,
+        description: '${secondDistance}m $_labelMove',
       ),
       _DirectionStepData(
         icon: Icons.turn_right_rounded,
-        title: '��� �տ��� ��ȸ��',
-        description: '${thirdDistance}m �̵�',
+        title: _labelTurnRight,
+        description: '${thirdDistance}m $_labelMove',
       ),
       _DirectionStepData(
         icon: Icons.location_on_outlined,
-        title: '����',
+        title: _labelArrival,
         description: destinationName,
         isArrival: true,
       ),
@@ -615,13 +624,13 @@ class _DirectionDetailSheet extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '${option.label} ���',
+                        '${option.label} 경로',
                         style:
                             AppTextStyles.title3.copyWith(color: Colors.white),
                       ),
                       AppGap.v12,
                       Text(
-                        '${option.minutes}��',
+                        '${option.minutes}분',
                         style:
                             AppTextStyles.title1.copyWith(color: Colors.white),
                       ),

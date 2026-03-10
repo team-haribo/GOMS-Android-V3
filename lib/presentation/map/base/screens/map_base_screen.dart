@@ -61,7 +61,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
     if (widget.type != MapScreenType.main && place == null) {
       return const MapScaffold(
-        body: Center(child: Text('���õ� ��Ұ� �����ϴ�.')),
+        body: const Center(child: Text('선택된 장소가 없습니다.')),
       );
     }
 

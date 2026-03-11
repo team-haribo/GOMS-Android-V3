@@ -173,6 +173,8 @@ class _MyActivitySection extends StatelessWidget {
           countStyle: AppTextStyles.text3,
         ),
         AppGap.v12,
+        // TODO: 추천한 가게 목록은 현재 popularPlaces(인기 장소)로 임시 대체 중
+        // 실제 구현 시 사용자가 추천한 장소를 별도 API로 받아와 교체 필요
         ...popularPlaces.map(
           (place) => Padding(
             padding: const EdgeInsets.only(bottom: 12),

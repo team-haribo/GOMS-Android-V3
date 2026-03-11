@@ -38,7 +38,8 @@ class MapDirectionOverlay extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MapDirectionOverlay> createState() => _MapDirectionOverlayState();
+  ConsumerState<MapDirectionOverlay> createState() =>
+      _MapDirectionOverlayState();
 }
 
 class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
@@ -400,7 +401,8 @@ class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
     final dark = _isDark(themeMode, context);
 
     final textColor = dark ? AppColors.sub1Dark : AppColors.sub1;
-    final bgColor = dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
+    final bgColor =
+        dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -636,7 +638,8 @@ class _DirectionDetailSheet extends ConsumerWidget {
     };
     final dark = _isDark(themeMode, context);
 
-    final sheetBg = dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
+    final sheetBg =
+        dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
     final textColor = dark ? AppColors.mainTextDark : AppColors.mainText;
     final subColor = dark ? AppColors.sub1Dark : AppColors.sub1;
     final dividerColor = dark ? AppColors.buttonDark : AppColors.button;

@@ -1,5 +1,5 @@
 ﻿import 'package:flutter/material.dart';
-import 'package:project_setting/presentation/map/main/models/popular_place.dart';
+import 'package:goms/presentation/map/main/models/popular_place.dart';
 
 class KakaoMapBackground extends StatelessWidget {
   final PopularPlace? focusPlace;

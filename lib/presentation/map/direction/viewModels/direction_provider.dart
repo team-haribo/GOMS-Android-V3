@@ -1,5 +1,5 @@
 ﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/presentation/map/direction/models/direction_state.dart';
+import 'package:goms/presentation/map/direction/models/direction_state.dart';
 
 final directionProvider = NotifierProvider<DirectionNotifier, DirectionState>(
   DirectionNotifier.new,

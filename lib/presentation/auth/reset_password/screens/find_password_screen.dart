@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/presentation/auth/auth_base_screen.dart';
-import 'package:project_setting/presentation/auth/reset_password/models/find_password_state.dart';
-import 'package:project_setting/presentation/auth/reset_password/viewModels/find_password_provider.dart';
-import 'package:project_setting/widgets/common/text_fields/email_text_field.dart';
+import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/presentation/auth/auth_base_screen.dart';
+import 'package:goms/presentation/auth/reset_password/models/find_password_state.dart';
+import 'package:goms/presentation/auth/reset_password/viewModels/find_password_provider.dart';
+import 'package:goms/widgets/common/text_fields/email_text_field.dart';
 
 class FindPasswordScreen extends ConsumerStatefulWidget {
   const FindPasswordScreen({super.key});

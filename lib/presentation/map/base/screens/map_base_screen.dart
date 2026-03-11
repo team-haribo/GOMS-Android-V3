@@ -1,18 +1,18 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/presentation/map/base/models/map_screen_type.dart';
-import 'package:project_setting/presentation/map/base/widgets/map_detail_overlay.dart';
-import 'package:project_setting/presentation/map/base/widgets/map_direction_overlay.dart';
-import 'package:project_setting/presentation/map/base/widgets/map_main_overlay.dart';
-import 'package:project_setting/presentation/map/base/widgets/map_scaffold.dart';
-import 'package:project_setting/presentation/map/direction/models/direction_state.dart';
-import 'package:project_setting/presentation/map/direction/viewModels/direction_provider.dart';
-import 'package:project_setting/presentation/map/main/models/map_page_state.dart';
-import 'package:project_setting/presentation/map/main/models/popular_place.dart';
-import 'package:project_setting/presentation/map/main/viewModels/map_page_provider.dart';
-import 'package:project_setting/presentation/map/widget/kakao_map_background.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/presentation/map/base/models/map_screen_type.dart';
+import 'package:goms/presentation/map/base/widgets/map_detail_overlay.dart';
+import 'package:goms/presentation/map/base/widgets/map_direction_overlay.dart';
+import 'package:goms/presentation/map/base/widgets/map_main_overlay.dart';
+import 'package:goms/presentation/map/base/widgets/map_scaffold.dart';
+import 'package:goms/presentation/map/direction/models/direction_state.dart';
+import 'package:goms/presentation/map/direction/viewModels/direction_provider.dart';
+import 'package:goms/presentation/map/main/models/map_page_state.dart';
+import 'package:goms/presentation/map/main/models/popular_place.dart';
+import 'package:goms/presentation/map/main/viewModels/map_page_provider.dart';
+import 'package:goms/presentation/map/widget/kakao_map_background.dart';
 
 class MapBaseScreen extends ConsumerStatefulWidget {
   final MapScreenType type;

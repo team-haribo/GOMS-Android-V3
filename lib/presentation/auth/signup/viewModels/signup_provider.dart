@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/domain/enum/gender_enum.dart';
-import 'package:project_setting/domain/enum/major_enum.dart';
-import 'package:project_setting/presentation/auth/signup/models/signup_state.dart';
+import 'package:goms/domain/enum/gender_enum.dart';
+import 'package:goms/domain/enum/major_enum.dart';
+import 'package:goms/presentation/auth/signup/models/signup_state.dart';
 
 /// 회원가입 Provider
 final signupProvider = NotifierProvider<SignupNotifier, SignupState>(

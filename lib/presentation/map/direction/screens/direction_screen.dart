@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:goms/presentation/map/base/models/map_screen_type.dart';
 import 'package:goms/presentation/map/base/screens/map_base_screen.dart';
 import 'package:goms/presentation/map/main/models/popular_place.dart';

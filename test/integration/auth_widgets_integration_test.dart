@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/domain/enum/role_enum.dart';
 import 'package:goms/widgets/common/buttons/toggle_button.dart';

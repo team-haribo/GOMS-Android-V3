@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/domain/enum/gender_enum.dart';
 import 'package:goms/domain/enum/major_enum.dart';

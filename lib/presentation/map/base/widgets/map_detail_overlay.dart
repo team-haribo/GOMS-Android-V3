@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:goms/presentation/map/main/models/map_page_state.dart';
 import 'package:goms/presentation/map/main/models/popular_place.dart';
 

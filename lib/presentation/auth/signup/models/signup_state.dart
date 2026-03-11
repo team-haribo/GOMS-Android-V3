@@ -1,4 +1,4 @@
-﻿import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/domain/enum/gender_enum.dart';
 import 'package:goms/domain/enum/major_enum.dart';
 

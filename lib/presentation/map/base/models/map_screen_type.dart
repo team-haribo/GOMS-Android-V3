@@ -1,4 +1,4 @@
-﻿enum MapScreenType {
+enum MapScreenType {
   main,
   detail,
   direction,

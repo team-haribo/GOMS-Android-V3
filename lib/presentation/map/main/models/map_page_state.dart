@@ -1,4 +1,4 @@
-﻿import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/presentation/map/main/models/map_page_review_model.dart';
 import 'package:goms/presentation/map/main/models/popular_place.dart';
 

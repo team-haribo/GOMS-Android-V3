@@ -1,4 +1,4 @@
-﻿class RoutePath {
+class RoutePath {
   const RoutePath._();
 
   static const String splash = '/splash';

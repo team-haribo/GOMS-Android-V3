@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/presentation/auth/login/screens/login_screen.dart';
 import 'package:goms/presentation/auth/reset_password/screens/find_password_screen.dart';
@@ -123,8 +123,13 @@ final GoRouter router = GoRouter(
                   path: 'direction',
                   name: 'direction',
                   builder: (context, state) {
-                    final place = state.extra as PopularPlace;
-                    return DirectionScreen(place: place);
+                    final extra = state.extra;
+                    if (extra is! PopularPlace) {
+                      return const Scaffold(
+                        body: Center(child: Text('잘못된 접근입니다.')),
+                      );
+                    }
+                    return DirectionScreen(place: extra);
                   },
                 ),
               ],
@@ -133,10 +138,15 @@ final GoRouter router = GoRouter(
               path: RoutePath.mapDetail,
               name: 'mapDetail',
               builder: (context, state) {
-                final place = state.extra as PopularPlace;
+                final extra = state.extra;
+                if (extra is! PopularPlace) {
+                  return const Scaffold(
+                    body: Center(child: Text('잘못된 접근입니다.')),
+                  );
+                }
                 return MapBaseScreen(
                   type: MapScreenType.detail,
-                  place: place,
+                  place: extra,
                 );
               },
             ),

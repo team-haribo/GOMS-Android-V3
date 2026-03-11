@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 
 class MapScaffold extends StatelessWidget {
   final Widget body;

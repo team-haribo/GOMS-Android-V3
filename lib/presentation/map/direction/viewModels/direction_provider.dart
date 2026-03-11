@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/presentation/map/direction/models/direction_state.dart';
 
 final directionProvider = NotifierProvider<DirectionNotifier, DirectionState>(

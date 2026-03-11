@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/presentation/map_page/models/map_page_review_model.dart';
-import 'package:project_setting/presentation/map_page/models/map_page_state.dart';
-import 'package:project_setting/presentation/map_page/models/popular_place.dart';
+import 'package:goms/presentation/map/main/models/map_page_review_model.dart';
+import 'package:goms/presentation/map/main/models/map_page_state.dart';
+import 'package:goms/presentation/map/main/models/popular_place.dart';
 
 final mapPageProvider = NotifierProvider<MapPageNotifier, MapPageState>(
   MapPageNotifier.new,
@@ -10,7 +10,7 @@ final mapPageProvider = NotifierProvider<MapPageNotifier, MapPageState>(
 class MapPageNotifier extends Notifier<MapPageState> {
   @override
   MapPageState build() {
-    fetchData();
+    Future.microtask(() => fetchData());
     return MapPageState.initial();
   }
 

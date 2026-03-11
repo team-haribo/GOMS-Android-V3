@@ -196,7 +196,6 @@ class AppIcons {
         color: color,
       );
 
-
   /// 지각자 없을 때 아이콘
   static Widget fire({double? width, double? height, Color? color}) => _loadPng(
         'assets/icons/fire.png',
@@ -217,14 +216,41 @@ class AppIcons {
   static Widget coffee({double? width, double? height, Color? color}) =>
       _loadSvg(
         'assets/icons/coffee.svg',
-          width: width,
-          height: height,
-          color: color,);
+        width: width,
+        height: height,
+        color: color,
+      );
 
   /// 편집 아이콘
   static Widget edit({double? width, double? height, Color? color}) => _loadSvg(
         'assets/icons/edit_icon.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 
+  /// 교차 화살표 아이콘
+  static Widget crossArrow({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/cross_arrow.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 아래 화살표 아이콘
+  static Widget downArrow({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/down_arrow.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 오른쪽 화살표 아이콘
+  static Widget rightArrow({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/right_arrow.svg',
         width: width,
         height: height,
         color: color,

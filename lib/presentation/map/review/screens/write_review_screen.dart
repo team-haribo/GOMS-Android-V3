@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/map_page/models/write_review_state.dart';
-import 'package:project_setting/presentation/map_page/viewModels/write_review_provider.dart';
-import 'package:project_setting/widgets/common/base_scaffold.dart';
-import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
-import 'package:project_setting/widgets/common/goms_dialog.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/presentation/map/review/models/write_review_state.dart';
+import 'package:goms/presentation/map/review/viewModels/write_review_provider.dart';
+import 'package:goms/widgets/common/base_scaffold.dart';
+import 'package:goms/widgets/common/buttons/confirm_button.dart';
+import 'package:goms/widgets/common/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {
   final String placeName;
@@ -150,53 +150,48 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
             ],
           ),
           AppGap.v16,
-          Expanded(
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              padding: const EdgeInsets.all(AppSpacing.s16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: notifier.controller,
-                      maxLength: WriteReviewNotifier.maxLength,
-                      maxLines: null,
-                      expands: true,
-                      textAlignVertical: TextAlignVertical.top,
-                      enabled: !isLoading,
-                      onChanged: notifier.onTextChanged,
-                      decoration: InputDecoration(
-                        hintText: '가게 이용 후기를 남겨주세요!',
-                        hintStyle: AppTextStyles.text3.copyWith(
-                          color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
-                        ),
-                        border: InputBorder.none,
-                        counterText: '',
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      style: AppTextStyles.text2.copyWith(
-                        color: isLight
-                            ? AppColors.mainText
-                            : AppColors.mainTextDark,
-                      ),
-                    ),
-                  ),
-                  AppGap.v4,
-                  Text(
-                    '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
-                    style: AppTextStyles.caption3.copyWith(
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.all(AppSpacing.s16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                TextField(
+                  controller: notifier.controller,
+                  maxLength: WriteReviewNotifier.maxLength,
+                  maxLines: 5,
+                  textAlignVertical: TextAlignVertical.top,
+                  enabled: !isLoading,
+                  onChanged: notifier.onTextChanged,
+                  decoration: InputDecoration(
+                    hintText: '가게 이용 후기를 남겨주세요!',
+                    hintStyle: AppTextStyles.text3.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
+                    border: InputBorder.none,
+                    counterText: '',
+                    contentPadding: EdgeInsets.zero,
                   ),
-                ],
-              ),
+                  style: AppTextStyles.text2.copyWith(
+                    color:
+                        isLight ? AppColors.mainText : AppColors.mainTextDark,
+                  ),
+                ),
+                AppGap.v4,
+                Text(
+                  '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
+                  style: AppTextStyles.caption3.copyWith(
+                    color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                  ),
+                ),
+              ],
             ),
           ),
+          const Spacer(),
           ConfirmButton(
             text: '다음',
             onPressed: notifier.isFormValid && !isLoading

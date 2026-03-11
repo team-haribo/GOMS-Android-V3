@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
 
 class GomsBottomNavigation extends StatelessWidget {
   final int currentIndex;

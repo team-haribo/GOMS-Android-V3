@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class QrScanScreen extends StatefulWidget {
   const QrScanScreen({super.key});
@@ -64,7 +64,10 @@ class _QrScanScreenState extends State<QrScanScreen> {
               child: Row(
                 children: [
                   AppIcons.gomsLogo(
-                      width: 32, height: 32, color: AppColors.mainTextDark),
+                    width: 32,
+                    height: 32,
+                    color: AppColors.mainTextDark,
+                  ),
                   const SizedBox(width: 8),
                   Text(
                     'GOMS',

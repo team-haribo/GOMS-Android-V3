@@ -1,13 +1,27 @@
-﻿import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/presentation/map/direction/models/direction_state.dart';
 import 'package:goms/presentation/map/main/models/popular_place.dart';
 
-class MapDirectionOverlay extends StatefulWidget {
+/// 로컬 설정(themeModeProvider) 기반으로 다크모드 여부를 반환합니다.
+/// ThemeMode.system 일 때는 실제 디바이스 밝기를 참조합니다.
+bool _isDark(ThemeMode mode, BuildContext context) {
+  if (mode == ThemeMode.system) {
+    return MediaQuery.platformBrightnessOf(context) == Brightness.dark;
+  }
+  return mode == ThemeMode.dark;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MapDirectionOverlay
+// 지도 길찾기 모드 전체 오버레이 (상단 입력 패널 + 하단 경로 목록/상세)
+// ─────────────────────────────────────────────────────────────────────────────
+class MapDirectionOverlay extends ConsumerStatefulWidget {
   final PopularPlace place;
   final DirectionState state;
   final VoidCallback onSwap;
@@ -24,10 +38,10 @@ class MapDirectionOverlay extends StatefulWidget {
   });
 
   @override
-  State<MapDirectionOverlay> createState() => _MapDirectionOverlayState();
+  ConsumerState<MapDirectionOverlay> createState() => _MapDirectionOverlayState();
 }
 
-class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
+class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
   final ScrollController _routeScrollController = ScrollController();
   bool _isRouteSheetVisible = false;
 
@@ -49,16 +63,12 @@ class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
 
   void _handleRouteTap(int index) {
     widget.onSelect(index);
-    setState(() {
-      _isRouteSheetVisible = true;
-    });
+    setState(() => _isRouteSheetVisible = true);
   }
 
   void _closeRouteSheet() {
     if (!_isRouteSheetVisible) return;
-    setState(() {
-      _isRouteSheetVisible = false;
-    });
+    setState(() => _isRouteSheetVisible = false);
   }
 
   @override
@@ -68,8 +78,15 @@ class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
         : widget.state.routeOptions[widget.state.selectedRouteIndex];
     final departureName = widget.state.departure;
 
+    // 로컬 저장소 기반 다크모드 여부
+    final themeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+
     return Stack(
       children: [
+        // 상단: 출발지·도착지 입력 패널
         Positioned(
           top: 0,
           left: 0,
@@ -81,16 +98,23 @@ class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
             onDepartureSelect: widget.onDepartureSelect,
           ),
         ),
+
+        // 경로 상세 시트가 열릴 때 표시되는 반투명 딤(dim) 배경
         if (_isRouteSheetVisible && selectedOption != null)
           Positioned.fill(
             child: GestureDetector(
               onTap: _closeRouteSheet,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                color: Colors.black.withValues(alpha: 0.18),
+                color: (_isDark(themeMode, context)
+                        ? AppColors.backgroundDark
+                        : AppColors.background)
+                    .withOpacity(0.18), // 색 변경 예정
               ),
             ),
           ),
+
+        // 하단: 로딩 / 경로 목록 카드 / 경로 상세 시트
         Positioned(
           left: 0,
           right: 0,
@@ -124,6 +148,7 @@ class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
     required Widget routeSheet,
     required bool isRouteSheetVisible,
   }) {
+    // 로딩 중 스피너 표시
     if (state.status == DirectionStatus.loading) {
       return const Padding(
         padding: EdgeInsets.only(bottom: 32),
@@ -135,37 +160,16 @@ class _MapDirectionOverlayState extends State<MapDirectionOverlay> {
       );
     }
 
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 260),
-      switchInCurve: Curves.easeOutCubic,
-      switchOutCurve: Curves.easeInCubic,
-      transitionBuilder: (child, animation) {
-        final offsetAnimation = Tween<Offset>(
-          begin: const Offset(0, 0.18),
-          end: Offset.zero,
-        ).animate(animation);
-        return FadeTransition(
-          opacity: animation,
-          child: SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          ),
-        );
-      },
-      child: isRouteSheetVisible
-          ? KeyedSubtree(
-              key: ValueKey('route-sheet-${state.selectedRouteIndex}'),
-              child: routeSheet,
-            )
-          : KeyedSubtree(
-              key: const ValueKey('route-carousel'),
-              child: routeCarousel,
-            ),
-    );
+    // 경로 상세 시트 ↔ 카드 캐러셀 전환
+    return isRouteSheetVisible ? routeSheet : routeCarousel;
   }
 }
 
-class _DirectionTopPanel extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionTopPanel
+// 화면 상단: 출발지·도착지 입력 필드 + 스왑 버튼
+// ─────────────────────────────────────────────────────────────────────────────
+class _DirectionTopPanel extends ConsumerWidget {
   final String departureName;
   final String destinationName;
   final VoidCallback onSwap;
@@ -179,13 +183,17 @@ class _DirectionTopPanel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final dark = _isDark(themeMode, context);
 
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isDark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
+        color: dark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
         borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(12),
         ),
@@ -195,6 +203,7 @@ class _DirectionTopPanel extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 출발/도착 스왑 버튼
             Padding(
               padding: const EdgeInsets.only(top: 67),
               child: GestureDetector(
@@ -233,7 +242,11 @@ class _DirectionTopPanel extends StatelessWidget {
   }
 }
 
-class _DirectionFieldBlock extends StatefulWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionFieldBlock
+// 출발/도착 텍스트 입력 필드 (드롭다운 오버레이 포함)
+// ─────────────────────────────────────────────────────────────────────────────
+class _DirectionFieldBlock extends ConsumerStatefulWidget {
   final String label;
   final String value;
   final String placeholder;
@@ -251,10 +264,11 @@ class _DirectionFieldBlock extends StatefulWidget {
   });
 
   @override
-  State<_DirectionFieldBlock> createState() => _DirectionFieldBlockState();
+  ConsumerState<_DirectionFieldBlock> createState() =>
+      _DirectionFieldBlockState();
 }
 
-class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
+class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
   final LayerLink _layerLink = LayerLink();
   final GlobalKey _containerKey = GlobalKey();
   OverlayEntry? _overlayEntry;
@@ -278,10 +292,16 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
     final containerBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
     final containerHeight = containerBox.size.height;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // 드롭다운 생성 시점의 테마 읽기 (ref.read: 단발성)
+    final themeMode = switch (ref.read(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final dark = _isDark(themeMode, context);
     final bgColor =
-        isDark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
-    final textColor = isDark ? AppColors.mainTextDark : AppColors.mainText;
+        dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
+    final textColor = dark ? AppColors.mainTextDark : AppColors.mainText;
 
     _overlayEntry = OverlayEntry(
       builder: (_) => Stack(
@@ -342,7 +362,7 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
                               if (!isLast)
                                 Divider(
                                   height: 1,
-                                  color: isDark
+                                  color: dark
                                       ? AppColors.buttonDark
                                       : AppColors.button,
                                 ),
@@ -371,15 +391,22 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
   @override
   Widget build(BuildContext context) {
     final hasValue = widget.value.trim().isNotEmpty;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.sub1Dark : AppColors.sub1;
-    final bgColor =
-        isDark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
+
+    // 로컬 저장소 기반 다크모드 여부 (ref.watch: 테마 변경 시 자동 갱신)
+    final themeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final dark = _isDark(themeMode, context);
+
+    final textColor = dark ? AppColors.sub1Dark : AppColors.sub1;
+    final bgColor = dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // 라벨 (출발 / 도착)
         Text(
           widget.label,
           style: AppTextStyles.text3.copyWith(color: textColor),
@@ -410,7 +437,7 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
                       style: AppTextStyles.text3.copyWith(
                         color: hasValue
                             ? textColor
-                            : isDark
+                            : dark
                                 ? AppColors.sub2Dark
                                 : AppColors.sub2,
                       ),
@@ -427,6 +454,10 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionRouteCarousel
+// 하단 경로 옵션 카드 가로 스크롤 목록
+// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionRouteCarousel extends StatelessWidget {
   final ScrollController scrollController;
   final List<RouteOption> routeOptions;
@@ -460,16 +491,18 @@ class _DirectionRouteCarousel extends StatelessWidget {
             ),
           );
         },
-        separatorBuilder: (context, index) => const SizedBox(
-          width: 12,
-        ),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemCount: routeOptions.length,
       ),
     );
   }
 }
 
-class _RouteOptionCard extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// _RouteOptionCard
+// 경로 옵션 하나를 표시하는 카드 (라벨 / 소요시간 / 거리·칼로리)
+// ─────────────────────────────────────────────────────────────────────────────
+class _RouteOptionCard extends ConsumerWidget {
   final RouteOption option;
   final VoidCallback onTap;
 
@@ -479,16 +512,19 @@ class _RouteOptionCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final dark = _isDark(themeMode, context);
 
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
+      child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
+          color: dark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
@@ -500,7 +536,7 @@ class _RouteOptionCard extends StatelessWidget {
                 Text(
                   option.label,
                   style: AppTextStyles.text1.copyWith(
-                    color: isDark ? AppColors.sub1Dark : AppColors.sub1,
+                    color: dark ? AppColors.sub1Dark : AppColors.sub1,
                   ),
                 ),
                 AppGap.h4,
@@ -511,7 +547,7 @@ class _RouteOptionCard extends StatelessWidget {
             Text(
               '${option.minutes}분',
               style: AppTextStyles.title3.copyWith(
-                color: isDark ? AppColors.mainTextDark : AppColors.mainText,
+                color: dark ? AppColors.mainTextDark : AppColors.mainText,
                 fontSize: 18,
               ),
             ),
@@ -519,7 +555,7 @@ class _RouteOptionCard extends StatelessWidget {
             Text(
               '${option.meters}m | ${option.calories}kcal',
               style: AppTextStyles.text2.copyWith(
-                color: isDark ? AppColors.sub2Dark : AppColors.sub2,
+                color: dark ? AppColors.sub2Dark : AppColors.sub2,
               ),
             ),
           ],
@@ -529,7 +565,11 @@ class _RouteOptionCard extends StatelessWidget {
   }
 }
 
-class _DirectionDetailSheet extends StatelessWidget {
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionDetailSheet
+// 하단에서 올라오는 경로 상세 시트
+// ─────────────────────────────────────────────────────────────────────────────
+class _DirectionDetailSheet extends ConsumerWidget {
   final RouteOption option;
   final String departureName;
   final String destinationName;
@@ -588,17 +628,29 @@ class _DirectionDetailSheet extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final steps = _buildSteps();
+    final themeMode = switch (ref.watch(themeModeProvider)) {
+      AsyncData(:final value) => value,
+      _ => ThemeMode.system,
+    };
+    final dark = _isDark(themeMode, context);
+
+    final sheetBg = dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
+    final textColor = dark ? AppColors.mainTextDark : AppColors.mainText;
+    final subColor = dark ? AppColors.sub1Dark : AppColors.sub1;
+    final dividerColor = dark ? AppColors.buttonDark : AppColors.button;
+    final shadowColor = (dark ? AppColors.backgroundDark : AppColors.background)
+        .withOpacity(0.22); // 색 변경 예정
 
     return Container(
       height: 452,
       decoration: BoxDecoration(
-        color: const Color(0xFF111315),
+        color: sheetBg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.22),
+            color: shadowColor,
             blurRadius: 28,
             offset: const Offset(0, -6),
           ),
@@ -607,11 +659,12 @@ class _DirectionDetailSheet extends StatelessWidget {
       child: Column(
         children: [
           AppGap.v12,
+          // 드래그 핸들
           Container(
             width: 48,
             height: 5,
             decoration: BoxDecoration(
-              color: const Color(0xFF6F747B),
+              color: subColor,
               borderRadius: BorderRadius.circular(999),
             ),
           ),
@@ -626,30 +679,26 @@ class _DirectionDetailSheet extends StatelessWidget {
                     children: [
                       Text(
                         '${option.label} 경로',
-                        style:
-                            AppTextStyles.title3.copyWith(color: Colors.white),
+                        style: AppTextStyles.title3.copyWith(color: textColor),
                       ),
                       AppGap.v12,
                       Text(
                         '${option.minutes}분',
-                        style:
-                            AppTextStyles.title1.copyWith(color: Colors.white),
+                        style: AppTextStyles.title1.copyWith(color: textColor),
                       ),
                       AppGap.v4,
                       Text(
                         '${option.meters}m | ${option.calories}kcal',
-                        style: AppTextStyles.text3.copyWith(
-                          color: const Color(0xFF8A8D91),
-                        ),
+                        style: AppTextStyles.text3.copyWith(color: subColor),
                       ),
                     ],
                   ),
                 ),
                 IconButton(
                   onPressed: onClose,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.close_rounded,
-                    color: Color(0xFF8A8D91),
+                    color: subColor,
                     size: 28,
                   ),
                 ),
@@ -659,11 +708,10 @@ class _DirectionDetailSheet extends StatelessWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-              itemBuilder: (context, index) {
-                return _DirectionStepTile(step: steps[index]);
-              },
-              separatorBuilder: (context, index) => const Divider(
-                color: Color(0xFF262A2F),
+              itemBuilder: (_, index) =>
+                  _DirectionStepTile(step: steps[index], dark: dark),
+              separatorBuilder: (_, __) => Divider(
+                color: dividerColor,
                 height: 1,
               ),
               itemCount: steps.length,
@@ -675,13 +723,21 @@ class _DirectionDetailSheet extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionStepTile
+// 경로 상세 시트 내 단계별 리스트 아이템
+// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionStepTile extends StatelessWidget {
   final _DirectionStepData step;
+  final bool dark;
 
-  const _DirectionStepTile({required this.step});
+  const _DirectionStepTile({required this.step, required this.dark});
 
   @override
   Widget build(BuildContext context) {
+    final textColor = dark ? AppColors.mainTextDark : AppColors.mainText;
+    final descColor = dark ? AppColors.sub1Dark : AppColors.sub1;
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Row(
@@ -702,14 +758,14 @@ class _DirectionStepTile extends StatelessWidget {
               children: [
                 Text(
                   step.title,
-                  style: AppTextStyles.text1.copyWith(color: Colors.white),
+                  style: AppTextStyles.text1.copyWith(color: textColor),
                 ),
                 AppGap.v4,
                 Text(
                   step.description,
                   style: AppTextStyles.text3.copyWith(
-                    color:
-                        step.isArrival ? Colors.white : const Color(0xFFD5D7DA),
+                    // 도착지는 메인 텍스트 색, 중간 단계는 서브 색
+                    color: step.isArrival ? textColor : descColor,
                   ),
                 ),
               ],
@@ -721,6 +777,10 @@ class _DirectionStepTile extends StatelessWidget {
   }
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// _DirectionStepData
+// 경로 상세 단계 데이터 모델
+// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionStepData {
   final IconData icon;
   final String title;

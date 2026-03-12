@@ -229,4 +229,29 @@ class AppIcons {
         height: height,
         color: color,
       );
+
+  /// 선택 취소 아이콘
+  static Widget cancel({double? width, double? height, Color? color}) => _loadPng(
+    'assets/icons/cancel.png',
+    width: width,
+    height: height,
+    color: color,
+  );
+
+  /// 후기 남기기 아이콘
+  static Widget tablerEdit({double? width, double? height, Color? color}) => _loadPng(
+    'assets/icons/tabler_edit.png',
+    width: width,
+    height: height,
+    color: color,
+  );
+
+  /// 신고 아이콘
+  static Widget report({double? width, double? height, Color? color}) => _loadPng(
+    'assets/icons/report.png',
+    width: width,
+    height: height,
+    color: color,
+  );
+
 }

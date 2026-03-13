@@ -275,7 +275,7 @@ class AppIcons {
         color: color,
       );
 
-  /// 글쓰기 아이콘 노란색
+  /// 신고 아이콘
   static Widget report({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/edit_icon.png',

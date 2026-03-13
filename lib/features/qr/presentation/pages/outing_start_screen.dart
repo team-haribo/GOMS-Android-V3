@@ -5,7 +5,6 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/qr/presentation/pages/qr_base_screen.dart';
 
-
 void main() async {
   runApp(
     MaterialApp(
@@ -30,7 +29,10 @@ class OutingStartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return QrBaseScreen(
-      icon: AppIcons.outingSuccess(width: 150, height: 150,),
+      icon: AppIcons.outingSuccess(
+        width: 150,
+        height: 150,
+      ),
       title: '외출을 시작해 봐요!',
       subtitle: '지금부터 외출하실 수 있어요.',
       buttonText: '확인',
@@ -58,7 +60,3 @@ class OutingStartScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-

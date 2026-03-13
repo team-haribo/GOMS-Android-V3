@@ -46,4 +46,3 @@ void main() {
     expect(RoleEnum.values, [RoleEnum.admin, RoleEnum.user]);
   });
 }
-

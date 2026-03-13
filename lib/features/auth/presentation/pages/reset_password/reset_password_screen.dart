@@ -7,7 +7,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/models/reset_password_state.dart';
-import 'package:goms/features/auth/presentation/pages/reset_password/viewmodels/reset_password_provider.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/viewModels/reset_password_provider.dart';
 import 'package:goms/core/widgets/common/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 
@@ -35,7 +35,8 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     final notifier = ref.read(resetPasswordProvider.notifier);
     final isLoading = resetPasswordState.status == ResetPasswordStatus.loading;
 
-    ref.listen<ResetPasswordState>(resetPasswordProvider, (previous, next) async {
+    ref.listen<ResetPasswordState>(resetPasswordProvider,
+        (previous, next) async {
       if (next.status == ResetPasswordStatus.success) {
         notifier.clearError();
         await GomsDialog.single(
@@ -93,7 +94,3 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     );
   }
 }
-
-
-
-

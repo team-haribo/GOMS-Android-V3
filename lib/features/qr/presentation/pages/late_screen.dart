@@ -24,7 +24,3 @@ class LateScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-

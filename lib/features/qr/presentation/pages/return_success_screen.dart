@@ -24,7 +24,3 @@ class ReturnSuccessScreen extends StatelessWidget {
     );
   }
 }
-
-
-
-

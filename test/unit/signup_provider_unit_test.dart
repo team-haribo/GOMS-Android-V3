@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
-import 'package:goms/features/auth/presentation/pages/signup/viewmodels/signup_provider.dart';
+import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {
@@ -52,4 +52,3 @@ void main() {
     });
   });
 }
-

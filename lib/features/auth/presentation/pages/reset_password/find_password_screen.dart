@@ -5,7 +5,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/models/find_password_state.dart';
-import 'package:goms/features/auth/presentation/pages/reset_password/viewmodels/find_password_provider.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/viewModels/find_password_provider.dart';
 import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
 
 class FindPasswordScreen extends ConsumerStatefulWidget {
@@ -67,7 +67,3 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
     );
   }
 }
-
-
-
-

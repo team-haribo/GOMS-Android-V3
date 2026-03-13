@@ -8,10 +8,10 @@ import 'package:goms/features/map/presentation/pages/base/widgets/map_direction_
 import 'package:goms/features/map/presentation/pages/base/widgets/map_main_overlay.dart';
 import 'package:goms/features/map/presentation/pages/base/widgets/map_scaffold.dart';
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
-import 'package:goms/features/map/presentation/pages/direction/viewmodels/direction_provider.dart';
+import 'package:goms/features/map/presentation/pages/direction/viewModels/direction_provider.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
-import 'package:goms/features/map/presentation/pages/main/viewmodels/map_page_provider.dart';
+import 'package:goms/features/map/presentation/pages/main/viewModels/map_page_provider.dart';
 import 'package:goms/features/map/presentation/widgets/kakao_map_background.dart';
 
 class MapBaseScreen extends ConsumerStatefulWidget {

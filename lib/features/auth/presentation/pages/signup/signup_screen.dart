@@ -8,7 +8,7 @@ import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
-import 'package:goms/features/auth/presentation/pages/signup/viewmodels/signup_provider.dart';
+import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
 import 'package:goms/core/widgets/common/select_field.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
@@ -96,7 +96,3 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 }
-
-
-
-

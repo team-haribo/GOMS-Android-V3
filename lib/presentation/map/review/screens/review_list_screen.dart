@@ -9,6 +9,19 @@ import 'package:goms/presentation/map/widget/review_list_container.dart';
 import 'package:goms/widgets/common/base_scaffold.dart';
 import 'package:goms/widgets/common/text_fields/search_text_field.dart';
 
+void main() async {
+  runApp(MaterialApp(
+    home: ReviewListScreen(
+        placeName: 'f',
+        category: 'f',
+        address: 'f',
+        distanceMeter: 3,
+        durationMinutes: 3,
+        review: 3,
+        recommended: 0),
+  ));
+}
+
 class ReviewListScreen extends StatefulWidget {
   final String placeName;
   final String category;

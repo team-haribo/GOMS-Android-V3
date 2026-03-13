@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/presentation/auth/auth_base_screen.dart';
+import 'package:project_setting/presentation/auth/auth_base_screen.dart';
 
 void main() {
   testWidgets('confirm button is disabled when form is invalid', (

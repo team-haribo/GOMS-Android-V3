@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/domain/enum/role_enum.dart';
-import 'package:goms/presentation/auth/login/model/login_state.dart';
-import 'package:goms/presentation/main_page/widget/search_profile_container_model.dart';
+import 'package:project_setting/domain/enum/role_enum.dart';
+import 'package:project_setting/presentation/auth/login/model/login_state.dart';
+import 'package:project_setting/presentation/main_page/widget/search_profile_container_model.dart';
 
 void main() {
   group('LoginState', () {

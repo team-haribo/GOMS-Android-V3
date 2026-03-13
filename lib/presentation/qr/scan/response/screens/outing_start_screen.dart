@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/config/dark_theme.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/presentation/qr/scan/response/screens/qr_base_screen.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/config/dark_theme.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/presentation/qr/scan/response/screens/qr_base_screen.dart';
 
 
 void main() async {

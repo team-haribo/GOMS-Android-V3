@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/presentation/map/base/widgets/map_shared_widgets.dart';
-import 'package:goms/presentation/map/main/models/map_page_review_model.dart';
-import 'package:goms/presentation/map/main/models/map_page_state.dart';
-import 'package:goms/presentation/map/main/models/popular_place.dart';
-import 'package:goms/presentation/map/widget/place_container.dart';
-import 'package:goms/widgets/common/text_fields/search_text_field.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/presentation/map/base/widgets/map_shared_widgets.dart';
+import 'package:project_setting/presentation/map/main/models/map_page_review_model.dart';
+import 'package:project_setting/presentation/map/main/models/map_page_state.dart';
+import 'package:project_setting/presentation/map/main/models/popular_place.dart';
+import 'package:project_setting/presentation/map/widget/place_container.dart';
+import 'package:project_setting/widgets/common/text_fields/search_text_field.dart';
 
 class MapMainOverlay extends StatelessWidget {
   final MapPageState state;

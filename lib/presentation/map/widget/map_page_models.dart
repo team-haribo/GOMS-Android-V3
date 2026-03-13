@@ -1,1 +1,1 @@
-export 'package:goms/presentation/map/main/models/popular_place.dart';
+export 'package:project_setting/presentation/map/main/models/popular_place.dart';

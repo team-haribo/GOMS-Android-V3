@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
 
 /// 다크 테마 설정
 class DarkTheme {

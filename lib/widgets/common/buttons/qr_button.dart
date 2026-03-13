@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/domain/enum/role_enum.dart';
+import 'package:project_setting/core/router/route_path.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/domain/enum/role_enum.dart';
 
 class QRButton extends StatelessWidget {
   /// QR 버튼 타입

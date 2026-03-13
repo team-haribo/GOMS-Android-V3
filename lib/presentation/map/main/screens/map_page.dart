@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goms/presentation/map/base/models/map_screen_type.dart';
-import 'package:goms/presentation/map/base/screens/map_base_screen.dart';
+import 'package:project_setting/presentation/map/base/models/map_screen_type.dart';
+import 'package:project_setting/presentation/map/base/screens/map_base_screen.dart';
 
 class MapPage extends StatelessWidget {
   const MapPage({super.key});

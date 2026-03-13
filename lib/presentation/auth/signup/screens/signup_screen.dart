@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/domain/enum/gender_enum.dart';
-import 'package:goms/domain/enum/major_enum.dart';
-import 'package:goms/presentation/auth/auth_base_screen.dart';
-import 'package:goms/presentation/auth/signup/models/signup_state.dart';
-import 'package:goms/presentation/auth/signup/viewModels/signup_provider.dart';
-import 'package:goms/widgets/common/select_field.dart';
-import 'package:goms/widgets/common/text_fields/base_text_field.dart';
-import 'package:goms/widgets/common/text_fields/email_text_field.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/router/route_path.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/domain/enum/gender_enum.dart';
+import 'package:project_setting/domain/enum/major_enum.dart';
+import 'package:project_setting/presentation/auth/auth_base_screen.dart';
+import 'package:project_setting/presentation/auth/signup/models/signup_state.dart';
+import 'package:project_setting/presentation/auth/signup/viewModels/signup_provider.dart';
+import 'package:project_setting/widgets/common/select_field.dart';
+import 'package:project_setting/widgets/common/text_fields/base_text_field.dart';
+import 'package:project_setting/widgets/common/text_fields/email_text_field.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});

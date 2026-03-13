@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goms/presentation/map/main/models/map_page_state.dart';
-import 'package:goms/presentation/map/main/models/popular_place.dart';
+import 'package:project_setting/presentation/map/main/models/map_page_state.dart';
+import 'package:project_setting/presentation/map/main/models/popular_place.dart';
 
 class MapDetailOverlay extends StatelessWidget {
   final PopularPlace place;

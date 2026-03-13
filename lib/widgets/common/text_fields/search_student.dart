@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/widgets/common/text_fields/base_text_field.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/widgets/common/text_fields/base_text_field.dart';
 
 /// 검색 텍스트 필드
 class SearchStudentField extends StatefulWidget {

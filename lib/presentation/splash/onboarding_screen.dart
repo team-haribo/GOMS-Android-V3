@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/widgets/common/base_scaffold.dart';
-import 'package:goms/widgets/common/buttons/confirm_button.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/router/route_path.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/widgets/common/base_scaffold.dart';
+import 'package:project_setting/widgets/common/buttons/confirm_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});

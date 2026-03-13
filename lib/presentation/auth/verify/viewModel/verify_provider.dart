@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/presentation/auth/verify/states/verify_state.dart';
+import 'package:project_setting/presentation/auth/verify/states/verify_state.dart';
 
 final verifyProvider =
     NotifierProvider<VerifyNotifier, VerifyState>(VerifyNotifier.new);

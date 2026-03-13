@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
 
 /// 공통 확인 다이얼로그 (Cupertino 스타일)
 class GomsDialog {

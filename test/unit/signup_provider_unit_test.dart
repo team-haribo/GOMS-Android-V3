@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/domain/enum/gender_enum.dart';
-import 'package:goms/domain/enum/major_enum.dart';
-import 'package:goms/presentation/auth/signup/models/signup_state.dart';
-import 'package:goms/presentation/auth/signup/viewModels/signup_provider.dart';
+import 'package:project_setting/domain/enum/gender_enum.dart';
+import 'package:project_setting/domain/enum/major_enum.dart';
+import 'package:project_setting/presentation/auth/signup/models/signup_state.dart';
+import 'package:project_setting/presentation/auth/signup/viewModels/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {

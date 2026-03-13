@@ -2,18 +2,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_provider.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/domain/enum/role_enum.dart';
-import 'package:goms/presentation/auth/auth_provider.dart';
-import 'package:goms/presentation/my_page/settings_provider.dart';
-import 'package:goms/widgets/common/base_scaffold.dart';
-import 'package:goms/widgets/common/buttons/toggle_button.dart';
-import 'package:goms/widgets/common/goms_dialog.dart';
+import 'package:project_setting/core/router/route_path.dart';
+import 'package:project_setting/core/theme/colors/app_colors.dart';
+import 'package:project_setting/core/theme/icons/app_icons.dart';
+import 'package:project_setting/core/theme/layout/app_layout.dart';
+import 'package:project_setting/core/theme/theme_provider.dart';
+import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:project_setting/domain/enum/role_enum.dart';
+import 'package:project_setting/presentation/auth/auth_provider.dart';
+import 'package:project_setting/presentation/my_page/settings_provider.dart';
+import 'package:project_setting/widgets/common/base_scaffold.dart';
+import 'package:project_setting/widgets/common/buttons/toggle_button.dart';
+import 'package:project_setting/widgets/common/goms_dialog.dart';
 
 enum AppThemeOption { system, light, dark }
 

@@ -256,7 +256,7 @@ class AppIcons {
         color: color,
       );
 
-  /// 오른쪽 화살표 아이콘
+  /// 취소 아이콘
   static Widget cancel({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/cancel.png',
@@ -278,7 +278,7 @@ class AppIcons {
   /// 신고 아이콘
   static Widget report({double? width, double? height, Color? color}) =>
       _loadPng(
-        'assets/icons/edit_icon.png',
+        'assets/icons/report.png',
         width: width,
         height: height,
         color: color,

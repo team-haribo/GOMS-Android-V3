@@ -309,9 +309,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                 grade: 9,
                                                 major: 'SW개발',
                                                 reviewDetailContent: '굳굳',
-                                                createdAt:
-                                                    DateFormat('yy.MM.dd')
-                                                        .format(DateTime.now()),
+                                                createdAt: DateTime.now(),
                                                 isMine: true,
                                               ),
                                               ReviewListContainer(
@@ -319,9 +317,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                 grade: 9,
                                                 major: 'SW개발',
                                                 reviewDetailContent: '굳굳',
-                                                createdAt:
-                                                    DateFormat('yy.MM.dd')
-                                                        .format(DateTime.now()),
+                                                createdAt: DateTime.now(),
                                                 isMine: true,
                                               ),
                                               ReviewListContainer(
@@ -329,9 +325,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                 grade: 9,
                                                 major: 'SW개발',
                                                 reviewDetailContent: '굳굳',
-                                                createdAt:
-                                                    DateFormat('yy.MM.dd')
-                                                        .format(DateTime.now()),
+                                                createdAt: DateTime.now(),
                                                 isMine: false,
                                               ),
                                             ],

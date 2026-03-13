@@ -4,13 +4,14 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/widgets/common/goms_dialog.dart';
+import 'package:intl/intl.dart';
 
 class ReviewListContainer extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
   final String reviewDetailContent;
-  final String createdAt;
+  final DateTime createdAt;
   final bool isMine;
 
   const ReviewListContainer({
@@ -78,7 +79,7 @@ class ReviewListContainer extends StatelessWidget {
               ),
               AppGap.v4,
               Text(
-                createdAt,
+              DateFormat('yy.MM.dd').format(createdAt),
                 style: AppTextStyles.caption3.copyWith(
                   color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                 ),

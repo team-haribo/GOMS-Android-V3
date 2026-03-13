@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/presentation/map/widget/drag_handle_header.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/presentation/map/widget/drag_handle_header.dart';
 
 class MapSheet extends StatelessWidget {
   final bool isLight;

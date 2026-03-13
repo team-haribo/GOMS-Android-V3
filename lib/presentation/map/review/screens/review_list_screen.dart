@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/map/widget/arrival_departure_button.dart';
-import 'package:project_setting/presentation/map/widget/drag_handle_header.dart';
-import 'package:project_setting/presentation/map/widget/review_list_container.dart';
-import 'package:project_setting/widgets/common/base_scaffold.dart';
-import 'package:project_setting/widgets/common/text_fields/search_text_field.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/presentation/map/widget/arrival_departure_button.dart';
+import 'package:goms/presentation/map/widget/drag_handle_header.dart';
+import 'package:goms/presentation/map/widget/review_list_container.dart';
+import 'package:goms/widgets/common/base_scaffold.dart';
+import 'package:goms/widgets/common/text_fields/search_text_field.dart';
 
 class ReviewListScreen extends StatefulWidget {
   final String placeName;

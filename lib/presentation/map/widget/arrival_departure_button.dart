@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ArrivalDepartureButton extends StatelessWidget {
   final String buttonText;

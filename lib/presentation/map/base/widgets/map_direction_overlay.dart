@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/theme_provider.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/map/direction/models/direction_state.dart';
-import 'package:project_setting/presentation/map/main/models/popular_place.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_provider.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/presentation/map/direction/models/direction_state.dart';
+import 'package:goms/presentation/map/main/models/popular_place.dart';
 
 /// 로컬 설정(themeModeProvider) 기반으로 다크모드 여부를 반환합니다.
 /// ThemeMode.system 일 때는 실제 디바이스 밝기를 참조합니다.

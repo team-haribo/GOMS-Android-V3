@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/presentation/map/review/models/write_review_state.dart';
+import 'package:goms/presentation/map/review/models/write_review_state.dart';
 
 /// 후기 작성 Provider
 final writeReviewProvider =

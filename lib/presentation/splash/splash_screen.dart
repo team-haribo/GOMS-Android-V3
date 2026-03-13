@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/presentation/auth/auth_provider.dart';
-import 'package:project_setting/widgets/common/base_scaffold.dart';
+import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/presentation/auth/auth_provider.dart';
+import 'package:goms/widgets/common/base_scaffold.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/domain/enum/role_enum.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/domain/enum/role_enum.dart';
 
 class ToggleButton extends StatelessWidget {
   final RoleEnum type;

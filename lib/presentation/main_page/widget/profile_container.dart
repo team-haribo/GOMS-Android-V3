@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/main_page/widget/outing_status.dart';
-import 'package:project_setting/presentation/main_page/widget/time_display.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/presentation/main_page/widget/outing_status.dart';
+import 'package:goms/presentation/main_page/widget/time_display.dart';
+import 'package:goms/presentation/my_page/settings_provider.dart';
 
-class ProfileContainer extends StatefulWidget {
+class ProfileContainer extends ConsumerStatefulWidget {
   final String name;
   final int grade;
   final String major;
   final int lateCount;
   final OutingStatus status;
-  final bool onTime;
 
   const ProfileContainer({
     super.key,
@@ -21,31 +22,34 @@ class ProfileContainer extends StatefulWidget {
     required this.major,
     required this.lateCount,
     required this.status,
-    required this.onTime,
   });
 
   @override
-  State<ProfileContainer> createState() => _ProfileContainerState();
+  ConsumerState<ProfileContainer> createState() => _ProfileContainerState();
 }
 
-class _ProfileContainerState extends State<ProfileContainer> {
+class _ProfileContainerState extends ConsumerState<ProfileContainer> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final showClock = switch (ref.watch(settingsProvider)) {
+      AsyncData(:final value) => value.showClock,
+      _ => false,
+    };
 
     return Container(
       height: 84,
       width: double.infinity,
       decoration: BoxDecoration(
-      color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.s16),
         child: Row(
           children: [
-            if (widget.onTime) ...[
-              Align(
+            if (!showClock) ...[
+              Container(
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
                   radius: 26,
@@ -53,7 +57,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                 ),
               ),
             ],
-            if (widget.onTime) ...[AppGap.h12],
+            if (!showClock) ...[AppGap.h12],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -103,7 +107,7 @@ class _ProfileContainerState extends State<ProfileContainer> {
                       color: widget.status.statusColor,
                     ),
                   ),
-                  if (!widget.onTime) ...[
+                  if (showClock) ...[
                     AppGap.v2,
                     const Flexible(
                       child: TimeDisplay(),

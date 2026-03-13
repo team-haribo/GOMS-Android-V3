@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:project_setting/domain/enum/gender_enum.dart';
-import 'package:project_setting/domain/enum/major_enum.dart';
+import 'package:goms/domain/enum/gender_enum.dart';
+import 'package:goms/domain/enum/major_enum.dart';
 
 part 'signup_state.freezed.dart';
 

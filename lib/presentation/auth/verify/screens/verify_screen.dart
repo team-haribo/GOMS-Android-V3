@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/auth/auth_base_screen.dart';
-import 'package:project_setting/presentation/auth/verify/states/verify_state.dart';
-import 'package:project_setting/presentation/auth/verify/viewModel/verify_provider.dart';
-import 'package:project_setting/widgets/common/goms_dialog.dart';
-import 'package:project_setting/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/presentation/auth/auth_base_screen.dart';
+import 'package:goms/presentation/auth/verify/states/verify_state.dart';
+import 'package:goms/presentation/auth/verify/viewModel/verify_provider.dart';
+import 'package:goms/widgets/common/goms_dialog.dart';
+import 'package:goms/widgets/common/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String? redirectPath;
@@ -40,8 +40,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       if (next.status == VerifyStatus.success) {
         notifier.resetStatus();
         final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
-        await GomsDialog.show(
-          context: context,
+        await GomsDialog.single(
           title: '인증 확인',
           content: isResetFlow
               ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
@@ -49,7 +48,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
           onConfirm: () {
             context.push(widget.redirectPath ?? RoutePath.password);
           },
-        );
+        ).show(context);
         notifier.reset();
       } else if (next.status == VerifyStatus.failure &&
           next.errorMessage != null) {

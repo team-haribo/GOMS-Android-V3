@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/presentation/auth/login/screens/login_screen.dart';
-import 'package:project_setting/presentation/auth/reset_password/screens/find_password_screen.dart';
-import 'package:project_setting/presentation/auth/reset_password/screens/reset_password_screen.dart';
-import 'package:project_setting/presentation/auth/signup/screens/signup_screen.dart';
-import 'package:project_setting/presentation/auth/signup/screens/password_screen.dart';
-import 'package:project_setting/presentation/auth/verify/screens/verify_screen.dart';
-import 'package:project_setting/presentation/main_page/widget/main_shell.dart';
-import 'package:project_setting/presentation/my_page/screens/my_page_screen.dart';
-import 'package:project_setting/presentation/auth/delete_account/screens/delete_account_screen.dart';
-import 'package:project_setting/presentation/splash/onboarding_screen.dart';
-import 'package:project_setting/presentation/splash/splash_screen.dart';
+import 'package:goms/presentation/auth/login/screens/login_screen.dart';
+import 'package:goms/presentation/auth/reset_password/screens/find_password_screen.dart';
+import 'package:goms/presentation/auth/reset_password/screens/reset_password_screen.dart';
+import 'package:goms/presentation/auth/signup/screens/signup_screen.dart';
+import 'package:goms/presentation/auth/signup/screens/password_screen.dart';
+import 'package:goms/presentation/auth/verify/screens/verify_screen.dart';
+import 'package:goms/presentation/main_page/screens/outing_state_screen.dart';
+import 'package:goms/presentation/main_page/screens/outing_waiting_screen.dart';
+import 'package:goms/presentation/main_page/widget/main_shell.dart';
+import 'package:goms/presentation/map/base/models/map_screen_type.dart';
+import 'package:goms/presentation/map/base/screens/map_base_screen.dart';
+import 'package:goms/presentation/map/direction/screens/direction_screen.dart';
+import 'package:goms/presentation/map/main/screens/map_page.dart';
+import 'package:goms/presentation/map/review/screens/write_review_screen.dart';
+import 'package:goms/presentation/map/widget/map_page_models.dart';
+import 'package:goms/presentation/my_page/screens/my_page_screen.dart';
+import 'package:goms/presentation/auth/delete_account/screens/delete_account_screen.dart';
+import 'package:goms/presentation/qr/scan/screens/qr_scan_screen.dart';
+import 'package:goms/presentation/splash/onboarding_screen.dart';
+import 'package:goms/presentation/splash/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -64,12 +73,39 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.qr,
       name: 'qr',
-      builder: (context, state) => const Placeholder(),
+      builder: (context, state) => const QrScanScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.outingState,
+      name: 'outingState',
+      builder: (context, state) => const OutingStateScreen(),
     ),
     GoRoute(
       path: RoutePath.deleteAccount,
       name: 'deleteAccount',
       builder: (context, state) => const DeleteAccountScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.writeReview,
+      name: 'writeReview',
+      builder: (context, state) {
+        final place = state.extra is PopularPlace
+            ? state.extra as PopularPlace
+            : const PopularPlace(
+                name: '테스트 가게',
+                category: '카페',
+                address: '광주광역시 광산구 송정동',
+                review: 5,
+                recommended: 10,
+              );
+        return WriteReviewScreen(
+          placeName: place.name,
+          category: place.category,
+          address: place.address,
+          review: place.review,
+          recommended: place.recommended,
+        );
+      },
     ),
     // ==================== 바텀 네비게이션 쉘 ====================
     StatefulShellRoute.indexedStack(
@@ -81,7 +117,38 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.map,
               name: 'map',
-              builder: (context, state) => const Placeholder(),
+              builder: (context, state) => const MapPage(),
+              routes: [
+                GoRoute(
+                  path: 'direction',
+                  name: 'direction',
+                  builder: (context, state) {
+                    final extra = state.extra;
+                    if (extra is! PopularPlace) {
+                      return const Scaffold(
+                        body: Center(child: Text('잘못된 접근입니다.')),
+                      );
+                    }
+                    return DirectionScreen(place: extra);
+                  },
+                ),
+              ],
+            ),
+            GoRoute(
+              path: RoutePath.mapDetail,
+              name: 'mapDetail',
+              builder: (context, state) {
+                final extra = state.extra;
+                if (extra is! PopularPlace) {
+                  return const Scaffold(
+                    body: Center(child: Text('잘못된 접근입니다.')),
+                  );
+                }
+                return MapBaseScreen(
+                  type: MapScreenType.detail,
+                  place: extra,
+                );
+              },
             ),
           ],
         ),
@@ -90,7 +157,10 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.home,
               name: 'home',
-              builder: (context, state) => const Placeholder(),
+              builder: (context, state) => const OutingWaitingScreen(
+                approvedStudentCount: 0,
+                hasLateStudents: false,
+              ),
             ),
           ],
         ),

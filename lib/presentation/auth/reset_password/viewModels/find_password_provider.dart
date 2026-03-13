@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:project_setting/presentation/auth/reset_password/models/find_password_state.dart';
+import 'package:goms/presentation/auth/reset_password/models/find_password_state.dart';
 
 /// 비밀번호 찾기 Provider
 final findPasswordProvider =

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/domain/enum/role_enum.dart';
-import 'package:project_setting/presentation/main_page/widget/late_profile_container.dart';
-import 'package:project_setting/presentation/main_page/widget/outing_status.dart';
-import 'package:project_setting/presentation/main_page/widget/profile_container.dart';
-import 'package:project_setting/presentation/main_page/widget/profile_list_container.dart';
-import 'package:project_setting/presentation/main_page/widget/view_more_users.dart';
-import 'package:project_setting/widgets/common/base_scaffold.dart';
-import 'package:project_setting/widgets/common/buttons/qr_button.dart';
-
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/domain/enum/role_enum.dart';
+import 'package:goms/presentation/main_page/widget/late_profile_container.dart';
+import 'package:goms/presentation/main_page/widget/outing_status.dart';
+import 'package:goms/presentation/main_page/widget/profile_container.dart';
+import 'package:goms/presentation/main_page/widget/profile_list_container.dart';
+import 'package:goms/presentation/main_page/widget/view_more_users.dart';
+import 'package:goms/widgets/common/base_scaffold.dart';
+import 'package:goms/widgets/common/buttons/qr_button.dart';
 
 class OutingWaitingScreen extends StatefulWidget {
   final int approvedStudentCount;
@@ -48,7 +47,6 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                     major: 'SW개발',
                     lateCount: 0,
                     status: OutingStatus.waiting,
-                    onTime: true,
                   ),
                 ),
                 Padding(
@@ -60,8 +58,11 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                     children: [
                       Text(
                         '지각자 TOP 3',
-                        style: AppTextStyles.title3
-                            .copyWith(color: AppColors.mainText),
+                        style: AppTextStyles.title3.copyWith(
+                          color: isDark
+                              ? AppColors.mainTextDark
+                              : AppColors.mainText,
+                        ),
                       ),
                       AppGap.v12,
                       widget.hasLateStudents
@@ -93,16 +94,16 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                               ],
                             )
                           : Padding(
-                            padding: const EdgeInsets.only(bottom: 12),
-                            child: Row(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   AppIcons.fire(
                                     width: 24,
                                     height: 24,
                                     color: isDark
-                                        ? AppColors.sub2
-                                        : AppColors.sub1Dark,
+                                        ? AppColors.sub1Dark
+                                        : AppColors.sub2,
                                   ),
                                   AppGap.v2,
                                   Text(
@@ -110,13 +111,13 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                     style: AppTextStyles.text1.copyWith(
                                       fontSize: 15,
                                       color: isDark
-                                          ? AppColors.sub2
-                                          : AppColors.sub1Dark,
+                                          ? AppColors.sub1Dark
+                                          : AppColors.sub2,
                                     ),
                                   ),
                                 ],
                               ),
-                          ),
+                            ),
                       AppGap.v12,
                     ],
                   ),
@@ -129,8 +130,11 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                       children: [
                         Text(
                           '외출 현황',
-                          style: AppTextStyles.title3
-                              .copyWith(color: AppColors.mainText),
+                          style: AppTextStyles.title3.copyWith(
+                            color: isDark
+                                ? AppColors.mainTextDark
+                                : AppColors.mainText,
+                          ),
                         ),
                         AppGap.h8,
                         Text(
@@ -140,8 +144,9 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                         ),
                         Text(
                           "명이 외출중",
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.sub2),
+                          style: AppTextStyles.caption1.copyWith(
+                            color: isDark ? AppColors.sub1Dark : AppColors.sub2,
+                          ),
                         ),
                       ],
                     ),
@@ -167,9 +172,8 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
           ),
         ],
       ),
-      floatingActionButton: QRButton(
+      floatingActionButton: const QRButton(
         type: RoleEnum.user,
-        onPressed: () {},
       ),
     );
   }

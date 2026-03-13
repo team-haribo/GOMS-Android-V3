@@ -1,25 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const GomsAppBar({
+  const GomsAppBar._back({
     super.key,
-    this.showLogo = false,
     this.onBackPressed,
     this.actions,
-  });
+  }) : _showLogo = false;
 
-  /// GOMS 로고 표시 여부
-  final bool showLogo;
+  const GomsAppBar._logo({
+    super.key,
+    this.actions,
+  })  : _showLogo = true,
+        onBackPressed = null;
 
-  /// 뒤로가기 버튼 콜백
+  factory GomsAppBar.logo({Key? key, List<Widget>? actions}) =>
+      GomsAppBar._logo(key: key, actions: actions);
+
+  factory GomsAppBar.back({
+    Key? key,
+    VoidCallback? onBackPressed,
+    List<Widget>? actions,
+  }) =>
+      GomsAppBar._back(
+        key: key,
+        onBackPressed: onBackPressed,
+        actions: actions,
+      );
+
+  final bool _showLogo;
   final VoidCallback? onBackPressed;
-
-  /// 우측 액션 버튼들
   final List<Widget>? actions;
 
   @override
@@ -32,7 +46,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       automaticallyImplyLeading: false,
-      leading: showLogo
+      leading: _showLogo
           ? null
           : Padding(
               padding: const EdgeInsets.only(left: AppSpacing.s24),
@@ -46,8 +60,8 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 hoverColor: Colors.transparent,
               ),
             ),
-      titleSpacing: showLogo ? 24 : 4,
-      title: showLogo
+      titleSpacing: _showLogo ? 24 : 4,
+      title: _showLogo
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [

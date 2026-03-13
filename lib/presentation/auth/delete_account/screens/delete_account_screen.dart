@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:project_setting/core/router/route_path.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/presentation/auth/auth_base_screen.dart';
-import 'package:project_setting/presentation/auth/delete_account/models/delete_account_state.dart';
-import 'package:project_setting/presentation/auth/delete_account/viewModels/delete_account_provider.dart';
-import 'package:project_setting/widgets/common/goms_dialog.dart';
-import 'package:project_setting/widgets/common/text_fields/password_text_field.dart';
+import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/presentation/auth/auth_base_screen.dart';
+import 'package:goms/presentation/auth/delete_account/models/delete_account_state.dart';
+import 'package:goms/presentation/auth/delete_account/viewModels/delete_account_provider.dart';
+import 'package:goms/widgets/common/goms_dialog.dart';
+import 'package:goms/widgets/common/text_fields/password_text_field.dart';
 
 class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});
@@ -35,8 +35,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
     ref.listen(deleteAccountProvider, (previous, next) async {
       if (!mounted) return;
       if (next.status == DeleteAccountStatus.success) {
-        await GomsDialog.show(
-          context: context,
+        await GomsDialog.single(
           title: '회원 탈퇴 완료',
           content: '그동안 GOMS를 이용해주셔서 감사합니다.\n안녕히 가세요.',
           confirmText: '완료',
@@ -45,7 +44,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
               context.go(RoutePath.onboarding);
             }
           },
-        );
+        ).show(context);
       } else if (next.status == DeleteAccountStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

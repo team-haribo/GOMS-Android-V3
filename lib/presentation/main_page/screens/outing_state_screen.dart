@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:project_setting/core/theme/colors/app_colors.dart';
-import 'package:project_setting/core/theme/icons/app_icons.dart';
-import 'package:project_setting/core/theme/layout/app_layout.dart';
-import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/domain/enum/role_enum.dart';
-import 'package:project_setting/presentation/main_page/widget/search_profile_list.dart';
-import 'package:project_setting/widgets/common/base_scaffold.dart';
-import 'package:project_setting/widgets/common/buttons/qr_button.dart';
-import 'package:project_setting/widgets/common/text_fields/search_student.dart';
-import 'package:project_setting/presentation/main_page/widget/search_profile_container_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/settings_storage.dart';
+import 'package:goms/domain/enum/role_enum.dart';
+import 'package:goms/presentation/main_page/widget/search_profile_list.dart';
+import 'package:goms/widgets/common/base_scaffold.dart';
+import 'package:goms/widgets/common/buttons/qr_button.dart';
+import 'package:goms/widgets/common/text_fields/search_student.dart';
+import 'package:goms/presentation/main_page/widget/search_profile_container_model.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
 
@@ -23,7 +27,21 @@ class OutingStateScreen extends ConsumerStatefulWidget {
 
 class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   bool isOutingDay = false;
-  String searchText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _checkCameraLaunch();
+  }
+
+  Future<void> _checkCameraLaunch() async {
+    final cameraLaunch = await SettingsStorage.getCameraLaunch();
+    if (!cameraLaunch) return;
+    final cameraStatus = await Permission.camera.status;
+    if (cameraStatus.isGranted && mounted) {
+      context.push(RoutePath.qr);
+    }
+  }
 
   List<SearchProfileContainerModel> outingMembers = [
     const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
@@ -37,6 +55,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final searchText = ref.watch(searchTextProvider);
 
     final filteredList = searchText.isEmpty
         ? outingMembers
@@ -77,17 +96,17 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             Expanded(
               child: Center(
                 child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AppIcons.coffee(),
-                      AppGap.v8,
-                      Text(
-                        '오늘은 외출하는 날이 아니에요!',
-                        style: AppTextStyles.title1
-                            .copyWith(fontSize: 14, color: AppColors.sub2),
-                      ),
-                    ],
-                  ),
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    AppIcons.coffee(),
+                    AppGap.v8,
+                    Text(
+                      '오늘은 외출하는 날이 아니에요!',
+                      style: AppTextStyles.title1
+                          .copyWith(fontSize: 14, color: AppColors.sub2),
+                    ),
+                  ],
+                ),
               ),
             )
           else ...[
@@ -126,11 +145,8 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           ],
         ],
       ),
-      floatingActionButton: QRButton(
+      floatingActionButton: const QRButton(
         type: RoleEnum.user,
-        onPressed: () {
-          //TODO: QR 스크린으로 이동 로직 추가
-        },
       ),
     );
   }

@@ -4,9 +4,9 @@ import 'package:project_setting/core/theme/colors/app_colors.dart';
 import 'package:project_setting/core/theme/icons/app_icons.dart';
 import 'package:project_setting/core/theme/layout/app_layout.dart';
 import 'package:project_setting/core/theme/typography/app_text_styles.dart';
-import 'package:project_setting/presentation/map_page/widget/arrival_departure_button.dart';
-import 'package:project_setting/presentation/map_page/widget/drag_handle_header.dart';
-import 'package:project_setting/presentation/map_page/widget/review_list_container.dart';
+import 'package:project_setting/presentation/map/widget/arrival_departure_button.dart';
+import 'package:project_setting/presentation/map/widget/drag_handle_header.dart';
+import 'package:project_setting/presentation/map/widget/review_list_container.dart';
 import 'package:project_setting/widgets/common/base_scaffold.dart';
 import 'package:project_setting/widgets/common/text_fields/search_text_field.dart';
 

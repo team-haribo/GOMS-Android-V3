@@ -12,6 +12,10 @@ class RoutePath {
   static const String qr = '/qr';
   static const String deleteAccount = '/delete-account';
   static const String map = '/map';
+  static const String direction = '/map/direction';
+  static const String mapDetail = '/map/detail';
+  static const String writeReview = '/write-review';
   static const String home = '/home';
+  static const String outingState = '/outing-state';
   static const String myPage = '/mypage';
 }

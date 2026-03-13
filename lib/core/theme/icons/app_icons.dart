@@ -253,5 +253,4 @@ class AppIcons {
     height: height,
     color: color,
   );
-
 }

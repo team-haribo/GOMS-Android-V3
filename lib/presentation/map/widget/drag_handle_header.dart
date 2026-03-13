@@ -4,10 +4,10 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 class DragHandleHeader extends SliverPersistentHeaderDelegate {
 
   @override
-  double get minExtent => 40;
+  double get minExtent => 36;
 
   @override
-  double get maxExtent => 40;
+  double get maxExtent => 36;
 
   @override
   Widget build(

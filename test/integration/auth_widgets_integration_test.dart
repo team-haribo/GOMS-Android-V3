@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/domain/enum/role_enum.dart';
-import 'package:goms/widgets/common/buttons/toggle_button.dart';
-import 'package:goms/widgets/common/text_fields/email_text_field.dart';
-import 'package:goms/widgets/common/text_fields/password_text_field.dart';
+import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
+import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
+import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 
 void main() {
   const emailFieldKey = Key('email_field');
@@ -84,3 +84,4 @@ class _AuthFormHarnessState extends State<_AuthFormHarness> {
     );
   }
 }
+

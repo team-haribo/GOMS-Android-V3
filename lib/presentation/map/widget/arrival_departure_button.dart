@@ -5,12 +5,14 @@ class ArrivalDepartureButton extends StatelessWidget {
   final String buttonText;
   final Color textColor;
   final Color backgroundColor;
+  final VoidCallback? onPressed;
 
   const ArrivalDepartureButton({
     super.key,
     required this.buttonText,
     required this.textColor,
     required this.backgroundColor,
+    required this.onPressed,
   });
 
   @override
@@ -19,7 +21,7 @@ class ArrivalDepartureButton extends StatelessWidget {
       width: 89,
       height: 33,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,
           elevation: 0,

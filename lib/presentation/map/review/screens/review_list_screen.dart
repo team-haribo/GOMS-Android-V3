@@ -103,7 +103,10 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                   widget.placeName,
                                                   style: AppTextStyles.title3
                                                       .copyWith(
-                                                    color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                                                    color: isLight
+                                                        ? AppColors.mainText
+                                                        : AppColors
+                                                            .mainTextDark,
                                                   ),
                                                 ),
                                                 AppGap.h4,
@@ -111,7 +114,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                   widget.category,
                                                   style: AppTextStyles.text3
                                                       .copyWith(
-                                                    color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                                                    color: isLight
+                                                        ? AppColors.sub1
+                                                        : AppColors.sub1Dark,
                                                   ),
                                                 ),
                                               ],
@@ -131,7 +136,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                           child: Text(
                                             widget.address,
                                             style: AppTextStyles.text2.copyWith(
-                                              color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                              color: isLight
+                                                  ? AppColors.sub2
+                                                  : AppColors.sub2Dark,
                                             ),
                                           ),
                                         ),
@@ -142,7 +149,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '${widget.distanceMeter}m',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -150,7 +159,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '|',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -158,7 +169,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '${widget.durationMinutes}분',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                           ],
@@ -170,7 +183,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '학생 후기',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -178,7 +193,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '${widget.review}',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -186,7 +203,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '|',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -194,7 +213,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '추천',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                             AppGap.h4,
@@ -202,7 +223,9 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                               '${widget.recommended}',
                                               style:
                                                   AppTextStyles.text2.copyWith(
-                                                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
                                               ),
                                             ),
                                           ],
@@ -212,16 +235,20 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                           children: [
                                             ArrivalDepartureButton(
                                               buttonText: '도착',
-                                              textColor: isLight ? AppColors.background : AppColors.mainTextDark,
+                                              textColor: isLight
+                                                  ? AppColors.background
+                                                  : AppColors.mainTextDark,
                                               backgroundColor:
                                                   AppColors.mainColor,
+                                              onPressed: () {},
                                             ),
                                             AppGap.h4,
-                                            const ArrivalDepartureButton(
+                                            ArrivalDepartureButton(
                                               buttonText: '출발',
                                               textColor: AppColors.sub2,
                                               backgroundColor:
                                                   AppColors.buttonDark,
+                                              onPressed: () {},
                                             ),
                                           ],
                                         ),
@@ -236,7 +263,10 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                   '학생후기',
                                                   style: AppTextStyles.title3
                                                       .copyWith(
-                                                    color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                                                    color: isLight
+                                                        ? AppColors.mainText
+                                                        : AppColors
+                                                            .mainTextDark,
                                                   ),
                                                 ),
                                                 AppGap.h4,
@@ -244,7 +274,8 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                   text: TextSpan(
                                                     children: [
                                                       TextSpan(
-                                                        text: '${widget.review}',
+                                                        text:
+                                                            '${widget.review}',
                                                         style: AppTextStyles
                                                             .text3
                                                             .copyWith(
@@ -257,7 +288,10 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                         style: AppTextStyles
                                                             .text3
                                                             .copyWith(
-                                                          color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                                                          color: isLight
+                                                              ? AppColors.sub2
+                                                              : AppColors
+                                                                  .sub2Dark,
                                                         ),
                                                       ),
                                                     ],
@@ -271,13 +305,17 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                 '후기 남기기',
                                                 style: AppTextStyles.text2
                                                     .copyWith(
-                                                  color: isLight ? AppColors.sub2 : AppColors.sub1Dark,
+                                                  color: isLight
+                                                      ? AppColors.sub2
+                                                      : AppColors.sub1Dark,
                                                 ),
                                               ),
                                               icon: AppIcons.tablerEdit(
                                                 width: 24,
                                                 height: 24,
-                                                color: isLight ? AppColors.sub2 : AppColors.sub1Dark,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub1Dark,
                                               ),
                                               style: TextButton.styleFrom(
                                                 padding: const EdgeInsets.only(

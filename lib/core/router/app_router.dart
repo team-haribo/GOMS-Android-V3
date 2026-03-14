@@ -1,25 +1,25 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/presentation/auth/login/screens/login_screen.dart';
-import 'package:goms/presentation/auth/reset_password/screens/find_password_screen.dart';
-import 'package:goms/presentation/auth/reset_password/screens/reset_password_screen.dart';
-import 'package:goms/presentation/auth/signup/screens/signup_screen.dart';
-import 'package:goms/presentation/auth/signup/screens/password_screen.dart';
-import 'package:goms/presentation/auth/verify/screens/verify_screen.dart';
-import 'package:goms/presentation/main_page/screens/outing_state_screen.dart';
-import 'package:goms/presentation/main_page/screens/outing_waiting_screen.dart';
-import 'package:goms/presentation/main_page/widget/main_shell.dart';
-import 'package:goms/presentation/map/base/models/map_screen_type.dart';
-import 'package:goms/presentation/map/base/screens/map_base_screen.dart';
-import 'package:goms/presentation/map/direction/screens/direction_screen.dart';
-import 'package:goms/presentation/map/main/screens/map_page.dart';
-import 'package:goms/presentation/map/review/screens/write_review_screen.dart';
-import 'package:goms/presentation/map/widget/map_page_models.dart';
-import 'package:goms/presentation/my_page/screens/my_page_screen.dart';
-import 'package:goms/presentation/auth/delete_account/screens/delete_account_screen.dart';
-import 'package:goms/presentation/qr/scan/screens/qr_scan_screen.dart';
-import 'package:goms/presentation/splash/onboarding_screen.dart';
-import 'package:goms/presentation/splash/splash_screen.dart';
+import 'package:goms/features/auth/presentation/pages/login/login_screen.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/find_password_screen.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/reset_password_screen.dart';
+import 'package:goms/features/auth/presentation/pages/signup/signup_screen.dart';
+import 'package:goms/features/auth/presentation/pages/signup/password_screen.dart';
+import 'package:goms/features/auth/presentation/pages/verify/verify_screen.dart';
+import 'package:goms/features/main_page/presentation/pages/outing_state_screen.dart';
+import 'package:goms/features/main_page/presentation/pages/outing_waiting_screen.dart';
+import 'package:goms/features/main_page/presentation/widgets/main_shell.dart';
+import 'package:goms/features/map/presentation/pages/base/models/map_screen_type.dart';
+import 'package:goms/features/map/presentation/pages/base/map_base_screen.dart';
+import 'package:goms/features/map/presentation/pages/direction/direction_screen.dart';
+import 'package:goms/features/map/presentation/pages/main/map_page.dart';
+import 'package:goms/features/map/presentation/pages/review/write_review_screen.dart';
+import 'package:goms/features/map/presentation/widgets/map_page_models.dart';
+import 'package:goms/features/my_page/presentation/pages/my_page_screen.dart';
+import 'package:goms/features/auth/presentation/pages/delete_account/delete_account_screen.dart';
+import 'package:goms/features/qr/presentation/pages/qr_scan_screen.dart';
+import 'package:goms/features/splash/presentation/pages/onboarding_screen.dart';
+import 'package:goms/features/splash/presentation/pages/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -177,3 +177,5 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
+
+

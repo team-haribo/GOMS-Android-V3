@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
@@ -21,7 +22,12 @@ class MapScreen extends StatefulWidget {
       return;
     }
 
-    await kakao.KakaoMapSdk.instance.initialize(_KakaoKeys.nativeAppKey);
+    final nativeAppKey = dotenv.env['KAKAO_NATIVE_APP_KEY']?.trim() ?? '';
+    if (nativeAppKey.isEmpty) {
+      throw const _KakaoConfigException('카카오 네이티브 앱 키가 설정되지 않았습니다.');
+    }
+
+    await kakao.KakaoMapSdk.instance.initialize(nativeAppKey);
     _kakaoSdkInitialized = true;
   }
 
@@ -29,12 +35,15 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _KakaoKeys {
-  static const String restApiKey = '393671aa114dc1cd75c449f8c6adccb4';
-  static const String nativeAppKey = '4b02a70797aa58db93b93ee1afcc096f';
-}
-
 bool _kakaoSdkInitialized = false;
+
+String get _kakaoRestApiKey {
+  final key = dotenv.env['KAKAO_REST_API_KEY']?.trim() ?? '';
+  if (key.isEmpty) {
+    throw const _KakaoConfigException('카카오 REST API 키가 설정되지 않았습니다.');
+  }
+  return key;
+}
 
 class _MapScreenState extends State<MapScreen> {
   static const kakao.LatLng _seoulCityHall = kakao.LatLng(37.5665, 126.9780);
@@ -166,7 +175,7 @@ class _MapScreenState extends State<MapScreen> {
       final request = await client.getUrl(uri);
       request.headers.set(
         HttpHeaders.authorizationHeader,
-        'KakaoAK ${_KakaoKeys.restApiKey}',
+        'KakaoAK $_kakaoRestApiKey',
       );
       request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
 
@@ -319,4 +328,13 @@ class _MapScreenState extends State<MapScreen> {
       ),
     );
   }
+}
+
+class _KakaoConfigException implements Exception {
+  final String message;
+
+  const _KakaoConfigException(this.message);
+
+  @override
+  String toString() => message;
 }

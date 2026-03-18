@@ -1,10 +1,10 @@
-import 'dart:math';
+﻿import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/services/kakao_local_service.dart';
 import 'package:goms/features/map/data/services/map_service_providers.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_review_model.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
@@ -133,4 +133,5 @@ class MapPageNotifier extends Notifier<MapPageState> {
     }).toList();
   }
 }
+
 

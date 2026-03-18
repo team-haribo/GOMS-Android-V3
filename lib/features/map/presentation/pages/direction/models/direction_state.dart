@@ -1,5 +1,5 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+﻿import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 
 part 'direction_state.freezed.dart';
 
@@ -54,4 +54,5 @@ abstract class DirectionState with _$DirectionState {
 
   factory DirectionState.initial() => const DirectionState();
 }
+
 

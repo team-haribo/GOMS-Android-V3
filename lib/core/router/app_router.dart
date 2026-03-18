@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/find_password_screen.dart';
@@ -9,7 +9,7 @@ import 'package:goms/features/auth/presentation/pages/verify/verify_screen.dart'
 import 'package:goms/features/main_page/presentation/pages/outing_state_screen.dart';
 import 'package:goms/features/main_page/presentation/pages/outing_waiting_screen.dart';
 import 'package:goms/features/main_page/presentation/widgets/main_shell.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/base/models/map_screen_type.dart';
 import 'package:goms/features/map/presentation/pages/base/map_base_screen.dart';
 import 'package:goms/features/map/presentation/pages/direction/direction_screen.dart';
@@ -181,4 +181,5 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
+
 

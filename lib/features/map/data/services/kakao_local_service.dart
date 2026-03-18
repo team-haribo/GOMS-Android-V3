@@ -1,8 +1,8 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 
 class KakaoPlaceSearchResult {
   final String id;
@@ -135,4 +135,5 @@ class KakaoApiException implements Exception {
   @override
   String toString() => message;
 }
+
 

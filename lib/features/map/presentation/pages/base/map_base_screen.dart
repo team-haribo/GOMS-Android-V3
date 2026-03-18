@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -10,7 +10,7 @@ import 'package:goms/features/map/presentation/pages/base/widgets/map_scaffold.d
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
 import 'package:goms/features/map/presentation/pages/direction/viewModels/direction_provider.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 import 'package:goms/features/map/presentation/pages/main/viewModels/map_page_provider.dart';
 import 'package:goms/features/map/presentation/widgets/kakao_map_background.dart';
@@ -163,5 +163,6 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     );
   }
 }
+
 
 

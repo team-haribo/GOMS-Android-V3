@@ -1,8 +1,8 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
 
 class KakaoMobilityService {
@@ -179,3 +179,4 @@ class KakaoMobilityException implements Exception {
   @override
   String toString() => message;
 }
+

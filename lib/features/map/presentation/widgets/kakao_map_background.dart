@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
-import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
@@ -325,3 +325,4 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
     );
   }
 }
+

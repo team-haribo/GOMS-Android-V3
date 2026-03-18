@@ -1,4 +1,4 @@
-﻿import 'package:goms/features/map/models/map_coordinate.dart';
+import 'package:goms/features/map/models/map_coordinate.dart';
 
 class PopularPlace {
   final String name;

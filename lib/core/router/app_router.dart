@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/find_password_screen.dart';

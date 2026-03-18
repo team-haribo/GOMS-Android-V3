@@ -1,4 +1,4 @@
-﻿import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/map/models/map_coordinate.dart';
 
 part 'direction_state.freezed.dart';

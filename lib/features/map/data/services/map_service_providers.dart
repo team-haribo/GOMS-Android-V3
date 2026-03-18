@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/features/map/data/services/kakao_local_service.dart';
 import 'package:goms/features/map/data/services/kakao_mobility_service.dart';
 

@@ -44,12 +44,6 @@ class _PlaceContainerState extends State<PlaceContainer> {
         decoration: BoxDecoration(
           color: colors.cardColor,
           borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 20,
-            ),
-          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.s16),

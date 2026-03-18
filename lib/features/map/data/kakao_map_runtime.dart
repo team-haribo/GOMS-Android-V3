@@ -57,16 +57,9 @@ class KakaoMapRuntime {
 
   Future<List<String>> _getSupportedAbis() async {
     try {
-      final dynamic result = await _channel.invokeMethod<dynamic>(
-        'getSupportedAbis',
-      );
-
-      if (result is List) {
-        return result
-            .whereType<Object>()
-            .map((value) => value.toString())
-            .toList(growable: false);
-      }
+      final result =
+          await _channel.invokeListMethod<String>('getSupportedAbis');
+      return result ?? const <String>[];
     } catch (error) {
       debugPrint('KakaoMapRuntime ABI lookup failed: $error');
     }

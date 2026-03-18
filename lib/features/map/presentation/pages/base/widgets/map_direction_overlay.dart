@@ -60,9 +60,10 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedIndex = widget.state.selectedRouteIndex < widget.state.routeOptions.length
-        ? widget.state.selectedRouteIndex
-        : 0;
+    final selectedIndex =
+        widget.state.selectedRouteIndex < widget.state.routeOptions.length
+            ? widget.state.selectedRouteIndex
+            : 0;
     final selectedOption = widget.state.routeOptions.isEmpty
         ? null
         : widget.state.routeOptions[selectedIndex];
@@ -96,9 +97,8 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
               behavior: HitTestBehavior.opaque,
               child: Container(
                 color: (_isDark(themeMode, context)
-                        ? AppColors.backgroundDark
-                        : AppColors.background)
-                    .withValues(alpha: 0.18),
+                    ? AppColors.backgroundDark
+                    : AppColors.background),
               ),
             ),
           ),
@@ -741,6 +741,3 @@ String _formatWon(int value) {
         (match) => ',',
       )}원';
 }
-
-
-

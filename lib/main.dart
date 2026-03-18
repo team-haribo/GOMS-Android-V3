@@ -1,4 +1,4 @@
-import 'package:firebase_core/firebase_core.dart';
+﻿import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -7,6 +7,7 @@ import 'package:goms/core/router/app_router.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/utils/token_storage.dart';
+import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/firebase_options.dart';
 
 @pragma('vm:entry-point')
@@ -17,11 +18,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: '.env');
+  await KakaoMapRuntime.instance.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await TokenStorage.deleteAllTokens(); // 테스트용: 로그인부터 시작
+  await TokenStorage.deleteAllTokens();
   runApp(const ProviderScope(child: MyApp()));
 }
 

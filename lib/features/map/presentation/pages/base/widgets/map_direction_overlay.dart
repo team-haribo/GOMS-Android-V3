@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
@@ -8,8 +8,6 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 
-/// 로컬 설정(themeModeProvider) 기반으로 다크모드 여부를 반환합니다.
-/// ThemeMode.system 일 때는 실제 디바이스 밝기를 참조합니다.
 bool _isDark(ThemeMode mode, BuildContext context) {
   if (mode == ThemeMode.system) {
     return MediaQuery.platformBrightnessOf(context) == Brightness.dark;
@@ -17,10 +15,6 @@ bool _isDark(ThemeMode mode, BuildContext context) {
   return mode == ThemeMode.dark;
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MapDirectionOverlay
-// 지도 길찾기 모드 전체 오버레이 (상단 입력 패널 + 하단 경로 목록/상세)
-// ─────────────────────────────────────────────────────────────────────────────
 class MapDirectionOverlay extends ConsumerStatefulWidget {
   final PopularPlace place;
   final DirectionState state;
@@ -47,16 +41,6 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
   bool _isRouteSheetVisible = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_routeScrollController.hasClients) {
-        _routeScrollController.jumpTo(0);
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _routeScrollController.dispose();
     super.dispose();
@@ -68,18 +52,26 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
   }
 
   void _closeRouteSheet() {
-    if (!_isRouteSheetVisible) return;
+    if (!_isRouteSheetVisible) {
+      return;
+    }
     setState(() => _isRouteSheetVisible = false);
   }
 
   @override
   Widget build(BuildContext context) {
+    final selectedIndex =
+        widget.state.selectedRouteIndex < widget.state.routeOptions.length
+            ? widget.state.selectedRouteIndex
+            : 0;
     final selectedOption = widget.state.routeOptions.isEmpty
         ? null
-        : widget.state.routeOptions[widget.state.selectedRouteIndex];
+        : widget.state.routeOptions[selectedIndex];
     final departureName = widget.state.departure;
+    final destinationName = widget.state.destination.isEmpty
+        ? widget.place.name
+        : widget.state.destination;
 
-    // 로컬 저장소 기반 다크모드 여부
     final themeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
@@ -87,20 +79,17 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
 
     return Stack(
       children: [
-        // 상단: 출발지·도착지 입력 패널
         Positioned(
           top: 0,
           left: 0,
           right: 0,
           child: _DirectionTopPanel(
             departureName: departureName,
-            destinationName: widget.place.name,
+            destinationName: destinationName,
             onSwap: widget.onSwap,
             onDepartureSelect: widget.onDepartureSelect,
           ),
         ),
-
-        // 경로 상세 시트가 열릴 때 표시되는 반투명 딤(dim) 배경
         if (_isRouteSheetVisible && selectedOption != null)
           Positioned.fill(
             child: GestureDetector(
@@ -108,14 +97,11 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
               behavior: HitTestBehavior.opaque,
               child: Container(
                 color: (_isDark(themeMode, context)
-                        ? AppColors.backgroundDark
-                        : AppColors.background)
-                    .withOpacity(0.18), // 색 변경 예정
+                    ? AppColors.backgroundDark
+                    : AppColors.background),
               ),
             ),
           ),
-
-        // 하단: 로딩 / 경로 목록 카드 / 경로 상세 시트
         Positioned(
           left: 0,
           right: 0,
@@ -125,7 +111,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
             routeCarousel: _DirectionRouteCarousel(
               scrollController: _routeScrollController,
               routeOptions: widget.state.routeOptions,
-              selectedIndex: widget.state.selectedRouteIndex,
+              selectedIndex: selectedIndex,
               onTap: _handleRouteTap,
             ),
             routeSheet: selectedOption == null
@@ -133,7 +119,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
                 : _DirectionDetailSheet(
                     option: selectedOption,
                     departureName: departureName,
-                    destinationName: widget.place.name,
+                    destinationName: destinationName,
                     onClose: _closeRouteSheet,
                   ),
             isRouteSheetVisible: _isRouteSheetVisible,
@@ -149,27 +135,23 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
     required Widget routeSheet,
     required bool isRouteSheetVisible,
   }) {
-    // 로딩 중 스피너 표시
     if (state.status == DirectionStatus.loading) {
       return const Padding(
         padding: EdgeInsets.only(bottom: 32),
         child: Center(
-          child: CircularProgressIndicator(
-            color: AppColors.mainColor,
-          ),
+          child: CircularProgressIndicator(color: AppColors.mainColor),
         ),
       );
     }
 
-    // 경로 상세 시트 ↔ 카드 캐러셀 전환
+    if (state.routeOptions.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return isRouteSheetVisible ? routeSheet : routeCarousel;
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionTopPanel
-// 화면 상단: 출발지·도착지 입력 필드 + 스왑 버튼
-// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionTopPanel extends ConsumerWidget {
   final String departureName;
   final String destinationName;
@@ -195,16 +177,13 @@ class _DirectionTopPanel extends ConsumerWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: dark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
-        borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(12),
-        ),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(24, 60, 24, 20),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 출발/도착 스왑 버튼
             Padding(
               padding: const EdgeInsets.only(top: 67),
               child: GestureDetector(
@@ -243,10 +222,6 @@ class _DirectionTopPanel extends ConsumerWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionFieldBlock
-// 출발/도착 텍스트 입력 필드 (드롭다운 오버레이 포함)
-// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionFieldBlock extends ConsumerStatefulWidget {
   final String label;
   final String value;
@@ -294,7 +269,6 @@ class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
         _containerKey.currentContext!.findRenderObject() as RenderBox;
     final containerHeight = containerBox.size.height;
 
-    // 드롭다운 생성 시점의 테마 읽기 (ref.read: 단발성)
     final themeMode = switch (ref.read(themeModeProvider)) {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
@@ -393,7 +367,6 @@ class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
   Widget build(BuildContext context) {
     final hasValue = widget.value.trim().isNotEmpty;
 
-    // 로컬 저장소 기반 다크모드 여부 (ref.watch: 테마 변경 시 자동 갱신)
     final themeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
@@ -408,7 +381,6 @@ class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // 라벨 (출발 / 도착)
         Text(
           widget.label,
           style: AppTextStyles.text3.copyWith(color: textColor),
@@ -456,10 +428,6 @@ class _DirectionFieldBlockState extends ConsumerState<_DirectionFieldBlock> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionRouteCarousel
-// 하단 경로 옵션 카드 가로 스크롤 목록
-// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionRouteCarousel extends StatelessWidget {
   final ScrollController scrollController;
   final List<RouteOption> routeOptions;
@@ -475,10 +443,12 @@ class _DirectionRouteCarousel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (routeOptions.isEmpty) return const SizedBox.shrink();
+    if (routeOptions.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return SizedBox(
-      height: 160,
+      height: 168,
       child: ListView.separated(
         controller: scrollController,
         padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
@@ -486,9 +456,10 @@ class _DirectionRouteCarousel extends StatelessWidget {
         itemBuilder: (context, index) {
           final option = routeOptions[index];
           return SizedBox(
-            width: 192,
+            width: 208,
             child: _RouteOptionCard(
               option: option,
+              isSelected: selectedIndex == index,
               onTap: () => onTap(index),
             ),
           );
@@ -500,16 +471,14 @@ class _DirectionRouteCarousel extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _RouteOptionCard
-// 경로 옵션 하나를 표시하는 카드 (라벨 / 소요시간 / 거리·칼로리)
-// ─────────────────────────────────────────────────────────────────────────────
 class _RouteOptionCard extends ConsumerWidget {
   final RouteOption option;
+  final bool isSelected;
   final VoidCallback onTap;
 
   const _RouteOptionCard({
     required this.option,
+    required this.isSelected,
     required this.onTap,
   });
 
@@ -527,10 +496,13 @@ class _RouteOptionCard extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: dark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected ? AppColors.mainColor : Colors.transparent,
+            width: 1.5,
+          ),
         ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -555,7 +527,14 @@ class _RouteOptionCard extends ConsumerWidget {
             ),
             AppGap.v4,
             Text(
-              '${option.meters}m | ${option.calories}kcal',
+              '${option.meters}m',
+              style: AppTextStyles.text2.copyWith(
+                color: dark ? AppColors.sub2Dark : AppColors.sub2,
+              ),
+            ),
+            AppGap.v4,
+            Text(
+              '택시 예상 ${_formatWon(option.taxiFare)}',
               style: AppTextStyles.text2.copyWith(
                 color: dark ? AppColors.sub2Dark : AppColors.sub2,
               ),
@@ -567,10 +546,6 @@ class _RouteOptionCard extends ConsumerWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionDetailSheet
-// 하단에서 올라오는 경로 상세 시트
-// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionDetailSheet extends ConsumerWidget {
   final RouteOption option;
   final String departureName;
@@ -584,54 +559,8 @@ class _DirectionDetailSheet extends ConsumerWidget {
     required this.onClose,
   });
 
-  static const _labelDeparture = '출발';
-  static const _labelArrival = '도착';
-  static const _labelDefaultDeparture = '학교';
-  static const _labelTurnLeft = '좌회전';
-  static const _labelTurnRight = '우회전';
-  static const _labelStraight = '직진';
-  static const _labelMove = '이동';
-  static const _labelTowardSuffix = '방면 이동';
-
-  List<_DirectionStepData> _buildSteps() {
-    final firstDistance = (option.meters * 0.42).round();
-    final secondDistance = (option.meters * 0.33).round();
-    final thirdDistance = option.meters - firstDistance - secondDistance;
-
-    return [
-      _DirectionStepData(
-        icon: Icons.location_on_outlined,
-        title: _labelDeparture,
-        description:
-            departureName.isEmpty ? _labelDefaultDeparture : departureName,
-      ),
-      _DirectionStepData(
-        icon: Icons.straight_rounded,
-        title: '$destinationName $_labelTowardSuffix',
-        description: '${firstDistance}m $_labelStraight',
-      ),
-      _DirectionStepData(
-        icon: Icons.turn_left_rounded,
-        title: _labelTurnLeft,
-        description: '${secondDistance}m $_labelMove',
-      ),
-      _DirectionStepData(
-        icon: Icons.turn_right_rounded,
-        title: _labelTurnRight,
-        description: '${thirdDistance}m $_labelMove',
-      ),
-      _DirectionStepData(
-        icon: Icons.location_on_outlined,
-        title: _labelArrival,
-        description: destinationName,
-        isArrival: true,
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final steps = _buildSteps();
     final themeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
@@ -644,10 +573,10 @@ class _DirectionDetailSheet extends ConsumerWidget {
     final subColor = dark ? AppColors.sub1Dark : AppColors.sub1;
     final dividerColor = dark ? AppColors.buttonDark : AppColors.button;
     final shadowColor = (dark ? AppColors.backgroundDark : AppColors.background)
-        .withOpacity(0.22); // 색 변경 예정
+        .withValues(alpha: 0.22);
 
     return Container(
-      height: 452,
+      height: 460,
       decoration: BoxDecoration(
         color: sheetBg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
@@ -662,7 +591,6 @@ class _DirectionDetailSheet extends ConsumerWidget {
       child: Column(
         children: [
           AppGap.v12,
-          // 드래그 핸들
           Container(
             width: 48,
             height: 5,
@@ -681,6 +609,11 @@ class _DirectionDetailSheet extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
+                        '${departureName.isEmpty ? '학교' : departureName} -> $destinationName',
+                        style: AppTextStyles.text2.copyWith(color: subColor),
+                      ),
+                      AppGap.v8,
+                      Text(
                         '${option.label} 경로',
                         style: AppTextStyles.title3.copyWith(color: textColor),
                       ),
@@ -691,7 +624,12 @@ class _DirectionDetailSheet extends ConsumerWidget {
                       ),
                       AppGap.v4,
                       Text(
-                        '${option.meters}m | ${option.calories}kcal',
+                        '${option.meters}m | 통행료 ${_formatWon(option.tollFare)}',
+                        style: AppTextStyles.text3.copyWith(color: subColor),
+                      ),
+                      AppGap.v4,
+                      Text(
+                        '택시 예상 ${_formatWon(option.taxiFare)}',
                         style: AppTextStyles.text3.copyWith(color: subColor),
                       ),
                     ],
@@ -711,13 +649,15 @@ class _DirectionDetailSheet extends ConsumerWidget {
           Expanded(
             child: ListView.separated(
               padding: const EdgeInsets.fromLTRB(24, 4, 24, 24),
-              itemBuilder: (_, index) =>
-                  _DirectionStepTile(step: steps[index], dark: dark),
+              itemBuilder: (_, index) => _DirectionStepTile(
+                step: option.steps[index],
+                dark: dark,
+              ),
               separatorBuilder: (_, __) => Divider(
                 color: dividerColor,
                 height: 1,
               ),
-              itemCount: steps.length,
+              itemCount: option.steps.length,
             ),
           ),
         ],
@@ -726,12 +666,8 @@ class _DirectionDetailSheet extends ConsumerWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionStepTile
-// 경로 상세 시트 내 단계별 리스트 아이템
-// ─────────────────────────────────────────────────────────────────────────────
 class _DirectionStepTile extends StatelessWidget {
-  final _DirectionStepData step;
+  final RouteStep step;
   final bool dark;
 
   const _DirectionStepTile({required this.step, required this.dark});
@@ -749,7 +685,7 @@ class _DirectionStepTile extends StatelessWidget {
           SizedBox(
             width: 36,
             child: Icon(
-              step.icon,
+              _iconForStep(step),
               color: AppColors.mainColor,
               size: 30,
             ),
@@ -766,10 +702,7 @@ class _DirectionStepTile extends StatelessWidget {
                 AppGap.v4,
                 Text(
                   step.description,
-                  style: AppTextStyles.text3.copyWith(
-                    // 도착지는 메인 텍스트 색, 중간 단계는 서브 색
-                    color: step.isArrival ? textColor : descColor,
-                  ),
+                  style: AppTextStyles.text3.copyWith(color: descColor),
                 ),
               ],
             ),
@@ -778,24 +711,33 @@ class _DirectionStepTile extends StatelessWidget {
       ),
     );
   }
+
+  IconData _iconForStep(RouteStep step) {
+    if (step.type == 100) {
+      return Icons.location_on_outlined;
+    }
+    if (step.type == 101) {
+      return Icons.flag_outlined;
+    }
+    if (step.title.contains('좌회전')) {
+      return Icons.turn_left_rounded;
+    }
+    if (step.title.contains('우회전')) {
+      return Icons.turn_right_rounded;
+    }
+    if (step.title.contains('유턴')) {
+      return Icons.u_turn_left_rounded;
+    }
+    return Icons.straight_rounded;
+  }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// _DirectionStepData
-// 경로 상세 단계 데이터 모델
-// ─────────────────────────────────────────────────────────────────────────────
-class _DirectionStepData {
-  final IconData icon;
-  final String title;
-  final String description;
-  final bool isArrival;
-
-  const _DirectionStepData({
-    required this.icon,
-    required this.title,
-    required this.description,
-    this.isArrival = false,
-  });
+String _formatWon(int value) {
+  if (value <= 0) {
+    return '0원';
+  }
+  return '${value.toString().replaceAllMapped(
+        RegExp(r'\B(?=(\d{3})+(?!\d))'),
+        (match) => ',',
+      )}원';
 }
-
-

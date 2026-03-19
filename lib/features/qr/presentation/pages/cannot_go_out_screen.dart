@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/features/qr/presentation/pages/qr_base_screen.dart';
 

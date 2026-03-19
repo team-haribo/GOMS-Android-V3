@@ -9,6 +9,7 @@ import 'package:goms/features/auth/presentation/pages/verify/verify_screen.dart'
 import 'package:goms/features/main_page/presentation/pages/outing_state_screen.dart';
 import 'package:goms/features/main_page/presentation/pages/outing_waiting_screen.dart';
 import 'package:goms/features/main_page/presentation/widgets/main_shell.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/base/models/map_screen_type.dart';
 import 'package:goms/features/map/presentation/pages/base/map_base_screen.dart';
 import 'package:goms/features/map/presentation/pages/direction/direction_screen.dart';
@@ -97,6 +98,10 @@ final GoRouter router = GoRouter(
                 address: '광주광역시 광산구 송정동',
                 review: 5,
                 recommended: 10,
+                coordinate: MapCoordinate(
+                  latitude: 35.139783,
+                  longitude: 126.793442,
+                ),
               );
         return WriteReviewScreen(
           placeName: place.name,
@@ -107,7 +112,6 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-    // ==================== 바텀 네비게이션 쉘 ====================
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           MainShell(navigationShell: navigationShell),

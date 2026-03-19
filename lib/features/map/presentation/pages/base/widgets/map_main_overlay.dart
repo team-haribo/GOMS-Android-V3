@@ -1,15 +1,17 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
 import 'package:goms/features/map/presentation/pages/base/widgets/map_shared_widgets.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_review_model.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 import 'package:goms/features/map/presentation/widgets/place_container.dart';
-import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
 
 class MapMainOverlay extends StatelessWidget {
   final MapPageState state;
@@ -119,6 +121,13 @@ class _PopularPlacesSection extends StatelessWidget {
         AppGap.v16,
         if (status == MapPageStatus.loading && popularPlaces.isEmpty)
           const Center(child: CircularProgressIndicator())
+        else if (popularPlaces.isEmpty)
+          Text(
+            '표시할 장소가 없습니다.',
+            style: AppTextStyles.text3.copyWith(
+              color: _subTextColor(isLight),
+            ),
+          )
         else
           ...popularPlaces.map(
             (place) => Padding(
@@ -129,6 +138,8 @@ class _PopularPlacesSection extends StatelessWidget {
                 address: place.address,
                 review: place.review,
                 recommended: place.recommended,
+                distanceMeters: place.distanceMeters,
+                onTap: () => context.push(RoutePath.mapDetail, extra: place),
               ),
             ),
           ),
@@ -173,9 +184,7 @@ class _MyActivitySection extends StatelessWidget {
           countStyle: AppTextStyles.text3,
         ),
         AppGap.v12,
-        // TODO: 추천한 가게 목록은 현재 popularPlaces(인기 장소)로 임시 대체 중
-        // 실제 구현 시 사용자가 추천한 장소를 별도 API로 받아와 교체 필요
-        ...popularPlaces.map(
+        ...popularPlaces.take(2).map(
           (place) => Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: PlaceContainer(
@@ -184,6 +193,8 @@ class _MyActivitySection extends StatelessWidget {
               address: place.address,
               review: place.review,
               recommended: place.recommended,
+              distanceMeters: place.distanceMeters,
+              onTap: () => context.push(RoutePath.mapDetail, extra: place),
             ),
           ),
         ),
@@ -362,6 +373,4 @@ Color _mainTextColor(bool isLight) {
 Color _subTextColor(bool isLight) {
   return isLight ? AppColors.sub1 : AppColors.sub1Dark;
 }
-
-
 

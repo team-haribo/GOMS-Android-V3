@@ -10,6 +10,7 @@ import 'package:goms/features/map/presentation/pages/base/widgets/map_scaffold.d
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
 import 'package:goms/features/map/presentation/pages/direction/viewModels/direction_provider.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
+import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 import 'package:goms/features/map/presentation/pages/main/viewModels/map_page_provider.dart';
 import 'package:goms/features/map/presentation/widgets/kakao_map_background.dart';
@@ -50,25 +51,31 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || widget.place == null) return;
-      ref.read(directionProvider.notifier).setDestination(widget.place!.name);
+      if (!mounted || widget.place == null) {
+        return;
+      }
+      ref.read(directionProvider.notifier).setDestination(widget.place!);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
+    final mapState = ref.watch(mapPageProvider);
+    final directionState = ref.watch(directionProvider);
 
     if (widget.type != MapScreenType.main && place == null) {
       return const MapScaffold(
-        body: const Center(child: Text('선택된 장소가 없습니다.')),
+        body: Center(child: Text('선택된 장소가 없습니다.')),
       );
     }
 
     if (widget.type == MapScreenType.main ||
         widget.type == MapScreenType.detail) {
       ref.listen<MapPageState>(mapPageProvider, (previous, next) {
-        if (!mounted) return;
+        if (!mounted) {
+          return;
+        }
         if (next.status == MapPageStatus.failure && next.errorMessage != null) {
           ref.read(mapPageProvider.notifier).clearError();
           _showError(next.errorMessage!);
@@ -78,43 +85,59 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
     if (widget.type == MapScreenType.direction) {
       ref.listen<DirectionState>(directionProvider, (previous, next) {
-        if (!mounted) return;
-        if (next.status == DirectionStatus.failure &&
-            next.errorMessage != null) {
+        if (!mounted) {
+          return;
+        }
+        if (next.status == DirectionStatus.failure && next.errorMessage != null) {
           ref.read(directionProvider.notifier).clearError();
           _showError(next.errorMessage!);
         }
       });
     }
 
+    final routePath = widget.type == MapScreenType.direction &&
+            directionState.routeOptions.isNotEmpty
+        ? directionState.routeOptions[directionState.selectedRouteIndex].path
+        : const <MapCoordinate>[];
+
+    final places = switch (widget.type) {
+      MapScreenType.main => mapState.popularPlaces,
+      _ => place == null ? mapState.popularPlaces : [place],
+    };
+
     return MapScaffold(
       body: Stack(
         children: [
           Positioned.fill(
             child: KakaoMapBackground(
+              places: places,
               focusPlace: place,
+              routePath: routePath,
               showRoutePreview: widget.type == MapScreenType.direction,
             ),
           ),
-          Positioned.fill(child: _buildOverlay(place)),
+          Positioned.fill(child: _buildOverlay(place, mapState, directionState)),
         ],
       ),
     );
   }
 
-  Widget _buildOverlay(PopularPlace? place) {
+  Widget _buildOverlay(
+    PopularPlace? place,
+    MapPageState mapState,
+    DirectionState directionState,
+  ) {
     final overlay = switch (widget.type) {
-      MapScreenType.main => MapMainOverlay(state: ref.watch(mapPageProvider)),
-      MapScreenType.detail => MapDetailOverlay(
-          place: place!,
-          state: ref.watch(mapPageProvider),
-        ),
+      MapScreenType.main => MapMainOverlay(state: mapState),
+      MapScreenType.detail => MapDetailOverlay(place: place!, state: mapState),
       MapScreenType.direction => MapDirectionOverlay(
           place: place!,
-          state: ref.watch(directionProvider),
+          state: directionState,
           onSwap: () => ref.read(directionProvider.notifier).swapLocations(),
           onSelect: (index) =>
               ref.read(directionProvider.notifier).selectRoute(index),
+          onDepartureSelect: (value) =>
+              ref.read(directionProvider.notifier).selectDeparture(value),
         ),
     };
 

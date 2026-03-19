@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class TimeDisplay extends StatefulWidget {
@@ -43,18 +43,16 @@ class _TimeDisplayState extends State<TimeDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
             text: '$_ampm ',
-            style: AppTextStyles.dateTimeAmPm.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+            style: AppTextStyles.dateTimeAmPm.copyWith(color: context.sub2Color),
           ),
           TextSpan(
             text: _time,
-            style: AppTextStyles.dateTime.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+            style: AppTextStyles.dateTime.copyWith(color: context.sub2Color),
           ),
         ],
       ),

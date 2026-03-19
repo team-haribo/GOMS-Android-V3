@@ -4,6 +4,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
@@ -13,8 +14,6 @@ class OnboardingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return BaseScaffold(
       showAppBar: false,
       body: Column(
@@ -28,7 +27,7 @@ class OnboardingScreen extends StatelessWidget {
             textAlign: TextAlign.center,
             text: TextSpan(
               style: AppTextStyles.title2.withColor(
-                isDark ? AppColors.mainTextDark : AppColors.mainText,
+                context.mainTextColor,
               ),
               children: [
                 TextSpan(
@@ -47,14 +46,14 @@ class OnboardingScreen extends StatelessWidget {
                 'GOMS로 간편하게',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.text2.withColor(
-                  isDark ? AppColors.sub1Dark : AppColors.sub2,
+                  context.sub1Color,
                 ),
               ),
               Text(
                 '월수 외출체를 이용해 보세요!',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.text2.withColor(
-                  isDark ? AppColors.sub1Dark : AppColors.sub2,
+                  context.sub1Color,
                 ),
               ),
             ],
@@ -72,7 +71,7 @@ class OnboardingScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   height: 1,
-                  color: isDark ? AppColors.sub2Dark : AppColors.button,
+                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
               ),
               Padding(
@@ -82,14 +81,14 @@ class OnboardingScreen extends StatelessWidget {
                 child: Text(
                   'GOMS가 처음이신가요?',
                   style: AppTextStyles.caption3.withColor(
-                    isDark ? AppColors.sub2Dark : AppColors.button,
+                    context.isDarkMode ? context.sub2Color : AppColors.button,
                   ),
                 ),
               ),
               Expanded(
                 child: Container(
                   height: 1,
-                  color: isDark ? AppColors.sub2Dark : AppColors.button,
+                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
               ),
             ],

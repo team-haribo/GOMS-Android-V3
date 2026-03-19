@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/config/dark_theme.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/qr/presentation/pages/qr_base_screen.dart';
 
@@ -48,11 +49,7 @@ class OutingStartScreen extends StatelessWidget {
             ),
             TextSpan(
               text: ' 까지 꼭 복귀해 주세요.',
-              style: AppTextStyles.text2.withColor(
-                Theme.of(context).brightness == Brightness.dark
-                    ? AppColors.sub1Dark
-                    : AppColors.sub2,
-              ),
+              style: AppTextStyles.text2.withColor(context.sub1Color),
             ),
           ],
         ),

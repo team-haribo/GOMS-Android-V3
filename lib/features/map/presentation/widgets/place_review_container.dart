@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:intl/intl.dart';
 
@@ -23,12 +24,11 @@ class PlaceReviewContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       height: 93,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.bgMapContainer : AppColors.bgMapContainerDark,
+        color: context.mapContainerColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -51,14 +51,14 @@ class PlaceReviewContainer extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: AppTextStyles.text2.copyWith(
-                            color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h4,
                         Text(
                           category,
                           style: AppTextStyles.caption2.copyWith(
-                            color: isLight ? AppColors.sub2 : AppColors.gray3,
+                            color: context.isLightMode ? AppColors.sub2 : AppColors.gray3,
                           ),
                         ),
                       ],
@@ -69,7 +69,7 @@ class PlaceReviewContainer extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: AppTextStyles.caption2.copyWith(
-                        color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                        color: context.sub2Color,
                       ),
                     ),
                     AppGap.v4,
@@ -80,14 +80,14 @@ class PlaceReviewContainer extends StatelessWidget {
                               ? '${reviewDetailContent.substring(0, 10)}···'
                               : reviewDetailContent,
                           style: AppTextStyles.caption1.copyWith(
-                            color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                            color: context.sub2Color,
                           ),
                         ),
                         AppGap.h4,
                         Text(
                           '작성일: ${DateFormat('yy.MM.dd').format(createdAt)}',
                           style: AppTextStyles.caption1.copyWith(
-                            color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                            color: context.sub2Color,
                           ),
                         ),
                       ],

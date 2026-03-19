@@ -6,6 +6,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/enums/role_enum.dart';
@@ -106,11 +107,10 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final textColor = isDark ? AppColors.mainTextDark : AppColors.mainText;
-    final subColor = isDark ? AppColors.sub1Dark : AppColors.sub1;
-    final sub2Color = isDark ? AppColors.sub2Dark : AppColors.sub2;
-    final surfaceColor = isDark ? AppColors.bgSurfaceDark : AppColors.bgSurface;
+    final textColor = context.mainTextColor;
+    final subColor = context.sub1Color;
+    final sub2Color = context.sub2Color;
+    final surfaceColor = context.surfaceColor;
 
     final currentThemeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
@@ -133,7 +133,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ==================== 프로필 카드 ====================
-            _buildProfileCard(isDark, textColor, sub2Color, surfaceColor),
+            _buildProfileCard(textColor, sub2Color, surfaceColor),
 
             AppGap.v24,
 
@@ -265,7 +265,6 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
 
   // ==================== 프로필 카드 ====================
   Widget _buildProfileCard(
-    bool isDark,
     Color textColor,
     Color sub2Color,
     Color surfaceColor,

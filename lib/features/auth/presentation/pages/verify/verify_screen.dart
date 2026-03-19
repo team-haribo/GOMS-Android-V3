@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/verify/states/verify_state.dart';
@@ -31,7 +32,6 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final verifyState = ref.watch(verifyProvider);
     final notifier = ref.read(verifyProvider.notifier);
     final isLoading = verifyState.status == VerifyStatus.loading;
@@ -90,9 +90,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
           children: [
             Text(
               notifier.formattedTime,
-              style: AppTextStyles.text3.withColor(
-                isDark ? AppColors.sub2Dark : AppColors.sub2,
-              ),
+              style: AppTextStyles.text3.withColor(context.sub2Color),
             ),
             GestureDetector(
               onTap: isLoading ? null : notifier.resend,
@@ -109,6 +107,3 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
     );
   }
 }
-
-
-

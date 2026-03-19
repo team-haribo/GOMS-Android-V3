@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 
 class DragHandleHeader extends SliverPersistentHeaderDelegate {
 
@@ -16,9 +17,8 @@ class DragHandleHeader extends SliverPersistentHeaderDelegate {
       bool overlapsContent,
       ) {
 
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      color: isLight ?  AppColors.bgSurface : AppColors.bgSurfaceDark,
+      color: context.surfaceColor,
       child: Center(
         child: Container(
           width: 32,

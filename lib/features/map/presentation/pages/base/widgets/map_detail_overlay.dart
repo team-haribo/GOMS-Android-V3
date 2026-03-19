@@ -4,6 +4,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/pages/base/widgets/map_shared_widgets.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
@@ -22,7 +23,7 @@ class MapDetailOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = context.isLightMode;
 
     return Stack(
       children: [
@@ -151,14 +152,14 @@ class _BackButton extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+          color: context.surfaceColor,
           shape: BoxShape.circle,
         ),
         child: Center(
           child: AppIcons.back(
             width: 24,
             height: 24,
-            color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+            color: context.mainTextColor,
           ),
         ),
       ),

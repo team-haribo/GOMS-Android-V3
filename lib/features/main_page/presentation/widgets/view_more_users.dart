@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ViewMoreUsers extends StatelessWidget {
@@ -9,7 +9,6 @@ class ViewMoreUsers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return SizedBox(
       width: 51,
       height: 24,
@@ -18,8 +17,7 @@ class ViewMoreUsers extends StatelessWidget {
           context.push(RoutePath.outingState);
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+          backgroundColor: context.surfaceColor,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
@@ -30,7 +28,7 @@ class ViewMoreUsers extends StatelessWidget {
           "더보기",
           style: AppTextStyles.caption2.copyWith(
             fontWeight: FontWeight.w300,
-            color: isLight ? AppColors.sub2 : AppColors.sub1,
+            color: context.isLightMode ? context.sub2Color : context.sub1Color,
           ),
         ),
       ),

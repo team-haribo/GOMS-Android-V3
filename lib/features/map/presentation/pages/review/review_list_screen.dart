@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/presentation/widgets/drag_handle_header.dart';
@@ -52,7 +53,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = context.isLightMode;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,

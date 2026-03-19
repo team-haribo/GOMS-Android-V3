@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
@@ -16,7 +17,6 @@ class PasswordScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final signupState = ref.watch(signupProvider);
     final notifier = ref.read(signupProvider.notifier);
     final isLoading = signupState.status == SignupStatus.loading;
@@ -72,9 +72,7 @@ class PasswordScreen extends ConsumerWidget {
         AppGap.v12,
         Text(
           '비밀번호는 6자 이상, 대/소문자, 숫자, 특수문자를 포함해 주세요',
-          style: AppTextStyles.text3.withColor(
-            isDark ? AppColors.sub2Dark : AppColors.sub2,
-          ),
+          style: AppTextStyles.text3.withColor(context.sub2Color),
         ),
       ],
     );

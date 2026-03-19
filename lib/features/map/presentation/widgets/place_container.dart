@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class PlaceContainer extends StatefulWidget {
@@ -246,14 +247,11 @@ class _PlaceContainerColors {
   });
 
   factory _PlaceContainerColors.fromTheme(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
     return _PlaceContainerColors(
-      cardColor:
-          isLight ? AppColors.bgMapContainer : AppColors.bgMapContainerDark,
-      mainTextColor: isLight ? AppColors.mainText : AppColors.mainTextDark,
-      subColor: isLight ? AppColors.sub2 : AppColors.sub2Dark,
-      categoryColor: isLight ? AppColors.sub2 : AppColors.gray3,
+      cardColor: context.mapContainerColor,
+      mainTextColor: context.mainTextColor,
+      subColor: context.sub2Color,
+      categoryColor: context.isLightMode ? AppColors.sub2 : AppColors.gray3,
     );
   }
 }

@@ -54,13 +54,14 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
   @override
   Widget build(BuildContext context) {
     final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
             child: SearchTextField(),
           ),
           Expanded(
@@ -74,9 +75,13 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                   child: DraggableScrollableSheet(
                     initialChildSize: 0.32,
                     minChildSize: 0.32,
-                    maxChildSize: 0.85,
+                    maxChildSize: context.isTabletLayout ? 0.78 : 0.85,
                     snap: true,
-                    snapSizes: const [0.32, 0.6, 0.85],
+                    snapSizes: <double>[
+                      0.32,
+                      0.6,
+                      context.isTabletLayout ? 0.78 : 0.85,
+                    ],
                     builder: (context, scrollController) {
                       return ClipRRect(
                         borderRadius: const BorderRadius.vertical(
@@ -101,8 +106,8 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                               ),
                               SliverToBoxAdapter(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding,
                                   ),
                                   child: SizedBox(
                                     child: Column(

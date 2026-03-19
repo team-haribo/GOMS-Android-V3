@@ -25,11 +25,16 @@ class MapMainOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
+    final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
+    final initialSheetSize =
+        context.isTabletLayout ? 0.44 : (context.screenHeight < 780 ? 0.42 : 0.38);
+    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.88;
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(24, 16, 24, 0),
+        Padding(
+          padding: EdgeInsets.fromLTRB(horizontalPadding, topPadding, horizontalPadding, 0),
           child: SearchTextField(),
         ),
         Expanded(
@@ -37,18 +42,22 @@ class MapMainOverlay extends StatelessWidget {
             children: [
               Positioned.fill(
                 child: DraggableScrollableSheet(
-                  initialChildSize: 0.38,
-                  minChildSize: 0.38,
-                  maxChildSize: 0.88,
+                  initialChildSize: initialSheetSize,
+                  minChildSize: initialSheetSize,
+                  maxChildSize: maxSheetSize,
                   snap: true,
-                  snapSizes: const [0.38, 0.62, 0.88],
+                  snapSizes: <double>[
+                    initialSheetSize,
+                    context.isTabletLayout ? 0.62 : 0.62,
+                    maxSheetSize,
+                  ],
                   builder: (context, scrollController) {
                     return MapSheet(
                       isLight: isLight,
                       scrollController: scrollController,
                       slivers: [
                         SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                           sliver: SliverToBoxAdapter(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +89,7 @@ class MapMainOverlay extends StatelessWidget {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: 56,
+                height: context.responsive(compact: 44, normal: 56, tablet: 64),
                 child: _BottomGradient(isLight: isLight),
               ),
             ],

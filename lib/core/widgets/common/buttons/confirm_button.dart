@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
@@ -32,7 +33,7 @@ class ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? double.infinity,
-      height: height ?? 44,
+      height: height ?? context.space(48),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -68,7 +69,7 @@ class ConfirmButton extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : Text(text, style: AppTextStyles.text2),
+            : Text(text, style: context.appTypography.text2),
       ),
     );
   }

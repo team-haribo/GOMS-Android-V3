@@ -32,21 +32,21 @@ class ProfileContainer extends ConsumerWidget {
     };
 
     return Container(
-      height: 84,
+      height: context.responsive(compact: 76, normal: 84, tablet: 92),
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.surfaceColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.s16),
+        padding: EdgeInsets.all(context.responsive(compact: 12, normal: 16)),
         child: Row(
           children: [
             if (!showClock) ...[
               Container(
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
-                  radius: 26,
+                  radius: context.responsive(compact: 22, normal: 26, tablet: 28),
                   child: AppIcons.profileCircle(),
                 ),
               ),

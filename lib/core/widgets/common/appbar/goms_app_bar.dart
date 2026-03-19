@@ -47,18 +47,21 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: _showLogo
           ? null
           : Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.s24),
+              padding: EdgeInsets.only(left: context.space(AppSpacing.s24)),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: AppIcons.back(width: 24, height: 24),
+                icon: AppIcons.back(
+                  width: context.space(24),
+                  height: context.space(24),
+                ),
                 onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
               ),
             ),
-      titleSpacing: _showLogo ? 24 : 4,
+      titleSpacing: _showLogo ? context.space(24) : context.space(4),
       title: _showLogo
           ? Row(
               mainAxisSize: MainAxisSize.min,
@@ -66,12 +69,12 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 AppIcons.logoSmall(
                   color: context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
-                AppGap.h8,
+                context.hSpace(AppSpacing.s8),
                 Text(
                   'GOMS',
                   style: TextStyle(
                     fontFamily: 'gmarketSans',
-                    fontSize: 16,
+                    fontSize: 16 * context.typographyScale,
                     fontWeight: FontWeight.w700,
                     color: context.isDarkMode ? context.sub2Color : AppColors.button,
                   ),
@@ -80,7 +83,9 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
             )
           : Text(
               '돌아가기',
-              style: AppTextStyles.text2.copyWith(color: AppColors.mainColor),
+              style: context.appTypography.text2.copyWith(
+                color: AppColors.mainColor,
+              ),
             ),
       actions: actions,
     );

@@ -178,6 +178,8 @@ class _DirectionTopPanel extends ConsumerWidget {
       _ => ThemeMode.system,
     };
     final dark = _isDark(themeMode, context);
+    final horizontalPadding = context.horizontalPadding;
+    final topPadding = context.responsive(compact: 44, normal: 60, tablet: 64);
 
     return Container(
       width: double.infinity,
@@ -186,12 +188,19 @@ class _DirectionTopPanel extends ConsumerWidget {
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(12)),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(24, 60, 24, 20),
+        padding: EdgeInsets.fromLTRB(
+          horizontalPadding,
+          topPadding,
+          horizontalPadding,
+          context.responsive(compact: 16, normal: 20, tablet: 24),
+        ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 67),
+              padding: EdgeInsets.only(
+                top: context.responsive(compact: 56, normal: 67, tablet: 72),
+              ),
               child: GestureDetector(
                 onTap: onSwap,
                 behavior: HitTestBehavior.opaque,
@@ -454,15 +463,18 @@ class _DirectionRouteCarousel extends StatelessWidget {
     }
 
     return SizedBox(
-      height: 168,
+      height: context.responsive(compact: 152, normal: 168, tablet: 180),
       child: ListView.separated(
         controller: scrollController,
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 12),
+        padding: EdgeInsets.symmetric(
+          vertical: context.responsive(compact: 16, normal: 24, tablet: 28),
+          horizontal: context.responsive(compact: 8, normal: 12, tablet: 16),
+        ),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final option = routeOptions[index];
           return SizedBox(
-            width: 208,
+            width: context.responsive(compact: 184, normal: 208, tablet: 236),
             child: _RouteOptionCard(
               option: option,
               isSelected: selectedIndex == index,
@@ -582,7 +594,7 @@ class _DirectionDetailSheet extends ConsumerWidget {
         .withValues(alpha: 0.22);
 
     return Container(
-      height: 460,
+      height: context.responsive(compact: 360, normal: 460, tablet: 520),
       decoration: BoxDecoration(
         color: sheetBg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),

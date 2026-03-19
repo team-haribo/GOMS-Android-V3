@@ -21,13 +21,15 @@ class SearchProfileList extends StatelessWidget {
     return Container(
       color: context.backgroundColor,
       width: double.infinity,
-      height: 72,
+      height: context.responsive(compact: 64, normal: 72, tablet: 80),
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(compact: 8, normal: 12),
+            ),
             child: CircleAvatar(
-              radius: 26,
+              radius: context.responsive(compact: 22, normal: 26, tablet: 28),
               child: AppIcons.profileCircle(),
             ),
           ),

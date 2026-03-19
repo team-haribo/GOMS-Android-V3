@@ -97,7 +97,7 @@ class BaseTextField extends StatelessWidget {
           validator: validator,
           cursorColor: hasError ? AppColors.negative : null,
           style: hasError
-              ? AppTextStyles.text2.withColor(AppColors.negative)
+              ? context.appTypography.text2.withColor(AppColors.negative)
               : null,
           decoration: base.copyWith(
             hintText: hintText,
@@ -125,13 +125,15 @@ class BaseTextField extends StatelessWidget {
         ),
         if (hasError)
           Padding(
-            padding:
-                const EdgeInsets.only(top: AppSpacing.s4, right: AppSpacing.s4),
+            padding: EdgeInsets.only(
+              top: context.space(AppSpacing.s4),
+              right: context.space(AppSpacing.s4),
+            ),
             child: Align(
               alignment: Alignment.centerRight,
               child: Text(
                 errorText!,
-                style: AppTextStyles.text3.withColor(AppColors.negative),
+                style: context.appTypography.text3.withColor(AppColors.negative),
               ),
             ),
           ),

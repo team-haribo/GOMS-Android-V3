@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 
 /// 비밀번호 입력 텍스트 필드 (보기/숨기기 기능 포함)
@@ -40,8 +40,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return BaseTextField(
       controller: widget.controller,
       hintText: widget.hintText,
@@ -58,7 +56,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         icon: Icon(
           _obscureText ? Icons.visibility_off : Icons.visibility,
           size: 24,
-          color: isDark ? AppColors.sub2Dark : AppColors.sub2,
+          color: context.sub2Color,
         ),
         onPressed: _toggleObscureText,
       ),

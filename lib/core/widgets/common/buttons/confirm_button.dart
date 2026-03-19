@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ConfirmButton extends StatelessWidget {
-  /// 버튼 텍스트
+  /// 踰꾪듉 ?띿뒪??
   final String text;
 
-  /// 버튼 클릭 콜백
+  /// 踰꾪듉 ?대┃ 肄쒕갚
   final VoidCallback? onPressed;
 
-  /// 버튼 너비 (기본값: double.infinity)
+  /// 踰꾪듉 ?덈퉬 (湲곕낯媛? double.infinity)
   final double? width;
 
-  /// 버튼 높이 (기본값: 44)
+  /// 踰꾪듉 ?믪씠 (湲곕낯媛? 44)
   final double? height;
 
-  /// 로딩 상태
+  /// 濡쒕뵫 ?곹깭
   final bool isLoading;
 
   const ConfirmButton({
@@ -29,8 +30,6 @@ class ConfirmButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return SizedBox(
       width: width ?? double.infinity,
       height: height ?? 44,
@@ -41,10 +40,9 @@ class ConfirmButton extends StatelessWidget {
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.disabled)) {
-              // disabled: button 색상 (light/dark 모드 모두)
-              return isDarkMode ? AppColors.buttonDark : AppColors.button;
+              return context.buttonColor;
             }
-            return AppColors.mainColor; // default: mainColor
+            return AppColors.mainColor;
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color>((
             Set<WidgetState> states,

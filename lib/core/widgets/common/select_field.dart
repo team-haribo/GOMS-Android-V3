@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class SelectField<T> extends StatelessWidget {
@@ -24,8 +24,6 @@ class SelectField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return GestureDetector(
       onTap: enabled ? () => _showCupertinoPicker(context) : null,
       child: Container(
@@ -39,12 +37,10 @@ class SelectField<T> extends StatelessWidget {
           style: value != null
               ? AppTextStyles.text2.withColor(
                   enabled
-                      ? (isDark ? AppColors.mainTextDark : AppColors.mainText)
-                      : (isDark ? AppColors.sub2Dark : AppColors.sub2),
+                      ? context.mainTextColor
+                      : context.sub2Color,
                 )
-              : AppTextStyles.text2.withColor(
-                  isDark ? AppColors.sub2Dark : AppColors.sub2,
-                ),
+              : AppTextStyles.text2.withColor(context.sub2Color),
         ),
       ),
     );

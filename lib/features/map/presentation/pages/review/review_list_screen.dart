@@ -10,19 +10,6 @@ import 'package:goms/features/map/presentation/widgets/review_list_container.dar
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
 
-void main() async {
-  runApp(MaterialApp(
-    home: ReviewListScreen(
-        placeName: 'f',
-        category: 'f',
-        address: 'f',
-        distanceMeter: 3,
-        durationMinutes: 3,
-        review: 3,
-        recommended: 0),
-  ));
-}
-
 class ReviewListScreen extends StatefulWidget {
   final String placeName;
   final String category;
@@ -62,7 +49,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
         children: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
-            child: SearchTextField(),
+            child: const SearchTextField(),
           ),
           Expanded(
             child: Stack(

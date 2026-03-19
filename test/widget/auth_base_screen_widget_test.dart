@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
+import '../test_app.dart';
 
 void main() {
   testWidgets('confirm button is disabled when form is invalid', (
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: AuthBaseScreen(
-            title: 'Auth',
-            confirmText: 'Confirm',
-            onConfirm: _noop,
-            isConfirmEnabled: false,
-            children: [],
-          ),
+      buildTestApp(
+        const AuthBaseScreen(
+          title: 'Auth',
+          confirmText: 'Confirm',
+          onConfirm: _noop,
+          isConfirmEnabled: false,
+          children: [],
         ),
       ),
     );
@@ -29,16 +27,14 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: AuthBaseScreen(
-            title: 'Auth',
-            confirmText: 'Confirm',
-            onConfirm: _noop,
-            isConfirmEnabled: true,
-            isLoading: true,
-            children: [],
-          ),
+      buildTestApp(
+        const AuthBaseScreen(
+          title: 'Auth',
+          confirmText: 'Confirm',
+          onConfirm: _noop,
+          isConfirmEnabled: true,
+          isLoading: true,
+          children: [],
         ),
       ),
     );

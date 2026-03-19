@@ -35,7 +35,7 @@ class MapMainOverlay extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(horizontalPadding, topPadding, horizontalPadding, 0),
-          child: SearchTextField(),
+          child: const SearchTextField(),
         ),
         Expanded(
           child: Stack(

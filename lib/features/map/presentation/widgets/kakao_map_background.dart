@@ -1,12 +1,14 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
+import 'package:goms/features/map/presentation/viewmodels/kakao_map_background_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
-class KakaoMapBackground extends StatefulWidget {
+class KakaoMapBackground extends ConsumerStatefulWidget {
   final List<PopularPlace> places;
   final PopularPlace? focusPlace;
   final List<MapCoordinate> routePath;
@@ -21,17 +23,20 @@ class KakaoMapBackground extends StatefulWidget {
   });
 
   @override
-  State<KakaoMapBackground> createState() => _KakaoMapBackgroundState();
+  ConsumerState<KakaoMapBackground> createState() =>
+      _KakaoMapBackgroundState();
 }
 
-class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
+class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
   kakao.KImage? _defaultMarker;
   kakao.KImage? _focusedMarker;
   int _renderToken = 0;
-  String? _errorMessage;
+
+  String get _mapId =>
+      '${widget.focusPlace?.name}|${widget.focusPlace?.address}|${widget.places.length}|${widget.routePath.length}';
 
   @override
   void didUpdateWidget(covariant KakaoMapBackground oldWidget) {
@@ -212,29 +217,14 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   }
 
   void _setError(String message) {
-    if (!mounted) {
-      _errorMessage = message;
-      return;
-    }
-
-    setState(() {
-      _errorMessage = message;
-    });
+    ref.read(kakaoMapBackgroundErrorProvider(_mapId).notifier).state = message;
   }
 
   void _clearError() {
-    if (_errorMessage == null) {
+    if (ref.read(kakaoMapBackgroundErrorProvider(_mapId)) == null) {
       return;
     }
-
-    if (!mounted) {
-      _errorMessage = null;
-      return;
-    }
-
-    setState(() {
-      _errorMessage = null;
-    });
+    ref.read(kakaoMapBackgroundErrorProvider(_mapId).notifier).state = null;
   }
 
   String _buildErrorMessage(Object error) {
@@ -250,6 +240,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
+    final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
       return ColoredBox(
@@ -294,7 +285,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
             forceHybridComposition: true,
           ),
         ),
-        if (_controller == null && _errorMessage == null)
+        if (_controller == null && errorMessage == null)
           const Positioned.fill(
             child: ColoredBox(
               color: AppColors.background,
@@ -305,7 +296,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
               ),
             ),
           ),
-        if (_errorMessage != null)
+        if (errorMessage != null)
           Positioned.fill(
             child: ColoredBox(
               color: AppColors.background,
@@ -313,7 +304,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Text(
-                    _errorMessage!,
+                    errorMessage,
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
@@ -325,4 +316,3 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
     );
   }
 }
-

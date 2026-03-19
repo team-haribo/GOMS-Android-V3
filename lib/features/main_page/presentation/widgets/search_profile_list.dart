@@ -4,7 +4,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
-class SearchProfileList extends StatefulWidget {
+class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
@@ -16,11 +16,6 @@ class SearchProfileList extends StatefulWidget {
     required this.major,
   });
 
-  @override
-  State<SearchProfileList> createState() => _SearchProfileListState();
-}
-
-class _SearchProfileListState extends State<SearchProfileList> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,7 +37,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.name,
+                name,
                 style: AppTextStyles.text1.copyWith(
                   color: context.sub1Color,
                 ),
@@ -51,7 +46,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
               Row(
                 children: [
                   Text(
-                    '${widget.grade}기 | ${widget.major}',
+                    '$grade기| $major',
                     style: AppTextStyles.caption2.copyWith(
                       color: context.sub2Color,
                     ),

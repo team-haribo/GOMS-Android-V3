@@ -8,7 +8,7 @@ import 'package:goms/features/main_page/presentation/widgets/outing_status.dart'
 import 'package:goms/features/main_page/presentation/widgets/time_display.dart';
 import 'package:goms/features/my_page/presentation/viewmodels/settings_provider.dart';
 
-class ProfileContainer extends ConsumerStatefulWidget {
+class ProfileContainer extends ConsumerWidget {
   final String name;
   final int grade;
   final String major;
@@ -25,12 +25,7 @@ class ProfileContainer extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProfileContainer> createState() => _ProfileContainerState();
-}
-
-class _ProfileContainerState extends ConsumerState<ProfileContainer> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final showClock = switch (ref.watch(settingsProvider)) {
       AsyncData(:final value) => value.showClock,
       _ => false,
@@ -67,14 +62,14 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                     child: Row(
                       children: [
                         Text(
-                          widget.name,
+                          name,
                           style: AppTextStyles.title3.copyWith(
                             color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h8,
                         Text(
-                          '${widget.grade}기 | ${widget.major}과',
+                          '$grade기| $major과',
                           style: AppTextStyles.caption1.copyWith(
                             color: context.sub2Color,
                           ),
@@ -83,7 +78,7 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                     ),
                   ),
                   Text(
-                    '지각 횟수: ${widget.lateCount}회',
+                    '지각 횟수: $lateCount회',
                     style: AppTextStyles.text3.copyWith(
                       color: context.sub1Color,
                     ),
@@ -98,9 +93,9 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    widget.status.statusText,
+                    status.statusText,
                     style: AppTextStyles.text1.copyWith(
-                      color: widget.status.statusColor,
+                      color: status.statusColor,
                     ),
                   ),
                   if (showClock) ...[
@@ -118,6 +113,3 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
     );
   }
 }
-
-
-

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/map/presentation/viewmodels/place_like_provider.dart';
 
-class PlaceContainer extends StatefulWidget {
+class PlaceContainer extends ConsumerWidget {
   final String placeName;
   final String category;
   final String address;
@@ -26,18 +28,13 @@ class PlaceContainer extends StatefulWidget {
   });
 
   @override
-  State<PlaceContainer> createState() => _PlaceContainerState();
-}
-
-class _PlaceContainerState extends State<PlaceContainer> {
-  bool _isLiked = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = _PlaceContainerColors.fromTheme(context);
+    final placeId = '$placeName|$address';
+    final isLiked = ref.watch(placeLikeProvider(placeId));
 
     return GestureDetector(
-      onTap: widget.onTap,
+      onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Container(
         width: double.infinity,
@@ -53,22 +50,20 @@ class _PlaceContainerState extends State<PlaceContainer> {
             children: [
               Expanded(
                 child: _PlaceContent(
-                  placeName: widget.placeName,
-                  category: widget.category,
-                  address: widget.address,
-                  review: widget.review,
-                  recommended: widget.recommended,
-                  distanceMeters: widget.distanceMeters,
+                  placeName: placeName,
+                  category: category,
+                  address: address,
+                  review: review,
+                  recommended: recommended,
+                  distanceMeters: distanceMeters,
                   colors: colors,
                 ),
               ),
               AppGap.h8,
               _LikeButton(
-                isLiked: _isLiked,
+                isLiked: isLiked,
                 onPressed: () {
-                  setState(() {
-                    _isLiked = !_isLiked;
-                  });
+                  ref.read(placeLikeProvider(placeId).notifier).state = !isLiked;
                 },
               ),
             ],

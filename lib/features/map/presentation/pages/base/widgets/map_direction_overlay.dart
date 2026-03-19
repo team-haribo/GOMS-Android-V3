@@ -5,6 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/map/presentation/pages/direction/viewModels/map_direction_ui_provider.dart';
 import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
 import 'package:goms/features/map/presentation/pages/main/models/popular_place.dart';
 
@@ -38,7 +39,8 @@ class MapDirectionOverlay extends ConsumerStatefulWidget {
 
 class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
   final ScrollController _routeScrollController = ScrollController();
-  bool _isRouteSheetVisible = false;
+
+  String get _routeSheetKey => '${widget.place.name}|${widget.place.address}';
 
   @override
   void dispose() {
@@ -48,14 +50,15 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
 
   void _handleRouteTap(int index) {
     widget.onSelect(index);
-    setState(() => _isRouteSheetVisible = true);
+    ref.read(routeSheetVisibilityProvider(_routeSheetKey).notifier).state = true;
   }
 
   void _closeRouteSheet() {
-    if (!_isRouteSheetVisible) {
+    if (!ref.read(routeSheetVisibilityProvider(_routeSheetKey))) {
       return;
     }
-    setState(() => _isRouteSheetVisible = false);
+    ref.read(routeSheetVisibilityProvider(_routeSheetKey).notifier).state =
+        false;
   }
 
   @override
@@ -71,6 +74,9 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
     final destinationName = widget.state.destination.isEmpty
         ? widget.place.name
         : widget.state.destination;
+    final isRouteSheetVisible = ref.watch(
+      routeSheetVisibilityProvider(_routeSheetKey),
+    );
 
     final themeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
@@ -90,7 +96,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
             onDepartureSelect: widget.onDepartureSelect,
           ),
         ),
-        if (_isRouteSheetVisible && selectedOption != null)
+        if (isRouteSheetVisible && selectedOption != null)
           Positioned.fill(
             child: GestureDetector(
               onTap: _closeRouteSheet,
@@ -122,7 +128,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
                     destinationName: destinationName,
                     onClose: _closeRouteSheet,
                   ),
-            isRouteSheetVisible: _isRouteSheetVisible,
+            isRouteSheetVisible: isRouteSheetVisible,
           ),
         ),
       ],

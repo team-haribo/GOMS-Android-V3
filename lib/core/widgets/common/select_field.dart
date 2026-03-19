@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -36,9 +35,7 @@ class SelectField<T> extends StatelessWidget {
           value != null ? itemLabel(value as T) : hintText,
           style: value != null
               ? AppTextStyles.text2.withColor(
-                  enabled
-                      ? context.mainTextColor
-                      : context.sub2Color,
+                  enabled ? context.mainTextColor : context.sub2Color,
                 )
               : AppTextStyles.text2.withColor(context.sub2Color),
         ),

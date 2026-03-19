@@ -5,19 +5,19 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ConfirmButton extends StatelessWidget {
-  /// 踰꾪듉 ?띿뒪??
+  /// 확인 버튼 텍스트
   final String text;
 
-  /// 踰꾪듉 ?대┃ 肄쒕갚
+  /// 버튼 클릭 콜백
   final VoidCallback? onPressed;
 
-  /// 踰꾪듉 ?덈퉬 (湲곕낯媛? double.infinity)
+  /// 버튼 너비 (기본값: double.infinity)
   final double? width;
 
-  /// 踰꾪듉 ?믪씠 (湲곕낯媛? 44)
+  /// 버튼 높이 (기본값: 44)
   final double? height;
 
-  /// 濡쒕뵫 ?곹깭
+  /// 로딩 상태
   final bool isLoading;
 
   const ConfirmButton({
@@ -33,7 +33,7 @@ class ConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? double.infinity,
-      height: height ?? context.space(48),
+      height: height ?? context.responsive(compact: 44, normal: 48, tablet: 52),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -69,7 +69,7 @@ class ConfirmButton extends StatelessWidget {
                   strokeWidth: 2,
                 ),
               )
-            : Text(text, style: context.appTypography.text2),
+            : Text(text, style: AppTextStyles.text2),
       ),
     );
   }

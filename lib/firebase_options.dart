@@ -3,7 +3,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -51,19 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static final FirebaseOptions android = FirebaseOptions(
-    apiKey: dotenv.env['GOOGLE_API_KEY'] ?? '',
-    appId: dotenv.env['FIREBASE_ANDROID_APP_ID'] ?? '',
-    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? '',
-    projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? '',
-    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? '',
+    apiKey: 'AIzaSyD3tc9IwPCvX5Hu4hb-5hp4CJcPnE_8SJ4',
+    appId: '1:297028902011:android:3e9b1022cb3d9f005456de',
+    messagingSenderId: '297028902011',
+    projectId: 'goms-v3',
+    storageBucket: 'goms-v3.firebasestorage.app',
   );
 
   static final FirebaseOptions ios = FirebaseOptions(
-    apiKey: dotenv.env['FIREBASE_IOS_API_KEY'] ?? '',
-    appId: dotenv.env['FIREBASE_IOS_APP_ID'] ?? '',
-    messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID'] ?? '',
-    projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? '',
-    storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'] ?? '',
-    iosBundleId: dotenv.env['FIREBASE_IOS_BUNDLE_ID'] ?? '',
+    apiKey: 'AIzaSyAT6U8GpEP1dLLZueinwGwpiHGlbdTGYeg',
+    appId: '1:297028902011:ios:333ffd4495ba3af25456de',
+    messagingSenderId: '297028902011',
+    projectId: 'goms-v3',
+    storageBucket: 'goms-v3.firebasestorage.app',
+    iosBundleId: 'com.goms.v3',
   );
 }

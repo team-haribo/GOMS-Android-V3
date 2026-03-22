@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "297028902011",
+    "project_id": "goms-v3",
+    "storage_bucket": "goms-v3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297028902011:android:2390d5a25be4d2345456de",
+        "android_client_info": {
+          "package_name": "com.example.project_setting"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3tc9IwPCvX5Hu4hb-5hp4CJcPnE_8SJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297028902011:android:3e9b1022cb3d9f005456de",
+        "android_client_info": {
+          "package_name": "com.goms.v3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3tc9IwPCvX5Hu4hb-5hp4CJcPnE_8SJ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

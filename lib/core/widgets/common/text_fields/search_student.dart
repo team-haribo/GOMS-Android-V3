@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 
 /// 검색 텍스트 필드
@@ -55,8 +55,6 @@ class _SearchStudentFieldState extends State<SearchStudentField> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return BaseTextField(
       controller: _controller,
       hintText: widget.hintText,
@@ -70,7 +68,7 @@ class _SearchStudentFieldState extends State<SearchStudentField> {
       onSubmitted: widget.onSubmitted,
       suffixIcon: Padding(
         padding: const EdgeInsets.only(right: 16),
-        child: Icon(Icons.search, size: 24, color: isDark ? AppColors.sub2Dark : AppColors.sub2),
+        child: Icon(Icons.search, size: 24, color: context.sub2Color),
       ),
     );
   }

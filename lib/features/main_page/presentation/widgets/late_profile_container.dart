@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class LateProfileContainer extends StatelessWidget {
@@ -18,12 +18,11 @@ class LateProfileContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
       height: 140,
       width: 101,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -37,7 +36,7 @@ class LateProfileContainer extends StatelessWidget {
             Text(
               name,
               style: AppTextStyles.title1.copyWith(
-                color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                color: context.sub1Color,
                 fontSize: 16,
               ),
             ),
@@ -46,7 +45,7 @@ class LateProfileContainer extends StatelessWidget {
               fit: BoxFit.scaleDown,
               child: Text(
                 '$grade기 | $major',
-                style: AppTextStyles.caption1.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+                style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
               ),
             ),
           ],

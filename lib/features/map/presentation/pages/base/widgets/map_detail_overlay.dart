@@ -4,6 +4,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/pages/base/widgets/map_shared_widgets.dart';
 import 'package:goms/features/map/presentation/pages/main/models/map_page_state.dart';
@@ -22,13 +23,17 @@ class MapDetailOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
+    final initialSheetSize =
+        context.isTabletLayout ? 0.4 : (context.screenHeight < 780 ? 0.4 : 0.34);
+    final maxSheetSize = context.isTabletLayout ? 0.76 : 0.82;
 
     return Stack(
       children: [
         Positioned(
           top: 0,
-          left: 24,
+          left: horizontalPadding,
           child: SafeArea(
             bottom: false,
             child: _BackButton(isLight: isLight),
@@ -36,18 +41,18 @@ class MapDetailOverlay extends StatelessWidget {
         ),
         Positioned.fill(
           child: DraggableScrollableSheet(
-            initialChildSize: 0.34,
-            minChildSize: 0.34,
-            maxChildSize: 0.82,
+            initialChildSize: initialSheetSize,
+            minChildSize: initialSheetSize,
+            maxChildSize: maxSheetSize,
             snap: true,
-            snapSizes: const [0.34, 0.56, 0.82],
+            snapSizes: <double>[initialSheetSize, 0.56, maxSheetSize],
             builder: (context, scrollController) {
               return MapSheet(
                 isLight: isLight,
                 scrollController: scrollController,
                 slivers: [
                   SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                     sliver: SliverToBoxAdapter(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,14 +156,14 @@ class _BackButton extends StatelessWidget {
         width: 44,
         height: 44,
         decoration: BoxDecoration(
-          color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+          color: context.surfaceColor,
           shape: BoxShape.circle,
         ),
         child: Center(
           child: AppIcons.back(
             width: 24,
             height: 24,
-            color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+            color: context.mainTextColor,
           ),
         ),
       ),

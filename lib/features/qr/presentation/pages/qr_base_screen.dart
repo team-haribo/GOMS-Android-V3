@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
@@ -40,10 +40,6 @@ class QrBaseScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final titleColor = isDark ? AppColors.mainTextDark : AppColors.mainText;
-    final subtitleColor = isDark ? AppColors.sub1Dark : AppColors.sub2;
-
     return BaseScaffold(
       showAppBar: false,
       body: Column(
@@ -54,13 +50,13 @@ class QrBaseScreen extends StatelessWidget {
           AppGap.v16,
           Text(
             title,
-            style: AppTextStyles.title1.withColor(titleColor),
+            style: AppTextStyles.title1.withColor(context.mainTextColor),
             textAlign: TextAlign.center,
           ),
           AppGap.v12,
           Text(
             subtitle,
-            style: AppTextStyles.text2.withColor(subtitleColor),
+            style: AppTextStyles.text2.withColor(context.sub1Color),
             textAlign: TextAlign.center,
           ),
           if (extraContent != null) ...[

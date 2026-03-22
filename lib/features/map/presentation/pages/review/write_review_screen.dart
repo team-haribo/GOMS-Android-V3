@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/pages/review/models/write_review_state.dart';
 import 'package:goms/features/map/presentation/pages/review/viewModels/write_review_provider.dart';
@@ -60,7 +61,6 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(writeReviewProvider);
     final notifier = ref.read(writeReviewProvider.notifier);
-    final isLight = Theme.of(context).brightness == Brightness.light;
     final isLoading = state.status == WriteReviewStatus.loading;
 
     ref.listen(writeReviewProvider, (previous, next) async {
@@ -95,7 +95,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
           Text(
             '후기 남기기',
             style: AppTextStyles.title1.copyWith(
-              color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+              color: context.mainTextColor,
             ),
           ),
           AppGap.v24,
@@ -112,17 +112,14 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                         Text(
                           widget.placeName,
                           style: AppTextStyles.title3.copyWith(
-                            color: isLight
-                                ? AppColors.mainText
-                                : AppColors.mainTextDark,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h4,
                         Text(
                           widget.category,
                           style: AppTextStyles.text3.copyWith(
-                            color:
-                                isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                            color: context.sub1Color,
                           ),
                         ),
                       ],
@@ -131,21 +128,21 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                     Text(
                       widget.address,
                       style: AppTextStyles.text2.copyWith(
-                        color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                        color: context.sub2Color,
                       ),
                     ),
                     AppGap.v4,
                     Text(
                       '학생 후기 ${widget.review} | 추천 ${widget.recommended}',
                       style: AppTextStyles.text2.copyWith(
-                        color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                        color: context.sub2Color,
                       ),
                     ),
                   ],
                 ),
               ),
               AppIcons.heart(
-                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                color: context.sub2Color,
               ),
             ],
           ),
@@ -153,7 +150,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
           Container(
             width: double.infinity,
             decoration: BoxDecoration(
-              color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+              color: context.surfaceColor,
               borderRadius: BorderRadius.circular(8),
             ),
             padding: const EdgeInsets.all(AppSpacing.s16),
@@ -170,22 +167,21 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                   decoration: InputDecoration(
                     hintText: '가게 이용 후기를 남겨주세요!',
                     hintStyle: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color: context.sub2Color,
                     ),
                     border: InputBorder.none,
                     counterText: '',
                     contentPadding: EdgeInsets.zero,
                   ),
                   style: AppTextStyles.text2.copyWith(
-                    color:
-                        isLight ? AppColors.mainText : AppColors.mainTextDark,
+                    color: context.mainTextColor,
                   ),
                 ),
                 AppGap.v4,
                 Text(
                   '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
                   style: AppTextStyles.caption3.copyWith(
-                    color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                    color: context.sub2Color,
                   ),
                 ),
               ],

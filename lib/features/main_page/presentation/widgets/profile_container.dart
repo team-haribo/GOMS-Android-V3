@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/main_page/presentation/widgets/outing_status.dart';
 import 'package:goms/features/main_page/presentation/widgets/time_display.dart';
 import 'package:goms/features/my_page/presentation/viewmodels/settings_provider.dart';
 
-class ProfileContainer extends ConsumerStatefulWidget {
+class ProfileContainer extends ConsumerWidget {
   final String name;
   final int grade;
   final String major;
@@ -25,34 +25,28 @@ class ProfileContainer extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<ProfileContainer> createState() => _ProfileContainerState();
-}
-
-class _ProfileContainerState extends ConsumerState<ProfileContainer> {
-  @override
-  Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+  Widget build(BuildContext context, WidgetRef ref) {
     final showClock = switch (ref.watch(settingsProvider)) {
       AsyncData(:final value) => value.showClock,
       _ => false,
     };
 
     return Container(
-      height: 84,
+      height: context.responsive(compact: 76, normal: 84, tablet: 92),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.s16),
+        padding: EdgeInsets.all(context.responsive(compact: 12, normal: 16)),
         child: Row(
           children: [
             if (!showClock) ...[
               Container(
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
-                  radius: 26,
+                  radius: context.responsive(compact: 22, normal: 26, tablet: 28),
                   child: AppIcons.profileCircle(),
                 ),
               ),
@@ -68,28 +62,25 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                     child: Row(
                       children: [
                         Text(
-                          widget.name,
+                          name,
                           style: AppTextStyles.title3.copyWith(
-                            color: isLight
-                                ? AppColors.mainText
-                                : AppColors.mainTextDark,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h8,
                         Text(
-                          '${widget.grade}기 | ${widget.major}과',
+                          '$grade기| $major과',
                           style: AppTextStyles.caption1.copyWith(
-                            color:
-                                isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                            color: context.sub2Color,
                           ),
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    '지각 횟수: ${widget.lateCount}회',
+                    '지각 횟수: $lateCount회',
                     style: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                      color: context.sub1Color,
                     ),
                   ),
                 ],
@@ -102,9 +93,9 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    widget.status.statusText,
+                    status.statusText,
                     style: AppTextStyles.text1.copyWith(
-                      color: widget.status.statusColor,
+                      color: status.statusColor,
                     ),
                   ),
                   if (showClock) ...[
@@ -122,6 +113,3 @@ class _ProfileContainerState extends ConsumerState<ProfileContainer> {
     );
   }
 }
-
-
-

@@ -181,5 +181,3 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
-
-

@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/late_profile_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/outing_status.dart';
 import 'package:goms/features/main_page/presentation/widgets/profile_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/profile_list_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/view_more_users.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 
-class OutingWaitingScreen extends StatefulWidget {
+class OutingWaitingScreen extends StatelessWidget {
   final int approvedStudentCount;
-  final bool hasLateStudents; // 여기서 true, false 조절
+  final bool hasLateStudents;
 
   const OutingWaitingScreen({
     super.key,
@@ -23,14 +24,7 @@ class OutingWaitingScreen extends StatefulWidget {
   });
 
   @override
-  State<OutingWaitingScreen> createState() => _OutingWaitingScreenState();
-}
-
-class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
-  @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
@@ -50,22 +44,18 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 24,
-                  ),
+                  padding: const EdgeInsets.only(bottom: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '지각자 TOP 3',
                         style: AppTextStyles.title3.copyWith(
-                          color: isDark
-                              ? AppColors.mainTextDark
-                              : AppColors.mainText,
+                          color: context.mainTextColor,
                         ),
                       ),
                       AppGap.v12,
-                      widget.hasLateStudents
+                      hasLateStudents
                           ? const Row(
                               children: [
                                 Expanded(
@@ -101,18 +91,14 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                   AppIcons.fire(
                                     width: 24,
                                     height: 24,
-                                    color: isDark
-                                        ? AppColors.sub1Dark
-                                        : AppColors.sub2,
+                                    color: context.sub1Color,
                                   ),
                                   AppGap.v2,
                                   Text(
                                     '이번주 지각자가 없어요 축하해요!',
                                     style: AppTextStyles.text1.copyWith(
                                       fontSize: 15,
-                                      color: isDark
-                                          ? AppColors.sub1Dark
-                                          : AppColors.sub2,
+                                      color: context.sub1Color,
                                     ),
                                   ),
                                 ],
@@ -131,21 +117,20 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                         Text(
                           '외출 현황',
                           style: AppTextStyles.title3.copyWith(
-                            color: isDark
-                                ? AppColors.mainTextDark
-                                : AppColors.mainText,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h8,
                         Text(
-                          '${widget.approvedStudentCount}',
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.mainColor),
+                          '$approvedStudentCount',
+                          style: AppTextStyles.caption1.copyWith(
+                            color: AppColors.mainColor,
+                          ),
                         ),
                         Text(
-                          "명이 외출중",
+                          '명이 외출중',
                           style: AppTextStyles.caption1.copyWith(
-                            color: isDark ? AppColors.sub1Dark : AppColors.sub2,
+                            color: context.sub1Color,
                           ),
                         ),
                       ],
@@ -162,21 +147,21 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
               (context, index) {
                 return const Column(
                   children: [
-                    ProfileListContainer(name: '류수연', grade: 9, major: 'AI'),
+                    ProfileListContainer(
+                      name: '류수연',
+                      grade: 9,
+                      major: 'SW개발',
+                    ),
                     AppGap.v4,
                   ],
                 );
               },
-              childCount: widget.approvedStudentCount,
+              childCount: approvedStudentCount,
             ),
           ),
         ],
       ),
-      floatingActionButton: const QRButton(
-        type: RoleEnum.user,
-      ),
+      floatingActionButton: const QRButton(type: RoleEnum.user),
     );
   }
 }
-
-

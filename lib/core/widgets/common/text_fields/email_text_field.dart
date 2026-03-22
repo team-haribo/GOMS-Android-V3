@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 
@@ -31,7 +32,6 @@ class EmailTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final hasError = errorText != null && errorText!.isNotEmpty;
 
     return BaseTextField(
@@ -53,9 +53,7 @@ class EmailTextField extends StatelessWidget {
                 suffixText!,
                 style: hasError
                     ? AppTextStyles.text3.withColor(AppColors.negative)
-                    : AppTextStyles.text3.withColor(
-                        isDark ? AppColors.sub2Dark : AppColors.sub2,
-                      ),
+                    : AppTextStyles.text3.withColor(context.sub2Color),
               ),
             )
           : null,

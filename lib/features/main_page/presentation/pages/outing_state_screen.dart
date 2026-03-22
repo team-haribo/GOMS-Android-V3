@@ -7,6 +7,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/enums/role_enum.dart';
@@ -54,7 +55,6 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     final searchText = ref.watch(searchTextProvider);
 
     final filteredList = searchText.isEmpty
@@ -72,7 +72,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             child: Text(
               '외출 현황',
               style: AppTextStyles.title1.copyWith(
-                color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                color: context.mainTextColor,
               ),
             ),
           ),
@@ -83,7 +83,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+                color: context.surfaceColor,
               ),
               child: SearchStudentField(
                 onChanged: (value) {
@@ -118,7 +118,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                   '검색결과',
                   style: AppTextStyles.title3.copyWith(
                     color:
-                        isLight ? AppColors.mainText : AppColors.mainTextDark,
+                        context.mainTextColor,
                   ),
                 ),
               ),
@@ -137,7 +137,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 separatorBuilder: (context, index) {
                   return Divider(
                     thickness: 1,
-                    color: isLight ? AppColors.button : AppColors.buttonDark,
+                    color: context.buttonColor,
                   );
                 },
               ),

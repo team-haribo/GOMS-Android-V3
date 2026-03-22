@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -41,48 +42,50 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return AppBar(
       automaticallyImplyLeading: false,
       leading: _showLogo
           ? null
           : Padding(
-              padding: const EdgeInsets.only(left: AppSpacing.s24),
+              padding: EdgeInsets.only(left: context.space(AppSpacing.s24)),
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: AppIcons.back(width: 24, height: 24),
+                icon: AppIcons.back(
+                  width: context.space(24),
+                  height: context.space(24),
+                ),
                 onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
               ),
             ),
-      titleSpacing: _showLogo ? 24 : 4,
+      titleSpacing: _showLogo ? context.space(24) : context.space(4),
       title: _showLogo
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppIcons.logoSmall(
-                  color: isDark ? AppColors.sub2Dark : AppColors.button,
+                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
-                AppGap.h8,
+                context.hSpace(AppSpacing.s8),
                 Text(
                   'GOMS',
                   style: TextStyle(
                     fontFamily: 'gmarketSans',
-                    fontSize: 16,
+                    fontSize: 16 * context.typographyScale,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.sub2Dark : AppColors.button,
+                    color: context.isDarkMode ? context.sub2Color : AppColors.button,
                   ),
                 ),
               ],
             )
           : Text(
               '돌아가기',
-              style: AppTextStyles.text2.copyWith(color: AppColors.mainColor),
+              style: context.appTypography.text2.copyWith(
+                color: AppColors.mainColor,
+              ),
             ),
       actions: actions,
     );

@@ -39,13 +39,14 @@ class BaseScaffold extends ConsumerWidget {
     return Scaffold(
       appBar: effectiveAppBar,
       body: SafeArea(
-        child: Padding(
-          padding: contentPadding ??
-              const EdgeInsets.symmetric(
-                horizontal: AppSpacing.s24,
-                vertical: AppSpacing.s24,
-              ),
-          child: body,
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: context.contentMaxWidth),
+            child: Padding(
+              padding: contentPadding ?? context.pagePadding,
+              child: body,
+            ),
+          ),
         ),
       ),
       bottomNavigationBar: bottomNavigationBar,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
-class SearchProfileList extends StatefulWidget {
+class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
@@ -17,24 +17,19 @@ class SearchProfileList extends StatefulWidget {
   });
 
   @override
-  State<SearchProfileList> createState() => _SearchProfileListState();
-}
-
-class _SearchProfileListState extends State<SearchProfileList> {
-  @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
     return Container(
-      color: isLight ? AppColors.background : AppColors.backgroundDark,
+      color: context.backgroundColor,
       width: double.infinity,
-      height: 72,
+      height: context.responsive(compact: 64, normal: 72, tablet: 80),
       child: Row(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.responsive(compact: 8, normal: 12),
+            ),
             child: CircleAvatar(
-              radius: 26,
+              radius: context.responsive(compact: 22, normal: 26, tablet: 28),
               child: AppIcons.profileCircle(),
             ),
           ),
@@ -44,18 +39,18 @@ class _SearchProfileListState extends State<SearchProfileList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.name,
+                name,
                 style: AppTextStyles.text1.copyWith(
-                  color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                  color: context.sub1Color,
                 ),
               ),
               AppGap.h4,
               Row(
                 children: [
                   Text(
-                    '${widget.grade}기 | ${widget.major}',
+                    '$grade기| $major',
                     style: AppTextStyles.caption2.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color: context.sub2Color,
                     ),
                   ),
                   AppGap.h4,
@@ -64,14 +59,14 @@ class _SearchProfileListState extends State<SearchProfileList> {
                     child: VerticalDivider(
                       thickness: 1,
                       width: 1,
-                      color: isLight ? AppColors.button : AppColors.buttonDark,
+                      color: context.buttonColor,
                     ),
                   ),
                   AppGap.h4,
                   Text(
                     '10:31에 외출',
                     style: AppTextStyles.caption2.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color: context.sub2Color,
                     ),
                   ),
                 ],

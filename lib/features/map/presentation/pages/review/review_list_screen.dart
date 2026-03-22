@@ -2,25 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/presentation/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/presentation/widgets/drag_handle_header.dart';
 import 'package:goms/features/map/presentation/widgets/review_list_container.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
-
-void main() async {
-  runApp(MaterialApp(
-    home: ReviewListScreen(
-        placeName: 'f',
-        category: 'f',
-        address: 'f',
-        distanceMeter: 3,
-        durationMinutes: 3,
-        review: 3,
-        recommended: 0),
-  ));
-}
 
 class ReviewListScreen extends StatefulWidget {
   final String placeName;
@@ -52,15 +40,16 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
       body: Column(
         children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24),
-            child: SearchTextField(),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: const SearchTextField(),
           ),
           Expanded(
             child: Stack(
@@ -73,9 +62,13 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                   child: DraggableScrollableSheet(
                     initialChildSize: 0.32,
                     minChildSize: 0.32,
-                    maxChildSize: 0.85,
+                    maxChildSize: context.isTabletLayout ? 0.78 : 0.85,
                     snap: true,
-                    snapSizes: const [0.32, 0.6, 0.85],
+                    snapSizes: <double>[
+                      0.32,
+                      0.6,
+                      context.isTabletLayout ? 0.78 : 0.85,
+                    ],
                     builder: (context, scrollController) {
                       return ClipRRect(
                         borderRadius: const BorderRadius.vertical(
@@ -100,8 +93,8 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                               ),
                               SliverToBoxAdapter(
                                 child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 24,
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding,
                                   ),
                                   child: SizedBox(
                                     child: Column(

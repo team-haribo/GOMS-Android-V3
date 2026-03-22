@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 
 /// 공통 확인 다이얼로그 (Cupertino 스타일)
 class GomsDialog {
@@ -59,8 +59,7 @@ class GomsDialog {
   final bool isDestructive;
 
   Future<void> show(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-    final textColor = isLight ? AppColors.mainText : AppColors.mainTextDark;
+    final textColor = context.mainTextColor;
 
     void onConfirmPressed() {
       Navigator.of(context).pop();

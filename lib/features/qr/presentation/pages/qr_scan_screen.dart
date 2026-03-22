@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/qr/presentation/viewmodels/qr_scan_provider.dart';
 
-class QrScanScreen extends StatefulWidget {
+class QrScanScreen extends ConsumerStatefulWidget {
   const QrScanScreen({super.key});
 
   @override
-  State<QrScanScreen> createState() => _QrScanScreenState();
+  ConsumerState<QrScanScreen> createState() => _QrScanScreenState();
 }
 
-class _QrScanScreenState extends State<QrScanScreen> {
+class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   final MobileScannerController _controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
-
-  bool _isProcessing = false;
 
   @override
   void dispose() {
@@ -26,11 +26,11 @@ class _QrScanScreenState extends State<QrScanScreen> {
   }
 
   void _onDetect(BarcodeCapture capture) {
-    if (_isProcessing) return;
+    if (ref.read(qrScanProcessingProvider)) return;
     final barcode = capture.barcodes.firstOrNull;
     if (barcode == null || barcode.rawValue == null) return;
 
-    setState(() => _isProcessing = true);
+    ref.read(qrScanProcessingProvider.notifier).state = true;
     _controller.stop();
 
     // TODO: QR 값으로 API 호출 후 결과 화면으로 이동

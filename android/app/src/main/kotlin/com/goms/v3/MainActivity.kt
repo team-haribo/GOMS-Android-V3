@@ -1,4 +1,4 @@
-package com.example.goms
+package com.goms.v3
 
 import android.os.Build
 import io.flutter.embedding.android.FlutterActivity

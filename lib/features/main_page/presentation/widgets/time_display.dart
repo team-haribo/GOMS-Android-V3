@@ -1,60 +1,29 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/main_page/presentation/viewmodels/time_provider.dart';
 
-class TimeDisplay extends StatefulWidget {
+class TimeDisplay extends ConsumerWidget {
   const TimeDisplay({super.key});
 
   @override
-  State<TimeDisplay> createState() => _TimeDisplayState();
-}
-
-class _TimeDisplayState extends State<TimeDisplay> {
-  late Timer _timer;
-  late String _ampm;
-  late String _time;
-
-  @override
-  void initState() {
-    super.initState();
-    _updateTime();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted) {
-        setState(() {
-          _updateTime();
-        });
-      }
-    });
-  }
-
-  void _updateTime() {
-    final now = DateTime.now();
-    _ampm = DateFormat('a', 'en_US').format(now);
-    _time = DateFormat('h : mm : ss').format(now);
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = ref.watch(currentTimeProvider).value ?? DateTime.now();
+    final ampm = DateFormat('a', 'en_US').format(now);
+    final time = DateFormat('h : mm : ss').format(now);
 
     return RichText(
       text: TextSpan(
         children: [
           TextSpan(
-            text: '$_ampm ',
-            style: AppTextStyles.dateTimeAmPm.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+            text: '$ampm ',
+            style: AppTextStyles.dateTimeAmPm.copyWith(color: context.sub2Color),
           ),
           TextSpan(
-            text: _time,
-            style: AppTextStyles.dateTime.copyWith(color: isLight ? AppColors.sub2 : AppColors.sub2Dark),
+            text: time,
+            style: AppTextStyles.dateTime.copyWith(color: context.sub2Color),
           ),
         ],
       ),

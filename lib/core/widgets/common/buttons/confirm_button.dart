@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ConfirmButton extends StatelessWidget {
-  /// 버튼 텍스트
+  /// 확인 버튼 텍스트
   final String text;
 
   /// 버튼 클릭 콜백
@@ -29,11 +31,9 @@ class ConfirmButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-
     return SizedBox(
       width: width ?? double.infinity,
-      height: height ?? 44,
+      height: height ?? context.responsive(compact: 44, normal: 48, tablet: 52),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -41,10 +41,9 @@ class ConfirmButton extends StatelessWidget {
             Set<WidgetState> states,
           ) {
             if (states.contains(WidgetState.disabled)) {
-              // disabled: button 색상 (light/dark 모드 모두)
-              return isDarkMode ? AppColors.buttonDark : AppColors.button;
+              return context.buttonColor;
             }
-            return AppColors.mainColor; // default: mainColor
+            return AppColors.mainColor;
           }),
           foregroundColor: WidgetStateProperty.resolveWith<Color>((
             Set<WidgetState> states,

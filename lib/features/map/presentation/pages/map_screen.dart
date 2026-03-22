@@ -2,8 +2,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:goms/features/map/presentation/viewmodels/map_screen_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 /// 최소 구현용 카카오 지도 화면입니다.
@@ -13,7 +15,7 @@ import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 /// - Info.plist: NSLocationWhenInUseUsageDescription 추가
 /// - 카카오 개발자 콘솔에 Android 키 해시 / iOS 번들 ID 등록
 /// - `kakao_map_sdk`는 Android x86/x64 에뮬레이터에서 동작하지 않을 수 있음
-class MapScreen extends StatefulWidget {
+class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});
 
   /// 앱 시작 시 한 번만 호출하면 됩니다.
@@ -32,7 +34,7 @@ class MapScreen extends StatefulWidget {
   }
 
   @override
-  State<MapScreen> createState() => _MapScreenState();
+  ConsumerState<MapScreen> createState() => _MapScreenState();
 }
 
 bool _kakaoSdkInitialized = false;
@@ -45,16 +47,13 @@ String get _kakaoRestApiKey {
   return key;
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends ConsumerState<MapScreen> {
   static const kakao.LatLng _seoulCityHall = kakao.LatLng(37.5665, 126.9780);
   static const kakao.LatLng _gangnamStation = kakao.LatLng(37.4979, 127.0276);
 
   kakao.KakaoMapController? _mapController;
   kakao.Route? _routeOverlay;
   kakao.LatLng _origin = _seoulCityHall;
-
-  bool _isSdkReady = false;
-  bool _isFetchingRoute = false;
 
   @override
   void initState() {
@@ -80,9 +79,7 @@ class _MapScreenState extends State<MapScreen> {
         return;
       }
 
-      setState(() {
-        _isSdkReady = true;
-      });
+      ref.read(mapScreenProvider.notifier).setSdkReady(true);
     } catch (error) {
       debugPrint('Kakao map initialize error: $error');
     }
@@ -97,13 +94,12 @@ class _MapScreenState extends State<MapScreen> {
 
   Future<void> _startDirection() async {
     final controller = _mapController;
-    if (controller == null || _isFetchingRoute) {
+    final uiState = ref.read(mapScreenProvider);
+    if (controller == null || uiState.isFetchingRoute) {
       return;
     }
 
-    setState(() {
-      _isFetchingRoute = true;
-    });
+    ref.read(mapScreenProvider.notifier).setFetchingRoute(true);
 
     try {
       _origin = await _getCurrentLocation() ?? _origin;
@@ -140,13 +136,7 @@ class _MapScreenState extends State<MapScreen> {
     } catch (error) {
       debugPrint('Kakao route error: $error');
     } finally {
-      if (mounted) {
-        setState(() {
-          _isFetchingRoute = false;
-        });
-      } else {
-        _isFetchingRoute = false;
-      }
+      ref.read(mapScreenProvider.notifier).setFetchingRoute(false);
     }
   }
 
@@ -279,7 +269,9 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_isSdkReady) {
+    final uiState = ref.watch(mapScreenProvider);
+
+    if (!uiState.isSdkReady) {
       return const Scaffold(
         body: Center(
           child: CircularProgressIndicator(),
@@ -310,8 +302,8 @@ class _MapScreenState extends State<MapScreen> {
             child: SizedBox(
               height: 52,
               child: ElevatedButton(
-                onPressed: _isFetchingRoute ? null : _startDirection,
-                child: _isFetchingRoute
+                onPressed: uiState.isFetchingRoute ? null : _startDirection,
+                child: uiState.isFetchingRoute
                     ? const SizedBox(
                         width: 20,
                         height: 20,

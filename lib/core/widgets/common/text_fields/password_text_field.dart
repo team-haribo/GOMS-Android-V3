@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/common/text_fields/viewmodels/password_visibility_provider.dart';
 
 /// 비밀번호 입력 텍스트 필드 (보기/숨기기 기능 포함)
-class PasswordTextField extends StatefulWidget {
+class PasswordTextField extends ConsumerWidget {
   const PasswordTextField({
     super.key,
     this.controller,
@@ -14,6 +16,7 @@ class PasswordTextField extends StatefulWidget {
     this.onChanged,
     this.onSubmitted,
     this.validator,
+    this.providerKey,
   });
 
   final TextEditingController? controller;
@@ -24,43 +27,35 @@ class PasswordTextField extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final String? Function(String?)? validator;
+  final Object? providerKey;
 
   @override
-  State<PasswordTextField> createState() => _PasswordTextFieldState();
-}
-
-class _PasswordTextFieldState extends State<PasswordTextField> {
-  bool _obscureText = true;
-
-  void _toggleObscureText() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+  Widget build(BuildContext context, WidgetRef ref) {
+    final key = providerKey ?? controller ?? this.key ?? hintText ?? runtimeType;
+    final obscureText = ref.watch(passwordVisibilityProvider(key));
 
     return BaseTextField(
-      controller: widget.controller,
-      hintText: widget.hintText,
-      errorText: widget.errorText,
-      obscureText: _obscureText,
+      controller: controller,
+      hintText: hintText,
+      errorText: errorText,
+      obscureText: obscureText,
       keyboardType: TextInputType.visiblePassword,
       textInputAction: TextInputAction.done,
-      enabled: widget.enabled,
-      readOnly: widget.readOnly,
-      onChanged: widget.onChanged,
-      onSubmitted: widget.onSubmitted,
-      validator: widget.validator,
+      enabled: enabled,
+      readOnly: readOnly,
+      onChanged: onChanged,
+      onSubmitted: onSubmitted,
+      validator: validator,
       suffixIcon: IconButton(
         icon: Icon(
-          _obscureText ? Icons.visibility_off : Icons.visibility,
+          obscureText ? Icons.visibility_off : Icons.visibility,
           size: 24,
-          color: isDark ? AppColors.sub2Dark : AppColors.sub2,
+          color: context.sub2Color,
         ),
-        onPressed: _toggleObscureText,
+        onPressed: () {
+          ref.read(passwordVisibilityProvider(key).notifier).state =
+              !obscureText;
+        },
       ),
     );
   }

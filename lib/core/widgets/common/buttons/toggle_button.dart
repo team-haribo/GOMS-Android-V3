@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 
 class ToggleButton extends StatelessWidget {
   final RoleEnum type;
@@ -20,30 +21,18 @@ class ToggleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final isEnabled = onChanged != null;
 
-    // 활성화 색상 (User/Admin)
-    final activeColor = type == RoleEnum.user
-        ? AppColors
-              .mainColor // User: 주황색
-        : AppColors.admin; // Admin: 보라색
-
-    // 비활성화 색상 (Dark/Light 모드)
-    final inactiveColor = isDarkMode
-        ? AppColors
-              .sub2Dark // Dark 모드: 어두운 회색
-        : AppColors.sub2; // Light 모드: 밝은 회색
+    final activeColor = type == RoleEnum.user ? AppColors.mainColor : AppColors.admin;
 
     return Switch(
       value: value,
       onChanged: isEnabled ? onChanged : null,
-      activeThumbColor: Colors.white, // thumb 색상
-      activeTrackColor: activeColor, // 활성화 track
-      inactiveThumbColor: Colors.white, // 비활성 thumb
-      inactiveTrackColor: inactiveColor, // 비활성 track
+      activeThumbColor: Colors.white,
+      activeTrackColor: activeColor,
+      inactiveThumbColor: Colors.white,
+      inactiveTrackColor: context.sub2Color,
       trackOutlineColor: WidgetStateProperty.all(Colors.transparent),
     );
   }
 }
-

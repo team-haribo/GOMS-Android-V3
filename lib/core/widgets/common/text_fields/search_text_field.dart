@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/common/text_fields/viewmodels/search_text_field_provider.dart';
 
 /// 검색 텍스트 필드
-class SearchTextField extends StatefulWidget {
+class SearchTextField extends ConsumerStatefulWidget {
   const SearchTextField({
     super.key,
     this.controller,
@@ -34,18 +36,21 @@ class SearchTextField extends StatefulWidget {
   final bool showLogo;
 
   @override
-  State<SearchTextField> createState() => _SearchTextFieldState();
+  ConsumerState<SearchTextField> createState() => _SearchTextFieldState();
 }
 
-class _SearchTextFieldState extends State<SearchTextField> {
+class _SearchTextFieldState extends ConsumerState<SearchTextField> {
   late TextEditingController _controller;
-  bool _showClearButton = false;
+
+  Object get _providerKey =>
+      widget.controller ?? widget.key ?? widget.hintText ?? widget.runtimeType;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
     _controller.addListener(_updateClearButton);
+    _updateClearButton();
   }
 
   @override
@@ -58,15 +63,14 @@ class _SearchTextFieldState extends State<SearchTextField> {
   }
 
   void _updateClearButton() {
-    setState(() {
-      _showClearButton = _controller.text.isNotEmpty;
-    });
+    ref.read(searchTextHasValueProvider(_providerKey).notifier).state =
+        _controller.text.isNotEmpty;
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final iconColor = isDark ? AppColors.sub2Dark : AppColors.sub2;
+    final iconColor = context.sub2Color;
+    final showClearButton = ref.watch(searchTextHasValueProvider(_providerKey));
 
     return BaseTextField(
       controller: _controller,
@@ -80,7 +84,7 @@ class _SearchTextFieldState extends State<SearchTextField> {
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
       prefixIcon: widget.showLogo
-          ? (_showClearButton
+          ? (showClearButton
               ? IconButton(
                   icon:
                     AppIcons.back(width: 24, height: 24, color: iconColor),

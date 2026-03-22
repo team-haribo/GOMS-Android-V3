@@ -5,6 +5,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
 import 'package:goms/features/map/presentation/pages/base/widgets/map_shared_widgets.dart';
@@ -23,31 +24,40 @@ class MapMainOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
+    final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
+    final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
+    final initialSheetSize =
+        context.isTabletLayout ? 0.44 : (context.screenHeight < 780 ? 0.42 : 0.38);
+    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.88;
 
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.fromLTRB(24, 16, 24, 0),
-          child: SearchTextField(),
+        Padding(
+          padding: EdgeInsets.fromLTRB(horizontalPadding, topPadding, horizontalPadding, 0),
+          child: const SearchTextField(),
         ),
         Expanded(
           child: Stack(
             children: [
               Positioned.fill(
                 child: DraggableScrollableSheet(
-                  initialChildSize: 0.38,
-                  minChildSize: 0.38,
-                  maxChildSize: 0.88,
+                  initialChildSize: initialSheetSize,
+                  minChildSize: initialSheetSize,
+                  maxChildSize: maxSheetSize,
                   snap: true,
-                  snapSizes: const [0.38, 0.62, 0.88],
+                  snapSizes: <double>[
+                    initialSheetSize,
+                    context.isTabletLayout ? 0.62 : 0.62,
+                    maxSheetSize,
+                  ],
                   builder: (context, scrollController) {
                     return MapSheet(
                       isLight: isLight,
                       scrollController: scrollController,
                       slivers: [
                         SliverPadding(
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                           sliver: SliverToBoxAdapter(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,7 +89,7 @@ class MapMainOverlay extends StatelessWidget {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                height: 56,
+                height: context.responsive(compact: 44, normal: 56, tablet: 64),
                 child: _BottomGradient(isLight: isLight),
               ),
             ],

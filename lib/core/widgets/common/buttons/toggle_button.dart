@@ -6,10 +6,10 @@ import 'package:goms/core/theme/theme_context.dart';
 class ToggleButton extends StatelessWidget {
   final RoleEnum type;
 
-  /// ?좉? ?곹깭 (True/False)
+  /// 토글 상태 (True/False)
   final bool value;
 
-  /// ?곹깭 蹂寃?肄쒕갚
+  /// 상태 변경 콜백
   final ValueChanged<bool>? onChanged;
 
   const ToggleButton({
@@ -23,9 +23,7 @@ class ToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEnabled = onChanged != null;
 
-    final activeColor = type == RoleEnum.user
-        ? AppColors.mainColor
-        : AppColors.admin;
+    final activeColor = type == RoleEnum.user ? AppColors.mainColor : AppColors.admin;
 
     return Switch(
       value: value,

@@ -49,7 +49,7 @@ class OutingWaitingScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '吏媛곸옄 TOP 3',
+                        '지각자 TOP 3',
                         style: AppTextStyles.title3.copyWith(
                           color: context.mainTextColor,
                         ),
@@ -115,7 +115,7 @@ class OutingWaitingScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          '?몄텧 ?꾪솴',
+                          '외출 현황',
                           style: AppTextStyles.title3.copyWith(
                             color: context.mainTextColor,
                           ),
@@ -128,7 +128,7 @@ class OutingWaitingScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "명이 외출중",
+                          '명이 외출중',
                           style: AppTextStyles.caption1.copyWith(
                             color: context.sub1Color,
                           ),

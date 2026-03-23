@@ -283,4 +283,41 @@ class AppIcons {
         height: height,
         color: color,
       );
+
+  /// 유저 관리 버튼 아이콘
+  static Widget userManageButton({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/user_manage_button.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 강제 외출 아이콘
+  static Widget forcedOuting({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/forced_outing.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 강제 외출 복귀 아이콘
+  static Widget forceReturn({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/forced_return.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+
+  /// 어드민 수정 아이콘
+  static Widget adminEdit({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/admin_edit.png',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

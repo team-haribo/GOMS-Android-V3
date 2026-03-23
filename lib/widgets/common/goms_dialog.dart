@@ -209,7 +209,7 @@ class GomsDialog {
               GomsDialog.reviewReportConfirm(
                   context: context,
                   title: '후기 신고 완료',
-                  content: '신고가 접수되었습니다.\n더 나은 GOMS가 되기위해 노력하겠습니다!');
+                  content: '신고가 접수되었습니다.\n더 나은 GOMS가 되기위해 노력하겠습니다!',);
             },
             child: Text(
               confirmText,
@@ -253,4 +253,247 @@ class GomsDialog {
       ),
     );
   }
+  ///  후기 삭제 다이얼로그
+  static Future<void> forceReturn({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String cancelText = '취소',
+    String confirmText = '복귀',
+    VoidCallback? onConfirm,
+    bool isDestructive = false,
+  }) {
+    return showCupertinoDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText,
+              style: const TextStyle(color: CupertinoColors.systemBlue),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm?.call();
+            },
+            child: Text(
+              confirmText,
+              style: const TextStyle(
+                color: AppColors.negative,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 외출금지 다이얼로그
+  static Future<void> bannedOuting({
+    required BuildContext context,
+    required String title,
+    required String content,
+    required String redContent,
+    required String content2,
+    String cancelText = '취소',
+    String confirmText = '외출 금지',
+    VoidCallback? onConfirm,
+    bool isDestructive = false,
+  }) {
+    return showCupertinoDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black),
+            children: [
+              TextSpan(text: content),
+              TextSpan(text: redContent, style: const TextStyle(color: AppColors.negative)),
+              TextSpan(text: content2),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText,
+              style: const TextStyle(color: CupertinoColors.systemBlue),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm?.call();
+            },
+            child: Text(
+              confirmText,
+              style: const TextStyle(color: AppColors.negative),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 외출금지 해제
+  static Future<void> bannedOutingRelease({
+    required BuildContext context,
+    required String title,
+    required String content,
+    required String redContent,
+    required String content2,
+    String cancelText = '취소',
+    String confirmText = '외출 해제',
+    VoidCallback? onConfirm,
+    bool isDestructive = false,
+  }) {
+    return showCupertinoDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black),
+            children: [
+              TextSpan(text: content),
+              TextSpan(text: redContent, style: const TextStyle(color: AppColors.negative)),
+              TextSpan(text: content2),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText,
+              style: const TextStyle(color: CupertinoColors.systemBlue),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm?.call();
+            },
+            child: Text(
+              confirmText,
+              style: const TextStyle(color: AppColors.negative),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 강제외출
+  static Future<void> forcedOuting({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String cancelText = '취소',
+    String confirmText = '외출',
+    VoidCallback? onConfirm,
+    bool isDestructive = false,
+  }) {
+    return showCupertinoDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black),
+            children: [
+              TextSpan(text: content),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText,
+              style: const TextStyle(color: CupertinoColors.systemBlue),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm?.call();
+            },
+            child: Text(
+              confirmText,
+              style: const TextStyle(color: AppColors.negative),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// 강제외출 복귀
+  static Future<void> forcedOutingRelease({
+    required BuildContext context,
+    required String title,
+    required String content,
+    String cancelText = '취소',
+    String confirmText = '복귀',
+    VoidCallback? onConfirm,
+    bool isDestructive = false,
+  }) {
+    return showCupertinoDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(title),
+        content: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            style: const TextStyle(color: Colors.black),
+            children: [
+              TextSpan(text: content),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText,
+              style: const TextStyle(color: CupertinoColors.systemBlue),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: () {
+              Navigator.of(context).pop();
+              onConfirm?.call();
+            },
+            child: Text(
+              confirmText,
+              style: const TextStyle(color: AppColors.negative),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
 }

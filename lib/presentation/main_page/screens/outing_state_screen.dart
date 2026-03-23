@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/theme/config/light_theme.dart';
+import 'package:goms/domain/enum/student_role_enum.dart';
+import 'package:goms/presentation/main_page/widget/filter_button.dart';
+import 'package:goms/presentation/main_page/widget/user_manage_button.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -16,17 +20,31 @@ import 'package:goms/widgets/common/buttons/qr_button.dart';
 import 'package:goms/widgets/common/text_fields/search_student.dart';
 import 'package:goms/presentation/main_page/widget/search_profile_container_model.dart';
 
+void main() async {
+  runApp(ProviderScope(
+    child: MaterialApp(
+      theme: LightTheme.theme,
+      themeMode: ThemeMode.light,
+      home: const OutingStateScreen(role: RoleEnum.admin),
+  ),),);
+}
+
 final searchTextProvider = StateProvider<String>((ref) => '');
 
 class OutingStateScreen extends ConsumerStatefulWidget {
-  const OutingStateScreen({super.key});
+  final RoleEnum role;
+
+  const OutingStateScreen({
+    super.key,
+    required this.role,
+  });
 
   @override
   ConsumerState<OutingStateScreen> createState() => _OutingStateScreenState();
 }
 
 class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
-  bool isOutingDay = false;
+  bool isOutingDay = true;
 
   @override
   void initState() {
@@ -44,12 +62,12 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   }
 
   List<SearchProfileContainerModel> outingMembers = [
-    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
-    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
-    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
-    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발'),
-    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI'),
-    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI'),
+    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발', studentRole: StudentRole.council),
+    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI', studentRole: StudentRole.outingBanned),
+    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI', studentRole: StudentRole.student),
+    const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발',studentRole: StudentRole.outingBanned),
+    const SearchProfileContainerModel(name: '이주언', grade: 8, major: 'AI', studentRole: StudentRole.outingBanned),
+    const SearchProfileContainerModel(name: '김민솔', grade: 8, major: 'AI', studentRole: StudentRole.outingBanned),
   ];
 
   @override
@@ -65,6 +83,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
 
     return BaseScaffold(
       showAppBar: true,
+      role: widget.role,
       body: Column(
         children: [
           Align(
@@ -110,18 +129,20 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
               ),
             )
           else ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  '검색결과',
-                  style: AppTextStyles.title3.copyWith(
-                    color:
-                        isLight ? AppColors.mainText : AppColors.mainTextDark,
-                  ),
-                ),
-              ),
+            AppGap.v12,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+               Text(
+                      '검색결과',
+                      style: AppTextStyles.title3.copyWith(
+                        color: isLight
+                            ? AppColors.mainText
+                            : AppColors.mainTextDark,
+                      ),
+                    ),
+                const FilterButton(),
+              ],
             ),
             Expanded(
               child: ListView.separated(
@@ -132,6 +153,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                     name: member.name,
                     grade: member.grade,
                     major: member.major,
+                    role: widget.role,
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -145,8 +167,18 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           ],
         ],
       ),
-      floatingActionButton: const QRButton(
-        type: RoleEnum.user,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.role == RoleEnum.admin) ...[
+            const UserManageButton(),
+            AppGap.v12,
+          ],
+          QRButton(
+              type: widget.role == RoleEnum.admin
+                  ? RoleEnum.admin
+                  : RoleEnum.user,),
+        ],
       ),
     );
   }

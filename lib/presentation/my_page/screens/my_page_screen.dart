@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/config/light_theme.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_provider.dart';
@@ -14,6 +15,18 @@ import 'package:goms/presentation/my_page/settings_provider.dart';
 import 'package:goms/widgets/common/base_scaffold.dart';
 import 'package:goms/widgets/common/buttons/toggle_button.dart';
 import 'package:goms/widgets/common/goms_dialog.dart';
+
+void main() async {
+  runApp(
+    ProviderScope(
+      child: MaterialApp(
+        theme: LightTheme.theme,
+        themeMode: ThemeMode.light,
+        home: const MyPageScreen(role: RoleEnum.admin),
+      ),
+    ),
+  );
+}
 
 enum AppThemeOption { system, light, dark }
 
@@ -56,7 +69,12 @@ extension ThemeModeToOption on ThemeMode {
 }
 
 class MyPageScreen extends ConsumerStatefulWidget {
-  const MyPageScreen({super.key});
+  final RoleEnum role;
+
+  const MyPageScreen({
+    super.key,
+    required this.role,
+  });
 
   @override
   ConsumerState<MyPageScreen> createState() => _MyPageScreenState();
@@ -287,7 +305,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
             Positioned(
               bottom: 0,
               right: 0,
-              child: AppIcons.edit(),
+              child: widget.role == RoleEnum.admin
+                  ? AppIcons.adminEdit()
+                  : AppIcons.edit(),
             ),
           ],
         ),
@@ -354,7 +374,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
           ),
         ),
         ToggleButton(
-          type: RoleEnum.user,
+          type: widget.role,
           value: value,
           onChanged: onChanged,
         ),

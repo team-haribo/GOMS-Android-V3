@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/domain/enum/role_enum.dart';
 import 'package:goms/presentation/auth/login/screens/login_screen.dart';
 import 'package:goms/presentation/auth/reset_password/screens/find_password_screen.dart';
 import 'package:goms/presentation/auth/reset_password/screens/reset_password_screen.dart';
@@ -78,7 +79,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.outingState,
       name: 'outingState',
-      builder: (context, state) => const OutingStateScreen(),
+      builder: (context, state) {
+        final role = state.extra as RoleEnum? ?? RoleEnum.user;
+        return OutingStateScreen(
+          role: role,
+        );
+      },
     ),
     GoRoute(
       path: RoutePath.deleteAccount,
@@ -157,20 +163,28 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.home,
               name: 'home',
-              builder: (context, state) => const OutingWaitingScreen(
-                approvedStudentCount: 0,
-                hasLateStudents: false,
-              ),
+              builder: (context, state) {
+                final role = state.extra as RoleEnum? ?? RoleEnum.user;
+                return OutingWaitingScreen(
+                  role: role,
+                  approvedStudentCount: 0,
+                  hasLateStudents: false,
+                );
+              },
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: RoutePath.myPage,
-              name: 'myPage',
-              builder: (context, state) => const MyPageScreen(),
-            ),
+                path: RoutePath.myPage,
+                name: 'myPage',
+                builder: (context, state) {
+                  final role = state.extra as RoleEnum? ?? RoleEnum.user;
+                  return MyPageScreen(
+                    role: role,
+                  );
+                },),
           ],
         ),
       ],

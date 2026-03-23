@@ -3,17 +3,21 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/domain/enum/role_enum.dart';
+import 'package:goms/widgets/common/goms_dialog.dart';
 
 class SearchProfileList extends StatefulWidget {
   final String name;
   final int grade;
   final String major;
+  final RoleEnum role;
 
   const SearchProfileList({
     super.key,
     required this.name,
     required this.grade,
     required this.major,
+    required this.role,
   });
 
   @override
@@ -34,7 +38,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: CircleAvatar(
-              radius: 26,
+              radius: 24,
               child: AppIcons.profileCircle(),
             ),
           ),
@@ -78,6 +82,23 @@ class _SearchProfileListState extends State<SearchProfileList> {
               ),
             ],
           ),
+          const Spacer(),
+          if (widget.role == RoleEnum.admin) ...[
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: IconButton(
+                onPressed: () {
+                  GomsDialog.forceReturn(
+                      context: context,
+                      title: '외출 강제 복귀',
+                      content: '\n외출자를 강제로 복귀시키겠습니까?',);
+                },
+                icon: AppIcons.bin(
+                  color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/config/light_theme.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -11,13 +13,32 @@ import 'package:goms/presentation/main_page/widget/profile_list_container.dart';
 import 'package:goms/presentation/main_page/widget/view_more_users.dart';
 import 'package:goms/widgets/common/base_scaffold.dart';
 import 'package:goms/widgets/common/buttons/qr_button.dart';
+import 'package:goms/presentation/main_page/widget/user_manage_button.dart';
+
+void main() async {
+  runApp(
+    ProviderScope(
+      child: MaterialApp(
+        theme: LightTheme.theme,
+        themeMode: ThemeMode.light,
+        home: const OutingWaitingScreen(
+          role: RoleEnum.admin,
+          approvedStudentCount: 3,
+          hasLateStudents: true,
+        ),
+      ),
+    ),
+  );
+}
 
 class OutingWaitingScreen extends StatefulWidget {
+  final RoleEnum role;
   final int approvedStudentCount;
   final bool hasLateStudents; // 여기서 true, false 조절
 
   const OutingWaitingScreen({
     super.key,
+    required this.role,
     required this.approvedStudentCount,
     required this.hasLateStudents,
   });
@@ -39,14 +60,16 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 16, bottom: 24),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 24),
                   child: ProfileContainer(
                     name: '류수연',
                     grade: 9,
                     major: 'SW개발',
                     lateCount: 0,
-                    status: OutingStatus.waiting,
+                    status: widget.role == RoleEnum.admin
+                        ? OutingStatus.admin
+                        : OutingStatus.waiting,
                   ),
                 ),
                 Padding(
@@ -56,13 +79,21 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '지각자 TOP 3',
-                        style: AppTextStyles.title3.copyWith(
-                          color: isDark
-                              ? AppColors.mainTextDark
-                              : AppColors.mainText,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '지각자 TOP 3',
+                            style: AppTextStyles.title3.copyWith(
+                              color: isDark
+                                  ? AppColors.mainTextDark
+                                  : AppColors.mainText,
+                            ),
+                          ),
+                          widget.role == RoleEnum.admin
+                              ? const ViewMoreUsers()
+                              : const SizedBox(),
+                        ],
                       ),
                       AppGap.v12,
                       widget.hasLateStudents
@@ -172,8 +203,18 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
           ),
         ],
       ),
-      floatingActionButton: const QRButton(
-        type: RoleEnum.user,
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (widget.role == RoleEnum.admin) ...[
+            const UserManageButton(),
+            AppGap.v12,
+          ],
+          QRButton(
+            type:
+                widget.role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
+          ),
+        ],
       ),
     );
   }

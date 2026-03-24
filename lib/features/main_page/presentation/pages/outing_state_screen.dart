@@ -21,22 +21,27 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 
 void main() async {
-  runApp(ProviderScope(
-    child: MaterialApp(
-      theme: LightTheme.theme,
-      themeMode: ThemeMode.light,
-      home: const OutingStateScreen(role: RoleEnum.admin),
-  ),),);
+  runApp(
+    ProviderScope(
+      overrides: [
+        roleProvider.overrideWithValue(RoleEnum.admin),
+      ],
+      child: MaterialApp(
+        theme: LightTheme.theme,
+        themeMode: ThemeMode.light,
+        home: const OutingStateScreen(),
+      ),
+    ),
+  );
 }
 
+final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 final searchTextProvider = StateProvider<String>((ref) => '');
 
 class OutingStateScreen extends ConsumerStatefulWidget {
-  final RoleEnum role;
 
   const OutingStateScreen({
     super.key,
-    required this.role,
   });
 
   @override
@@ -74,6 +79,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     final searchText = ref.watch(searchTextProvider);
+    final role = ref.watch(roleProvider);
 
     final filteredList = searchText.isEmpty
         ? outingMembers
@@ -83,7 +89,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
 
     return BaseScaffold(
       showAppBar: true,
-      role: widget.role,
+      role: role,
       body: Column(
         children: [
           Align(
@@ -153,7 +159,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                     name: member.name,
                     grade: member.grade,
                     major: member.major,
-                    role: widget.role,
+                    role: role,
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -170,12 +176,12 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.role == RoleEnum.admin) ...[
+          if (role == RoleEnum.admin) ...[
             const UserManageButton(),
             AppGap.v12,
           ],
           QRButton(
-              type: widget.role == RoleEnum.admin
+              type: role == RoleEnum.admin
                   ? RoleEnum.admin
                   : RoleEnum.user,),
         ],

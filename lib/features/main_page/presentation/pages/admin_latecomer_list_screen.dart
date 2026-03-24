@@ -11,31 +11,34 @@ import 'package:goms/features/main_page/presentation/widgets/date_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/late_profile_list_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/search_profile_container_model.dart';
 
+final roleProvider = Provider<RoleEnum>((ref)=> throw UnimplementedError());
+
 void main() async {
   runApp(
     ProviderScope(
+      overrides: [
+        roleProvider.overrideWithValue(RoleEnum.admin),
+      ],
       child: MaterialApp(
         theme: LightTheme.theme,
         themeMode: ThemeMode.light,
-        home: const AdminLatecomerListScreen(role: RoleEnum.admin),
+        home: const AdminLatecomerListScreen(),
       ),
     ),
   );
 }
 
-class AdminLatecomerListScreen extends StatefulWidget {
-  final RoleEnum role;
+class AdminLatecomerListScreen extends ConsumerStatefulWidget{
 
   const AdminLatecomerListScreen({
     super.key,
-    required this.role,
   });
 
   @override
-  State<AdminLatecomerListScreen> createState() => _OutingStateScreenState();
+  ConsumerState<AdminLatecomerListScreen> createState() => _OutingStateScreenState();
 }
 
-class _OutingStateScreenState extends State<AdminLatecomerListScreen> {
+class _OutingStateScreenState extends ConsumerState<AdminLatecomerListScreen> {
   bool isOutingDay = true;
 
   List<SearchProfileContainerModel> outingMembers = [
@@ -50,10 +53,11 @@ class _OutingStateScreenState extends State<AdminLatecomerListScreen> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final role = ref.watch(roleProvider);
 
     return BaseScaffold(
       showAppBar: true,
-      role: widget.role,
+      role: role,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

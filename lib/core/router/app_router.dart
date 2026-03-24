@@ -26,14 +26,6 @@ import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
-WidgetBuilder _outingStateScreenBuilder(RoleEnum role) {
-  return (context) => OutingStateScreen(role: role);
-}
-
-WidgetBuilder _outingWaitingScreenBuilder(RoleEnum role) {
-  return (context) => OutingWaitingScreen(
-      role: role, approvedStudentCount: 0, hasLateStudents: false,);
-}
 
 WidgetBuilder _myPageScreenBuilder(RoleEnum role) {
   return (context) => MyPageScreen(role: role);
@@ -95,8 +87,7 @@ final GoRouter router = GoRouter(
       path: RoutePath.outingState,
       name: 'outingState',
       builder: (context, state) {
-        final role = state.extra as RoleEnum? ?? RoleEnum.user;
-        return _outingStateScreenBuilder(role)(context);
+        return const OutingStateScreen();
       },
     ),
     GoRoute(
@@ -181,8 +172,7 @@ final GoRouter router = GoRouter(
               path: RoutePath.home,
               name: 'home',
               builder: (context, state) {
-                final role = state.extra as RoleEnum? ?? RoleEnum.user;
-                return _outingWaitingScreenBuilder(role)(context);
+                return const OutingWaitingScreen(approvedStudentCount: 3, hasLateStudents: false);
               },
             ),
           ],

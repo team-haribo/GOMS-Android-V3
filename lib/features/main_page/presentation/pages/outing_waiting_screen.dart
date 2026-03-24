@@ -18,39 +18,41 @@ import 'package:goms/features/main_page/presentation/widgets/view_more_users.dar
 void main() async {
   runApp(
     ProviderScope(
+      overrides: [
+        roleProvider.overrideWithValue(RoleEnum.admin),
+      ],
       child: MaterialApp(
         theme: LightTheme.theme,
         themeMode: ThemeMode.light,
         home: const OutingWaitingScreen(
-          role: RoleEnum.admin,
-          approvedStudentCount: 3,
-          hasLateStudents: true,
-        ),
+            approvedStudentCount: 0, hasLateStudents: false,),
       ),
     ),
   );
 }
 
-class OutingWaitingScreen extends StatefulWidget {
-  final RoleEnum role;
+final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
+
+class OutingWaitingScreen extends ConsumerStatefulWidget {
   final int approvedStudentCount;
   final bool hasLateStudents; // 여기서 true, false 조절
 
   const OutingWaitingScreen({
     super.key,
-    required this.role,
     required this.approvedStudentCount,
     required this.hasLateStudents,
   });
 
   @override
-  State<OutingWaitingScreen> createState() => _OutingWaitingScreenState();
+  ConsumerState<OutingWaitingScreen> createState() =>
+      _OutingWaitingScreenState();
 }
 
-class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
+class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final role = ref.watch(roleProvider);
 
     return BaseScaffold(
       showAppBar: true,
@@ -67,7 +69,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                     grade: 9,
                     major: 'SW개발',
                     lateCount: 0,
-                    status: widget.role == RoleEnum.admin
+                    status: role == RoleEnum.admin
                         ? OutingStatus.admin
                         : OutingStatus.waiting,
                   ),
@@ -90,7 +92,7 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
                                   : AppColors.mainText,
                             ),
                           ),
-                          widget.role == RoleEnum.admin
+                          role == RoleEnum.admin
                               ? const ViewMoreUsers()
                               : const SizedBox(),
                         ],
@@ -206,13 +208,12 @@ class _OutingWaitingScreenState extends State<OutingWaitingScreen> {
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (widget.role == RoleEnum.admin) ...[
+          if (role == RoleEnum.admin) ...[
             const UserManageButton(),
             AppGap.v12,
           ],
           QRButton(
-            type:
-                widget.role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
+            type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
           ),
         ],
       ),

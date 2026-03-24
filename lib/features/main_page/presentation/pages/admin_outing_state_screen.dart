@@ -19,23 +19,28 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 
+final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
+final searchTextProvider = StateProvider<String>((ref) => '');
+
 void main() async {
-  runApp(ProviderScope(
+  runApp(
+    ProviderScope(
+      overrides: [
+        roleProvider.overrideWithValue(RoleEnum.admin),
+      ],
       child: MaterialApp(
         theme: LightTheme.theme,
         themeMode: ThemeMode.light,
-        home: const AdminOutingStateScreen(role: RoleEnum.admin),
-      ),),);
+        home: const AdminOutingStateScreen(),
+      ),
+    ),
+  );
 }
 
-final searchTextProvider = StateProvider<String>((ref) => '');
 
 class AdminOutingStateScreen extends ConsumerStatefulWidget {
-  final RoleEnum role;
-
   const AdminOutingStateScreen({
     super.key,
-    required this.role,
   });
 
   @override
@@ -74,6 +79,8 @@ class _OutingStateScreenState extends ConsumerState<AdminOutingStateScreen> {
     final isLight = Theme.of(context).brightness == Brightness.light;
     final searchText = ref.watch(searchTextProvider);
 
+    final role = ref.watch(roleProvider);
+
     final filteredList = searchText.isEmpty
         ? outingMembers
         : outingMembers.where((member) {
@@ -82,7 +89,7 @@ class _OutingStateScreenState extends ConsumerState<AdminOutingStateScreen> {
 
     return BaseScaffold(
       showAppBar: true,
-      role: widget.role,
+      role: role,
       body: Column(
         children: [
           Align(
@@ -153,7 +160,6 @@ class _OutingStateScreenState extends ConsumerState<AdminOutingStateScreen> {
                     name: member.name,
                     grade: member.grade,
                     major: member.major,
-                    role: widget.role,
                     studentRole: member.studentRole,
                   );
                 },
@@ -170,7 +176,7 @@ class _OutingStateScreenState extends ConsumerState<AdminOutingStateScreen> {
       ),
       floatingActionButton:
           QRButton(
-              type: widget.role == RoleEnum.admin
+              type: role == RoleEnum.admin
                   ? RoleEnum.admin
                   : RoleEnum.user,),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
 
 /// 앱 텍스트 스타일 시스템
 class AppTextStyles {
@@ -99,4 +100,56 @@ extension TextStyleExtensions on TextStyle {
 
   /// 폰트 크기 변경
   TextStyle withSize(double size) => copyWith(fontSize: size);
+}
+
+class AppTypographyData {
+  const AppTypographyData._({
+    required this.dateTimeAmPm,
+    required this.dateTime,
+    required this.title1,
+    required this.title2,
+    required this.title3,
+    required this.text1,
+    required this.text2,
+    required this.text3,
+    required this.caption1,
+    required this.caption2,
+    required this.caption3,
+  });
+
+  factory AppTypographyData.scaled(double scale) {
+    TextStyle resize(TextStyle style) =>
+        style.copyWith(fontSize: (style.fontSize ?? 14) * scale);
+
+    return AppTypographyData._(
+      dateTimeAmPm: resize(AppTextStyles.dateTimeAmPm),
+      dateTime: resize(AppTextStyles.dateTime),
+      title1: resize(AppTextStyles.title1),
+      title2: resize(AppTextStyles.title2),
+      title3: resize(AppTextStyles.title3),
+      text1: resize(AppTextStyles.text1),
+      text2: resize(AppTextStyles.text2),
+      text3: resize(AppTextStyles.text3),
+      caption1: resize(AppTextStyles.caption1),
+      caption2: resize(AppTextStyles.caption2),
+      caption3: resize(AppTextStyles.caption3),
+    );
+  }
+
+  final TextStyle dateTimeAmPm;
+  final TextStyle dateTime;
+  final TextStyle title1;
+  final TextStyle title2;
+  final TextStyle title3;
+  final TextStyle text1;
+  final TextStyle text2;
+  final TextStyle text3;
+  final TextStyle caption1;
+  final TextStyle caption2;
+  final TextStyle caption3;
+}
+
+extension AppTypographyContextX on BuildContext {
+  AppTypographyData get appTypography =>
+      AppTypographyData.scaled(typographyScale);
 }

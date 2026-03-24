@@ -1,0 +1,105 @@
+import 'package:flutter/material.dart';
+import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/goms_dialog.dart';
+class SearchProfileList extends StatefulWidget {
+  final String name;
+  final int grade;
+  final String major;
+  final RoleEnum role;
+
+  const SearchProfileList({
+    super.key,
+    required this.name,
+    required this.grade,
+    required this.major,
+    required this.role,
+  });
+
+  @override
+  State<SearchProfileList> createState() => _SearchProfileListState();
+}
+
+class _SearchProfileListState extends State<SearchProfileList> {
+  @override
+  Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
+    return Container(
+      color: isLight ? AppColors.background : AppColors.backgroundDark,
+      width: double.infinity,
+      height: 72,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: CircleAvatar(
+              radius: 24,
+              child: AppIcons.profileCircle(),
+            ),
+          ),
+          AppGap.v4,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.name,
+                style: AppTextStyles.text1.copyWith(
+                  color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                ),
+              ),
+              AppGap.h4,
+              Row(
+                children: [
+                  Text(
+                    '${widget.grade}기 | ${widget.major}',
+                    style: AppTextStyles.caption2.copyWith(
+                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                    ),
+                  ),
+                  AppGap.h4,
+                  SizedBox(
+                    height: 8,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      width: 1,
+                      color: isLight ? AppColors.button : AppColors.buttonDark,
+                    ),
+                  ),
+                  AppGap.h4,
+                  Text(
+                    '10:31에 외출',
+                    style: AppTextStyles.caption2.copyWith(
+                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const Spacer(),
+          if (widget.role == RoleEnum.admin) ...[
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: IconButton(
+                onPressed: () {
+                  GomsDialog.forceReturn(
+                      context: context,
+                      title: '외출 강제 복귀',
+                      content: '\n외출자를 강제로 복귀시키겠습니까?',);
+                },
+                icon: AppIcons.bin(
+                  color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}

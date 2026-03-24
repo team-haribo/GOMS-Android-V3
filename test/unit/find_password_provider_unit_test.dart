@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/presentation/auth/reset_password/models/find_password_state.dart';
-import 'package:goms/presentation/auth/reset_password/viewModels/find_password_provider.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/models/find_password_state.dart';
+import 'package:goms/features/auth/presentation/pages/reset_password/viewModels/find_password_provider.dart';
 
 void main() {
   group('FindPasswordNotifier', () {

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/domain/enum/role_enum.dart';
-import 'package:goms/widgets/common/buttons/toggle_button.dart';
-import 'package:goms/widgets/common/text_fields/email_text_field.dart';
-import 'package:goms/widgets/common/text_fields/password_text_field.dart';
+import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
+import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
+import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
+import '../test_app.dart';
 
 void main() {
   const emailFieldKey = Key('email_field');
@@ -58,29 +59,28 @@ class _AuthFormHarnessState extends State<_AuthFormHarness> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            children: [
-              EmailTextField(key: widget.emailFieldKey),
-              const SizedBox(height: 16),
-              PasswordTextField(key: widget.passwordFieldKey),
-              const SizedBox(height: 16),
-              ToggleButton(
-                type: RoleEnum.user,
-                value: isUserEnabled,
-                onChanged: (value) {
-                  setState(() {
-                    isUserEnabled = value;
-                  });
-                },
-              ),
-            ],
-          ),
+    return buildTestApp(
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            EmailTextField(key: widget.emailFieldKey),
+            const SizedBox(height: 16),
+            PasswordTextField(key: widget.passwordFieldKey),
+            const SizedBox(height: 16),
+            ToggleButton(
+              type: RoleEnum.user,
+              value: isUserEnabled,
+              onChanged: (value) {
+                setState(() {
+                  isUserEnabled = value;
+                });
+              },
+            ),
+          ],
         ),
       ),
     );
   }
 }
+

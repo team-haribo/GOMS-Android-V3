@@ -41,7 +41,6 @@ class _AdminOutingStateContainerState extends ConsumerState<AdminOutingStateCont
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
-    final role = ref.watch(roleProvider);
 
     return Container(
       color: isLight ? AppColors.background : AppColors.backgroundDark,

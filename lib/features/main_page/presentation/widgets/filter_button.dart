@@ -17,17 +17,20 @@ class FilterButton extends StatelessWidget {
           enableDrag: false,
           isScrollControlled: true,
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(12)),),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+          ),
           backgroundColor:
               isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
-          builder: (context) => FractionallySizedBox(heightFactor: 0.71, child: const FilterBottomSheet(),)
+          builder: (context) => const FractionallySizedBox(
+            heightFactor: 0.71,
+            child: FilterBottomSheet(),
+          ),
         );
       },
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
         tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 텍스트버튼 크기 딱 맞추기
-
       ),
       child: Text(
         '필터',

@@ -105,7 +105,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 height: 44,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: AppColors.negative.withValues(alpha: 0.25),
+                  color: AppColors.negative.withValues(alpha: 64),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,

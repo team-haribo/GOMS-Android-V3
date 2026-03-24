@@ -169,7 +169,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                               onConfirm: () {
                                 setState(() {
                                   isOutingBanned = value;
-                                  if (value) isCouncil = false;
+                                  if (value) isCouncil = true;
                                 });
                                 widget.onRoleChanged(
                                   value
@@ -188,7 +188,6 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                               onConfirm: () {
                                 setState(() {
                                   isOutingBanned = value;
-                                  if (value) isCouncil = true;
                                 });
                                 widget.onRoleChanged(
                                   value

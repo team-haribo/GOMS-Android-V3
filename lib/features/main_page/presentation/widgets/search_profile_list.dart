@@ -5,7 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/goms_dialog.dart';
-class SearchProfileList extends StatefulWidget {
+class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
@@ -19,11 +19,6 @@ class SearchProfileList extends StatefulWidget {
     required this.role,
   });
 
-  @override
-  State<SearchProfileList> createState() => _SearchProfileListState();
-}
-
-class _SearchProfileListState extends State<SearchProfileList> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
@@ -47,7 +42,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.name,
+                name,
                 style: AppTextStyles.text1.copyWith(
                   color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
                 ),
@@ -56,7 +51,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
               Row(
                 children: [
                   Text(
-                    '${widget.grade}기 | ${widget.major}',
+                    '$grade기 | $major',
                     style: AppTextStyles.caption2.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
@@ -82,7 +77,7 @@ class _SearchProfileListState extends State<SearchProfileList> {
             ],
           ),
           const Spacer(),
-          if (widget.role == RoleEnum.admin) ...[
+          if (role == RoleEnum.admin) ...[
             Padding(
               padding: const EdgeInsets.only(right: 4),
               child: IconButton(

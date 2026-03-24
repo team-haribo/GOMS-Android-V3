@@ -75,27 +75,27 @@ class GomsDialog {
         content: Text(content, style: TextStyle(color: textColor)),
         actions: cancelText != null
             ? [
-                CupertinoDialogAction(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    cancelText!,
-                    style: isDestructive
-                        ? null
-                        : const TextStyle(color: AppColors.negative),
-                  ),
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: isDestructive,
-                  onPressed: onConfirmPressed,
-                  child: Text(confirmText),
-                ),
-              ]
+          CupertinoDialogAction(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(
+              cancelText!,
+              style: isDestructive
+                  ? null
+                  : const TextStyle(color: AppColors.negative),
+            ),
+          ),
+          CupertinoDialogAction(
+            isDestructiveAction: isDestructive,
+            onPressed: onConfirmPressed,
+            child: Text(confirmText),
+          ),
+        ]
             : [
-                CupertinoDialogAction(
-                  onPressed: onConfirmPressed,
-                  child: Text(confirmText),
-                ),
-              ],
+          CupertinoDialogAction(
+            onPressed: onConfirmPressed,
+            child: Text(confirmText),
+          ),
+        ],
       ),
     );
   }
@@ -207,9 +207,9 @@ class GomsDialog {
             onPressed: () {
               Navigator.of(context).pop();
               GomsDialog.reviewReportConfirm(
-                  context: context,
-                  title: '후기 신고 완료',
-                  content: '신고가 접수되었습니다.\n더 나은 GOMS가 되기위해 노력하겠습니다!',);
+                context: context,
+                title: '후기 신고 완료',
+                content: '신고가 접수되었습니다.\n더 나은 GOMS가 되기위해 노력하겠습니다!',);
             },
             child: Text(
               confirmText,
@@ -307,6 +307,8 @@ class GomsDialog {
     VoidCallback? onConfirm,
     bool isDestructive = false,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -315,7 +317,7 @@ class GomsDialog {
         content: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: isLight ? Colors.black : Colors.black,),
             children: [
               TextSpan(text: content),
               TextSpan(text: redContent, style: const TextStyle(color: AppColors.negative)),
@@ -359,6 +361,8 @@ class GomsDialog {
     VoidCallback? onConfirm,
     bool isDestructive = false,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -367,7 +371,7 @@ class GomsDialog {
         content: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: isLight ? Colors.black : Colors.white),
             children: [
               TextSpan(text: content),
               TextSpan(text: redContent, style: const TextStyle(color: AppColors.negative)),
@@ -409,6 +413,8 @@ class GomsDialog {
     VoidCallback? onConfirm,
     bool isDestructive = false,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -417,7 +423,7 @@ class GomsDialog {
         content: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: isLight ? Colors.black : Colors.white,),
             children: [
               TextSpan(text: content),
             ],
@@ -457,6 +463,8 @@ class GomsDialog {
     VoidCallback? onConfirm,
     bool isDestructive = false,
   }) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
+
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -465,7 +473,7 @@ class GomsDialog {
         content: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: isLight ? Colors.black : Colors.white,),
             children: [
               TextSpan(text: content),
             ],
@@ -494,6 +502,4 @@ class GomsDialog {
       ),
     );
   }
-
-
 }

@@ -35,11 +35,10 @@ class AdminLatecomerListScreen extends ConsumerStatefulWidget{
   });
 
   @override
-  ConsumerState<AdminLatecomerListScreen> createState() => _OutingStateScreenState();
+  ConsumerState<AdminLatecomerListScreen> createState() => _AdminLatecomerListScreenState();
 }
 
-class _OutingStateScreenState extends ConsumerState<AdminLatecomerListScreen> {
-  bool isOutingDay = true;
+class _AdminLatecomerListScreenState extends ConsumerState<AdminLatecomerListScreen> {
 
   List<SearchProfileContainerModel> outingMembers = [
     const SearchProfileContainerModel(name: '류수연', grade: 9, major: 'SW개발', studentRole: StudentRole.council),

@@ -8,17 +8,7 @@ class DateButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {
-        showModalBottomSheet(
-          context: context,
-          backgroundColor: Colors.transparent,
-          builder: (context) => _CalendarBottomSheet(
-            initialDate: DateTime.now(),
-            onDateSelected: (date) {
-            },
-          ),
-        );
-      },
+      onPressed: () {},
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
@@ -35,13 +25,6 @@ class DateButton extends StatelessWidget {
 }
 
 class _CalendarBottomSheet extends StatefulWidget {
-  final DateTime initialDate;
-  final Function(DateTime) onDateSelected;
-
-  const _CalendarBottomSheet({
-    required this.initialDate,
-    required this.onDateSelected,
-  });
 
   @override
   State<_CalendarBottomSheet> createState() => _CalendarBottomSheetState();
@@ -50,36 +33,6 @@ class _CalendarBottomSheet extends StatefulWidget {
 class _CalendarBottomSheetState extends State<_CalendarBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF1C1C1E),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      child: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  '날짜 선택',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
+    return Container();
   }
 }

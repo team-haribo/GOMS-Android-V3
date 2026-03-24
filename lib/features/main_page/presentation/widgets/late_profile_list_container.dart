@@ -3,7 +3,7 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-class LateProfileListContainer extends StatefulWidget {
+class LateProfileListContainer extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
@@ -15,11 +15,6 @@ class LateProfileListContainer extends StatefulWidget {
     required this.major,
   });
 
-  @override
-  State<LateProfileListContainer> createState() => _LateProfileListContainerState();
-}
-
-class _LateProfileListContainerState extends State<LateProfileListContainer> {
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
@@ -43,7 +38,7 @@ class _LateProfileListContainerState extends State<LateProfileListContainer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.name,
+                name,
                 style: AppTextStyles.text1.copyWith(
                   color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
                 ),
@@ -52,7 +47,7 @@ class _LateProfileListContainerState extends State<LateProfileListContainer> {
               Row(
                 children: [
                   Text(
-                    '${widget.grade}기 | ${widget.major}',
+                    '$grade기 | $major',
                     style: AppTextStyles.caption2.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),

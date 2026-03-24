@@ -44,10 +44,10 @@ class AdminOutingStateScreen extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AdminOutingStateScreen> createState() => _OutingStateScreenState();
+  ConsumerState<AdminOutingStateScreen> createState() => _AdminOutingStateScreen();
 }
 
-class _OutingStateScreenState extends ConsumerState<AdminOutingStateScreen> {
+class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
   bool isOutingDay = true;
 
   @override

@@ -26,6 +26,19 @@ import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
+WidgetBuilder _outingStateScreenBuilder(RoleEnum role) {
+  return (context) => OutingStateScreen(role: role);
+}
+
+WidgetBuilder _outingWaitingScreenBuilder(RoleEnum role) {
+  return (context) => OutingWaitingScreen(
+      role: role, approvedStudentCount: 0, hasLateStudents: false,);
+}
+
+WidgetBuilder _myPageScreenBuilder(RoleEnum role) {
+  return (context) => MyPageScreen(role: role);
+}
+
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RoutePath.splash,
@@ -58,10 +71,9 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.verify,
       name: 'verify',
-      builder: (context, state) =>
-          VerifyScreen(
-            redirectPath: state.extra as String?,
-          ),
+      builder: (context, state) => VerifyScreen(
+        redirectPath: state.extra as String?,
+      ),
     ),
     GoRoute(
       path: RoutePath.findPassword,
@@ -78,14 +90,13 @@ final GoRouter router = GoRouter(
       name: 'qr',
       builder: (context, state) => const QrScanScreen(),
     ),
+
     GoRoute(
       path: RoutePath.outingState,
       name: 'outingState',
       builder: (context, state) {
         final role = state.extra as RoleEnum? ?? RoleEnum.user;
-        return OutingStateScreen(
-          role: role,
-        );
+        return _outingStateScreenBuilder(role)(context);
       },
     ),
     GoRoute(
@@ -100,16 +111,16 @@ final GoRouter router = GoRouter(
         final place = state.extra is PopularPlace
             ? state.extra as PopularPlace
             : const PopularPlace(
-          name: '테스트 가게',
-          category: '카페',
-          address: '광주광역시 광산구 송정동',
-          review: 5,
-          recommended: 10,
-          coordinate: MapCoordinate(
-            latitude: 35.139783,
-            longitude: 126.793442,
-          ),
-        );
+                name: '테스트 가게',
+                category: '카페',
+                address: '광주광역시 광산구 송정동',
+                review: 5,
+                recommended: 10,
+                coordinate: MapCoordinate(
+                  latitude: 35.139783,
+                  longitude: 126.793442,
+                ),
+              );
         return WriteReviewScreen(
           placeName: place.name,
           category: place.category,
@@ -171,11 +182,7 @@ final GoRouter router = GoRouter(
               name: 'home',
               builder: (context, state) {
                 final role = state.extra as RoleEnum? ?? RoleEnum.user;
-                return OutingWaitingScreen(
-                  role: role,
-                  approvedStudentCount: 0,
-                  hasLateStudents: false,
-                );
+                return _outingWaitingScreenBuilder(role)(context);
               },
             ),
           ],
@@ -187,9 +194,7 @@ final GoRouter router = GoRouter(
               name: 'myPage',
               builder: (context, state) {
                 final role = state.extra as RoleEnum? ?? RoleEnum.user;
-                return MyPageScreen(
-                  role: role,
-                );
+                return _myPageScreenBuilder(role)(context);
               },
             ),
           ],

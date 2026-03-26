@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/widgets/common/appbar/goms_app_bar.dart';
 
 class BaseScaffold extends ConsumerWidget {
   final Widget body;
   final bool showAppBar;
   final bool showAppBarLogo;
+  final RoleEnum role;
   final VoidCallback? onBackPressed;
   final List<Widget>? appBarActions;
   final Widget? bottomNavigationBar;
@@ -18,6 +20,7 @@ class BaseScaffold extends ConsumerWidget {
     required this.body,
     this.showAppBar = true,
     this.showAppBarLogo = false,
+    this.role = RoleEnum.user,
     this.onBackPressed,
     this.appBarActions,
     this.bottomNavigationBar,
@@ -33,20 +36,20 @@ class BaseScaffold extends ConsumerWidget {
             : GomsAppBar.back(
                 onBackPressed: onBackPressed,
                 actions: appBarActions,
+                currentRole: role,
               ))
         : null;
 
     return Scaffold(
       appBar: effectiveAppBar,
       body: SafeArea(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: context.contentMaxWidth),
-            child: Padding(
-              padding: contentPadding ?? context.pagePadding,
-              child: body,
-            ),
-          ),
+        child: Padding(
+          padding: contentPadding ??
+              const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s24,
+                vertical: AppSpacing.s24,
+              ),
+          child: body,
         ),
       ),
       bottomNavigationBar: bottomNavigationBar,
@@ -55,4 +58,3 @@ class BaseScaffold extends ConsumerWidget {
     );
   }
 }
-

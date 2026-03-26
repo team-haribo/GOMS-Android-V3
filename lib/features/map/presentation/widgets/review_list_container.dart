@@ -3,7 +3,8 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/review_remove_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/review_report_dialog.dart';
 import 'package:intl/intl.dart';
 
 class ReviewListContainer extends StatelessWidget {
@@ -92,7 +93,7 @@ class ReviewListContainer extends StatelessWidget {
             child: isMine
                 ? IconButton(
               onPressed: () {
-                GomsDialog.reviewRemove(
+                reviewRemove(
                     context: context,
                     title: '후기 삭제',
                     content: '\n 정말 후기를 삭제하시겠습니까?',);
@@ -103,7 +104,7 @@ class ReviewListContainer extends StatelessWidget {
             )
                 : IconButton(
               onPressed: () {
-                GomsDialog.reviewReport(context: context,
+                reviewReport(context: context,
                     title: '후기 신고',
                     content: '이 후기를 신고하시겠습니까?\n신고 내용은 운영팀의 검토 후 처리됩니다.',);
               },

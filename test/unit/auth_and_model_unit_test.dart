@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
 import 'package:goms/features/main_page/presentation/widgets/search_profile_container_model.dart';
 
@@ -34,6 +35,7 @@ void main() {
         name: 'Hong',
         grade: 2,
         major: 'SW',
+        studentRole: StudentRole.student,
       );
 
       expect(model.name, 'Hong');

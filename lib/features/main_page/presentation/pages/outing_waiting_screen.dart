@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
@@ -11,11 +11,15 @@ import 'package:goms/features/main_page/presentation/widgets/late_profile_contai
 import 'package:goms/features/main_page/presentation/widgets/outing_status.dart';
 import 'package:goms/features/main_page/presentation/widgets/profile_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/profile_list_container.dart';
+import 'package:goms/features/main_page/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/view_more_users.dart';
 
-class OutingWaitingScreen extends StatelessWidget {
+
+final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
+
+class OutingWaitingScreen extends ConsumerStatefulWidget {
   final int approvedStudentCount;
-  final bool hasLateStudents;
+  final bool hasLateStudents; // 여기서 true, false 조절
 
   const OutingWaitingScreen({
     super.key,
@@ -24,7 +28,16 @@ class OutingWaitingScreen extends StatelessWidget {
   });
 
   @override
+  ConsumerState<OutingWaitingScreen> createState() =>
+      _OutingWaitingScreenState();
+}
+
+class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
+  @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final role = ref.watch(roleProvider);
+
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
@@ -33,29 +46,43 @@ class OutingWaitingScreen extends StatelessWidget {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 16, bottom: 24),
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 24),
                   child: ProfileContainer(
                     name: '류수연',
                     grade: 9,
                     major: 'SW개발',
                     lateCount: 0,
-                    status: OutingStatus.waiting,
+                    status: role == RoleEnum.admin
+                        ? OutingStatus.admin
+                        : OutingStatus.waiting,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 24),
+                  padding: const EdgeInsets.only(
+                    bottom: 24,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '지각자 TOP 3',
-                        style: AppTextStyles.title3.copyWith(
-                          color: context.mainTextColor,
-                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '지각자 TOP 3',
+                            style: AppTextStyles.title3.copyWith(
+                              color: isDark
+                                  ? AppColors.mainTextDark
+                                  : AppColors.mainText,
+                            ),
+                          ),
+                          role == RoleEnum.admin
+                              ? const ViewMoreUsers()
+                              : const SizedBox(),
+                        ],
                       ),
                       AppGap.v12,
-                      hasLateStudents
+                      widget.hasLateStudents
                           ? const Row(
                               children: [
                                 Expanded(
@@ -91,14 +118,18 @@ class OutingWaitingScreen extends StatelessWidget {
                                   AppIcons.fire(
                                     width: 24,
                                     height: 24,
-                                    color: context.sub1Color,
+                                    color: isDark
+                                        ? AppColors.sub1Dark
+                                        : AppColors.sub2,
                                   ),
                                   AppGap.v2,
                                   Text(
                                     '이번주 지각자가 없어요 축하해요!',
                                     style: AppTextStyles.text1.copyWith(
                                       fontSize: 15,
-                                      color: context.sub1Color,
+                                      color: isDark
+                                          ? AppColors.sub1Dark
+                                          : AppColors.sub2,
                                     ),
                                   ),
                                 ],
@@ -117,20 +148,21 @@ class OutingWaitingScreen extends StatelessWidget {
                         Text(
                           '외출 현황',
                           style: AppTextStyles.title3.copyWith(
-                            color: context.mainTextColor,
+                            color: isDark
+                                ? AppColors.mainTextDark
+                                : AppColors.mainText,
                           ),
                         ),
                         AppGap.h8,
                         Text(
-                          '$approvedStudentCount',
-                          style: AppTextStyles.caption1.copyWith(
-                            color: AppColors.mainColor,
-                          ),
+                          '${widget.approvedStudentCount}',
+                          style: AppTextStyles.caption1
+                              .copyWith(color: AppColors.mainColor),
                         ),
                         Text(
-                          '명이 외출중',
+                          "명이 외출중",
                           style: AppTextStyles.caption1.copyWith(
-                            color: context.sub1Color,
+                            color: isDark ? AppColors.sub1Dark : AppColors.sub2,
                           ),
                         ),
                       ],
@@ -147,21 +179,28 @@ class OutingWaitingScreen extends StatelessWidget {
               (context, index) {
                 return const Column(
                   children: [
-                    ProfileListContainer(
-                      name: '류수연',
-                      grade: 9,
-                      major: 'SW개발',
-                    ),
+                    ProfileListContainer(name: '류수연', grade: 9, major: 'AI'),
                     AppGap.v4,
                   ],
                 );
               },
-              childCount: approvedStudentCount,
+              childCount: widget.approvedStudentCount,
             ),
           ),
         ],
       ),
-      floatingActionButton: const QRButton(type: RoleEnum.user),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (role == RoleEnum.admin) ...[
+            const UserManageButton(),
+            AppGap.v12,
+          ],
+          QRButton(
+            type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
+          ),
+        ],
+      ),
     );
   }
 }

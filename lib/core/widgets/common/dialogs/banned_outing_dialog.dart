@@ -31,7 +31,7 @@ Future<void> bannedOuting({
             TextSpan(text: content),
             TextSpan(
                 text: redContent,
-                style: const TextStyle(color: AppColors.negative)),
+                style: const TextStyle(color: AppColors.negative),),
             TextSpan(text: content2),
           ],
         ),

@@ -5,7 +5,6 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;

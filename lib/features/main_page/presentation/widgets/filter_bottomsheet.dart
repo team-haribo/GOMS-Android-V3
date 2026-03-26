@@ -5,6 +5,10 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/main_page/presentation/widgets/category_chip.dart';
 
+void main() async {
+  runApp(MaterialApp(home: FilterBottomSheet(),));
+}
+
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
 
@@ -105,7 +109,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 height: 44,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: AppColors.negative.withValues(alpha: 64),
+                  color: AppColors.negative.withOpacity(0.25),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 alignment: Alignment.center,

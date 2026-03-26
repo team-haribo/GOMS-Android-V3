@@ -24,7 +24,7 @@ class _CategoryChipState extends State<CategoryChip> {
         width: double.infinity,
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.admin.withValues(alpha: 64)
+              ? AppColors.admin.withOpacity(0.25)
               : (isLight ? AppColors.button : AppColors.buttonDark),
           borderRadius: BorderRadius.circular(8),
         ),

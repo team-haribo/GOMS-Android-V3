@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/config/light_theme.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -15,21 +14,6 @@ import 'package:goms/features/main_page/presentation/widgets/profile_list_contai
 import 'package:goms/features/main_page/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/view_more_users.dart';
 
-void main() async {
-  runApp(
-    ProviderScope(
-      overrides: [
-        roleProvider.overrideWithValue(RoleEnum.admin),
-      ],
-      child: MaterialApp(
-        theme: LightTheme.theme,
-        themeMode: ThemeMode.light,
-        home: const OutingWaitingScreen(
-            approvedStudentCount: 0, hasLateStudents: false,),
-      ),
-    ),
-  );
-}
 
 final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 

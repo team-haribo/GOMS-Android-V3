@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
-import 'package:goms/core/theme/config/light_theme.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
@@ -21,22 +20,6 @@ import 'package:goms/core/utils/settings_storage.dart';
 
 final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 final searchTextProvider = StateProvider<String>((ref) => '');
-
-void main() async {
-  runApp(
-    ProviderScope(
-      overrides: [
-        roleProvider.overrideWithValue(RoleEnum.admin),
-      ],
-      child: MaterialApp(
-        theme: LightTheme.theme,
-        themeMode: ThemeMode.light,
-        home: const AdminOutingStateScreen(),
-      ),
-    ),
-  );
-}
-
 
 class AdminOutingStateScreen extends ConsumerStatefulWidget {
   const AdminOutingStateScreen({

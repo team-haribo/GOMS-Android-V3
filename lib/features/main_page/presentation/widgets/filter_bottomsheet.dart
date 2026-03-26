@@ -2,12 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/main_page/presentation/widgets/category_chip.dart';
-
-void main() async {
-  runApp(MaterialApp(home: FilterBottomSheet(),));
-}
 
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
@@ -19,9 +16,8 @@ class FilterBottomSheet extends StatefulWidget {
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+      color: context.surfaceColor,
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -36,7 +32,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Text(
                   '필터',
                   style: AppTextStyles.title3.copyWith(
-                    color: isLight ? Colors.black : Colors.white,
+                    color: context.isLightMode ? Colors.black : Colors.white,
                   ),
                 ),
                 IconButton(onPressed: () => Navigator.pop(context), icon: AppIcons.cancel()),
@@ -46,7 +42,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             Text(
               '역할',
               style: AppTextStyles.title3.copyWith(
-                color: isLight ? Colors.black : Colors.white,
+                color: context.isLightMode ? Colors.black : Colors.white,
               ),
             ),
             AppGap.v12,
@@ -60,7 +56,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               ],
             ),
             AppGap.v24,
-            Text('학년', style: AppTextStyles.title3.copyWith(color: isLight ? Colors.black : Colors.white),),
+            Text('학년', style: AppTextStyles.title3.copyWith(color: context.isLightMode ? Colors.black : Colors.white),),
             AppGap.v12,
             const Row(children: [
               Expanded(child: CategoryChip(category: '1학년')),
@@ -73,7 +69,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             Text(
               '성별',
               style: AppTextStyles.title3.copyWith(
-                color: isLight ? Colors.black : Colors.white,
+                color: context.isLightMode ? Colors.black : Colors.white,
               ),
             ),
             AppGap.v12,
@@ -88,7 +84,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             Text(
               '학과',
               style: AppTextStyles.title3.copyWith(
-                color: isLight ? Colors.black : Colors.white,
+                color: context.isLightMode ? Colors.black : Colors.white,
               ),
             ),
             AppGap.v12,

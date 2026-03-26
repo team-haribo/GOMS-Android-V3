@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 
 /// 강제외출
 Future<void> forcedOuting({
@@ -12,7 +13,6 @@ Future<void> forcedOuting({
   VoidCallback? onConfirm,
   bool isDestructive = false,
 }) {
-  final isLight = Theme.of(context).brightness == Brightness.light;
 
   return showCupertinoDialog<void>(
     context: context,
@@ -23,7 +23,7 @@ Future<void> forcedOuting({
         textAlign: TextAlign.center,
         text: TextSpan(
           style: TextStyle(
-            color: isLight ? Colors.black : Colors.white,
+            color: context.isLightMode ? Colors.black : Colors.white,
           ),
           children: [
             TextSpan(text: content),

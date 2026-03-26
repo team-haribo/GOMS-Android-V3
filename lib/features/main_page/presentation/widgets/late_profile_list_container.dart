@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+
 class LateProfileListContainer extends StatelessWidget {
   final String name;
   final int grade;
@@ -17,10 +18,8 @@ class LateProfileListContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
-
     return Container(
-      color: isLight ? AppColors.background : AppColors.backgroundDark,
+      color: context.backgroundColor,
       width: double.infinity,
       height: 72,
       child: Row(
@@ -40,7 +39,7 @@ class LateProfileListContainer extends StatelessWidget {
               Text(
                 name,
                 style: AppTextStyles.text1.copyWith(
-                  color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                  color: context.sub1Color,
                 ),
               ),
               AppGap.h4,
@@ -49,14 +48,14 @@ class LateProfileListContainer extends StatelessWidget {
                   Text(
                     '$grade기 | $major',
                     style: AppTextStyles.caption2.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color: context.sub2Color,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          ],
+        ],
       ),
     );
   }

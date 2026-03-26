@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
@@ -59,7 +60,6 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     final searchText = ref.watch(searchTextProvider);
 
     final role = ref.watch(roleProvider);
@@ -80,7 +80,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             child: Text(
               '학생관리',
               style: AppTextStyles.title1.copyWith(
-                color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                color: context.mainTextColor,
               ),
             ),
           ),
@@ -91,7 +91,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
               width: double.infinity,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+                color:context.surfaceColor,
               ),
               child: SearchStudentField(
                 onChanged: (value) {
@@ -125,9 +125,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                 Text(
                   '검색결과',
                   style: AppTextStyles.title3.copyWith(
-                    color: isLight
-                        ? AppColors.mainText
-                        : AppColors.mainTextDark,
+                    color: context.mainTextColor,
                   ),
                 ),
                 const FilterButton(),
@@ -149,7 +147,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                 separatorBuilder: (context, index) {
                   return Divider(
                     thickness: 1,
-                    color: isLight ? AppColors.button : AppColors.buttonDark,
+                    color: context.buttonColor,
                   );
                 },
               ),

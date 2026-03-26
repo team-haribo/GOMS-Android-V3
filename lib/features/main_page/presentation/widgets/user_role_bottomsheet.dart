@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
 import 'package:goms/core/widgets/common/dialogs/banned_outing_dialog.dart';
@@ -39,9 +39,8 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return Container(
-      color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+      color: context.surfaceColor,
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -54,7 +53,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                 Text(
                   '유저 권한 변경',
                   style: AppTextStyles.title3
-                      .copyWith(color: isLight ? Colors.black : Colors.white),
+                      .copyWith(color: context.isLightMode ? Colors.black : Colors.white),
                 ),
                 IconButton(
                   onPressed: () => Navigator.pop(context),
@@ -75,17 +74,14 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                         Text(
                           isOuting ? '강제외출 복귀' : '강제외출',
                           style: AppTextStyles.text1.copyWith(
-                            color: isLight
-                                ? AppColors.mainText
-                                : AppColors.mainTextDark,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.v4,
                         Text(
                           isOuting ? '학생을 강제외출 복귀를 시켜요' : '학생을 강제외출 시켜요',
                           style: AppTextStyles.caption1.copyWith(
-                            color:
-                                isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                            color: context.sub2Color,
                           ),
                         ),
                       ],
@@ -141,17 +137,14 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                         Text(
                           '외출금지',
                           style: AppTextStyles.text1.copyWith(
-                            color: isLight
-                                ? AppColors.mainText
-                                : AppColors.mainTextDark,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.v4,
                         Text(
                           '이 학생은 외출할 수 없어요',
                           style: AppTextStyles.caption1.copyWith(
-                            color:
-                                isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                            color:  context.sub2Color,
                           ),
                         ),
                       ],
@@ -219,16 +212,14 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                       Text(
                         '학생회 권한 부여',
                         style: AppTextStyles.text1.copyWith(
-                          color: isLight
-                              ? AppColors.mainText
-                              : AppColors.mainTextDark,
+                          color: context.mainTextColor,
                         ),
                       ),
                       AppGap.v4,
                       Text(
                         '이 학생은 학생회 권한을 가지게 돼요',
                         style: AppTextStyles.caption1.copyWith(
-                          color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                          color: context.sub2Color,
                         ),
                       ),
                     ],

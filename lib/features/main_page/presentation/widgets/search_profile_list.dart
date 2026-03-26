@@ -1,19 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
-
-void main() async {
-  runApp(ProviderScope(
-      child: MaterialApp(
-    home: SearchProfileList(
-        name: '류수연', grade: 9, major: 'SW개발', role: RoleEnum.admin),
-  )));
-}
 
 class SearchProfileList extends StatelessWidget {
   final String name;
@@ -31,10 +22,9 @@ class SearchProfileList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
 
     return Container(
-      color: isLight ? AppColors.background : AppColors.backgroundDark,
+      color: context.backgroundColor,
       width: double.infinity,
       height: 72,
       child: Row(
@@ -54,7 +44,7 @@ class SearchProfileList extends StatelessWidget {
               Text(
                 name,
                 style: AppTextStyles.text1.copyWith(
-                  color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                  color: context.sub1Color,
                 ),
               ),
               AppGap.h4,
@@ -63,7 +53,7 @@ class SearchProfileList extends StatelessWidget {
                   Text(
                     '$grade기 | $major',
                     style: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color:context.sub2Color,
                     ),
                   ),
                   AppGap.h4,
@@ -72,14 +62,14 @@ class SearchProfileList extends StatelessWidget {
                     child: VerticalDivider(
                       thickness: 1,
                       width: 1,
-                      color: isLight ? AppColors.button : AppColors.buttonDark,
+                      color: context.buttonColor,
                     ),
                   ),
                   AppGap.h4,
                   Text(
                     '10:31에 외출',
                     style: AppTextStyles.text3.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                      color: context.sub2Color,
                     ),
                   ),
                 ],
@@ -99,7 +89,7 @@ class SearchProfileList extends StatelessWidget {
                   );
                 },
                 icon: AppIcons.forceReturn(
-                  color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                  color: context.sub2Color,
                 ),
               ),
             ),

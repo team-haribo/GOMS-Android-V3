@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class CategoryChip extends StatefulWidget {
@@ -16,7 +17,6 @@ class _CategoryChipState extends State<CategoryChip> {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return GestureDetector(
       onTap: () => setState(() => isSelected = !isSelected),
       child: Container(
@@ -25,7 +25,7 @@ class _CategoryChipState extends State<CategoryChip> {
         decoration: BoxDecoration(
           color: isSelected
               ? AppColors.admin.withOpacity(0.25)
-              : (isLight ? AppColors.button : AppColors.buttonDark),
+              : (context.buttonColor),
           borderRadius: BorderRadius.circular(8),
         ),
         alignment: Alignment.center,
@@ -34,7 +34,7 @@ class _CategoryChipState extends State<CategoryChip> {
           style: AppTextStyles.text2.copyWith(
             color: isSelected
                 ? AppColors.admin
-                : (isLight ? AppColors.sub2 : AppColors.sub2Dark),
+                : (context.sub2Color),
           ),
         ),
       ),

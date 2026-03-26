@@ -57,8 +57,10 @@ class PlaceReviewContainer extends StatelessWidget {
                         AppGap.h4,
                         Text(
                           category,
-                          style: AppTextStyles.caption2.copyWith(
-                            color: context.isLightMode ? AppColors.sub2 : AppColors.gray3,
+                          style: AppTextStyles.caption1.copyWith(
+                            color: context.isLightMode
+                                ? AppColors.sub2
+                                : AppColors.gray3,
                           ),
                         ),
                       ],
@@ -68,7 +70,7 @@ class PlaceReviewContainer extends StatelessWidget {
                       address,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: AppTextStyles.caption2.copyWith(
+                      style: AppTextStyles.text3.copyWith(
                         color: context.sub2Color,
                       ),
                     ),
@@ -79,7 +81,7 @@ class PlaceReviewContainer extends StatelessWidget {
                           reviewDetailContent.length > 10
                               ? '${reviewDetailContent.substring(0, 10)}···'
                               : reviewDetailContent,
-                          style: AppTextStyles.caption1.copyWith(
+                          style: AppTextStyles.text3.copyWith(
                             color: context.sub2Color,
                           ),
                         ),

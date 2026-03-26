@@ -63,7 +63,8 @@ class PlaceContainer extends ConsumerWidget {
               _LikeButton(
                 isLiked: isLiked,
                 onPressed: () {
-                  ref.read(placeLikeProvider(placeId).notifier).state = !isLiked;
+                  ref.read(placeLikeProvider(placeId).notifier).state =
+                      !isLiked;
                 },
               ),
             ],
@@ -109,7 +110,7 @@ class _PlaceContent extends StatelessWidget {
           address,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
-          style: AppTextStyles.caption2.copyWith(color: colors.subColor),
+          style: AppTextStyles.caption1.copyWith(color: colors.subColor),
         ),
         if (distanceMeters != null) ...[
           AppGap.v4,
@@ -128,7 +129,7 @@ class _PlaceContent extends StatelessWidget {
           children: [
             Text(
               '학생 후기',
-              style: AppTextStyles.caption2.copyWith(color: colors.subColor),
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
             ),
             Text(
               _formatCount(review),
@@ -136,11 +137,11 @@ class _PlaceContent extends StatelessWidget {
             ),
             Text(
               '|',
-              style: AppTextStyles.caption2.copyWith(color: colors.subColor),
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
             ),
             Text(
               '추천',
-              style: AppTextStyles.caption2.copyWith(color: colors.subColor),
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
             ),
             Text(
               _formatCount(recommended),
@@ -192,7 +193,7 @@ class _PlaceTitleRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.right,
               style:
-                  AppTextStyles.caption2.copyWith(color: colors.categoryColor),
+                  AppTextStyles.caption1.copyWith(color: colors.categoryColor),
             ),
           ),
         ],

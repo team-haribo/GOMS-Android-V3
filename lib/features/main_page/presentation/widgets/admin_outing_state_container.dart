@@ -29,7 +29,8 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
       _AdminOutingStateContainerState();
 }
 
-class _AdminOutingStateContainerState extends ConsumerState<AdminOutingStateContainer> {
+class _AdminOutingStateContainerState
+    extends ConsumerState<AdminOutingStateContainer> {
   late StudentRole _studentRole;
 
   @override
@@ -91,7 +92,7 @@ class _AdminOutingStateContainerState extends ConsumerState<AdminOutingStateCont
                 children: [
                   Text(
                     '${widget.grade}기 | ${widget.major}',
-                    style: AppTextStyles.caption2.copyWith(
+                    style: AppTextStyles.text3.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
                   ),

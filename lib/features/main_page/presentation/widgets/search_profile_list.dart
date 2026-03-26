@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
+
+void main() async {
+  runApp(ProviderScope(
+      child: MaterialApp(
+    home: SearchProfileList(
+        name: '류수연', grade: 9, major: 'SW개발', role: RoleEnum.admin),
+  )));
+}
+
 class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;
@@ -52,7 +62,7 @@ class SearchProfileList extends StatelessWidget {
                 children: [
                   Text(
                     '$grade기 | $major',
-                    style: AppTextStyles.caption2.copyWith(
+                    style: AppTextStyles.text3.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
                   ),
@@ -68,7 +78,7 @@ class SearchProfileList extends StatelessWidget {
                   AppGap.h4,
                   Text(
                     '10:31에 외출',
-                    style: AppTextStyles.caption2.copyWith(
+                    style: AppTextStyles.text3.copyWith(
                       color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                     ),
                   ),
@@ -82,12 +92,13 @@ class SearchProfileList extends StatelessWidget {
               padding: const EdgeInsets.only(right: 4),
               child: IconButton(
                 onPressed: () {
-                 forcedReturn(
-                      context: context,
-                      title: '외출 강제 복귀',
-                      content: '\n외출자를 강제로 복귀시키겠습니까?',);
+                  forcedReturn(
+                    context: context,
+                    title: '외출 강제 복귀',
+                    content: '\n외출자를 강제로 복귀시키겠습니까?',
+                  );
                 },
-                icon: AppIcons.bin(
+                icon: AppIcons.forceReturn(
                   color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
                 ),
               ),

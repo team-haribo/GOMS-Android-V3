@@ -9,7 +9,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
 import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 
 class PasswordScreen extends ConsumerWidget {

@@ -15,7 +15,7 @@ import 'package:goms/features/auth/presentation/viewmodels/auth_provider.dart';
 import 'package:goms/features/my_page/presentation/viewmodels/settings_provider.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 
 void main() async {
   runApp(

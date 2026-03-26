@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/enums/role_enum.dart';
 
@@ -51,8 +52,6 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -76,7 +75,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppIcons.logoSmall(
-                  color: isDark ? AppColors.sub2Dark : AppColors.button,
+                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
                 AppGap.h8,
                 Text(
@@ -85,7 +84,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontFamily: 'gmarketSans',
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? AppColors.sub2Dark : AppColors.button,
+                    color: context.isDarkMode ? context.sub2Color : AppColors.button,
                   ),
                 ),
               ],

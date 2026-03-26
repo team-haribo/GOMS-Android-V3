@@ -9,7 +9,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/verify/states/verify_state.dart';
 import 'package:goms/features/auth/presentation/pages/verify/viewmodels/verify_provider.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {

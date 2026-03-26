@@ -10,7 +10,7 @@ import 'package:goms/features/map/presentation/pages/review/models/write_review_
 import 'package:goms/features/map/presentation/pages/review/viewModels/write_review_provider.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {
   final String placeName;

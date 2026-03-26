@@ -4,7 +4,8 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 class SearchProfileList extends StatelessWidget {
   final String name;
   final int grade;
@@ -82,7 +83,7 @@ class SearchProfileList extends StatelessWidget {
               padding: const EdgeInsets.only(right: 4),
               child: IconButton(
                 onPressed: () {
-                  GomsDialog.forceReturn(
+                 forcedReturn(
                       context: context,
                       title: '외출 강제 복귀',
                       content: '\n외출자를 강제로 복귀시키겠습니까?',);

@@ -6,7 +6,10 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
-import 'package:goms/core/widgets/common/goms_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/banned_outing_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/banned_outing_release_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/force_outing_dialog.dart';
+import 'package:goms/core/widgets/common/dialogs/forced_outing_release_dialog.dart';
 
 class UserRoleBottomSheet extends StatefulWidget {
   final StudentRole studentRole;
@@ -92,7 +95,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                       child: IconButton(
                         onPressed: () {
                           if (isOuting) {
-                            GomsDialog.forcedOutingRelease(
+                            forcedOutingRelease(
                               context: context,
                               title: '강제외출 복귀',
                               content: '\n 학생을 복귀 상태로 변경하시겠습니까?',
@@ -103,7 +106,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                               },
                             );
                           } else {
-                            GomsDialog.forcedOuting(
+                            forcedOuting(
                               context: context,
                               title: '강제외출',
                               content: '\n 이 학생을 외출 상태로 변경하시겠습니까?',
@@ -160,7 +163,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                         value: isOutingBanned,
                         onChanged: (value) {
                           if (isOutingBanned) {
-                            GomsDialog.bannedOutingRelease(
+                            bannedOutingRelease(
                               context: context,
                               title: '외출금지',
                               content: '\n이 학생을',
@@ -179,7 +182,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                               },
                             );
                           } else {
-                            GomsDialog.bannedOuting(
+                            bannedOuting(
                               context: context,
                               title: '외출금지',
                               content: '\n이 학생을',

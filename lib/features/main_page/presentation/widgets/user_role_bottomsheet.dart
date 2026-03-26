@@ -65,7 +65,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
             AppGap.v24,
             if (widget.studentRole == StudentRole.student) ...[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 11.5),
+                padding: AppPadding.screenVertical,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -131,7 +131,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
                 widget.studentRole == StudentRole.outingBanned) ...[
               AppGap.v12,
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 11.5),
+                padding: AppPadding.screenVertical,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -209,7 +209,7 @@ class _UserRoleBottomSheetState extends State<UserRoleBottomSheet> {
             ],
             AppGap.v12,
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 11.5),
+              padding: AppPadding.screenVertical,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

@@ -46,7 +46,8 @@ class ProfileContainer extends ConsumerWidget {
               Container(
                 alignment: Alignment.centerLeft,
                 child: CircleAvatar(
-                  radius: context.responsive(compact: 22, normal: 26, tablet: 28),
+                  radius:
+                      context.responsive(compact: 22, normal: 26, tablet: 28),
                   child: AppIcons.profileCircle(),
                 ),
               ),
@@ -70,7 +71,7 @@ class ProfileContainer extends ConsumerWidget {
                         AppGap.h8,
                         Text(
                           '$grade기| $major과',
-                          style: AppTextStyles.caption1.copyWith(
+                          style: AppTextStyles.text3.copyWith(
                             color: context.sub2Color,
                           ),
                         ),

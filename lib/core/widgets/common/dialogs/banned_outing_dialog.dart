@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 
 /// 외출금지 다이얼로그
 Future<void> bannedOuting({
@@ -14,7 +15,6 @@ Future<void> bannedOuting({
   VoidCallback? onConfirm,
   bool isDestructive = false,
 }) {
-  final isLight = Theme.of(context).brightness == Brightness.light;
 
   return showCupertinoDialog<void>(
     context: context,
@@ -25,7 +25,7 @@ Future<void> bannedOuting({
         textAlign: TextAlign.center,
         text: TextSpan(
           style: TextStyle(
-            color: isLight ? Colors.black : Colors.black,
+            color: context.isLightMode ? Colors.black : Colors.white,
           ),
           children: [
             TextSpan(text: content),

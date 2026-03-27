@@ -4,6 +4,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/features/main_page/presentation/widgets/date_button.dart';
@@ -11,6 +12,7 @@ import 'package:goms/features/main_page/presentation/widgets/late_profile_list_c
 import 'package:goms/features/main_page/presentation/widgets/search_profile_container_model.dart';
 
 final roleProvider = Provider<RoleEnum>((ref)=> throw UnimplementedError());
+
 
 class AdminLatecomerListScreen extends ConsumerStatefulWidget{
 
@@ -35,7 +37,6 @@ class _AdminLatecomerListScreenState extends ConsumerState<AdminLatecomerListScr
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     final role = ref.watch(roleProvider);
 
     return BaseScaffold(
@@ -47,7 +48,7 @@ class _AdminLatecomerListScreenState extends ConsumerState<AdminLatecomerListScr
           Text(
               '지각자 명단',
               style: AppTextStyles.title1.copyWith(
-                color: isLight ? AppColors.mainText : AppColors.mainTextDark,
+                color: context.mainTextColor,
               ),
           ),
           AppGap.v24,
@@ -76,7 +77,7 @@ class _AdminLatecomerListScreenState extends ConsumerState<AdminLatecomerListScr
               separatorBuilder: (context, index) {
                 return Divider(
                   thickness: 1,
-                  color: isLight ? AppColors.button : AppColors.buttonDark,
+                  color: context.buttonColor,
                 );
               },
             ),

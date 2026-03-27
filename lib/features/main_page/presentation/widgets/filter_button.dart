@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/main_page/presentation/widgets/filter_bottomsheet.dart';
 
@@ -8,7 +9,6 @@ class FilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme.of(context).brightness == Brightness.light;
     return TextButton(
       onPressed: () {
         showModalBottomSheet(
@@ -19,8 +19,7 @@ class FilterButton extends StatelessWidget {
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
           ),
-          backgroundColor:
-              isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+          backgroundColor: context.surfaceColor,
           builder: (context) => const FractionallySizedBox(
             heightFactor: 0.71,
             child: FilterBottomSheet(),

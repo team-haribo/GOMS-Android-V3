@@ -4,6 +4,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
@@ -35,7 +36,6 @@ class OutingWaitingScreen extends ConsumerStatefulWidget {
 class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final role = ref.watch(roleProvider);
 
     return BaseScaffold(
@@ -71,9 +71,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                           Text(
                             '지각자 TOP 3',
                             style: AppTextStyles.title3.copyWith(
-                              color: isDark
-                                  ? AppColors.mainTextDark
-                                  : AppColors.mainText,
+                              color: context.mainTextColor,
                             ),
                           ),
                           role == RoleEnum.admin
@@ -118,7 +116,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                                   AppIcons.fire(
                                     width: 24,
                                     height: 24,
-                                    color: isDark
+                                    color:context.isDarkMode
                                         ? AppColors.sub1Dark
                                         : AppColors.sub2,
                                   ),
@@ -127,7 +125,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                                     '이번주 지각자가 없어요 축하해요!',
                                     style: AppTextStyles.text1.copyWith(
                                       fontSize: 15,
-                                      color: isDark
+                                      color:context.isDarkMode
                                           ? AppColors.sub1Dark
                                           : AppColors.sub2,
                                     ),
@@ -148,9 +146,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                         Text(
                           '외출 현황',
                           style: AppTextStyles.title3.copyWith(
-                            color: isDark
-                                ? AppColors.mainTextDark
-                                : AppColors.mainText,
+                            color: context.mainTextColor,
                           ),
                         ),
                         AppGap.h8,
@@ -162,7 +158,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                         Text(
                           "명이 외출중",
                           style: AppTextStyles.caption1.copyWith(
-                            color: isDark ? AppColors.sub1Dark : AppColors.sub2,
+                            color: context.isDarkMode ? AppColors.sub1Dark : AppColors.sub2,
                           ),
                         ),
                       ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/dialogs/review_remove_dialog.dart';
 import 'package:goms/core/widgets/common/dialogs/review_report_dialog.dart';
@@ -27,17 +27,14 @@ class ReviewListContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLight = Theme
-        .of(context)
-        .brightness == Brightness.light;
     return Container(
       height: 83,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+        color: context.surfaceColor,
         border: Border(
           bottom: BorderSide(
-            color: isLight ? AppColors.button : AppColors.buttonDark,
+            color: context.buttonColor,
             width: 1,
           ),
         ),
@@ -59,14 +56,14 @@ class ReviewListContainer extends StatelessWidget {
                   Text(
                     name,
                     style: AppTextStyles.text1.copyWith(
-                      color: isLight ? AppColors.sub1 : AppColors.sub1Dark,
+                      color: context.sub1Color,
                     ),
                   ),
                   AppGap.h4,
                   Text(
                     '$grade기 | $major',
-                    style: AppTextStyles.caption2.copyWith(
-                      color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                    style: AppTextStyles.caption1.copyWith(
+                      color: context.sub2Color,
                     ),
                   ),
                 ],
@@ -74,15 +71,15 @@ class ReviewListContainer extends StatelessWidget {
               AppGap.v4,
               Text(
                 reviewDetailContent,
-                style: AppTextStyles.caption2.copyWith(
-                  color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                style: AppTextStyles.text3.copyWith(
+                  color: context.sub2Color,
                 ),
               ),
               AppGap.v4,
               Text(
-              DateFormat('yy.MM.dd').format(createdAt),
-                style: AppTextStyles.caption3.copyWith(
-                  color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
+                DateFormat('yy.MM.dd').format(createdAt),
+                style: AppTextStyles.text3.copyWith(
+                  color: context.sub2Color,
                 ),
               ),
             ],
@@ -92,30 +89,32 @@ class ReviewListContainer extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: isMine
                 ? IconButton(
-              onPressed: () {
-                reviewRemove(
-                    context: context,
-                    title: '후기 삭제',
-                    content: '\n 정말 후기를 삭제하시겠습니까?',);
-              },
-              icon: AppIcons.bin(
-                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
-              ),
-            )
+                    onPressed: () {
+                      reviewRemove(
+                        context: context,
+                        title: '후기 삭제',
+                        content: '\n 정말 후기를 삭제하시겠습니까?',
+                      );
+                    },
+                    icon: AppIcons.bin(
+                      color: context.sub2Color,
+                    ),
+                  )
                 : IconButton(
-              onPressed: () {
-                reviewReport(context: context,
-                    title: '후기 신고',
-                    content: '이 후기를 신고하시겠습니까?\n신고 내용은 운영팀의 검토 후 처리됩니다.',);
-              },
-              icon: AppIcons.report(
-                color: isLight ? AppColors.sub2 : AppColors.sub2Dark,
-              ),
-            ),
+                    onPressed: () {
+                      reviewReport(
+                        context: context,
+                        title: '후기 신고',
+                        content: '이 후기를 신고하시겠습니까?\n신고 내용은 운영팀의 검토 후 처리됩니다.',
+                      );
+                    },
+                    icon: AppIcons.report(
+                      color: context.sub2Color,
+                    ),
+                  ),
           ),
         ],
       ),
     );
   }
 }
-

@@ -48,7 +48,7 @@ class PasswordScreen extends ConsumerWidget {
       confirmText: '로그인',
       isConfirmEnabled: notifier.isPasswordFormValid,
       onConfirm: notifier.isPasswordFormValid && !isLoading
-          ? notifier.submitSignup
+          ? notifier.completeSignup
           : null,
       showAppBar: true,
       showAppBarLogo: false,

@@ -1,8 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
+import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 
 /// 회원가입 Provider
 final signupProvider = NotifierProvider<SignupNotifier, SignupState>(
@@ -132,20 +137,77 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
-      // TODO: 실제 회원가입 API 호출
-      await Future.delayed(const Duration(seconds: 2));
+      final normalizedEmail = normalizeSchoolEmail(state.email);
+      await ref.read(authRepositoryProvider).sendEmailVerification(
+            email: normalizedEmail,
+            purpose: EmailVerificationPurpose.signup,
+          );
+      ref.read(authFlowProvider.notifier).startSignup(normalizedEmail);
 
       state = state.copyWith(status: SignupStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: SignupStatus.failure,
-        errorMessage: '회원가입에 실패했습니다. 다시 시도해주세요.',
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> completeSignup() async {
+    if (!isPasswordFormValid) return;
+
+    final authFlow = ref.read(authFlowProvider);
+    if (authFlow.email.isEmpty || authFlow.verifiedToken == null) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: '이메일 인증 정보를 찾을 수 없습니다. 다시 진행해주세요.',
+      );
+      return;
+    }
+
+    if (state.gender == null || state.major == null) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: '회원가입 정보가 올바르지 않습니다. 다시 진행해주세요.',
+      );
+      return;
+    }
+
+    state = state.copyWith(status: SignupStatus.loading);
+
+    try {
+      await ref.read(authRepositoryProvider).signUp(
+            email: authFlow.email,
+            verifiedToken: authFlow.verifiedToken!,
+            password: state.password,
+            name: state.name,
+            grade: inferGradeFromEmail(authFlow.email),
+            department: _departmentToApiValue(state.major!),
+            gender: _genderToApiValue(state.gender!),
+          );
+      ref.read(authFlowProvider.notifier).clear();
+      state = state.copyWith(status: SignupStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: e.toString(),
       );
     }
   }
 
   /// 상태 초기화
   void reset() {
+    ref.read(authFlowProvider.notifier).clear();
     nameController.clear();
     emailController.clear();
     passwordController.clear();
@@ -162,8 +224,8 @@ class SignupNotifier extends Notifier<SignupState> {
       );
     }
   }
+
+  String _departmentToApiValue(MajorEnum major) => major.name.toUpperCase();
+
+  String _genderToApiValue(GenderEnum gender) => gender.name.toUpperCase();
 }
-
-
-
-

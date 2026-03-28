@@ -4,6 +4,7 @@ import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 
 /// 로그인 Provider
 final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
@@ -61,8 +62,9 @@ class LoginNotifier extends Notifier<LoginState> {
     state = LoginState.loading();
 
     try {
+      final normalizedEmail = normalizeSchoolEmail(email);
       final response = await ref.read(authRepositoryProvider).signIn(
-            email: email,
+            email: normalizedEmail,
             password: password,
           );
 
@@ -71,7 +73,7 @@ class LoginNotifier extends Notifier<LoginState> {
       await TokenStorage.saveRefreshToken(response.refreshToken);
 
       // 성공 처리
-      state = LoginState.success(email);
+      state = LoginState.success(normalizedEmail);
     } on DioException catch (e) {
       state = LoginState.failure(NetworkException.fromDioException(e).message);
     } catch (e) {

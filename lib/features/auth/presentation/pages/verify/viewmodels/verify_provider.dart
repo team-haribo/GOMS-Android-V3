@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 import 'package:goms/features/auth/presentation/pages/verify/states/verify_state.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 
 final verifyProvider =
     NotifierProvider<VerifyNotifier, VerifyState>(VerifyNotifier.new);
@@ -68,33 +72,73 @@ class VerifyNotifier extends Notifier<VerifyState> {
   Future<void> verify() async {
     if (!isFormValid) return;
 
+    final authFlow = ref.read(authFlowProvider);
+    if (authFlow.email.isEmpty || authFlow.purpose == null) {
+      state = state.copyWith(
+        status: VerifyStatus.failure,
+        errorMessage: '인증 정보를 찾을 수 없습니다. 다시 시도해주세요.',
+      );
+      return;
+    }
+
     state = state.copyWith(status: VerifyStatus.loading);
     try {
-      // TODO: 실제 인증 API 호출
-      await Future.delayed(const Duration(seconds: 2));
-
-      // 임시: 인증번호 검증 실패 예시
-      /*state = state.copyWith(
-        status: VerifyStatus.failure,
-        codeError: '잘못된 인증번호입니다',
-      ); */
-
+      final response =
+          await ref.read(authRepositoryProvider).confirmEmailVerification(
+                email: authFlow.email,
+                code: state.code,
+                purpose: authFlow.purpose!,
+              );
+      ref
+          .read(authFlowProvider.notifier)
+          .setVerifiedToken(response.verifiedToken);
       state = state.copyWith(status: VerifyStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: VerifyStatus.failure,
+        codeError: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: VerifyStatus.failure,
-        errorMessage: '인증에 실패했습니다. 다시 시도해주세요.',
+        errorMessage: e.toString(),
       );
     }
   }
 
   /// 인증번호 재발송
   Future<void> resend() async {
+    final authFlow = ref.read(authFlowProvider);
+    if (authFlow.email.isEmpty || authFlow.purpose == null) {
+      state = state.copyWith(
+        status: VerifyStatus.failure,
+        errorMessage: '재발송할 인증 정보를 찾을 수 없습니다.',
+      );
+      return;
+    }
+
     _timer?.cancel();
     codeController.clear();
     state = VerifyState.initial();
     _startTimer();
-    // TODO: 실제 재발송 API 호출
+
+    try {
+      ref.read(authFlowProvider.notifier).clearVerifiedToken();
+      await ref.read(authRepositoryProvider).sendEmailVerification(
+            email: authFlow.email,
+            purpose: authFlow.purpose!,
+          );
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: VerifyStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: VerifyStatus.failure,
+        errorMessage: e.toString(),
+      );
+    }
   }
 
   /// 상태 초기화
@@ -113,5 +157,3 @@ class VerifyNotifier extends Notifier<VerifyState> {
     );
   }
 }
-
-

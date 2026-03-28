@@ -1,3 +1,5 @@
+import 'package:goms/features/auth/data/dto/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/data/dto/confirm_email_verification_response_dto.dart';
 import 'package:goms/features/auth/data/dto/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:goms/features/auth/data/dto/signin_request_dto.dart';
@@ -31,6 +33,20 @@ class AuthRepository {
     return _remoteDataSource.sendEmailVerification(
       SendEmailVerificationRequestDto(
         email: email,
+        purpose: purpose,
+      ),
+    );
+  }
+
+  Future<ConfirmEmailVerificationResponseDto> confirmEmailVerification({
+    required String email,
+    required String code,
+    required EmailVerificationPurpose purpose,
+  }) {
+    return _remoteDataSource.confirmEmailVerification(
+      ConfirmEmailVerificationRequestDto(
+        email: email,
+        code: code,
         purpose: purpose,
       ),
     );

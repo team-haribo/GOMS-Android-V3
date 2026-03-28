@@ -1,11 +1,11 @@
-import 'package:goms/features/auth/data/dto/change_password_request_dto.dart';
-import 'package:goms/features/auth/data/dto/confirm_email_verification_request_dto.dart';
-import 'package:goms/features/auth/data/dto/confirm_email_verification_response_dto.dart';
-import 'package:goms/features/auth/data/dto/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:goms/features/auth/data/dto/signin_request_dto.dart';
-import 'package:goms/features/auth/data/dto/signin_response_dto.dart';
-import 'package:goms/features/auth/data/dto/signup_request_dto.dart';
+import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_response_dto.dart';
+import 'package:goms/features/auth/data/dto/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/data/dto/password/change_password_request_dto.dart';
+import 'package:goms/features/auth/data/dto/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/data/dto/signup/signup_request_dto.dart';
 import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 
 class AuthRepository {

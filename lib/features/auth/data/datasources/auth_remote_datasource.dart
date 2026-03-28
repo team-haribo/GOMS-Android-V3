@@ -38,4 +38,9 @@ abstract class AuthRemoteDataSource {
   Future<SignInResponseDto> reissue(
     @Header('RefreshToken') String refreshToken,
   );
+
+  @DELETE('/api/v3/auth/signout')
+  Future<void> signOut(
+    @Header('RefreshToken') String refreshToken,
+  );
 }

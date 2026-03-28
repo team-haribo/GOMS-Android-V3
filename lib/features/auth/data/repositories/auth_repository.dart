@@ -35,6 +35,14 @@ class AuthRepository {
     );
   }
 
+  Future<void> signOut({
+    required String refreshToken,
+  }) {
+    return _remoteDataSource.signOut(
+      _toBearerToken(refreshToken),
+    );
+  }
+
   Future<void> sendEmailVerification({
     required String email,
     required EmailVerificationPurpose purpose,

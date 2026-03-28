@@ -3,6 +3,16 @@ import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 
 const _schoolEmailDomain = '@gsm.hs.kr';
 
+bool isAllowedSchoolEmail(String email) {
+  final trimmedEmail = email.trim();
+  if (trimmedEmail.isEmpty) {
+    return false;
+  }
+
+  final normalizedEmail = normalizeSchoolEmail(trimmedEmail);
+  return RegExp(r'^[^@\s]+@gsm\.hs\.kr$').hasMatch(normalizedEmail);
+}
+
 String normalizeSchoolEmail(String email) {
   final trimmedEmail = email.trim();
   if (trimmedEmail.isEmpty) {

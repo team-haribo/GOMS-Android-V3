@@ -20,9 +20,9 @@ class LoginNotifier extends Notifier<LoginState> {
 
   /// 이메일 유효성 검사
   String? _validateEmailLogic(String email) {
-    if (email.isEmpty) {
+    if (email.trim().isEmpty) {
       return '이메일을 입력해주세요';
-    } else if (email.contains('@') && !email.endsWith('@gsm.hs.kr')) {
+    } else if (!isAllowedSchoolEmail(email)) {
       return '잘못된 형식의 이메일입니다.';
     }
     return null;

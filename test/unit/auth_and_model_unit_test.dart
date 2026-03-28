@@ -33,15 +33,15 @@ void main() {
   group('SearchProfileContainerModel', () {
     test('stores constructor values', () {
       const model = SearchProfileContainerModel(
-        name: 'Hong',
-        grade: 2,
-        major: 'SW',
+        name: '이주언',
+        grade: 3,
+        major: 'AI',
         studentRole: StudentRole.student,
       );
 
-      expect(model.name, 'Hong');
-      expect(model.grade, 2);
-      expect(model.major, 'SW');
+      expect(model.name, '이주언');
+      expect(model.grade, 3);
+      expect(model.major, 'AI');
     });
   });
 
@@ -52,12 +52,19 @@ void main() {
   group('auth flow helpers', () {
     test('normalizeSchoolEmail appends domain when only local part is given',
         () {
-      expect(normalizeSchoolEmail('s2201'), 's2201@gsm.hs.kr');
-      expect(normalizeSchoolEmail('s2201@gsm.hs.kr'), 's2201@gsm.hs.kr');
+      expect(normalizeSchoolEmail('s24068'), 's24068@gsm.hs.kr');
+      expect(normalizeSchoolEmail('s24068@gsm.hs.kr'), 's24068@gsm.hs.kr');
+    });
+
+    test('isAllowedSchoolEmail only accepts gsm domain', () {
+      expect(isAllowedSchoolEmail('s24068'), isTrue);
+      expect(isAllowedSchoolEmail('s24068@gsm.hs.kr'), isTrue);
+      expect(isAllowedSchoolEmail('s24068@gmail.com'), isFalse);
+      expect(isAllowedSchoolEmail('wrong@@gsm.hs.kr'), isFalse);
     });
 
     test('inferGradeFromEmail extracts first digit after s', () {
-      expect(inferGradeFromEmail('s2201'), 2);
+      expect(inferGradeFromEmail('s24068'), 2);
       expect(inferGradeFromEmail('s3101@gsm.hs.kr'), 3);
     });
   });

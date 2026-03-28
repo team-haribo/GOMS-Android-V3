@@ -1,7 +1,9 @@
+import 'package:goms/features/auth/data/dto/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
 import 'package:goms/features/auth/data/dto/signin_request_dto.dart';
 import 'package:goms/features/auth/data/dto/signin_response_dto.dart';
 import 'package:goms/features/auth/data/dto/signup_request_dto.dart';
+import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 
 class AuthRepository {
   AuthRepository({
@@ -18,6 +20,18 @@ class AuthRepository {
       SignInRequestDto(
         email: email,
         password: password,
+      ),
+    );
+  }
+
+  Future<void> sendEmailVerification({
+    required String email,
+    required EmailVerificationPurpose purpose,
+  }) {
+    return _remoteDataSource.sendEmailVerification(
+      SendEmailVerificationRequestDto(
+        email: email,
+        purpose: purpose,
       ),
     );
   }

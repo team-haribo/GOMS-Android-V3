@@ -1,5 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
 
 /// 로그인 Provider
@@ -58,22 +61,21 @@ class LoginNotifier extends Notifier<LoginState> {
     state = LoginState.loading();
 
     try {
-      // TODO: 실제 로그인 API 호출
-      await Future.delayed(const Duration(seconds: 2));
-
-      // TODO: API 응답에서 실제 토큰 받아오기
-      // 임시: 더미 토큰
-      const accessToken = 'dummy_access_token';
-      const refreshToken = 'dummy_refresh_token';
+      final response = await ref.read(authRepositoryProvider).signIn(
+            email: email,
+            password: password,
+          );
 
       // 토큰 저장
-      await TokenStorage.saveAccessToken(accessToken);
-      await TokenStorage.saveRefreshToken(refreshToken);
+      await TokenStorage.saveAccessToken(response.accessToken);
+      await TokenStorage.saveRefreshToken(response.refreshToken);
 
       // 성공 처리
       state = LoginState.success(email);
+    } on DioException catch (e) {
+      state = LoginState.failure(NetworkException.fromDioException(e).message);
     } catch (e) {
-      state = LoginState.failure('로그인에 실패했습니다. 다시 시도해주세요.');
+      state = LoginState.failure(e.toString());
     }
   }
 

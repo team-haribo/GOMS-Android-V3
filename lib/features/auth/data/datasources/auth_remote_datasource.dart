@@ -33,4 +33,9 @@ abstract class AuthRemoteDataSource {
 
   @PATCH('/api/v3/auth/password')
   Future<void> changePassword(@Body() ChangePasswordRequestDto requestDto);
+
+  @PATCH('/api/v3/auth/reissue')
+  Future<SignInResponseDto> reissue(
+    @Header('RefreshToken') String refreshToken,
+  );
 }

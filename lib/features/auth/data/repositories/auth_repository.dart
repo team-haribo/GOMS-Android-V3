@@ -27,6 +27,14 @@ class AuthRepository {
     );
   }
 
+  Future<SignInResponseDto> reissue({
+    required String refreshToken,
+  }) {
+    return _remoteDataSource.reissue(
+      _toBearerToken(refreshToken),
+    );
+  }
+
   Future<void> sendEmailVerification({
     required String email,
     required EmailVerificationPurpose purpose,
@@ -87,5 +95,13 @@ class AuthRepository {
         newPassword: newPassword,
       ),
     );
+  }
+
+  String _toBearerToken(String token) {
+    final trimmedToken = token.trim();
+    if (trimmedToken.startsWith('Bearer ')) {
+      return trimmedToken;
+    }
+    return 'Bearer $trimmedToken';
   }
 }

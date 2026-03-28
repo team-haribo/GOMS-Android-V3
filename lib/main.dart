@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/config/app_env.dart';
 import 'package:goms/core/router/app_router.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -19,7 +20,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: '.env');
+  const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
+  final appEnv = AppEnv.fromValue(appEnvValue);
+
+  await dotenv.load(fileName: appEnv.fileName);
   await KakaoMapRuntime.instance.initialize();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

@@ -71,6 +71,8 @@ class LoginNotifier extends Notifier<LoginState> {
       // 토큰 저장
       await TokenStorage.saveAccessToken(response.accessToken);
       await TokenStorage.saveRefreshToken(response.refreshToken);
+      await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
+      await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
 
       // 성공 처리
       state = LoginState.success(normalizedEmail);

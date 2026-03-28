@@ -8,7 +8,6 @@ import 'package:goms/core/router/app_router.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_provider.dart';
-import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/firebase_options.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -29,7 +28,6 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await TokenStorage.deleteAllTokens();
   runApp(const ProviderScope(child: MyApp()));
 }
 

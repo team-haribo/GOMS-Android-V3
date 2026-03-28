@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:goms/features/auth/data/dto/change_password_request_dto.dart';
 import 'package:goms/features/auth/data/dto/confirm_email_verification_request_dto.dart';
 import 'package:goms/features/auth/data/dto/confirm_email_verification_response_dto.dart';
 import 'package:goms/features/auth/data/dto/send_email_verification_request_dto.dart';
@@ -29,4 +30,7 @@ abstract class AuthRemoteDataSource {
 
   @POST('/api/v3/auth/signup')
   Future<void> signUp(@Body() SignUpRequestDto requestDto);
+
+  @PATCH('/api/v3/auth/password')
+  Future<void> changePassword(@Body() ChangePasswordRequestDto requestDto);
 }

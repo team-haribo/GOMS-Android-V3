@@ -1,3 +1,4 @@
+import 'package:goms/features/auth/data/dto/change_password_request_dto.dart';
 import 'package:goms/features/auth/data/dto/confirm_email_verification_request_dto.dart';
 import 'package:goms/features/auth/data/dto/confirm_email_verification_response_dto.dart';
 import 'package:goms/features/auth/data/dto/send_email_verification_request_dto.dart';
@@ -70,6 +71,20 @@ class AuthRepository {
         grade: grade,
         department: department,
         gender: gender,
+      ),
+    );
+  }
+
+  Future<void> changePassword({
+    required String email,
+    required String verifiedToken,
+    required String newPassword,
+  }) {
+    return _remoteDataSource.changePassword(
+      ChangePasswordRequestDto(
+        email: email,
+        verifiedToken: verifiedToken,
+        newPassword: newPassword,
       ),
     );
   }

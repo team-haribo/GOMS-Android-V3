@@ -245,9 +245,8 @@ extension SignInRequestDtoPatterns on SignInRequestDto {
 
 /// @nodoc
 @JsonSerializable()
-class _SignInRequestDto extends SignInRequestDto {
-  const _SignInRequestDto({required this.email, required this.password})
-      : super._();
+class _SignInRequestDto implements SignInRequestDto {
+  const _SignInRequestDto({required this.email, required this.password});
   factory _SignInRequestDto.fromJson(Map<String, dynamic> json) =>
       _$SignInRequestDtoFromJson(json);
 

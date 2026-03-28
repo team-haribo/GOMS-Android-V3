@@ -276,13 +276,12 @@ extension SignInResponseDtoPatterns on SignInResponseDto {
 
 /// @nodoc
 @JsonSerializable()
-class _SignInResponseDto extends SignInResponseDto {
+class _SignInResponseDto implements SignInResponseDto {
   const _SignInResponseDto(
       {required this.accessToken,
       required this.refreshToken,
       required this.accessTokenExpiresIn,
-      required this.refreshTokenExpiresIn})
-      : super._();
+      required this.refreshTokenExpiresIn});
   factory _SignInResponseDto.fromJson(Map<String, dynamic> json) =>
       _$SignInResponseDtoFromJson(json);
 

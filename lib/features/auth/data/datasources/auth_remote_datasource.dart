@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:goms/features/auth/data/dto/signin_request_dto.dart';
 import 'package:goms/features/auth/data/dto/signin_response_dto.dart';
+import 'package:goms/features/auth/data/dto/signup_request_dto.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'auth_remote_datasource.g.dart';
@@ -12,4 +13,7 @@ abstract class AuthRemoteDataSource {
 
   @POST('/api/v3/auth/signin')
   Future<SignInResponseDto> signIn(@Body() SignInRequestDto requestDto);
+
+  @POST('/api/v3/auth/signup')
+  Future<void> signUp(@Body() SignUpRequestDto requestDto);
 }

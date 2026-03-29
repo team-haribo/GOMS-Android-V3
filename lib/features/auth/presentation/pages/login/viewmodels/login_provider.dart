@@ -13,6 +13,8 @@ final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
 
 /// 로그인 Notifier
 class LoginNotifier extends Notifier<LoginState> {
+  static final _loginEmailRegex = RegExp(r'^s\d+$');
+
   @override
   LoginState build() {
     return LoginState.initial();
@@ -22,7 +24,7 @@ class LoginNotifier extends Notifier<LoginState> {
   String? _validateEmailLogic(String email) {
     if (email.trim().isEmpty) {
       return '이메일을 입력해주세요';
-    } else if (!isAllowedSchoolEmail(email)) {
+    } else if (!_loginEmailRegex.hasMatch(email.trim())) {
       return '잘못된 형식의 이메일입니다.';
     }
     return null;
@@ -44,6 +46,37 @@ class LoginNotifier extends Notifier<LoginState> {
   /// 비밀번호 유효성 검사
   void validatePassword(String password) {
     state = state.copyWith(passwordError: _validatePasswordLogic(password));
+  }
+
+  void _setLoginFailure({
+    String? errorMessage,
+    String? emailError,
+    String? passwordError,
+  }) {
+    state = state.copyWith(
+      status: LoginStatus.failure,
+      errorMessage: errorMessage,
+      emailError: emailError,
+      passwordError: passwordError,
+    );
+  }
+
+  void _handleLoginDioException(DioException exception) {
+    final statusCode = exception.response?.statusCode;
+
+    if (statusCode == 404) {
+      _setLoginFailure(emailError: '유효하지 않은 이메일입니다.');
+      return;
+    }
+
+    if (statusCode == 403) {
+      _setLoginFailure(passwordError: '비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    _setLoginFailure(
+      errorMessage: NetworkException.fromDioException(exception).message,
+    );
   }
 
   /// 로그인
@@ -77,7 +110,7 @@ class LoginNotifier extends Notifier<LoginState> {
       // 성공 처리
       state = LoginState.success(normalizedEmail);
     } on DioException catch (e) {
-      state = LoginState.failure(NetworkException.fromDioException(e).message);
+      _handleLoginDioException(e);
     } catch (e) {
       state = LoginState.failure(e.toString());
     }

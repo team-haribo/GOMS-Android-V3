@@ -28,7 +28,7 @@ class PasswordScreen extends ConsumerWidget {
           title: '회원가입 완료',
           content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
           onConfirm: () {
-            context.go(RoutePath.login);
+            context.go(RoutePath.onboarding);
           },
         ).show(context);
       } else if (next.status == SignupStatus.failure &&

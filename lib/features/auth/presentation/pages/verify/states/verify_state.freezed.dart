@@ -17,6 +17,7 @@ mixin _$VerifyState {
   VerifyStatus get status;
   String get code;
   int get remainingSeconds;
+  int get resendCooldownSeconds;
   bool get isExpired;
   String? get codeError;
   String? get errorMessage;
@@ -37,6 +38,8 @@ mixin _$VerifyState {
             (identical(other.code, code) || other.code == code) &&
             (identical(other.remainingSeconds, remainingSeconds) ||
                 other.remainingSeconds == remainingSeconds) &&
+            (identical(other.resendCooldownSeconds, resendCooldownSeconds) ||
+                other.resendCooldownSeconds == resendCooldownSeconds) &&
             (identical(other.isExpired, isExpired) ||
                 other.isExpired == isExpired) &&
             (identical(other.codeError, codeError) ||
@@ -47,11 +50,11 @@ mixin _$VerifyState {
 
   @override
   int get hashCode => Object.hash(runtimeType, status, code, remainingSeconds,
-      isExpired, codeError, errorMessage);
+      resendCooldownSeconds, isExpired, codeError, errorMessage);
 
   @override
   String toString() {
-    return 'VerifyState(status: $status, code: $code, remainingSeconds: $remainingSeconds, isExpired: $isExpired, codeError: $codeError, errorMessage: $errorMessage)';
+    return 'VerifyState(status: $status, code: $code, remainingSeconds: $remainingSeconds, resendCooldownSeconds: $resendCooldownSeconds, isExpired: $isExpired, codeError: $codeError, errorMessage: $errorMessage)';
   }
 }
 
@@ -65,6 +68,7 @@ abstract mixin class $VerifyStateCopyWith<$Res> {
       {VerifyStatus status,
       String code,
       int remainingSeconds,
+      int resendCooldownSeconds,
       bool isExpired,
       String? codeError,
       String? errorMessage});
@@ -85,6 +89,7 @@ class _$VerifyStateCopyWithImpl<$Res> implements $VerifyStateCopyWith<$Res> {
     Object? status = null,
     Object? code = null,
     Object? remainingSeconds = null,
+    Object? resendCooldownSeconds = null,
     Object? isExpired = null,
     Object? codeError = freezed,
     Object? errorMessage = freezed,
@@ -101,6 +106,10 @@ class _$VerifyStateCopyWithImpl<$Res> implements $VerifyStateCopyWith<$Res> {
       remainingSeconds: null == remainingSeconds
           ? _self.remainingSeconds
           : remainingSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+      resendCooldownSeconds: null == resendCooldownSeconds
+          ? _self.resendCooldownSeconds
+          : resendCooldownSeconds // ignore: cast_nullable_to_non_nullable
               as int,
       isExpired: null == isExpired
           ? _self.isExpired
@@ -211,16 +220,28 @@ extension VerifyStatePatterns on VerifyState {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(VerifyStatus status, String code, int remainingSeconds,
-            bool isExpired, String? codeError, String? errorMessage)?
+    TResult Function(
+            VerifyStatus status,
+            String code,
+            int remainingSeconds,
+            int resendCooldownSeconds,
+            bool isExpired,
+            String? codeError,
+            String? errorMessage)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _VerifyState() when $default != null:
-        return $default(_that.status, _that.code, _that.remainingSeconds,
-            _that.isExpired, _that.codeError, _that.errorMessage);
+        return $default(
+            _that.status,
+            _that.code,
+            _that.remainingSeconds,
+            _that.resendCooldownSeconds,
+            _that.isExpired,
+            _that.codeError,
+            _that.errorMessage);
       case _:
         return orElse();
     }
@@ -241,15 +262,27 @@ extension VerifyStatePatterns on VerifyState {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(VerifyStatus status, String code, int remainingSeconds,
-            bool isExpired, String? codeError, String? errorMessage)
+    TResult Function(
+            VerifyStatus status,
+            String code,
+            int remainingSeconds,
+            int resendCooldownSeconds,
+            bool isExpired,
+            String? codeError,
+            String? errorMessage)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _VerifyState():
-        return $default(_that.status, _that.code, _that.remainingSeconds,
-            _that.isExpired, _that.codeError, _that.errorMessage);
+        return $default(
+            _that.status,
+            _that.code,
+            _that.remainingSeconds,
+            _that.resendCooldownSeconds,
+            _that.isExpired,
+            _that.codeError,
+            _that.errorMessage);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -269,15 +302,27 @@ extension VerifyStatePatterns on VerifyState {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(VerifyStatus status, String code, int remainingSeconds,
-            bool isExpired, String? codeError, String? errorMessage)?
+    TResult? Function(
+            VerifyStatus status,
+            String code,
+            int remainingSeconds,
+            int resendCooldownSeconds,
+            bool isExpired,
+            String? codeError,
+            String? errorMessage)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _VerifyState() when $default != null:
-        return $default(_that.status, _that.code, _that.remainingSeconds,
-            _that.isExpired, _that.codeError, _that.errorMessage);
+        return $default(
+            _that.status,
+            _that.code,
+            _that.remainingSeconds,
+            _that.resendCooldownSeconds,
+            _that.isExpired,
+            _that.codeError,
+            _that.errorMessage);
       case _:
         return null;
     }
@@ -291,6 +336,7 @@ class _VerifyState implements VerifyState {
       {this.status = VerifyStatus.initial,
       this.code = '',
       this.remainingSeconds = 300,
+      this.resendCooldownSeconds = 60,
       this.isExpired = false,
       this.codeError,
       this.errorMessage});
@@ -304,6 +350,9 @@ class _VerifyState implements VerifyState {
   @override
   @JsonKey()
   final int remainingSeconds;
+  @override
+  @JsonKey()
+  final int resendCooldownSeconds;
   @override
   @JsonKey()
   final bool isExpired;
@@ -329,6 +378,8 @@ class _VerifyState implements VerifyState {
             (identical(other.code, code) || other.code == code) &&
             (identical(other.remainingSeconds, remainingSeconds) ||
                 other.remainingSeconds == remainingSeconds) &&
+            (identical(other.resendCooldownSeconds, resendCooldownSeconds) ||
+                other.resendCooldownSeconds == resendCooldownSeconds) &&
             (identical(other.isExpired, isExpired) ||
                 other.isExpired == isExpired) &&
             (identical(other.codeError, codeError) ||
@@ -339,11 +390,11 @@ class _VerifyState implements VerifyState {
 
   @override
   int get hashCode => Object.hash(runtimeType, status, code, remainingSeconds,
-      isExpired, codeError, errorMessage);
+      resendCooldownSeconds, isExpired, codeError, errorMessage);
 
   @override
   String toString() {
-    return 'VerifyState(status: $status, code: $code, remainingSeconds: $remainingSeconds, isExpired: $isExpired, codeError: $codeError, errorMessage: $errorMessage)';
+    return 'VerifyState(status: $status, code: $code, remainingSeconds: $remainingSeconds, resendCooldownSeconds: $resendCooldownSeconds, isExpired: $isExpired, codeError: $codeError, errorMessage: $errorMessage)';
   }
 }
 
@@ -359,6 +410,7 @@ abstract mixin class _$VerifyStateCopyWith<$Res>
       {VerifyStatus status,
       String code,
       int remainingSeconds,
+      int resendCooldownSeconds,
       bool isExpired,
       String? codeError,
       String? errorMessage});
@@ -379,6 +431,7 @@ class __$VerifyStateCopyWithImpl<$Res> implements _$VerifyStateCopyWith<$Res> {
     Object? status = null,
     Object? code = null,
     Object? remainingSeconds = null,
+    Object? resendCooldownSeconds = null,
     Object? isExpired = null,
     Object? codeError = freezed,
     Object? errorMessage = freezed,
@@ -395,6 +448,10 @@ class __$VerifyStateCopyWithImpl<$Res> implements _$VerifyStateCopyWith<$Res> {
       remainingSeconds: null == remainingSeconds
           ? _self.remainingSeconds
           : remainingSeconds // ignore: cast_nullable_to_non_nullable
+              as int,
+      resendCooldownSeconds: null == resendCooldownSeconds
+          ? _self.resendCooldownSeconds
+          : resendCooldownSeconds // ignore: cast_nullable_to_non_nullable
               as int,
       isExpired: null == isExpired
           ? _self.isExpired

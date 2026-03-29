@@ -12,6 +12,9 @@ final verifyProvider =
     NotifierProvider<VerifyNotifier, VerifyState>(VerifyNotifier.new);
 
 class VerifyNotifier extends Notifier<VerifyState> {
+  static const int _verificationDurationSeconds = 300;
+  static const int _resendCooldownDurationSeconds = 60;
+
   late final TextEditingController codeController;
   Timer? _timer;
 
@@ -32,17 +35,26 @@ class VerifyNotifier extends Notifier<VerifyState> {
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (state.remainingSeconds <= 0) {
+      final nextRemainingSeconds = state.remainingSeconds - 1;
+      final nextResendCooldownSeconds = state.resendCooldownSeconds > 0
+          ? state.resendCooldownSeconds - 1
+          : 0;
+
+      if (nextRemainingSeconds <= 0) {
         timer.cancel();
         state = state.copyWith(
+          remainingSeconds: 0,
+          resendCooldownSeconds: nextResendCooldownSeconds,
           isExpired: true,
           codeError: '인증시간이 만료되었습니다',
         );
-      } else {
-        state = state.copyWith(
-          remainingSeconds: state.remainingSeconds - 1,
-        );
+        return;
       }
+
+      state = state.copyWith(
+        remainingSeconds: nextRemainingSeconds,
+        resendCooldownSeconds: nextResendCooldownSeconds,
+      );
     });
   }
 
@@ -52,6 +64,11 @@ class VerifyNotifier extends Notifier<VerifyState> {
     final seconds = (state.remainingSeconds % 60).toString().padLeft(2, '0');
     return '$minutes:$seconds';
   }
+
+  String get resendButtonText =>
+      state.resendCooldownSeconds > 0
+          ? '재발송 (${state.resendCooldownSeconds}s)'
+          : '재발송';
 
   // ==================== Validation ====================
 
@@ -65,6 +82,8 @@ class VerifyNotifier extends Notifier<VerifyState> {
 
   /// 폼 유효성 검사
   bool get isFormValid => state.code.isNotEmpty && !state.isExpired;
+
+  bool get canResend => state.resendCooldownSeconds <= 0;
 
   // ==================== Actions ====================
 
@@ -108,6 +127,8 @@ class VerifyNotifier extends Notifier<VerifyState> {
 
   /// 인증번호 재발송
   Future<void> resend() async {
+    if (!canResend) return;
+
     final authFlow = ref.read(authFlowProvider);
     if (authFlow.email.isEmpty || authFlow.purpose == null) {
       state = state.copyWith(
@@ -119,7 +140,10 @@ class VerifyNotifier extends Notifier<VerifyState> {
 
     _timer?.cancel();
     codeController.clear();
-    state = VerifyState.initial();
+    state = VerifyState.initial().copyWith(
+      resendCooldownSeconds: _resendCooldownDurationSeconds,
+      remainingSeconds: _verificationDurationSeconds,
+    );
     _startTimer();
 
     try {
@@ -145,7 +169,10 @@ class VerifyNotifier extends Notifier<VerifyState> {
   void reset() {
     _timer?.cancel();
     codeController.clear();
-    state = VerifyState.initial();
+    state = VerifyState.initial().copyWith(
+      resendCooldownSeconds: _resendCooldownDurationSeconds,
+      remainingSeconds: _verificationDurationSeconds,
+    );
     _startTimer();
   }
 

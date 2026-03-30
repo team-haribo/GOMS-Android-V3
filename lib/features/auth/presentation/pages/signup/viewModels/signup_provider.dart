@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
@@ -195,18 +196,35 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
+      final request = {
+        'email': authFlow.email,
+        'verifiedToken': authFlow.verifiedToken,
+        'password': state.password,
+        'name': state.name,
+        'grade': int.parse(state.grade),
+        'department': _departmentToApiValue(state.major!),
+        'gender': _genderToApiValue(state.gender!),
+      };
+      Logger.d('signup request: $request', tag: 'AUTH');
+
       await ref.read(authRepositoryProvider).signUp(
-            email: authFlow.email,
-            verifiedToken: authFlow.verifiedToken!,
-            password: state.password,
-            name: state.name,
-            grade: int.parse(state.grade),
-            department: _departmentToApiValue(state.major!),
-            gender: _genderToApiValue(state.gender!),
+            email: request['email']! as String,
+            verifiedToken: request['verifiedToken']! as String,
+            password: request['password']! as String,
+            name: request['name']! as String,
+            grade: request['grade']! as int,
+            department: request['department']! as String,
+            gender: request['gender']! as String,
           );
       ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: SignupStatus.success);
     } on DioException catch (e) {
+      Logger.e(
+        'signup failed',
+        tag: 'AUTH',
+        error: e.response?.data ?? e,
+        stackTrace: e.stackTrace,
+      );
       state = state.copyWith(
         status: SignupStatus.failure,
         errorMessage: NetworkException.fromDioException(e).message,
@@ -252,5 +270,10 @@ class SignupNotifier extends Notifier<SignupState> {
 
   String _departmentToApiValue(MajorEnum major) => major.name.toUpperCase();
 
-  String _genderToApiValue(GenderEnum gender) => gender.name.toUpperCase();
+  String _genderToApiValue(GenderEnum gender) {
+    return switch (gender) {
+      GenderEnum.man => 'MALE',
+      GenderEnum.woman => 'FEMALE',
+    };
+  }
 }

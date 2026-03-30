@@ -2,6 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
+import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
+import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_response_dto.dart';
+import 'package:goms/features/auth/data/dto/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/data/dto/password/change_password_request_dto.dart';
+import 'package:goms/features/auth/data/dto/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/data/dto/signup/signup_request_dto.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
+import 'package:goms/features/auth/data/repositories/auth_repository.dart';
 import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
 import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
@@ -111,5 +121,107 @@ void main() {
         'MALE',
       );
     });
+
+    test('submitSignup skips resend when email matches existing signup flow', () async {
+      final remote = _FakeAuthRemoteDataSource();
+      final container = ProviderContainer(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(
+            AuthRepository(remoteDataSource: remote),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(signupProvider.notifier);
+      final authFlow = container.read(authFlowProvider.notifier);
+
+      notifier.setName('Hong');
+      notifier.validateEmail('s1001');
+      notifier.validateGrade('3');
+      notifier.setGender(GenderEnum.man);
+      notifier.setMajor(MajorEnum.sw);
+      authFlow.startSignup('s1001@gsm.hs.kr');
+
+      await notifier.submitSignup();
+
+      expect(remote.sendEmailVerificationCallCount, 0);
+      expect(container.read(signupProvider).status, SignupStatus.success);
+      expect(container.read(authFlowProvider).email, 's1001@gsm.hs.kr');
+    });
+
+    test('submitSignup preserves verified token when email matches existing signup flow', () async {
+      final remote = _FakeAuthRemoteDataSource();
+      final container = ProviderContainer(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(
+            AuthRepository(remoteDataSource: remote),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(signupProvider.notifier);
+      final authFlow = container.read(authFlowProvider.notifier);
+
+      notifier.setName('Hong');
+      notifier.validateEmail('s1001');
+      notifier.validateGrade('3');
+      notifier.setGender(GenderEnum.man);
+      notifier.setMajor(MajorEnum.sw);
+      authFlow.startSignup('s1001@gsm.hs.kr');
+      authFlow.setVerifiedToken('verified-token');
+
+      await notifier.submitSignup();
+
+      expect(remote.sendEmailVerificationCallCount, 0);
+      expect(
+        container.read(authFlowProvider).verifiedToken,
+        'verified-token',
+      );
+    });
   });
+}
+
+class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
+  int sendEmailVerificationCallCount = 0;
+
+  @override
+  Future<void> sendEmailVerification(
+    SendEmailVerificationRequestDto requestDto,
+  ) async {
+    sendEmailVerificationCallCount++;
+  }
+
+  @override
+  Future<ConfirmEmailVerificationResponseDto> confirmEmailVerification(
+    ConfirmEmailVerificationRequestDto requestDto,
+  ) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> signUp(SignUpRequestDto requestDto) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> changePassword(ChangePasswordRequestDto requestDto) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<SignInResponseDto> signIn(SignInRequestDto requestDto) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<SignInResponseDto> reissue(String refreshToken) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> signOut(String refreshToken) {
+    throw UnimplementedError();
+  }
 }

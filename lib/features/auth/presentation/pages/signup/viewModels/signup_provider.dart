@@ -149,10 +149,20 @@ class SignupNotifier extends Notifier<SignupState> {
   Future<void> submitSignup() async {
     if (!isFormValid) return;
 
+    final normalizedEmail = normalizeSchoolEmail(state.email);
+    final authFlow = ref.read(authFlowProvider);
+    final isSameSignupFlow =
+        authFlow.email == normalizedEmail &&
+        authFlow.purpose == EmailVerificationPurpose.signup;
+
+    if (isSameSignupFlow) {
+      state = state.copyWith(status: SignupStatus.success);
+      return;
+    }
+
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
-      final normalizedEmail = normalizeSchoolEmail(state.email);
       await ref.read(authRepositoryProvider).sendEmailVerification(
             email: normalizedEmail,
             purpose: EmailVerificationPurpose.signup,

@@ -9,6 +9,7 @@ import 'package:goms/core/enums/major_enum.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
 import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/core/widgets/common/select_field.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
@@ -22,14 +23,6 @@ class SignUpScreen extends ConsumerStatefulWidget {
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(signupProvider.notifier).reset();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     final signupState = ref.watch(signupProvider);
     final notifier = ref.read(signupProvider.notifier);
@@ -38,7 +31,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     ref.listen<SignupState>(signupProvider, (previous, next) {
       if (next.status == SignupStatus.success) {
         notifier.resetStatus();
-        context.push(RoutePath.verify);
+        final authFlow = ref.read(authFlowProvider);
+        final destination = authFlow.verifiedToken != null
+            ? RoutePath.password
+            : RoutePath.verify;
+        context.go(destination);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
         notifier.resetStatus();

@@ -215,25 +215,18 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
-      final request = {
-        'email': authFlow.email,
-        'verifiedToken': authFlow.verifiedToken,
-        'password': state.password,
-        'name': state.name,
-        'grade': int.parse(state.grade),
-        'department': _departmentToApiValue(state.major!),
-        'gender': _genderToApiValue(state.gender!),
-      };
-      Logger.d('signup request: $request', tag: 'AUTH');
-
+      Logger.d(
+        'signup request: email=${authFlow.email}, name=${state.name}, grade=${state.grade}, department=${_departmentToApiValue(state.major!)}, gender=${_genderToApiValue(state.gender!)}',
+        tag: 'AUTH',
+      );
       await ref.read(authRepositoryProvider).signUp(
-            email: request['email']! as String,
-            verifiedToken: request['verifiedToken']! as String,
-            password: request['password']! as String,
-            name: request['name']! as String,
-            grade: request['grade']! as int,
-            department: request['department']! as String,
-            gender: request['gender']! as String,
+            email: authFlow.email,
+            verifiedToken: authFlow.verifiedToken!,
+            password: state.password,
+            name: state.name,
+            grade: int.parse(state.grade),
+            department: _departmentToApiValue(state.major!),
+            gender: _genderToApiValue(state.gender!),
           );
       ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: SignupStatus.success);

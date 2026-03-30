@@ -25,6 +25,11 @@ class KakaoMapRuntime {
     }
     _checked = true;
 
+    if (!Platform.isAndroid) {
+      _unavailableReason = '이 플랫폼에서는 카카오 지도를 지원하지 않습니다.';
+      return;
+    }
+
     if (Platform.isAndroid) {
       final abis = await _getSupportedAbis();
       final abiText = abis.isEmpty ? 'unknown' : abis.join(', ');
@@ -36,9 +41,6 @@ class KakaoMapRuntime {
             '현재 Android 실행 환경 ABI($abiText)에서는 kakao_map_sdk를 사용할 수 없습니다. x86/x86_64 에뮬레이터가 아닌 ARM64 실기기 또는 ARM 에뮬레이터에서 실행해주세요.';
         return;
       }
-    } else if (!Platform.isIOS) {
-      _unavailableReason = '이 플랫폼에서는 카카오 지도를 지원하지 않습니다.';
-      return;
     }
 
     final appKey = dotenv.env['KAKAO_NATIVE_APP_KEY']?.trim() ?? '';

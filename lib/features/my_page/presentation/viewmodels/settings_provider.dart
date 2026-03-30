@@ -1,7 +1,6 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/core/utils/settings_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SettingsState {
   final bool showClock;
@@ -51,15 +50,15 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   /// 활성화 시 알림 권한을 요청하며, 거부된 경우 false 반환
   Future<bool> setOutingPushAlarm(bool value) async {
     if (value) {
-      final result = await FirebaseMessaging.instance.requestPermission(
-        alert: true,
-        badge: true,
-        sound: true,
-      );
-      final granted =
-          result.authorizationStatus == AuthorizationStatus.authorized ||
-              result.authorizationStatus == AuthorizationStatus.provisional;
-      if (!granted) return false;
+      var status = await Permission.notification.status;
+      if (status.isDenied) {
+        status = await Permission.notification.request();
+      }
+      if (status.isPermanentlyDenied) {
+        await openAppSettings();
+        return false;
+      }
+      if (!status.isGranted) return false;
     }
     await SettingsStorage.setOutingPushAlarm(value);
     state = AsyncData(state.requireValue.copyWith(outingPushAlarm: value));

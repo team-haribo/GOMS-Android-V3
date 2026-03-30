@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/gender_enum.dart';
@@ -180,16 +181,60 @@ void main() {
         'verified-token',
       );
     });
+
+    test('submitSignup maps 409 to email field error', () async {
+      final remote = _FakeAuthRemoteDataSource(
+        sendEmailVerificationException: DioException(
+          requestOptions: RequestOptions(
+            path: '/api/v3/auth/email-verifications/send',
+          ),
+          response: Response<void>(
+            requestOptions: RequestOptions(
+              path: '/api/v3/auth/email-verifications/send',
+            ),
+            statusCode: 409,
+          ),
+        ),
+      );
+      final container = ProviderContainer(
+        overrides: [
+          authRepositoryProvider.overrideWithValue(
+            AuthRepository(remoteDataSource: remote),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final notifier = container.read(signupProvider.notifier);
+
+      notifier.setName('Hong');
+      notifier.validateEmail('s1001');
+      notifier.validateGrade('3');
+      notifier.setGender(GenderEnum.man);
+      notifier.setMajor(MajorEnum.sw);
+
+      await notifier.submitSignup();
+
+      expect(container.read(signupProvider).status, SignupStatus.failure);
+      expect(container.read(signupProvider).emailError, '이미 가입된 이메일입니다.');
+      expect(container.read(signupProvider).errorMessage, isNull);
+    });
   });
 }
 
 class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
+  _FakeAuthRemoteDataSource({this.sendEmailVerificationException});
+
   int sendEmailVerificationCallCount = 0;
+  final DioException? sendEmailVerificationException;
 
   @override
   Future<void> sendEmailVerification(
     SendEmailVerificationRequestDto requestDto,
   ) async {
+    if (sendEmailVerificationException != null) {
+      throw sendEmailVerificationException!;
+    }
     sendEmailVerificationCallCount++;
   }
 

@@ -26,12 +26,14 @@ abstract class SignupState with _$SignupState {
     @Default(SignupStatus.initial) SignupStatus status,
     @Default('') String name,
     @Default('') String email,
+    @Default('') String grade,
     @Default('') String password,
     @Default('') String passwordConfirm,
     GenderEnum? gender,
     MajorEnum? major,
     String? nameError,
     String? emailError,
+    String? gradeError,
     String? passwordError,
     String? passwordConfirmError,
     String? errorMessage,
@@ -40,4 +42,3 @@ abstract class SignupState with _$SignupState {
   /// 초기 상태
   factory SignupState.initial() => const SignupState();
 }
-

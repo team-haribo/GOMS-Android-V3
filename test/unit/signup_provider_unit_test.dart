@@ -29,6 +29,7 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
+      notifier.validateGrade('3');
       notifier.setGender(GenderEnum.man);
       notifier.setMajor(MajorEnum.sw);
 
@@ -49,6 +50,27 @@ void main() {
       notifier.validatePasswordConfirm('Abc123!');
       expect(container.read(signupProvider).passwordConfirmError, isNull);
       expect(notifier.isPasswordFormValid, isTrue);
+    });
+
+    test('resetStatus clears terminal state without removing form input', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(signupProvider.notifier);
+
+      notifier.setName('Hong');
+      notifier.validateEmail('s1001');
+      notifier.state = container.read(signupProvider).copyWith(
+        status: SignupStatus.success,
+        errorMessage: 'temporary',
+      );
+
+      notifier.resetStatus();
+
+      expect(container.read(signupProvider).status, SignupStatus.initial);
+      expect(container.read(signupProvider).errorMessage, isNull);
+      expect(container.read(signupProvider).name, 'Hong');
+      expect(container.read(signupProvider).email, 's1001');
     });
   });
 }

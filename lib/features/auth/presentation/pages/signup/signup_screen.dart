@@ -37,9 +37,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
     ref.listen<SignupState>(signupProvider, (previous, next) {
       if (next.status == SignupStatus.success) {
+        notifier.resetStatus();
         context.push(RoutePath.verify);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
+        notifier.resetStatus();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),
@@ -73,6 +75,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           errorText: signupState.emailError,
           enabled: !isLoading,
           onChanged: notifier.validateEmail,
+        ),
+        AppGap.v16,
+        BaseTextField(
+          controller: notifier.gradeController,
+          hintText: '기수를 입력해주세요',
+          errorText: signupState.gradeError,
+          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
+          enabled: !isLoading,
+          onChanged: notifier.validateGrade,
         ),
         AppGap.v16,
         SelectField<GenderEnum>(

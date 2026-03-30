@@ -17,12 +17,14 @@ mixin _$SignupState {
   SignupStatus get status;
   String get name;
   String get email;
+  String get grade;
   String get password;
   String get passwordConfirm;
   GenderEnum? get gender;
   MajorEnum? get major;
   String? get nameError;
   String? get emailError;
+  String? get gradeError;
   String? get passwordError;
   String? get passwordConfirmError;
   String? get errorMessage;
@@ -42,6 +44,7 @@ mixin _$SignupState {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.passwordConfirm, passwordConfirm) ||
@@ -52,6 +55,8 @@ mixin _$SignupState {
                 other.nameError == nameError) &&
             (identical(other.emailError, emailError) ||
                 other.emailError == emailError) &&
+            (identical(other.gradeError, gradeError) ||
+                other.gradeError == gradeError) &&
             (identical(other.passwordError, passwordError) ||
                 other.passwordError == passwordError) &&
             (identical(other.passwordConfirmError, passwordConfirmError) ||
@@ -66,19 +71,21 @@ mixin _$SignupState {
       status,
       name,
       email,
+      grade,
       password,
       passwordConfirm,
       gender,
       major,
       nameError,
       emailError,
+      gradeError,
       passwordError,
       passwordConfirmError,
       errorMessage);
 
   @override
   String toString() {
-    return 'SignupState(status: $status, name: $name, email: $email, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
+    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
   }
 }
 
@@ -92,12 +99,14 @@ abstract mixin class $SignupStateCopyWith<$Res> {
       {SignupStatus status,
       String name,
       String email,
+      String grade,
       String password,
       String passwordConfirm,
       GenderEnum? gender,
       MajorEnum? major,
       String? nameError,
       String? emailError,
+      String? gradeError,
       String? passwordError,
       String? passwordConfirmError,
       String? errorMessage});
@@ -118,12 +127,14 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
     Object? status = null,
     Object? name = null,
     Object? email = null,
+    Object? grade = null,
     Object? password = null,
     Object? passwordConfirm = null,
     Object? gender = freezed,
     Object? major = freezed,
     Object? nameError = freezed,
     Object? emailError = freezed,
+    Object? gradeError = freezed,
     Object? passwordError = freezed,
     Object? passwordConfirmError = freezed,
     Object? errorMessage = freezed,
@@ -140,6 +151,10 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
       email: null == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      grade: null == grade
+          ? _self.grade
+          : grade // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _self.password
@@ -164,6 +179,10 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
       emailError: freezed == emailError
           ? _self.emailError
           : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gradeError: freezed == gradeError
+          ? _self.gradeError
+          : gradeError // ignore: cast_nullable_to_non_nullable
               as String?,
       passwordError: freezed == passwordError
           ? _self.passwordError
@@ -278,12 +297,14 @@ extension SignupStatePatterns on SignupState {
             SignupStatus status,
             String name,
             String email,
+            String grade,
             String password,
             String passwordConfirm,
             GenderEnum? gender,
             MajorEnum? major,
             String? nameError,
             String? emailError,
+            String? gradeError,
             String? passwordError,
             String? passwordConfirmError,
             String? errorMessage)?
@@ -297,12 +318,14 @@ extension SignupStatePatterns on SignupState {
             _that.status,
             _that.name,
             _that.email,
+            _that.grade,
             _that.password,
             _that.passwordConfirm,
             _that.gender,
             _that.major,
             _that.nameError,
             _that.emailError,
+            _that.gradeError,
             _that.passwordError,
             _that.passwordConfirmError,
             _that.errorMessage);
@@ -330,12 +353,14 @@ extension SignupStatePatterns on SignupState {
             SignupStatus status,
             String name,
             String email,
+            String grade,
             String password,
             String passwordConfirm,
             GenderEnum? gender,
             MajorEnum? major,
             String? nameError,
             String? emailError,
+            String? gradeError,
             String? passwordError,
             String? passwordConfirmError,
             String? errorMessage)
@@ -348,12 +373,14 @@ extension SignupStatePatterns on SignupState {
             _that.status,
             _that.name,
             _that.email,
+            _that.grade,
             _that.password,
             _that.passwordConfirm,
             _that.gender,
             _that.major,
             _that.nameError,
             _that.emailError,
+            _that.gradeError,
             _that.passwordError,
             _that.passwordConfirmError,
             _that.errorMessage);
@@ -380,12 +407,14 @@ extension SignupStatePatterns on SignupState {
             SignupStatus status,
             String name,
             String email,
+            String grade,
             String password,
             String passwordConfirm,
             GenderEnum? gender,
             MajorEnum? major,
             String? nameError,
             String? emailError,
+            String? gradeError,
             String? passwordError,
             String? passwordConfirmError,
             String? errorMessage)?
@@ -398,12 +427,14 @@ extension SignupStatePatterns on SignupState {
             _that.status,
             _that.name,
             _that.email,
+            _that.grade,
             _that.password,
             _that.passwordConfirm,
             _that.gender,
             _that.major,
             _that.nameError,
             _that.emailError,
+            _that.gradeError,
             _that.passwordError,
             _that.passwordConfirmError,
             _that.errorMessage);
@@ -420,12 +451,14 @@ class _SignupState implements SignupState {
       {this.status = SignupStatus.initial,
       this.name = '',
       this.email = '',
+      this.grade = '',
       this.password = '',
       this.passwordConfirm = '',
       this.gender,
       this.major,
       this.nameError,
       this.emailError,
+      this.gradeError,
       this.passwordError,
       this.passwordConfirmError,
       this.errorMessage});
@@ -441,6 +474,9 @@ class _SignupState implements SignupState {
   final String email;
   @override
   @JsonKey()
+  final String grade;
+  @override
+  @JsonKey()
   final String password;
   @override
   @JsonKey()
@@ -453,6 +489,8 @@ class _SignupState implements SignupState {
   final String? nameError;
   @override
   final String? emailError;
+  @override
+  final String? gradeError;
   @override
   final String? passwordError;
   @override
@@ -476,6 +514,7 @@ class _SignupState implements SignupState {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
+            (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.password, password) ||
                 other.password == password) &&
             (identical(other.passwordConfirm, passwordConfirm) ||
@@ -486,6 +525,8 @@ class _SignupState implements SignupState {
                 other.nameError == nameError) &&
             (identical(other.emailError, emailError) ||
                 other.emailError == emailError) &&
+            (identical(other.gradeError, gradeError) ||
+                other.gradeError == gradeError) &&
             (identical(other.passwordError, passwordError) ||
                 other.passwordError == passwordError) &&
             (identical(other.passwordConfirmError, passwordConfirmError) ||
@@ -500,19 +541,21 @@ class _SignupState implements SignupState {
       status,
       name,
       email,
+      grade,
       password,
       passwordConfirm,
       gender,
       major,
       nameError,
       emailError,
+      gradeError,
       passwordError,
       passwordConfirmError,
       errorMessage);
 
   @override
   String toString() {
-    return 'SignupState(status: $status, name: $name, email: $email, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
+    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
   }
 }
 
@@ -528,12 +571,14 @@ abstract mixin class _$SignupStateCopyWith<$Res>
       {SignupStatus status,
       String name,
       String email,
+      String grade,
       String password,
       String passwordConfirm,
       GenderEnum? gender,
       MajorEnum? major,
       String? nameError,
       String? emailError,
+      String? gradeError,
       String? passwordError,
       String? passwordConfirmError,
       String? errorMessage});
@@ -554,12 +599,14 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
     Object? status = null,
     Object? name = null,
     Object? email = null,
+    Object? grade = null,
     Object? password = null,
     Object? passwordConfirm = null,
     Object? gender = freezed,
     Object? major = freezed,
     Object? nameError = freezed,
     Object? emailError = freezed,
+    Object? gradeError = freezed,
     Object? passwordError = freezed,
     Object? passwordConfirmError = freezed,
     Object? errorMessage = freezed,
@@ -576,6 +623,10 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
       email: null == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
+              as String,
+      grade: null == grade
+          ? _self.grade
+          : grade // ignore: cast_nullable_to_non_nullable
               as String,
       password: null == password
           ? _self.password
@@ -600,6 +651,10 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
       emailError: freezed == emailError
           ? _self.emailError
           : emailError // ignore: cast_nullable_to_non_nullable
+              as String?,
+      gradeError: freezed == gradeError
+          ? _self.gradeError
+          : gradeError // ignore: cast_nullable_to_non_nullable
               as String?,
       passwordError: freezed == passwordError
           ? _self.passwordError

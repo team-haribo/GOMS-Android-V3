@@ -27,6 +27,7 @@ class SignupNotifier extends Notifier<SignupState> {
   // ==================== Controllers ====================
   late final TextEditingController nameController;
   late final TextEditingController emailController;
+  late final TextEditingController gradeController;
   late final TextEditingController passwordController;
   late final TextEditingController passwordConfirmController;
 
@@ -34,12 +35,14 @@ class SignupNotifier extends Notifier<SignupState> {
   SignupState build() {
     nameController = TextEditingController();
     emailController = TextEditingController();
+    gradeController = TextEditingController();
     passwordController = TextEditingController();
     passwordConfirmController = TextEditingController();
 
     ref.onDispose(() {
       nameController.dispose();
       emailController.dispose();
+      gradeController.dispose();
       passwordController.dispose();
       passwordConfirmController.dispose();
     });
@@ -62,6 +65,15 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 과 변경
   void setMajor(MajorEnum? major) {
     state = state.copyWith(major: major);
+  }
+
+  /// 기수 변경
+  void validateGrade(String grade) {
+    String? error;
+    if (grade.isNotEmpty && int.tryParse(grade) == null) {
+      error = '기수는 숫자만 입력 가능합니다';
+    }
+    state = state.copyWith(grade: grade, gradeError: error);
   }
 
   // ==================== 유효성 검사 ====================
@@ -118,6 +130,8 @@ class SignupNotifier extends Notifier<SignupState> {
       state.name.isNotEmpty &&
       state.email.isNotEmpty &&
       state.emailError == null &&
+      state.grade.isNotEmpty &&
+      state.gradeError == null &&
       state.gender != null &&
       state.major != null;
 
@@ -186,7 +200,7 @@ class SignupNotifier extends Notifier<SignupState> {
             verifiedToken: authFlow.verifiedToken!,
             password: state.password,
             name: state.name,
-            grade: inferGradeFromEmail(authFlow.email),
+            grade: int.parse(state.grade),
             department: _departmentToApiValue(state.major!),
             gender: _genderToApiValue(state.gender!),
           );
@@ -210,6 +224,7 @@ class SignupNotifier extends Notifier<SignupState> {
     ref.read(authFlowProvider.notifier).clear();
     nameController.clear();
     emailController.clear();
+    gradeController.clear();
     passwordController.clear();
     passwordConfirmController.clear();
     state = SignupState.initial();
@@ -218,6 +233,16 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 에러 메시지 초기화
   void clearError() {
     if (state.errorMessage != null) {
+      state = state.copyWith(
+        status: SignupStatus.initial,
+        errorMessage: null,
+      );
+    }
+  }
+
+  /// 성공/실패 상태만 초기화하고 입력값은 유지
+  void resetStatus() {
+    if (state.status != SignupStatus.initial || state.errorMessage != null) {
       state = state.copyWith(
         status: SignupStatus.initial,
         errorMessage: null,

@@ -52,7 +52,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
               ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
               : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
           onConfirm: () {
-            context.push(widget.redirectPath ?? RoutePath.password);
+            context.go(widget.redirectPath ?? RoutePath.password);
           },
         ).show(context);
         notifier.reset();

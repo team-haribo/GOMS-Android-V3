@@ -62,6 +62,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final state = ref.watch(writeReviewProvider);
     final notifier = ref.read(writeReviewProvider.notifier);
     final isLoading = state.status == WriteReviewStatus.loading;
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
 
     ref.listen(writeReviewProvider, (previous, next) async {
       if (!mounted) return;
@@ -89,115 +90,126 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     return BaseScaffold(
       showAppBar: true,
       onBackPressed: () => context.pop(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '후기 남기기',
-            style: AppTextStyles.title1.copyWith(
-              color: context.mainTextColor,
-            ),
-          ),
-          AppGap.v24,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      '후기 남기기',
+                      style: AppTextStyles.title1.copyWith(
+                        color: context.mainTextColor,
+                      ),
+                    ),
+                    AppGap.v24,
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.placeName,
-                          style: AppTextStyles.title3.copyWith(
-                            color: context.mainTextColor,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    widget.placeName,
+                                    style: AppTextStyles.title3.copyWith(
+                                      color: context.mainTextColor,
+                                    ),
+                                  ),
+                                  AppGap.h4,
+                                  Text(
+                                    widget.category,
+                                    style: AppTextStyles.text3.copyWith(
+                                      color: context.sub1Color,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              AppGap.v4,
+                              Text(
+                                widget.address,
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                              ),
+                              AppGap.v4,
+                              Text(
+                                '학생 후기 ${widget.review} | 추천 ${widget.recommended}',
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        AppGap.h4,
-                        Text(
-                          widget.category,
-                          style: AppTextStyles.text3.copyWith(
-                            color: context.sub1Color,
-                          ),
+                        AppIcons.heart(
+                          color: context.sub2Color,
                         ),
                       ],
                     ),
-                    AppGap.v4,
-                    Text(
-                      widget.address,
-                      style: AppTextStyles.text2.copyWith(
-                        color: context.sub2Color,
+                    AppGap.v16,
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: context.surfaceColor,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      padding: const EdgeInsets.all(AppSpacing.s16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          TextField(
+                            controller: notifier.controller,
+                            maxLength: WriteReviewNotifier.maxLength,
+                            maxLines: 5,
+                            textAlignVertical: TextAlignVertical.top,
+                            enabled: !isLoading,
+                            onChanged: notifier.onTextChanged,
+                            decoration: InputDecoration(
+                              hintText: '가게 이용 후기를 남겨주세요!',
+                              hintStyle: AppTextStyles.text3.copyWith(
+                                color: context.sub2Color,
+                              ),
+                              border: InputBorder.none,
+                              counterText: '',
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            style: AppTextStyles.text2.copyWith(
+                              color: context.mainTextColor,
+                            ),
+                          ),
+                          AppGap.v4,
+                          Text(
+                            '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
+                            style: AppTextStyles.caption3.copyWith(
+                              color: context.sub2Color,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    AppGap.v4,
-                    Text(
-                      '학생 후기 ${widget.review} | 추천 ${widget.recommended}',
-                      style: AppTextStyles.text2.copyWith(
-                        color: context.sub2Color,
-                      ),
+                    const Spacer(),
+                    ConfirmButton(
+                      text: '다음',
+                      onPressed: notifier.isFormValid && !isLoading
+                          ? () => _onNextPressed(notifier)
+                          : null,
                     ),
                   ],
                 ),
               ),
-              AppIcons.heart(
-                color: context.sub2Color,
-              ),
-            ],
-          ),
-          AppGap.v16,
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: context.surfaceColor,
-              borderRadius: BorderRadius.circular(8),
             ),
-            padding: const EdgeInsets.all(AppSpacing.s16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                TextField(
-                  controller: notifier.controller,
-                  maxLength: WriteReviewNotifier.maxLength,
-                  maxLines: 5,
-                  textAlignVertical: TextAlignVertical.top,
-                  enabled: !isLoading,
-                  onChanged: notifier.onTextChanged,
-                  decoration: InputDecoration(
-                    hintText: '가게 이용 후기를 남겨주세요!',
-                    hintStyle: AppTextStyles.text3.copyWith(
-                      color: context.sub2Color,
-                    ),
-                    border: InputBorder.none,
-                    counterText: '',
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  style: AppTextStyles.text2.copyWith(
-                    color: context.mainTextColor,
-                  ),
-                ),
-                AppGap.v4,
-                Text(
-                  '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
-                  style: AppTextStyles.caption3.copyWith(
-                    color: context.sub2Color,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Spacer(),
-          ConfirmButton(
-            text: '다음',
-            onPressed: notifier.isFormValid && !isLoading
-                ? () => _onNextPressed(notifier)
-                : null,
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
-
-

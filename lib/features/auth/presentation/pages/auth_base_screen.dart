@@ -33,31 +33,46 @@ class AuthBaseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
     return BaseScaffold(
       showAppBar: showAppBar,
       showAppBarLogo: showAppBarLogo,
       onBackPressed: () => Navigator.of(context).maybePop(),
       appBarActions: appBarActions,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: context.appTypography.title1.copyWith(
-              color: context.mainTextColor,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            padding: EdgeInsets.only(bottom: bottomInset),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: context.appTypography.title1.copyWith(
+                        color: context.mainTextColor,
+                      ),
+                    ),
+                    context.vSpace(24),
+                    ...children,
+                    const Spacer(),
+                    ConfirmButton(
+                      text: confirmText,
+                      isLoading: isLoading,
+                      onPressed:
+                          isConfirmEnabled && !isLoading ? onConfirm : null,
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          context.vSpace(24),
-          ...children,
-          const Spacer(),
-          ConfirmButton(
-            text: confirmText,
-            isLoading: isLoading,
-            onPressed: isConfirmEnabled && !isLoading ? onConfirm : null,
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
-

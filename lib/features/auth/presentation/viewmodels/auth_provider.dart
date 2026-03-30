@@ -73,8 +73,22 @@ class AuthNotifier extends Notifier<AuthStatus> {
 
   /// 로그아웃
   Future<void> logout() async {
-    await TokenStorage.deleteAllTokens();
-    state = AuthStatus.unauthenticated;
+    final refreshToken = await TokenStorage.getRefreshToken();
+
+    try {
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await ref.read(authRepositoryProvider).signOut(
+              refreshToken: refreshToken,
+            );
+      }
+    } on DioException catch (_) {
+      // 서버 로그아웃이 실패해도 로컬 세션은 종료한다.
+    } catch (_) {
+      // 로컬 세션 종료는 항상 보장한다.
+    } finally {
+      await TokenStorage.deleteAllTokens();
+      state = AuthStatus.unauthenticated;
+    }
   }
 
   bool _hasValidToken(String? token, DateTime? expiresAt) {

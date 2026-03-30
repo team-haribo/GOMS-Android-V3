@@ -22,15 +22,17 @@ class SignUpScreen extends ConsumerStatefulWidget {
 }
 
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final signupState = ref.watch(signupProvider);
-    final notifier = ref.read(signupProvider.notifier);
-    final isLoading = signupState.status == SignupStatus.loading;
+  late final ProviderSubscription<SignupState> _signupSubscription;
 
-    ref.listen<SignupState>(signupProvider, (previous, next) {
+  @override
+  void initState() {
+    super.initState();
+    _signupSubscription = ref.listenManual<SignupState>(signupProvider, (
+      previous,
+      next,
+    ) {
       if (next.status == SignupStatus.success) {
-        notifier.resetStatus();
+        ref.read(signupProvider.notifier).resetStatus();
         final authFlow = ref.read(authFlowProvider);
         final destination = authFlow.verifiedToken != null
             ? RoutePath.password
@@ -38,7 +40,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         context.go(destination);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
-        notifier.resetStatus();
+        ref.read(signupProvider.notifier).resetStatus();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),
@@ -47,6 +49,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _signupSubscription.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final signupState = ref.watch(signupProvider);
+    final notifier = ref.read(signupProvider.notifier);
+    final isLoading = signupState.status == SignupStatus.loading;
 
     return AuthBaseScreen(
       title: '회원가입',

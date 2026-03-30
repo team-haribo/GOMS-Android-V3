@@ -171,6 +171,15 @@ class SignupNotifier extends Notifier<SignupState> {
 
       state = state.copyWith(status: SignupStatus.success);
     } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        state = state.copyWith(
+          status: SignupStatus.failure,
+          emailError: '이미 가입된 이메일입니다.',
+          errorMessage: null,
+        );
+        return;
+      }
+
       state = state.copyWith(
         status: SignupStatus.failure,
         errorMessage: NetworkException.fromDioException(e).message,

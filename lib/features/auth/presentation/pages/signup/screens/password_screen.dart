@@ -12,29 +12,36 @@ import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_p
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 
-class PasswordScreen extends ConsumerWidget {
+class PasswordScreen extends ConsumerStatefulWidget {
   const PasswordScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final signupState = ref.watch(signupProvider);
-    final notifier = ref.read(signupProvider.notifier);
-    final isLoading = signupState.status == SignupStatus.loading;
+  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
+}
 
-    ref.listen<SignupState>(signupProvider, (previous, next) {
+class _PasswordScreenState extends ConsumerState<PasswordScreen> {
+  late final ProviderSubscription<SignupState> _signupSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _signupSubscription = ref.listenManual<SignupState>(signupProvider, (
+      previous,
+      next,
+    ) {
       if (next.status == SignupStatus.success) {
-        notifier.resetStatus();
+        ref.read(signupProvider.notifier).resetStatus();
         GomsDialog.single(
           title: '회원가입 완료',
           content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
           onConfirm: () {
-            notifier.reset();
+            ref.read(signupProvider.notifier).reset();
             context.go(RoutePath.onboarding);
           },
         ).show(context);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
-        notifier.resetStatus();
+        ref.read(signupProvider.notifier).resetStatus();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(next.errorMessage!),
@@ -43,6 +50,19 @@ class PasswordScreen extends ConsumerWidget {
         );
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _signupSubscription.close();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final signupState = ref.watch(signupProvider);
+    final notifier = ref.read(signupProvider.notifier);
+    final isLoading = signupState.status == SignupStatus.loading;
 
     return AuthBaseScreen(
       title: '비밀번호 설정',

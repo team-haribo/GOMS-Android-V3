@@ -22,6 +22,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  late final ProviderSubscription<LoginState> _loginSubscription;
 
   @override
   void initState() {
@@ -29,10 +30,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(loginProvider.notifier).reset();
     });
+    _loginSubscription = ref.listenManual<LoginState>(loginProvider, (
+      previous,
+      next,
+    ) {
+      if (next.status == LoginStatus.success) {
+        ref.read(authProvider.notifier).setAuthenticated();
+        context.go(RoutePath.home);
+      } else if (next.status == LoginStatus.failure &&
+          next.errorMessage != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(next.errorMessage!),
+            backgroundColor: AppColors.negative,
+          ),
+        );
+      }
+    });
   }
 
   @override
   void dispose() {
+    _loginSubscription.close();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -55,21 +74,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
     final isLoading = loginState.status == LoginStatus.loading;
-
-    ref.listen<LoginState>(loginProvider, (previous, next) {
-      if (next.status == LoginStatus.success) {
-        ref.read(authProvider.notifier).setAuthenticated();
-        context.go(RoutePath.home);
-      } else if (next.status == LoginStatus.failure &&
-          next.errorMessage != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.errorMessage!),
-            backgroundColor: AppColors.negative,
-          ),
-        );
-      }
-    });
 
     return AuthBaseScreen(
       title: '로그인',

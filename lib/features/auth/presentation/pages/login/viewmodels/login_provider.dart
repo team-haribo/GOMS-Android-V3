@@ -65,7 +65,7 @@ class LoginNotifier extends Notifier<LoginState> {
     final statusCode = exception.response?.statusCode;
 
     if (statusCode == 404) {
-      _setLoginFailure(emailError: '유효하지 않은 이메일입니다.');
+      _setLoginFailure(emailError: '가입되지 않은 이메일입니다.');
       return;
     }
 

@@ -1,6 +1,6 @@
 enum AppEnv {
-  dev('.env.dev'),
-  prod('.env.prod');
+  dev('assets/env/dev.env'),
+  prod('assets/env/prod.env');
 
   const AppEnv(this.fileName);
 

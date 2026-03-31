@@ -24,6 +24,7 @@ abstract class VerifyState with _$VerifyState {
     @Default(VerifyStatus.initial) VerifyStatus status,
     @Default('') String code,
     @Default(300) int remainingSeconds,
+    @Default(60) int resendCooldownSeconds,
     @Default(false) bool isExpired,
     String? codeError,
     String? errorMessage,

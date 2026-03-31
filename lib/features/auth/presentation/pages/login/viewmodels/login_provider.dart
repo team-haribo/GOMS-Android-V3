@@ -1,6 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 
 /// 로그인 Provider
 final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
@@ -9,6 +13,8 @@ final loginProvider = NotifierProvider<LoginNotifier, LoginState>(
 
 /// 로그인 Notifier
 class LoginNotifier extends Notifier<LoginState> {
+  static final _loginEmailRegex = RegExp(r'^s\d+$');
+
   @override
   LoginState build() {
     return LoginState.initial();
@@ -16,9 +22,9 @@ class LoginNotifier extends Notifier<LoginState> {
 
   /// 이메일 유효성 검사
   String? _validateEmailLogic(String email) {
-    if (email.isEmpty) {
+    if (email.trim().isEmpty) {
       return '이메일을 입력해주세요';
-    } else if (email.contains('@') && !email.endsWith('@gsm.hs.kr')) {
+    } else if (!_loginEmailRegex.hasMatch(email.trim())) {
       return '잘못된 형식의 이메일입니다.';
     }
     return null;
@@ -42,6 +48,37 @@ class LoginNotifier extends Notifier<LoginState> {
     state = state.copyWith(passwordError: _validatePasswordLogic(password));
   }
 
+  void _setLoginFailure({
+    String? errorMessage,
+    String? emailError,
+    String? passwordError,
+  }) {
+    state = state.copyWith(
+      status: LoginStatus.failure,
+      errorMessage: errorMessage,
+      emailError: emailError,
+      passwordError: passwordError,
+    );
+  }
+
+  void _handleLoginDioException(DioException exception) {
+    final statusCode = exception.response?.statusCode;
+
+    if (statusCode == 404) {
+      _setLoginFailure(emailError: '가입되지 않은 이메일입니다.');
+      return;
+    }
+
+    if (statusCode == 403) {
+      _setLoginFailure(passwordError: '비밀번호가 일치하지 않습니다.');
+      return;
+    }
+
+    _setLoginFailure(
+      errorMessage: NetworkException.fromDioException(exception).message,
+    );
+  }
+
   /// 로그인
   Future<void> login(String email, String password) async {
     // 유효성 검사
@@ -58,22 +95,24 @@ class LoginNotifier extends Notifier<LoginState> {
     state = LoginState.loading();
 
     try {
-      // TODO: 실제 로그인 API 호출
-      await Future.delayed(const Duration(seconds: 2));
-
-      // TODO: API 응답에서 실제 토큰 받아오기
-      // 임시: 더미 토큰
-      const accessToken = 'dummy_access_token';
-      const refreshToken = 'dummy_refresh_token';
+      final normalizedEmail = normalizeSchoolEmail(email);
+      final response = await ref.read(authRepositoryProvider).signIn(
+            email: normalizedEmail,
+            password: password,
+          );
 
       // 토큰 저장
-      await TokenStorage.saveAccessToken(accessToken);
-      await TokenStorage.saveRefreshToken(refreshToken);
+      await TokenStorage.saveAccessToken(response.accessToken);
+      await TokenStorage.saveRefreshToken(response.refreshToken);
+      await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
+      await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
 
       // 성공 처리
-      state = LoginState.success(email);
+      state = LoginState.success(normalizedEmail);
+    } on DioException catch (e) {
+      _handleLoginDioException(e);
     } catch (e) {
-      state = LoginState.failure('로그인에 실패했습니다. 다시 시도해주세요.');
+      state = LoginState.failure(e.toString());
     }
   }
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
@@ -8,8 +7,6 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/main_page/presentation/widgets/user_role_bottomsheet.dart';
-
-final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final String name;

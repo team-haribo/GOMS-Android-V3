@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -14,9 +15,6 @@ import 'package:goms/features/main_page/presentation/widgets/profile_container.d
 import 'package:goms/features/main_page/presentation/widgets/profile_list_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/view_more_users.dart';
-
-
-final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 
 class OutingWaitingScreen extends ConsumerStatefulWidget {
   final int approvedStudentCount;

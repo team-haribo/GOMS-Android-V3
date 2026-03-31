@@ -9,6 +9,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
 import 'package:goms/features/auth/presentation/pages/verify/states/verify_state.dart';
 import 'package:goms/features/auth/presentation/pages/verify/viewmodels/verify_provider.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
 
@@ -22,6 +23,11 @@ class VerifyScreen extends ConsumerStatefulWidget {
 }
 
 class _VerifyScreenState extends ConsumerState<VerifyScreen> {
+  void _clearVerificationState() {
+    ref.read(authFlowProvider.notifier).clearVerifiedToken();
+    ref.read(verifyProvider.notifier).reset();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -46,7 +52,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
               ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
               : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
           onConfirm: () {
-            context.push(widget.redirectPath ?? RoutePath.password);
+            context.go(widget.redirectPath ?? RoutePath.password);
           },
         ).show(context);
         notifier.reset();
@@ -57,53 +63,62 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       }
     });
 
-    return AuthBaseScreen(
-      title: '인증번호',
-      confirmText: '인증',
-      isConfirmEnabled: notifier.isFormValid,
-      onConfirm: notifier.isFormValid && !isLoading ? notifier.verify : null,
-      showAppBar: true,
-      showAppBarLogo: false,
-      isLoading: isLoading,
-      children: [
-        BaseTextField(
-          controller: notifier.codeController,
-          hintText: '인증번호를 입력해주세요',
-          errorText: verifyState.codeError,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.done,
-          enabled: !isLoading,
-          onChanged: (value) {
-            if (value.length <= 6) {
-              notifier.setCode(value);
-            } else {
-              notifier.codeController.text = value.substring(0, 6);
-              notifier.codeController.selection =
-                  const TextSelection.collapsed(offset: 6);
-            }
-          },
-          onSubmitted: (_) => notifier.verify(),
-        ),
-        AppGap.h12,
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              notifier.formattedTime,
-              style: AppTextStyles.text3.withColor(context.sub2Color),
-            ),
-            GestureDetector(
-              onTap: isLoading ? null : notifier.resend,
-              child: Text(
-                '재발송',
-                style: AppTextStyles.text3.withColor(
-                  AppColors.mainColor,
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          _clearVerificationState();
+        }
+      },
+      child: AuthBaseScreen(
+        title: '인증번호',
+        confirmText: '인증',
+        isConfirmEnabled: notifier.isFormValid,
+        onConfirm: notifier.isFormValid && !isLoading ? notifier.verify : null,
+        showAppBar: true,
+        showAppBarLogo: false,
+        isLoading: isLoading,
+        children: [
+          BaseTextField(
+            controller: notifier.codeController,
+            hintText: '인증번호를 입력해주세요',
+            errorText: verifyState.codeError,
+            keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.done,
+            enabled: !isLoading,
+            onChanged: (value) {
+              if (value.length <= 6) {
+                notifier.setCode(value);
+              } else {
+                notifier.codeController.text = value.substring(0, 6);
+                notifier.codeController.selection =
+                    const TextSelection.collapsed(offset: 6);
+              }
+            },
+            onSubmitted: (_) => notifier.verify(),
+          ),
+          AppGap.h12,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                notifier.formattedTime,
+                style: AppTextStyles.text3.withColor(context.sub2Color),
+              ),
+              GestureDetector(
+                onTap: isLoading || !notifier.canResend ? null : notifier.resend,
+                child: Text(
+                  notifier.resendButtonText,
+                  style: AppTextStyles.text3.withColor(
+                    notifier.canResend && !isLoading
+                        ? AppColors.mainColor
+                        : context.sub2Color,
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

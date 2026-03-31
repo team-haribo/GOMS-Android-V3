@@ -1,5 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/models/reset_password_state.dart';
 
 /// 비밀번호 재설정 Provider
@@ -81,16 +85,33 @@ class ResetPasswordNotifier extends Notifier<ResetPasswordState> {
   Future<void> resetPassword() async {
     if (!isFormValid) return;
 
+    final authFlow = ref.read(authFlowProvider);
+    if (authFlow.email.isEmpty || authFlow.verifiedToken == null) {
+      state = state.copyWith(
+        status: ResetPasswordStatus.failure,
+        errorMessage: '이메일 인증 정보를 찾을 수 없습니다. 다시 진행해주세요.',
+      );
+      return;
+    }
+
     state = state.copyWith(status: ResetPasswordStatus.loading);
     try {
-      // TODO: 실제 비밀번호 재설정 API 호출
-      await Future.delayed(const Duration(seconds: 1));
-
+      await ref.read(authRepositoryProvider).changePassword(
+            email: authFlow.email,
+            verifiedToken: authFlow.verifiedToken!,
+            newPassword: state.password,
+          );
+      ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: ResetPasswordStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: ResetPasswordStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: ResetPasswordStatus.failure,
-        errorMessage: '비밀번호 재설정에 실패했습니다. 다시 시도해주세요.',
+        errorMessage: e.toString(),
       );
     }
   }
@@ -110,7 +131,3 @@ class ResetPasswordNotifier extends Notifier<ResetPasswordState> {
     state = ResetPasswordState.initial();
   }
 }
-
-
-
-

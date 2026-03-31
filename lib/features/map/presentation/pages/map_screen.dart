@@ -12,8 +12,7 @@ import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 ///
 /// 필수 설정:
 /// - AndroidManifest.xml: INTERNET, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION 권한 추가
-/// - Info.plist: NSLocationWhenInUseUsageDescription 추가
-/// - 카카오 개발자 콘솔에 Android 키 해시 / iOS 번들 ID 등록
+/// - 카카오 개발자 콘솔에 Android 키 해시 등록
 /// - `kakao_map_sdk`는 Android x86/x64 에뮬레이터에서 동작하지 않을 수 있음
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});

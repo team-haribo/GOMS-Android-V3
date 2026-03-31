@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
@@ -19,8 +20,6 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-
-final roleProvider = Provider<RoleEnum>((ref) => throw UnimplementedError());
 final searchTextProvider = StateProvider<String>((ref) => '');
 
 class OutingStateScreen extends ConsumerStatefulWidget {

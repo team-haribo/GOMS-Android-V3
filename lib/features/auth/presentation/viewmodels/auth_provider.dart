@@ -1,6 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/token_storage.dart';
-
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
 
 /// 인증 상태
 enum AuthStatus {
@@ -28,10 +29,41 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<bool> checkToken() async {
     state = AuthStatus.checking;
     final accessToken = await TokenStorage.getAccessToken();
-    final hasToken = accessToken != null && accessToken.isNotEmpty;
+    final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
 
-    state = hasToken ? AuthStatus.authenticated : AuthStatus.unauthenticated;
-    return hasToken;
+    if (_hasValidToken(accessToken, accessTokenExpiry)) {
+      state = AuthStatus.authenticated;
+      return true;
+    }
+
+    final refreshToken = await TokenStorage.getRefreshToken();
+    final refreshTokenExpiry = await TokenStorage.getRefreshTokenExpiry();
+
+    if (!_hasValidToken(refreshToken, refreshTokenExpiry)) {
+      await TokenStorage.deleteAllTokens();
+      state = AuthStatus.unauthenticated;
+      return false;
+    }
+
+    try {
+      final response = await ref.read(authRepositoryProvider).reissue(
+            refreshToken: refreshToken!,
+          );
+      await TokenStorage.saveAccessToken(response.accessToken);
+      await TokenStorage.saveRefreshToken(response.refreshToken);
+      await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
+      await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
+      state = AuthStatus.authenticated;
+      return true;
+    } on DioException catch (_) {
+      await TokenStorage.deleteAllTokens();
+      state = AuthStatus.unauthenticated;
+      return false;
+    } catch (_) {
+      await TokenStorage.deleteAllTokens();
+      state = AuthStatus.unauthenticated;
+      return false;
+    }
   }
 
   /// 로그인 완료 처리
@@ -41,7 +73,29 @@ class AuthNotifier extends Notifier<AuthStatus> {
 
   /// 로그아웃
   Future<void> logout() async {
-    await TokenStorage.deleteAllTokens();
-    state = AuthStatus.unauthenticated;
+    final refreshToken = await TokenStorage.getRefreshToken();
+
+    try {
+      if (refreshToken != null && refreshToken.isNotEmpty) {
+        await ref.read(authRepositoryProvider).signOut(
+              refreshToken: refreshToken,
+            );
+      }
+    } on DioException catch (_) {
+      // 서버 로그아웃이 실패해도 로컬 세션은 종료한다.
+    } catch (_) {
+      // 로컬 세션 종료는 항상 보장한다.
+    } finally {
+      await TokenStorage.deleteAllTokens();
+      state = AuthStatus.unauthenticated;
+    }
+  }
+
+  bool _hasValidToken(String? token, DateTime? expiresAt) {
+    if (token == null || token.isEmpty || expiresAt == null) {
+      return false;
+    }
+
+    return expiresAt.isAfter(DateTime.now().toUtc());
   }
 }

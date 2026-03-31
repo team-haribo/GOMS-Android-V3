@@ -26,7 +26,9 @@ class DefaultFirebaseOptions {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
@@ -55,14 +57,5 @@ class DefaultFirebaseOptions {
     messagingSenderId: '297028902011',
     projectId: 'goms-v3',
     storageBucket: 'goms-v3.firebasestorage.app',
-  );
-
-  static final FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAT6U8GpEP1dLLZueinwGwpiHGlbdTGYeg',
-    appId: '1:297028902011:ios:333ffd4495ba3af25456de',
-    messagingSenderId: '297028902011',
-    projectId: 'goms-v3',
-    storageBucket: 'goms-v3.firebasestorage.app',
-    iosBundleId: 'com.goms.v3',
   );
 }

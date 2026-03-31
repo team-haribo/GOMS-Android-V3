@@ -30,6 +30,7 @@ class SelectField<T> extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
+          color: context.surfaceColor,
         ),
         child: Text(
           value != null ? itemLabel(value as T) : hintText,

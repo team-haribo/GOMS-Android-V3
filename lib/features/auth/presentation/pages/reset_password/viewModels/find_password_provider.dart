@@ -1,5 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
+import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/models/find_password_state.dart';
 
 /// 비밀번호 찾기 Provider
@@ -53,14 +58,23 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
 
     state = state.copyWith(status: FindPasswordStatus.loading);
     try {
-      // TODO: 실제 인증번호 발송 API 호출
-      await Future.delayed(const Duration(seconds: 1));
+      final normalizedEmail = normalizeSchoolEmail(state.email);
+      await ref.read(authRepositoryProvider).sendEmailVerification(
+            email: normalizedEmail,
+            purpose: EmailVerificationPurpose.resetPassword,
+          );
+      ref.read(authFlowProvider.notifier).startResetPassword(normalizedEmail);
 
       state = state.copyWith(status: FindPasswordStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: FindPasswordStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: FindPasswordStatus.failure,
-        errorMessage: '알 수 없는 오류가 발생했습니다',
+        errorMessage: e.toString(),
       );
     }
   }
@@ -75,11 +89,8 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
 
   /// 상태 초기화
   void reset() {
+    ref.read(authFlowProvider.notifier).clear();
     emailController.clear();
     state = FindPasswordState.initial();
   }
 }
-
-
-
-

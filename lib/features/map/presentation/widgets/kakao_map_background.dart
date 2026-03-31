@@ -232,7 +232,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     if (raw.contains('KakaoAuthError') ||
         raw.contains('401') ||
         raw.contains('403')) {
-      return '카카오 지도 인증에 실패했습니다. Android는 키 해시 등록, iOS는 번들 ID 등록 상태를 확인해주세요.';
+      return '카카오 지도 인증에 실패했습니다. Android 키 해시 등록 상태를 확인해주세요.';
     }
 
     return '지도를 불러오지 못했습니다.';

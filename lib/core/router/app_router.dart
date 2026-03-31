@@ -5,8 +5,8 @@ import 'package:goms/features/auth/presentation/pages/delete_account/delete_acco
 import 'package:goms/features/auth/presentation/pages/login/login_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/find_password_screen.dart';
 import 'package:goms/features/auth/presentation/pages/reset_password/reset_password_screen.dart';
-import 'package:goms/features/auth/presentation/pages/signup/password_screen.dart';
-import 'package:goms/features/auth/presentation/pages/signup/signup_screen.dart';
+import 'package:goms/features/auth/presentation/pages/signup/screens/password_screen.dart';
+import 'package:goms/features/auth/presentation/pages/signup/screens/signup_screen.dart';
 import 'package:goms/features/auth/presentation/pages/verify/verify_screen.dart';
 import 'package:goms/features/main_page/presentation/pages/outing_state_screen.dart';
 import 'package:goms/features/main_page/presentation/pages/outing_waiting_screen.dart';

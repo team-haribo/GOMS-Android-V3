@@ -1,8 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/gender_enum.dart';
 import 'package:goms/core/enums/major_enum.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/core/utils/logger.dart';
+import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
+import 'package:goms/features/auth/domain/enum/email_verification_purpose.dart';
 import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
+import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
 
 /// 회원가입 Provider
 final signupProvider = NotifierProvider<SignupNotifier, SignupState>(
@@ -22,6 +28,7 @@ class SignupNotifier extends Notifier<SignupState> {
   // ==================== Controllers ====================
   late final TextEditingController nameController;
   late final TextEditingController emailController;
+  late final TextEditingController gradeController;
   late final TextEditingController passwordController;
   late final TextEditingController passwordConfirmController;
 
@@ -29,12 +36,14 @@ class SignupNotifier extends Notifier<SignupState> {
   SignupState build() {
     nameController = TextEditingController();
     emailController = TextEditingController();
+    gradeController = TextEditingController();
     passwordController = TextEditingController();
     passwordConfirmController = TextEditingController();
 
     ref.onDispose(() {
       nameController.dispose();
       emailController.dispose();
+      gradeController.dispose();
       passwordController.dispose();
       passwordConfirmController.dispose();
     });
@@ -57,6 +66,15 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 과 변경
   void setMajor(MajorEnum? major) {
     state = state.copyWith(major: major);
+  }
+
+  /// 기수 변경
+  void validateGrade(String grade) {
+    String? error;
+    if (grade.isNotEmpty && int.tryParse(grade) == null) {
+      error = '기수는 숫자만 입력 가능합니다';
+    }
+    state = state.copyWith(grade: grade, gradeError: error);
   }
 
   // ==================== 유효성 검사 ====================
@@ -113,6 +131,8 @@ class SignupNotifier extends Notifier<SignupState> {
       state.name.isNotEmpty &&
       state.email.isNotEmpty &&
       state.emailError == null &&
+      state.grade.isNotEmpty &&
+      state.gradeError == null &&
       state.gender != null &&
       state.major != null;
 
@@ -129,25 +149,112 @@ class SignupNotifier extends Notifier<SignupState> {
   Future<void> submitSignup() async {
     if (!isFormValid) return;
 
+    final normalizedEmail = normalizeSchoolEmail(state.email);
+    final authFlow = ref.read(authFlowProvider);
+    final isSameSignupFlow =
+        authFlow.email == normalizedEmail &&
+        authFlow.purpose == EmailVerificationPurpose.signup;
+
+    if (isSameSignupFlow) {
+      state = state.copyWith(status: SignupStatus.success);
+      return;
+    }
+
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
-      // TODO: 실제 회원가입 API 호출
-      await Future.delayed(const Duration(seconds: 2));
+      await ref.read(authRepositoryProvider).sendEmailVerification(
+            email: normalizedEmail,
+            purpose: EmailVerificationPurpose.signup,
+          );
+      ref.read(authFlowProvider.notifier).startSignup(normalizedEmail);
 
       state = state.copyWith(status: SignupStatus.success);
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 409) {
+        state = state.copyWith(
+          status: SignupStatus.failure,
+          emailError: '이미 가입된 이메일입니다.',
+          errorMessage: null,
+        );
+        return;
+      }
+
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: SignupStatus.failure,
-        errorMessage: '회원가입에 실패했습니다. 다시 시도해주세요.',
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> completeSignup() async {
+    if (!isPasswordFormValid) return;
+
+    final authFlow = ref.read(authFlowProvider);
+    if (authFlow.email.isEmpty || authFlow.verifiedToken == null) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: '이메일 인증 정보를 찾을 수 없습니다. 다시 진행해주세요.',
+      );
+      return;
+    }
+
+    if (state.gender == null || state.major == null) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: '회원가입 정보가 올바르지 않습니다. 다시 진행해주세요.',
+      );
+      return;
+    }
+
+    state = state.copyWith(status: SignupStatus.loading);
+
+    try {
+      Logger.d(
+        'signup request: email=${authFlow.email}, name=${state.name}, grade=${state.grade}, department=${_departmentToApiValue(state.major!)}, gender=${_genderToApiValue(state.gender!)}',
+        tag: 'AUTH',
+      );
+      await ref.read(authRepositoryProvider).signUp(
+            email: authFlow.email,
+            verifiedToken: authFlow.verifiedToken!,
+            password: state.password,
+            name: state.name,
+            grade: int.parse(state.grade),
+            department: _departmentToApiValue(state.major!),
+            gender: _genderToApiValue(state.gender!),
+          );
+      ref.read(authFlowProvider.notifier).clear();
+      state = state.copyWith(status: SignupStatus.success);
+    } on DioException catch (e) {
+      Logger.e(
+        'signup failed',
+        tag: 'AUTH',
+        error: e.response?.data ?? e,
+        stackTrace: e.stackTrace,
+      );
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        status: SignupStatus.failure,
+        errorMessage: e.toString(),
       );
     }
   }
 
   /// 상태 초기화
   void reset() {
+    ref.read(authFlowProvider.notifier).clear();
     nameController.clear();
     emailController.clear();
+    gradeController.clear();
     passwordController.clear();
     passwordConfirmController.clear();
     state = SignupState.initial();
@@ -162,8 +269,23 @@ class SignupNotifier extends Notifier<SignupState> {
       );
     }
   }
+
+  /// 성공/실패 상태만 초기화하고 입력값은 유지
+  void resetStatus() {
+    if (state.status != SignupStatus.initial || state.errorMessage != null) {
+      state = state.copyWith(
+        status: SignupStatus.initial,
+        errorMessage: null,
+      );
+    }
+  }
+
+  String _departmentToApiValue(MajorEnum major) => major.name.toUpperCase();
+
+  String _genderToApiValue(GenderEnum gender) {
+    return switch (gender) {
+      GenderEnum.man => 'MALE',
+      GenderEnum.woman => 'FEMALE',
+    };
+  }
 }
-
-
-
-

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -10,8 +10,6 @@ import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/features/main_page/presentation/widgets/date_button.dart';
 import 'package:goms/features/main_page/presentation/widgets/late_profile_list_container.dart';
 import 'package:goms/features/main_page/presentation/widgets/search_profile_container_model.dart';
-
-final roleProvider = Provider<RoleEnum>((ref)=> throw UnimplementedError());
 
 
 class AdminLatecomerListScreen extends ConsumerStatefulWidget{

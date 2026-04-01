@@ -22,4 +22,3 @@ void main() {
     expect(find.text(errorMessage), findsOneWidget);
   });
 }
-

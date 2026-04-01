@@ -1,9 +1,9 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/presentation/pages/direction/models/direction_state.dart';
+import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
 
 class KakaoMobilityService {
   KakaoMobilityService({HttpClient? httpClient})
@@ -56,7 +56,8 @@ class KakaoMobilityService {
 
   Future<Map<String, dynamic>> _getJson(Uri uri) async {
     final request = await _httpClient.getUrl(uri);
-    request.headers.set(HttpHeaders.authorizationHeader, 'KakaoAK $_restApiKey');
+    request.headers
+        .set(HttpHeaders.authorizationHeader, 'KakaoAK $_restApiKey');
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
 
     final response = await request.close();
@@ -125,7 +126,8 @@ class KakaoMobilityService {
       for (final guide in sectionGuides.whereType<Map<String, dynamic>>()) {
         final guidance = (guide['guidance'] as String? ?? '').trim();
         final name = (guide['name'] as String? ?? '').trim();
-        final title = guidance.isNotEmpty ? guidance : (name.isNotEmpty ? name : '이동');
+        final title =
+            guidance.isNotEmpty ? guidance : (name.isNotEmpty ? name : '이동');
 
         guides.add(
           RouteStep(
@@ -179,4 +181,3 @@ class KakaoMobilityException implements Exception {
   @override
   String toString() => message;
 }
-

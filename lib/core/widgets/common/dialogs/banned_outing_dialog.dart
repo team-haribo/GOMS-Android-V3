@@ -15,7 +15,6 @@ Future<void> bannedOuting({
   VoidCallback? onConfirm,
   bool isDestructive = false,
 }) {
-
   return showCupertinoDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -30,8 +29,9 @@ Future<void> bannedOuting({
           children: [
             TextSpan(text: content),
             TextSpan(
-                text: redContent,
-                style: const TextStyle(color: AppColors.negative),),
+              text: redContent,
+              style: const TextStyle(color: AppColors.negative),
+            ),
             TextSpan(text: content2),
           ],
         ),

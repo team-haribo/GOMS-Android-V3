@@ -31,7 +31,8 @@ class PasswordTextField extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final key = providerKey ?? controller ?? this.key ?? hintText ?? runtimeType;
+    final key =
+        providerKey ?? controller ?? this.key ?? hintText ?? runtimeType;
     final obscureText = ref.watch(passwordVisibilityProvider(key));
 
     return BaseTextField(
@@ -60,4 +61,3 @@ class PasswordTextField extends ConsumerWidget {
     );
   }
 }
-

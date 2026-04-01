@@ -86,8 +86,7 @@ class _SearchTextFieldState extends ConsumerState<SearchTextField> {
       prefixIcon: widget.showLogo
           ? (showClearButton
               ? IconButton(
-                  icon:
-                    AppIcons.back(width: 24, height: 24, color: iconColor),
+                  icon: AppIcons.back(width: 24, height: 24, color: iconColor),
                   onPressed: widget.onBackPressed,
                 )
               : Padding(
@@ -103,4 +102,3 @@ class _SearchTextFieldState extends ConsumerState<SearchTextField> {
     );
   }
 }
-

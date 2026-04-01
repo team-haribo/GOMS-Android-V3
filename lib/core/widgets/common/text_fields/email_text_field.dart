@@ -48,7 +48,9 @@ class EmailTextField extends StatelessWidget {
       suffixIcon: suffixText != null
           ? Padding(
               padding: const EdgeInsets.only(
-                  right: AppSpacing.s16, top: AppSpacing.s14,),
+                right: AppSpacing.s16,
+                top: AppSpacing.s14,
+              ),
               child: Text(
                 suffixText!,
                 style: hasError
@@ -60,4 +62,3 @@ class EmailTextField extends StatelessWidget {
     );
   }
 }
-

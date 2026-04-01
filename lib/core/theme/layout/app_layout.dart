@@ -52,6 +52,7 @@ class AppGap {
   static const SizedBox h190 = SizedBox(width: AppSpacing.s190);
   static const SizedBox v190 = SizedBox(height: AppSpacing.s190);
 }
+
 class AppPadding {
   static const EdgeInsets screenVertical = EdgeInsets.symmetric(
     vertical: 11.5,

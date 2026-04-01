@@ -42,4 +42,3 @@ Future<void> forcedReturn({
     ),
   );
 }
-

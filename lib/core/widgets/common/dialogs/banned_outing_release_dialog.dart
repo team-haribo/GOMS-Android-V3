@@ -15,7 +15,6 @@ Future<void> bannedOutingRelease({
   VoidCallback? onConfirm,
   bool isDestructive = false,
 }) {
-
   return showCupertinoDialog<void>(
     context: context,
     barrierDismissible: true,
@@ -24,12 +23,14 @@ Future<void> bannedOutingRelease({
       content: RichText(
         textAlign: TextAlign.center,
         text: TextSpan(
-          style: TextStyle(color: context.isLightMode ? Colors.black : Colors.white),
+          style: TextStyle(
+              color: context.isLightMode ? Colors.black : Colors.white),
           children: [
             TextSpan(text: content),
             TextSpan(
-                text: redContent,
-                style: const TextStyle(color: AppColors.negative),),
+              text: redContent,
+              style: const TextStyle(color: AppColors.negative),
+            ),
             TextSpan(text: content2),
           ],
         ),

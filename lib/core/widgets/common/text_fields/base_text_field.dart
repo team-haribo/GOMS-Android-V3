@@ -133,7 +133,8 @@ class BaseTextField extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Text(
                 errorText!,
-                style: context.appTypography.text3.withColor(AppColors.negative),
+                style:
+                    context.appTypography.text3.withColor(AppColors.negative),
               ),
             ),
           ),

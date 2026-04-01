@@ -1,21 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/core/enums/gender_enum.dart';
-import 'package:goms/core/enums/major_enum.dart';
-import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_request_dto.dart';
-import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_response_dto.dart';
-import 'package:goms/features/auth/data/dto/email_verification/send_email_verification_request_dto.dart';
-import 'package:goms/features/auth/data/dto/password/change_password_request_dto.dart';
-import 'package:goms/features/auth/data/dto/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/data/dto/signin/signin_response_dto.dart';
-import 'package:goms/features/auth/data/dto/signup/signup_request_dto.dart';
-import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
-import 'package:goms/features/auth/data/repositories/auth_repository.dart';
-import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
-import 'package:goms/features/auth/presentation/pages/signup/models/signup_state.dart';
-import 'package:goms/features/auth/presentation/pages/signup/viewModels/signup_provider.dart';
+import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
+import 'package:goms/features/auth/email_verification/data/dto/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/signup/data/dto/signup/signup_request_dto.dart';
+import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
+import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_enum.dart';
+import 'package:goms/features/auth/signup/domain/enums/major_enum.dart';
+import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
+import 'package:goms/features/auth/signup/presentation/viewmodels/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {
@@ -73,9 +68,9 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.state = container.read(signupProvider).copyWith(
-        status: SignupStatus.success,
-        errorMessage: 'temporary',
-      );
+            status: SignupStatus.success,
+            errorMessage: 'temporary',
+          );
 
       notifier.resetStatus();
 
@@ -103,8 +98,8 @@ void main() {
       authFlow.setVerifiedToken('verified-token');
 
       notifier.state = container.read(signupProvider).copyWith(
-        status: SignupStatus.loading,
-      );
+            status: SignupStatus.loading,
+          );
 
       expect(
         {
@@ -113,7 +108,8 @@ void main() {
           'password': container.read(signupProvider).password,
           'name': container.read(signupProvider).name,
           'grade': int.parse(container.read(signupProvider).grade),
-          'department': container.read(signupProvider).major!.name.toUpperCase(),
+          'department':
+              container.read(signupProvider).major!.name.toUpperCase(),
           'gender': switch (container.read(signupProvider).gender!) {
             GenderEnum.man => 'MALE',
             GenderEnum.woman => 'FEMALE',
@@ -123,12 +119,13 @@ void main() {
       );
     });
 
-    test('submitSignup skips resend when email matches existing signup flow', () async {
+    test('submitSignup skips resend when email matches existing signup flow',
+        () async {
       final remote = _FakeAuthRemoteDataSource();
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(
-            AuthRepository(remoteDataSource: remote),
+          signupRepositoryProvider.overrideWithValue(
+            SignupRepositoryImpl(remoteDataSource: remote),
           ),
         ],
       );
@@ -151,12 +148,14 @@ void main() {
       expect(container.read(authFlowProvider).email, 's1001@gsm.hs.kr');
     });
 
-    test('submitSignup preserves verified token when email matches existing signup flow', () async {
+    test(
+        'submitSignup preserves verified token when email matches existing signup flow',
+        () async {
       final remote = _FakeAuthRemoteDataSource();
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(
-            AuthRepository(remoteDataSource: remote),
+          signupRepositoryProvider.overrideWithValue(
+            SignupRepositoryImpl(remoteDataSource: remote),
           ),
         ],
       );
@@ -198,8 +197,8 @@ void main() {
       );
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(
-            AuthRepository(remoteDataSource: remote),
+          signupRepositoryProvider.overrideWithValue(
+            SignupRepositoryImpl(remoteDataSource: remote),
           ),
         ],
       );
@@ -222,7 +221,7 @@ void main() {
   });
 }
 
-class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
+class _FakeAuthRemoteDataSource implements SignupRemoteDataSource {
   _FakeAuthRemoteDataSource({this.sendEmailVerificationException});
 
   int sendEmailVerificationCallCount = 0;
@@ -239,34 +238,7 @@ class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<ConfirmEmailVerificationResponseDto> confirmEmailVerification(
-    ConfirmEmailVerificationRequestDto requestDto,
-  ) {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> signUp(SignUpRequestDto requestDto) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> changePassword(ChangePasswordRequestDto requestDto) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<SignInResponseDto> signIn(SignInRequestDto requestDto) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<SignInResponseDto> reissue(String refreshToken) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signOut(String refreshToken) {
     throw UnimplementedError();
   }
 }

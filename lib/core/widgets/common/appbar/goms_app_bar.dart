@@ -27,7 +27,11 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     List<Widget>? actions,
     RoleEnum role = RoleEnum.user,
   }) =>
-      GomsAppBar._logo(key: key, actions: actions, role:role,);
+      GomsAppBar._logo(
+        key: key,
+        actions: actions,
+        role: role,
+      );
 
   factory GomsAppBar.back({
     Key? key,
@@ -52,7 +56,6 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return AppBar(
       automaticallyImplyLeading: false,
       leading: _showLogo
@@ -62,7 +65,10 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: IconButton(
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
-                icon: role == RoleEnum.admin ? AppIcons.back(width: 24, height: 24, color: AppColors.admin) : AppIcons.back(width: 24, height: 24),
+                icon: role == RoleEnum.admin
+                    ? AppIcons.back(
+                        width: 24, height: 24, color: AppColors.admin)
+                    : AppIcons.back(width: 24, height: 24),
                 onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
@@ -75,7 +81,8 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppIcons.logoSmall(
-                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
+                  color:
+                      context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
                 AppGap.h8,
                 Text(
@@ -84,7 +91,9 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontFamily: 'gmarketSans',
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
-                    color: context.isDarkMode ? context.sub2Color : AppColors.button,
+                    color: context.isDarkMode
+                        ? context.sub2Color
+                        : AppColors.button,
                   ),
                 ),
               ],
@@ -92,9 +101,10 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
           : Text(
               '돌아가기',
               style: AppTextStyles.text2.copyWith(
-                  color: role == RoleEnum.admin
-                      ? AppColors.admin
-                      : AppColors.mainColor,),
+                color: role == RoleEnum.admin
+                    ? AppColors.admin
+                    : AppColors.mainColor,
+              ),
             ),
       actions: actions,
     );

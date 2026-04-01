@@ -52,7 +52,6 @@ class _SearchStudentFieldState extends State<SearchStudentField> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BaseTextField(
@@ -73,4 +72,3 @@ class _SearchStudentFieldState extends State<SearchStudentField> {
     );
   }
 }
-

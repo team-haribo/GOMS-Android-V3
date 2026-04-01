@@ -19,4 +19,11 @@ class MemberRemoteDataSource {
         .map((json) => MemberDto.fromJson(Map<String, dynamic>.from(json)))
         .toList();
   }
+
+  Future<void> withdrawMember(String password) {
+    return _dio.delete<void>(
+      '/api/v3/member/withdraw',
+      data: {'password': password},
+    );
+  }
 }

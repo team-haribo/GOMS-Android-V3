@@ -71,6 +71,11 @@ class AuthNotifier extends Notifier<AuthStatus> {
     state = AuthStatus.authenticated;
   }
 
+  /// 인증 해제 처리
+  void setUnauthenticated() {
+    state = AuthStatus.unauthenticated;
+  }
+
   /// 로그아웃
   Future<void> logout() async {
     final refreshToken = await TokenStorage.getRefreshToken();

@@ -1,6 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/delete_account/presentation/models/delete_account_state.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
+import 'package:goms/features/member/data/providers/member_providers.dart';
 
 /// 회원 탈퇴 Provider
 final deleteAccountProvider =
@@ -52,10 +57,17 @@ class DeleteAccountNotifier extends Notifier<DeleteAccountState> {
     state = state.copyWith(status: DeleteAccountStatus.loading);
 
     try {
-      // TODO: 실제 회원 탈퇴 API 호출
-      await Future.delayed(const Duration(seconds: 1));
-
+      await ref
+          .read(withdrawMemberUseCaseProvider)
+          .call(password: state.password);
+      await TokenStorage.deleteAllTokens();
+      ref.read(authProvider.notifier).setUnauthenticated();
       state = state.copyWith(status: DeleteAccountStatus.success);
+    } on DioException catch (e) {
+      state = state.copyWith(
+        status: DeleteAccountStatus.failure,
+        errorMessage: NetworkException.fromDioException(e).message,
+      );
     } catch (e) {
       state = state.copyWith(
         status: DeleteAccountStatus.failure,

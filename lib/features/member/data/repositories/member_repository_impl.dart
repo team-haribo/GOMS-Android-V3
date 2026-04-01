@@ -12,4 +12,9 @@ class MemberRepositoryImpl implements MemberRepository {
     final members = await _remoteDataSource.getMembers();
     return members.map((member) => member.toEntity()).toList();
   }
+
+  @override
+  Future<void> withdrawMember({required String password}) {
+    return _remoteDataSource.withdrawMember(password);
+  }
 }

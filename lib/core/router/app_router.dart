@@ -1,6 +1,5 @@
 ﻿import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/auth/delete_account/presentation/screens/delete_account_screen.dart';
 import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:goms/features/auth/password_reset/presentation/screens/find_password_screen.dart';
@@ -26,10 +25,6 @@ import 'package:goms/features/splash/presentation/pages/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-
-WidgetBuilder _myPageScreenBuilder(RoleEnum role) {
-  return (context) => MyPageScreen(role: role);
-}
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -190,10 +185,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.myPage,
               name: 'myPage',
-              builder: (context, state) {
-                final role = state.extra as RoleEnum? ?? RoleEnum.user;
-                return _myPageScreenBuilder(role)(context);
-              },
+              builder: (context, state) => const MyPageScreen(),
             ),
           ],
         ),

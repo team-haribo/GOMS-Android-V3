@@ -1,29 +1,21 @@
 import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
+import 'package:goms/features/member/data/models/current_member_dto.dart';
 import 'package:goms/features/member/data/models/member_dto.dart';
 
-class MemberRemoteDataSource {
-  const MemberRemoteDataSource(this._dio);
+part 'member_remote_datasource.g.dart';
 
-  final Dio _dio;
+@RestApi()
+abstract class MemberRemoteDataSource {
+  factory MemberRemoteDataSource(Dio dio, {String? baseUrl}) =
+      _MemberRemoteDataSource;
 
-  Future<List<MemberDto>> getMembers() async {
-    final response = await _dio.get<List<dynamic>>('/members');
-    final data = response.data;
+  @GET('/members')
+  Future<List<MemberDto>> getMembers();
 
-    if (data == null) {
-      return const [];
-    }
+  @GET('/api/v3/member/myrole')
+  Future<CurrentMemberDto> getMyRole();
 
-    return data
-        .whereType<Map>()
-        .map((json) => MemberDto.fromJson(Map<String, dynamic>.from(json)))
-        .toList();
-  }
-
-  Future<void> withdrawMember(String password) {
-    return _dio.delete<void>(
-      '/api/v3/member/withdraw',
-      data: {'password': password},
-    );
-  }
+  @DELETE('/api/v3/member/withdraw')
+  Future<void> withdrawMember(@Body() Map<String, dynamic> body);
 }

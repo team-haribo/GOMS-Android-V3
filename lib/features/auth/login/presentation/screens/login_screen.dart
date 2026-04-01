@@ -33,10 +33,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     _loginSubscription = ref.listenManual<LoginState>(loginProvider, (
       previous,
       next,
-    ) {
+    ) async {
       if (next.status == LoginStatus.success) {
-        ref.read(authProvider.notifier).setAuthenticated();
-        context.go(RoutePath.home);
+        try {
+          await ref.read(authProvider.notifier).setAuthenticated();
+          if (!mounted) return;
+          context.go(RoutePath.home);
+        } catch (_) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('권한 정보를 불러오지 못했습니다. 다시 로그인해주세요.'),
+              backgroundColor: AppColors.negative,
+            ),
+          );
+        }
       } else if (next.status == LoginStatus.failure &&
           next.errorMessage != null) {
         ScaffoldMessenger.of(context).showSnackBar(

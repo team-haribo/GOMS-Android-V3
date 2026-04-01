@@ -1,25 +1,20 @@
 import 'package:dio/dio.dart';
+import 'package:retrofit/retrofit.dart';
 import 'package:goms/features/auth/password_reset/data/dto/password/change_password_request_dto.dart';
 import 'package:goms/features/auth/email_verification/data/dto/email_verification/send_email_verification_request_dto.dart';
 
-class PasswordResetRemoteDataSource {
-  const PasswordResetRemoteDataSource(this._dio);
+part 'password_reset_remote_datasource.g.dart';
 
-  final Dio _dio;
+@RestApi()
+abstract class PasswordResetRemoteDataSource {
+  factory PasswordResetRemoteDataSource(Dio dio, {String? baseUrl}) =
+      _PasswordResetRemoteDataSource;
 
+  @POST('/api/v3/auth/email-verifications/send')
   Future<void> sendEmailVerification(
-    SendEmailVerificationRequestDto requestDto,
-  ) {
-    return _dio.post<void>(
-      '/api/v3/auth/email-verifications/send',
-      data: requestDto.toJson(),
-    );
-  }
+    @Body() SendEmailVerificationRequestDto requestDto,
+  );
 
-  Future<void> changePassword(ChangePasswordRequestDto requestDto) {
-    return _dio.patch<void>(
-      '/api/v3/auth/password',
-      data: requestDto.toJson(),
-    );
-  }
+  @PATCH('/api/v3/auth/password')
+  Future<void> changePassword(@Body() ChangePasswordRequestDto requestDto);
 }

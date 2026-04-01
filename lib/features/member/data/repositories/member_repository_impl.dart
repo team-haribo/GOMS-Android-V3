@@ -1,4 +1,5 @@
 import 'package:goms/features/member/data/datasources/member_remote_datasource.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/domain/entities/member_entity.dart';
 import 'package:goms/features/member/domain/repositories/member_repository.dart';
 
@@ -14,7 +15,13 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
+  Future<CurrentMemberEntity> getMyRole() async {
+    final currentMember = await _remoteDataSource.getMyRole();
+    return currentMember.toEntity();
+  }
+
+  @override
   Future<void> withdrawMember({required String password}) {
-    return _remoteDataSource.withdrawMember(password);
+    return _remoteDataSource.withdrawMember({'password': password});
   }
 }

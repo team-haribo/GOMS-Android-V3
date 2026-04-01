@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
+import 'package:goms/features/member/presentation/viewmodels/current_member_provider.dart';
 import 'package:goms/features/profile/account/presentation/widgets/account_actions_section.dart';
 import 'package:goms/features/profile/overview/presentation/widgets/profile_summary_section.dart';
 import 'package:goms/features/profile/settings/presentation/viewmodels/settings_provider.dart';
@@ -17,12 +18,7 @@ import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 
 class MyPageScreen extends ConsumerStatefulWidget {
-  final RoleEnum role;
-
-  const MyPageScreen({
-    super.key,
-    required this.role,
-  });
+  const MyPageScreen({super.key});
 
   @override
   ConsumerState<MyPageScreen> createState() => _MyPageScreenState();
@@ -72,6 +68,11 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final role = ref.watch(roleProvider);
+    final currentMember = switch (ref.watch(currentMemberProvider)) {
+      AsyncData(:final value) => value,
+      _ => null,
+    };
     final textColor = context.mainTextColor;
     final subColor = context.sub1Color;
     final sub2Color = context.sub2Color;
@@ -98,8 +99,8 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ProfileSummarySection(
-              role: widget.role,
-              name: _name,
+              role: role,
+              name: currentMember?.name ?? _name,
               grade: _grade,
               major: _major,
               lateCount: _lateCount,
@@ -118,7 +119,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               textColor: textColor,
               subColor: subColor,
               surfaceColor: surfaceColor,
-              role: widget.role,
+              role: role,
               onTapTheme: () => _showThemePicker(context, selectedThemeOption),
               onToggleShowClock: (value) {
                 ref.read(settingsProvider.notifier).setShowClock(value);

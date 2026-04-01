@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
+import 'package:goms/features/member/presentation/viewmodels/current_member_provider.dart';
 
 /// 인증 상태
 enum AuthStatus {
@@ -32,6 +33,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
     final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
 
     if (_hasValidToken(accessToken, accessTokenExpiry)) {
+      await _fetchCurrentMember();
       state = AuthStatus.authenticated;
       return true;
     }
@@ -53,26 +55,38 @@ class AuthNotifier extends Notifier<AuthStatus> {
       await TokenStorage.saveRefreshToken(response.refreshToken);
       await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
       await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
+      await _fetchCurrentMember();
       state = AuthStatus.authenticated;
       return true;
     } on DioException catch (_) {
       await TokenStorage.deleteAllTokens();
+      ref.read(currentMemberProvider.notifier).clear();
       state = AuthStatus.unauthenticated;
       return false;
     } catch (_) {
       await TokenStorage.deleteAllTokens();
+      ref.read(currentMemberProvider.notifier).clear();
       state = AuthStatus.unauthenticated;
       return false;
     }
   }
 
   /// 로그인 완료 처리
-  void setAuthenticated() {
-    state = AuthStatus.authenticated;
+  Future<void> setAuthenticated() async {
+    try {
+      await _fetchCurrentMember();
+      state = AuthStatus.authenticated;
+    } catch (_) {
+      await TokenStorage.deleteAllTokens();
+      ref.read(currentMemberProvider.notifier).clear();
+      state = AuthStatus.unauthenticated;
+      rethrow;
+    }
   }
 
   /// 인증 해제 처리
   void setUnauthenticated() {
+    ref.read(currentMemberProvider.notifier).clear();
     state = AuthStatus.unauthenticated;
   }
 
@@ -92,8 +106,13 @@ class AuthNotifier extends Notifier<AuthStatus> {
       // 로컬 세션 종료는 항상 보장한다.
     } finally {
       await TokenStorage.deleteAllTokens();
+      ref.read(currentMemberProvider.notifier).clear();
       state = AuthStatus.unauthenticated;
     }
+  }
+
+  Future<void> _fetchCurrentMember() async {
+    await ref.read(currentMemberProvider.notifier).fetch();
   }
 
   bool _hasValidToken(String? token, DateTime? expiresAt) {

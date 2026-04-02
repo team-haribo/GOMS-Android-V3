@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
 
 class GomsBottomNavigation extends StatelessWidget {
   final int currentIndex;
@@ -19,43 +18,35 @@ class GomsBottomNavigation extends StatelessWidget {
     final selectedColor = theme.bottomNavigationBarTheme.selectedItemColor!;
     final unselectedColor = theme.bottomNavigationBarTheme.unselectedItemColor!;
 
-    return SizedBox(
-      height: context.responsive(compact: 72, normal: 84, tablet: 88),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: context.contentMaxWidth),
-          child: BottomNavigationBar(
-            currentIndex: currentIndex,
-            onTap: onTap,
-            items: [
-              BottomNavigationBarItem(
-                icon: AppIcons.map(
-                  width: 24,
-                  height: 24,
-                  color: currentIndex == 0 ? selectedColor : unselectedColor,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: AppIcons.home(
-                  width: 24,
-                  height: 24,
-                  color: currentIndex == 1 ? selectedColor : unselectedColor,
-                ),
-                label: '',
-              ),
-              BottomNavigationBarItem(
-                icon: AppIcons.user(
-                  width: 24,
-                  height: 24,
-                  color: currentIndex == 2 ? selectedColor : unselectedColor,
-                ),
-                label: '',
-              ),
-            ],
+    return BottomNavigationBar(
+      currentIndex: currentIndex,
+      onTap: onTap,
+      items: [
+        BottomNavigationBarItem(
+          icon: AppIcons.map(
+            width: 24,
+            height: 24,
+            color: currentIndex == 0 ? selectedColor : unselectedColor,
           ),
+          label: '',
         ),
-      ),
+        BottomNavigationBarItem(
+          icon: AppIcons.home(
+            width: 24,
+            height: 24,
+            color: currentIndex == 1 ? selectedColor : unselectedColor,
+          ),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: AppIcons.user(
+            width: 24,
+            height: 24,
+            color: currentIndex == 2 ? selectedColor : unselectedColor,
+          ),
+          label: '',
+        ),
+      ],
     );
   }
 }

@@ -6,9 +6,7 @@ class GetMyOutingStatusUseCase {
 
   final OutingRepository _repository;
 
-  Future<MyOutingStatusEntity> call({
-    required String accessToken,
-  }) {
-    return _repository.getMyOutingStatus(accessToken: accessToken);
+  Future<MyOutingStatusEntity> call() {
+    return _repository.getMyOutingStatus();
   }
 }

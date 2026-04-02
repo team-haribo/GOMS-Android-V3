@@ -7,8 +7,8 @@ import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dar
 
 final myOutingStatusProvider =
     AsyncNotifierProvider<MyOutingStatusNotifier, MyOutingStatusEntity>(
-      MyOutingStatusNotifier.new,
-    );
+  MyOutingStatusNotifier.new,
+);
 
 class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusEntity> {
   @override
@@ -28,9 +28,7 @@ class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusEntity> {
     }
 
     try {
-      return await ref.read(getMyOutingStatusUseCaseProvider).call(
-            accessToken: accessToken,
-          );
+      return await ref.read(getMyOutingStatusUseCaseProvider).call();
     } on DioException catch (error) {
       throw MyOutingStatusException(
         NetworkException.fromDioException(error).message,

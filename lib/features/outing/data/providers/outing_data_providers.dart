@@ -4,6 +4,7 @@ import 'package:goms/features/outing/data/datasources/outing_remote_datasource.d
 import 'package:goms/features/outing/data/repositories/outing_repository_impl.dart';
 import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
 import 'package:goms/features/outing/domain/usecases/get_my_outing_status_usecase.dart';
+import 'package:goms/features/outing/domain/usecases/search_outing_students_usecase.dart';
 
 final outingRemoteDataSourceProvider = Provider<OutingRemoteDataSource>((ref) {
   return OutingRemoteDataSource(ref.watch(dioProvider));
@@ -19,4 +20,9 @@ final getMyOutingStatusUseCaseProvider = Provider<GetMyOutingStatusUseCase>((
   ref,
 ) {
   return GetMyOutingStatusUseCase(ref.watch(outingRepositoryProvider));
+});
+
+final searchOutingStudentsUseCaseProvider =
+    Provider<SearchOutingStudentsUseCase>((ref) {
+  return SearchOutingStudentsUseCase(ref.watch(outingRepositoryProvider));
 });

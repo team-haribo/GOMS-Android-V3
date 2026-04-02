@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:goms/features/outing/data/dto/qr/process_outing_by_qr_request_dto.dart';
 import 'package:goms/features/outing/data/response/list/current_outing_students_response.dart';
+import 'package:goms/features/outing/data/response/qr/process_coming_by_qr_response.dart';
 import 'package:goms/features/outing/data/response/qr/process_outing_by_qr_response.dart';
 import 'package:goms/features/outing/data/response/search/search_outing_students_response.dart';
 import 'package:goms/features/outing/data/response/status/my_outing_status_response.dart';
@@ -21,6 +22,11 @@ abstract class OutingRemoteDataSource {
 
   @POST('/api/v3/outing/out')
   Future<ProcessOutingByQrResponse> processOutingByQr(
+    @Body() ProcessOutingByQrRequestDto requestDto,
+  );
+
+  @POST('/api/v3/outing/in')
+  Future<ProcessComingByQrResponse> processComingByQr(
     @Body() ProcessOutingByQrRequestDto requestDto,
   );
 

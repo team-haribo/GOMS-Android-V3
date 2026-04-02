@@ -33,9 +33,15 @@ class AuthNotifier extends Notifier<AuthStatus> {
     final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
 
     if (_hasValidToken(accessToken, accessTokenExpiry)) {
-      await _fetchCurrentMember();
-      state = AuthStatus.authenticated;
-      return true;
+      try {
+        await _fetchCurrentMember();
+        state = AuthStatus.authenticated;
+        return true;
+      } catch (_) {
+        ref.read(currentMemberProvider.notifier).clear();
+        state = AuthStatus.unauthenticated;
+        return false;
+      }
     }
 
     final refreshToken = await TokenStorage.getRefreshToken();

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -38,13 +39,13 @@ Future<bool> _shouldSkipFirebaseOnDebugX86Android() async {
   }
 }
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
-  final appEnv = AppEnv.fromValue(appEnvValue);
-
-  await dotenv.load(fileName: appEnv.fileName);
-  await KakaoMapRuntime.instance.initialize();
+Future<void> _bootstrapPlatformServices() async {
+  try {
+    await KakaoMapRuntime.instance.initialize();
+  } catch (error, stackTrace) {
+    debugPrint('KakaoMap bootstrap failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
 
   final skipFirebaseOnDebugX86 = await _shouldSkipFirebaseOnDebugX86Android();
   if (skipFirebaseOnDebugX86) {
@@ -52,14 +53,28 @@ Future<void> main() async {
       'Skipping Firebase initialization on Android x86/x86_64 debug runtime '
       'to avoid emulator low-memory kills.',
     );
-  } else {
+    return;
+  }
+
+  try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  } catch (error, stackTrace) {
+    debugPrint('Firebase bootstrap failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
   }
+}
 
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
+  final appEnv = AppEnv.fromValue(appEnvValue);
+
+  await dotenv.load(fileName: appEnv.fileName);
   runApp(const ProviderScope(child: MyApp()));
+  unawaited(_bootstrapPlatformServices());
 }
 
 class MyApp extends ConsumerWidget {

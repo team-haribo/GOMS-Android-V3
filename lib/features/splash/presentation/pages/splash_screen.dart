@@ -46,6 +46,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     debugPrint('SplashScreen: navigating to $destination');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       context.go(destination);
     });
   }

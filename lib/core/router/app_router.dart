@@ -178,10 +178,7 @@ final GoRouter router = GoRouter(
               path: RoutePath.home,
               name: 'home',
               builder: (context, state) {
-                return const OutingWaitingScreen(
-                  approvedStudentCount: 3,
-                  hasLateStudents: false,
-                );
+                return const OutingWaitingScreen();
               },
             ),
           ],

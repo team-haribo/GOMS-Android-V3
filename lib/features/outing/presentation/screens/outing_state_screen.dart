@@ -4,13 +4,11 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
 import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
-import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 import 'package:goms/features/home/shared/presentation/widgets/search_profile_list.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -20,6 +18,8 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
+import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/presentation/viewmodels/current_outing_students_provider.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
 
@@ -50,43 +50,11 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
     }
   }
 
-  List<SearchProfileContainerModel> outingMembers = [
-    const SearchProfileContainerModel(
-        name: '류수연', grade: 9, major: 'SW개발', studentRole: StudentRole.council),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔', grade: 8, major: 'AI', studentRole: StudentRole.student),
-    const SearchProfileContainerModel(
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final searchText = ref.watch(searchTextProvider);
     final role = ref.watch(roleProvider);
-
-    final filteredList = searchText.isEmpty
-        ? outingMembers
-        : outingMembers.where((member) {
-            return member.name.toLowerCase().contains(searchText.toLowerCase());
-          }).toList();
+    final outingStudents = ref.watch(currentOutingStudentsProvider);
 
     return BaseScaffold(
       showAppBar: true,
@@ -149,24 +117,71 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 const FilterButton(),
               ],
             ),
+            AppGap.v12,
             Expanded(
-              child: ListView.separated(
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final member = filteredList[index];
-                  return SearchProfileList(
-                    name: member.name,
-                    grade: member.grade,
-                    major: member.major,
-                    role: role,
+              child: outingStudents.when(
+                data: (students) {
+                  final filteredList = _filterStudents(students, searchText);
+
+                  if (filteredList.isEmpty) {
+                    return Center(
+                      child: Text(
+                        searchText.isEmpty
+                            ? '현재 외출 중인 학생이 없어요.'
+                            : '검색 결과가 없어요.',
+                        style: AppTextStyles.text2.copyWith(
+                          color: context.sub2Color,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
+                    itemCount: filteredList.length,
+                    itemBuilder: (context, index) {
+                      final member = filteredList[index];
+                      return SearchProfileList(
+                        name: member.name,
+                        grade: member.grade,
+                        major: member.department,
+                        role: role,
+                        outingAt: member.outingAt,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        thickness: 1,
+                        color: context.buttonColor,
+                      );
+                    },
                   );
                 },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    thickness: 1,
-                    color: context.buttonColor,
-                  );
-                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        error is CurrentOutingStudentsException
+                            ? error.message
+                            : '외출 목록을 불러오지 못했어요.',
+                        style: AppTextStyles.text2.copyWith(
+                          color: context.sub2Color,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      AppGap.v12,
+                      TextButton(
+                        onPressed: () {
+                          ref
+                              .read(currentOutingStudentsProvider.notifier)
+                              .reload();
+                        },
+                        child: const Text('다시 시도'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -185,5 +200,17 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
         ],
       ),
     );
+  }
+
+  List<OutingStudentEntity> _filterStudents(
+    List<OutingStudentEntity> students,
+    String searchText,
+  ) {
+    if (searchText.isEmpty) return students;
+
+    final keyword = searchText.toLowerCase();
+    return students
+        .where((student) => student.name.toLowerCase().contains(keyword))
+        .toList();
   }
 }

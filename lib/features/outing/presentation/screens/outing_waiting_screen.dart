@@ -10,21 +10,18 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_container.dart';
-import 'package:goms/features/outing/presentation/models/outing_status.dart';
-import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_list_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/view_more_users.dart';
-import 'package:goms/features/outing/presentation/viewmodels/my_outing_status_provider.dart';
+import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
+import 'package:goms/features/late/presentation/viewmodels/late_rank_students_provider.dart';
+import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/presentation/viewmodels/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/widgets/my_outing_status_card.dart';
 
 class OutingWaitingScreen extends ConsumerStatefulWidget {
-  final int approvedStudentCount;
-  final bool hasLateStudents; // 여기서 true, false 조절
-
   const OutingWaitingScreen({
     super.key,
-    required this.approvedStudentCount,
-    required this.hasLateStudents,
   });
 
   @override
@@ -36,7 +33,12 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider);
-    final myOutingStatus = ref.watch(myOutingStatusProvider);
+    final currentOutingStudents = ref.watch(currentOutingStudentsProvider);
+    final lateRankStudents = ref.watch(lateRankStudentsProvider);
+    final approvedStudentCount = switch (currentOutingStudents) {
+      AsyncData(:final value) => value.length,
+      _ => 0,
+    };
 
     return BaseScaffold(
       showAppBar: true,
@@ -46,37 +48,9 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
           SliverToBoxAdapter(
             child: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 16, bottom: 24),
-                  child: myOutingStatus.when(
-                    data: (value) => ProfileContainer(
-                      name: value.name,
-                      grade: value.grade,
-                      major: value.department,
-                      lateCount: 0,
-                      status: role == RoleEnum.admin
-                          ? OutingStatus.admin
-                          : OutingStatus.fromServer(value.status),
-                    ),
-                    loading: () => ProfileContainer(
-                      name: '불러오는 중',
-                      grade: 0,
-                      major: '',
-                      lateCount: 0,
-                      status: role == RoleEnum.admin
-                          ? OutingStatus.admin
-                          : OutingStatus.waiting,
-                    ),
-                    error: (_, __) => ProfileContainer(
-                      name: '정보 없음',
-                      grade: 0,
-                      major: '',
-                      lateCount: 0,
-                      status: role == RoleEnum.admin
-                          ? OutingStatus.admin
-                          : OutingStatus.waiting,
-                    ),
-                  ),
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 24),
+                  child: MyOutingStatusCard(),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
@@ -100,59 +74,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                         ],
                       ),
                       AppGap.v12,
-                      widget.hasLateStudents
-                          ? const Row(
-                              children: [
-                                Expanded(
-                                  child: LateProfileContainer(
-                                    name: '류수연',
-                                    grade: 9,
-                                    major: 'SW개발',
-                                  ),
-                                ),
-                                AppGap.h12,
-                                Expanded(
-                                  child: LateProfileContainer(
-                                    name: '류수연',
-                                    grade: 9,
-                                    major: 'SW개발',
-                                  ),
-                                ),
-                                AppGap.h12,
-                                Expanded(
-                                  child: LateProfileContainer(
-                                    name: '류수연',
-                                    grade: 9,
-                                    major: 'SW개발',
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  AppIcons.fire(
-                                    width: 24,
-                                    height: 24,
-                                    color: context.isDarkMode
-                                        ? AppColors.sub1Dark
-                                        : AppColors.sub2,
-                                  ),
-                                  AppGap.v2,
-                                  Text(
-                                    '이번주 지각자가 없어요 축하해요!',
-                                    style: AppTextStyles.text1.copyWith(
-                                      fontSize: 15,
-                                      color: context.isDarkMode
-                                          ? AppColors.sub1Dark
-                                          : AppColors.sub2,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                      _buildLateRankSection(lateRankStudents),
                       AppGap.v12,
                     ],
                   ),
@@ -171,7 +93,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                         ),
                         AppGap.h8,
                         Text(
-                          '${widget.approvedStudentCount}',
+                          '$approvedStudentCount',
                           style: AppTextStyles.caption1
                               .copyWith(color: AppColors.mainColor),
                         ),
@@ -192,19 +114,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
               ],
             ),
           ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                return const Column(
-                  children: [
-                    ProfileListContainer(name: '류수연', grade: 9, major: 'AI'),
-                    AppGap.v4,
-                  ],
-                );
-              },
-              childCount: widget.approvedStudentCount,
-            ),
-          ),
+          ..._buildOutingStudentSlivers(currentOutingStudents),
         ],
       ),
       floatingActionButton: Column(
@@ -216,6 +126,176 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
           ],
           QRButton(
             type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildOutingStudentSlivers(
+    AsyncValue<List<OutingStudentEntity>> currentOutingStudents,
+  ) {
+    return currentOutingStudents.when(
+      data: (students) {
+        if (students.isEmpty) {
+          return [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 24),
+                child: Center(
+                  child: Text(
+                    '현재 외출 중인 학생이 없어요.',
+                    style: AppTextStyles.text2.copyWith(
+                      color: context.sub2Color,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ];
+        }
+
+        return [
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
+                final student = students[index];
+                return Column(
+                  children: [
+                    ProfileListContainer(
+                      name: student.name,
+                      grade: student.grade,
+                      major: student.department,
+                    ),
+                    AppGap.v4,
+                  ],
+                );
+              },
+              childCount: students.length,
+            ),
+          ),
+        ];
+      },
+      loading: () => [
+        const SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      ],
+      error: (error, _) => [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    error is CurrentOutingStudentsException
+                        ? error.message
+                        : '외출 현황을 불러오지 못했어요.',
+                    style: AppTextStyles.text2.copyWith(
+                      color: context.sub2Color,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  AppGap.v12,
+                  TextButton(
+                    onPressed: () {
+                      ref.read(currentOutingStudentsProvider.notifier).reload();
+                    },
+                    child: const Text('다시 시도'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLateRankSection(
+    AsyncValue<List<LateRankStudentEntity>> lateRankStudents,
+  ) {
+    return lateRankStudents.when(
+      data: (students) {
+        final topStudents = students.take(3).toList();
+
+        if (topStudents.isEmpty) {
+          return _buildNoLateStudentsMessage();
+        }
+
+        return Row(
+          children: [
+            for (var i = 0; i < topStudents.length; i++) ...[
+              Expanded(
+                child: LateProfileContainer(
+                  name: topStudents[i].name,
+                  grade: topStudents[i].grade,
+                  major: topStudents[i].department,
+                ),
+              ),
+              if (i != topStudents.length - 1) AppGap.h12,
+            ],
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.only(bottom: 12),
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.only(bottom: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              error is LateRankStudentsException
+                  ? error.message
+                  : '지각 랭킹을 불러오지 못했어요.',
+              style: AppTextStyles.text2.copyWith(
+                color: context.sub2Color,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            AppGap.v8,
+            TextButton(
+              onPressed: () {
+                ref.read(lateRankStudentsProvider.notifier).reload();
+              },
+              child: const Text('다시 시도'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNoLateStudentsMessage() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AppIcons.fire(
+            width: 24,
+            height: 24,
+            color: context.isDarkMode ? AppColors.sub1Dark : AppColors.sub2,
+          ),
+          AppGap.v2,
+          Text(
+            '이번주 지각자가 없어요 축하해요!',
+            style: AppTextStyles.text1.copyWith(
+              fontSize: 15,
+              color: context.isDarkMode ? AppColors.sub1Dark : AppColors.sub2,
+            ),
           ),
         ],
       ),

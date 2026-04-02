@@ -2,32 +2,39 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
-import 'package:goms/features/member/presentation/models/member_list_state.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
 
 final memberListViewModelProvider =
-    NotifierProvider<MemberListViewModel, MemberListState>(
+    AsyncNotifierProvider<MemberListViewModel, List<MemberEntity>>(
   MemberListViewModel.new,
 );
 
-class MemberListViewModel extends Notifier<MemberListState> {
+class MemberListViewModel extends AsyncNotifier<List<MemberEntity>> {
   @override
-  MemberListState build() {
-    Future<void>.microtask(fetchMembers);
-    return const MemberListState.loading();
+  Future<List<MemberEntity>> build() async {
+    return _fetchMembers();
   }
 
-  Future<void> fetchMembers() async {
-    state = const MemberListState.loading();
+  Future<void> reload() async {
+    state = const AsyncLoading();
+    state = await AsyncValue.guard(_fetchMembers);
+  }
 
+  Future<List<MemberEntity>> _fetchMembers() async {
     try {
-      final members = await ref.read(getMembersUseCaseProvider).call();
-      state = MemberListState.success(members);
+      return await ref.read(getMembersUseCaseProvider).call();
     } on DioException catch (error) {
-      state = MemberListState.error(
+      throw MemberListException(
         NetworkException.fromDioException(error).message,
       );
     } catch (_) {
-      state = const MemberListState.error('멤버 정보를 불러오지 못했습니다.');
+      throw const MemberListException('멤버 정보를 불러오지 못했습니다.');
     }
   }
+}
+
+class MemberListException implements Exception {
+  const MemberListException(this.message);
+
+  final String message;
 }

@@ -1,4 +1,4 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -86,10 +86,11 @@ class KakaoLocalService {
             id: document['id'] as String,
             name: document['place_name'] as String? ?? '',
             category: _categoryFromRaw(document['category_name'] as String?),
-            address: (document['road_address_name'] as String?)?.trim().isNotEmpty ==
-                    true
-                ? document['road_address_name'] as String
-                : document['address_name'] as String? ?? '',
+            address:
+                (document['road_address_name'] as String?)?.trim().isNotEmpty ==
+                        true
+                    ? document['road_address_name'] as String
+                    : document['address_name'] as String? ?? '',
             distanceMeters: int.tryParse(document['distance'] as String? ?? ''),
             coordinate: MapCoordinate(
               latitude: double.parse(document['y'] as String),
@@ -102,7 +103,8 @@ class KakaoLocalService {
 
   Future<Map<String, dynamic>> _getJson(Uri uri) async {
     final request = await _httpClient.getUrl(uri);
-    request.headers.set(HttpHeaders.authorizationHeader, 'KakaoAK $_restApiKey');
+    request.headers
+        .set(HttpHeaders.authorizationHeader, 'KakaoAK $_restApiKey');
     request.headers.set(HttpHeaders.contentTypeHeader, 'application/json');
 
     final response = await request.close();
@@ -135,5 +137,3 @@ class KakaoApiException implements Exception {
   @override
   String toString() => message;
 }
-
-

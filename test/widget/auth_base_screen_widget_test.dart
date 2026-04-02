@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/features/auth/presentation/pages/auth_base_screen.dart';
+import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import '../test_app.dart';
 
 void main() {

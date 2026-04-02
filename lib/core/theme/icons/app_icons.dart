@@ -265,7 +265,6 @@ class AppIcons {
         color: color,
       );
 
-
   /// 글쓰기 아이콘
   static Widget tablerEdit({double? width, double? height, Color? color}) =>
       _loadPng(
@@ -285,7 +284,8 @@ class AppIcons {
       );
 
   /// 유저 관리 버튼 아이콘
-  static Widget userManageButton({double? width, double? height, Color? color}) =>
+  static Widget userManageButton(
+          {double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/user_manage_button.png',
         width: width,
@@ -310,7 +310,6 @@ class AppIcons {
         height: height,
         color: color,
       );
-
 
   /// 어드민 수정 아이콘
   static Widget adminEdit({double? width, double? height, Color? color}) =>

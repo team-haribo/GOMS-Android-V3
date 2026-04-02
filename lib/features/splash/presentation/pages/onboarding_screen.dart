@@ -71,7 +71,8 @@ class OnboardingScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   height: 1,
-                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
+                  color:
+                      context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
               ),
               Padding(
@@ -88,7 +89,8 @@ class OnboardingScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   height: 1,
-                  color: context.isDarkMode ? context.sub2Color : AppColors.button,
+                  color:
+                      context.isDarkMode ? context.sub2Color : AppColors.button,
                 ),
               ),
             ],
@@ -109,4 +111,3 @@ class OnboardingScreen extends StatelessWidget {
     );
   }
 }
-

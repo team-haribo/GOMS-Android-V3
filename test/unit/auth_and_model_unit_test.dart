@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/enums/student_role_enum.dart';
-import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
-import 'package:goms/features/auth/presentation/viewmodels/auth_flow_provider.dart';
-import 'package:goms/features/main_page/presentation/widgets/search_profile_container_model.dart';
+import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/features/auth/login/presentation/models/login_state.dart';
+import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/home/shared/presentation/widgets/search_profile_container_model.dart';
 
 void main() {
   group('LoginState', () {

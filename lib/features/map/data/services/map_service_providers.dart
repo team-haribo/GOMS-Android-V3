@@ -9,4 +9,3 @@ final kakaoLocalServiceProvider = Provider<KakaoLocalService>((ref) {
 final kakaoMobilityServiceProvider = Provider<KakaoMobilityService>((ref) {
   return KakaoMobilityService();
 });
-

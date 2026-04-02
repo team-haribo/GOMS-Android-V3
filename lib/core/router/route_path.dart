@@ -18,4 +18,5 @@ class RoutePath {
   static const String home = '/home';
   static const String outingState = '/outing-state';
   static const String myPage = '/mypage';
+  static const String members = '/members';
 }

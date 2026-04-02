@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/features/auth/presentation/viewmodels/auth_provider.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
@@ -27,16 +27,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     debugPrint('SplashScreen: starting auth check');
 
     // 토큰 확인이 지연되면 온보딩으로 우선 진입시킨다.
-    final hasToken = await ref
-        .read(authProvider.notifier)
-        .checkToken()
-        .timeout(
-          const Duration(seconds: 8),
-          onTimeout: () {
-            debugPrint('SplashScreen: auth check timed out');
-            return false;
-          },
-        );
+    final hasToken = await ref.read(authProvider.notifier).checkToken().timeout(
+      const Duration(seconds: 8),
+      onTimeout: () {
+        debugPrint('SplashScreen: auth check timed out');
+        return false;
+      },
+    );
 
     if (!mounted) return;
 
@@ -61,4 +58,3 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     );
   }
 }
-

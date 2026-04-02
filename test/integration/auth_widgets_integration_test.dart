@@ -83,4 +83,3 @@ class _AuthFormHarnessState extends State<_AuthFormHarness> {
     );
   }
 }
-

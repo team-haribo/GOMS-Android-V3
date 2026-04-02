@@ -1,18 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/features/auth/data/datasources/auth_remote_datasource.dart';
-import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_request_dto.dart';
-import 'package:goms/features/auth/data/dto/email_verification/confirm_email_verification_response_dto.dart';
-import 'package:goms/features/auth/data/dto/email_verification/send_email_verification_request_dto.dart';
-import 'package:goms/features/auth/data/dto/password/change_password_request_dto.dart';
-import 'package:goms/features/auth/data/dto/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/data/dto/signin/signin_response_dto.dart';
-import 'package:goms/features/auth/data/dto/signup/signup_request_dto.dart';
-import 'package:goms/features/auth/data/providers/auth_data_providers.dart';
-import 'package:goms/features/auth/data/repositories/auth_repository.dart';
-import 'package:goms/features/auth/presentation/pages/login/models/login_state.dart';
-import 'package:goms/features/auth/presentation/pages/login/viewmodels/login_provider.dart';
+import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
+import 'package:goms/features/auth/session/data/dto/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/session/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
+import 'package:goms/features/auth/session/data/repositories/session_repository_impl.dart';
+import 'package:goms/features/auth/login/presentation/models/login_state.dart';
+import 'package:goms/features/auth/login/presentation/viewmodels/login_provider.dart';
 
 void main() {
   group('LoginNotifier', () {
@@ -30,8 +25,8 @@ void main() {
     test('404 login failure maps to email error', () async {
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(
-            AuthRepository(
+          sessionRepositoryProvider.overrideWithValue(
+            SessionRepositoryImpl(
               remoteDataSource: _FakeAuthRemoteDataSource(
                 signInException: _dioException(statusCode: 404),
               ),
@@ -43,7 +38,7 @@ void main() {
 
       await container
           .read(loginProvider.notifier)
-          .login('s24068', 'secret123');
+          .login('s24068', 'jueon2008!');
 
       final state = container.read(loginProvider);
       expect(state.status, LoginStatus.failure);
@@ -55,8 +50,8 @@ void main() {
     test('403 login failure maps to password error', () async {
       final container = ProviderContainer(
         overrides: [
-          authRepositoryProvider.overrideWithValue(
-            AuthRepository(
+          sessionRepositoryProvider.overrideWithValue(
+            SessionRepositoryImpl(
               remoteDataSource: _FakeAuthRemoteDataSource(
                 signInException: _dioException(statusCode: 403),
               ),
@@ -68,7 +63,7 @@ void main() {
 
       await container
           .read(loginProvider.notifier)
-          .login('s24068', 'secret123');
+          .login('s24068', 'jueon2008!');
 
       final state = container.read(loginProvider);
       expect(state.status, LoginStatus.failure);
@@ -89,7 +84,7 @@ DioException _dioException({required int statusCode}) {
   );
 }
 
-class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
+class _FakeAuthRemoteDataSource implements SessionRemoteDataSource {
   _FakeAuthRemoteDataSource({this.signInException});
 
   final DioException? signInException;
@@ -106,30 +101,6 @@ class _FakeAuthRemoteDataSource implements AuthRemoteDataSource {
       accessTokenExpiresIn: DateTime(2026),
       refreshTokenExpiresIn: DateTime(2026),
     );
-  }
-
-  @override
-  Future<ConfirmEmailVerificationResponseDto> confirmEmailVerification(
-    ConfirmEmailVerificationRequestDto requestDto,
-  ) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> sendEmailVerification(
-    SendEmailVerificationRequestDto requestDto,
-  ) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signUp(SignUpRequestDto requestDto) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> changePassword(ChangePasswordRequestDto requestDto) {
-    throw UnimplementedError();
   }
 
   @override

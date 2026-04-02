@@ -31,7 +31,7 @@ Future<bool> _shouldSkipFirebaseOnDebugX86Android() async {
   try {
     final abis =
         await _deviceChannel.invokeListMethod<String>('getSupportedAbis') ??
-        const <String>[];
+            const <String>[];
     return abis.any((abi) => abi.contains('x86'));
   } catch (_) {
     return false;

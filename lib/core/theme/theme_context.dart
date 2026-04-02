@@ -21,8 +21,7 @@ extension ThemeContextX on BuildContext {
   Color get backgroundColor =>
       isDarkMode ? AppColors.backgroundDark : AppColors.background;
 
-  Color get buttonColor =>
-      isDarkMode ? AppColors.buttonDark : AppColors.button;
+  Color get buttonColor => isDarkMode ? AppColors.buttonDark : AppColors.button;
 
   Color get mapContainerColor =>
       isDarkMode ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;

@@ -13,7 +13,6 @@ Future<void> forcedOuting({
   VoidCallback? onConfirm,
   bool isDestructive = false,
 }) {
-
   return showCupertinoDialog<void>(
     context: context,
     barrierDismissible: true,

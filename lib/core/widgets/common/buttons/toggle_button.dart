@@ -23,7 +23,8 @@ class ToggleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isEnabled = onChanged != null;
 
-    final activeColor = type == RoleEnum.user ? AppColors.mainColor : AppColors.admin;
+    final activeColor =
+        type == RoleEnum.user ? AppColors.mainColor : AppColors.admin;
 
     return Switch(
       value: value,

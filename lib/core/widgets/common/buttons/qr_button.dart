@@ -65,4 +65,3 @@ class QRButton extends StatelessWidget {
     );
   }
 }
-

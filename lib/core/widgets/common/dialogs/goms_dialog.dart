@@ -74,27 +74,27 @@ class GomsDialog {
         content: Text(content, style: TextStyle(color: textColor)),
         actions: cancelText != null
             ? [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              cancelText!,
-              style: isDestructive
-                  ? null
-                  : const TextStyle(color: AppColors.negative),
-            ),
-          ),
-          CupertinoDialogAction(
-            isDestructiveAction: isDestructive,
-            onPressed: onConfirmPressed,
-            child: Text(confirmText),
-          ),
-        ]
+                CupertinoDialogAction(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text(
+                    cancelText!,
+                    style: isDestructive
+                        ? null
+                        : const TextStyle(color: AppColors.negative),
+                  ),
+                ),
+                CupertinoDialogAction(
+                  isDestructiveAction: isDestructive,
+                  onPressed: onConfirmPressed,
+                  child: Text(confirmText),
+                ),
+              ]
             : [
-          CupertinoDialogAction(
-            onPressed: onConfirmPressed,
-            child: Text(confirmText),
-          ),
-        ],
+                CupertinoDialogAction(
+                  onPressed: onConfirmPressed,
+                  child: Text(confirmText),
+                ),
+              ],
       ),
     );
   }

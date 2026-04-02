@@ -6,7 +6,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/home/shared/presentation/widgets/user_role_bottomsheet.dart';
+import 'package:goms/features/outing/presentation/widgets/user_role_bottomsheet.dart';
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final String name;

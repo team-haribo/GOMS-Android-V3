@@ -10,11 +10,12 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_container.dart';
-import 'package:goms/features/home/shared/presentation/widgets/outing_status.dart';
+import 'package:goms/features/outing/presentation/models/outing_status.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_list_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/view_more_users.dart';
+import 'package:goms/features/outing/presentation/viewmodels/my_outing_status_provider.dart';
 
 class OutingWaitingScreen extends ConsumerStatefulWidget {
   final int approvedStudentCount;
@@ -35,6 +36,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider);
+    final myOutingStatus = ref.watch(myOutingStatusProvider);
 
     return BaseScaffold(
       showAppBar: true,
@@ -46,14 +48,34 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 24),
-                  child: ProfileContainer(
-                    name: '류수연',
-                    grade: 9,
-                    major: 'SW개발',
-                    lateCount: 0,
-                    status: role == RoleEnum.admin
-                        ? OutingStatus.admin
-                        : OutingStatus.waiting,
+                  child: myOutingStatus.when(
+                    data: (value) => ProfileContainer(
+                      name: value.name,
+                      grade: value.grade,
+                      major: value.department,
+                      lateCount: 0,
+                      status: role == RoleEnum.admin
+                          ? OutingStatus.admin
+                          : OutingStatus.fromApi(value.status),
+                    ),
+                    loading: () => ProfileContainer(
+                      name: '불러오는 중',
+                      grade: 0,
+                      major: '',
+                      lateCount: 0,
+                      status: role == RoleEnum.admin
+                          ? OutingStatus.admin
+                          : OutingStatus.waiting,
+                    ),
+                    error: (_, __) => ProfileContainer(
+                      name: '정보 없음',
+                      grade: 0,
+                      major: '',
+                      lateCount: 0,
+                      status: role == RoleEnum.admin
+                          ? OutingStatus.admin
+                          : OutingStatus.waiting,
+                    ),
                   ),
                 ),
                 Padding(

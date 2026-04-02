@@ -9,7 +9,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/features/home/shared/presentation/widgets/date_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_list_container.dart';
-import 'package:goms/features/home/shared/presentation/widgets/search_profile_container_model.dart';
+import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 
 class AdminLatecomerListScreen extends ConsumerStatefulWidget {
   const AdminLatecomerListScreen({

@@ -9,10 +9,9 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
-import 'package:goms/features/home/shared/presentation/widgets/search_profile_container_model.dart';
-import 'package:goms/features/home/shared/presentation/widgets/search_profile_list.dart';
-import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
+import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -23,16 +22,17 @@ import 'package:goms/core/utils/settings_storage.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
 
-class OutingStateScreen extends ConsumerStatefulWidget {
-  const OutingStateScreen({
+class AdminOutingStateScreen extends ConsumerStatefulWidget {
+  const AdminOutingStateScreen({
     super.key,
   });
 
   @override
-  ConsumerState<OutingStateScreen> createState() => _OutingStateScreenState();
+  ConsumerState<AdminOutingStateScreen> createState() =>
+      _AdminOutingStateScreen();
 }
 
-class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
+class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
   bool isOutingDay = true;
 
   @override
@@ -80,6 +80,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   @override
   Widget build(BuildContext context) {
     final searchText = ref.watch(searchTextProvider);
+
     final role = ref.watch(roleProvider);
 
     final filteredList = searchText.isEmpty
@@ -96,7 +97,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           Align(
             alignment: Alignment.topLeft,
             child: Text(
-              '외출 현황',
+              '학생관리',
               style: AppTextStyles.title1.copyWith(
                 color: context.mainTextColor,
               ),
@@ -149,16 +150,17 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 const FilterButton(),
               ],
             ),
+            AppGap.v12,
             Expanded(
               child: ListView.separated(
                 itemCount: filteredList.length,
                 itemBuilder: (context, index) {
                   final member = filteredList[index];
-                  return SearchProfileList(
+                  return AdminOutingStateContainer(
                     name: member.name,
                     grade: member.grade,
                     major: member.major,
-                    role: role,
+                    studentRole: member.studentRole,
                   );
                 },
                 separatorBuilder: (context, index) {
@@ -172,17 +174,8 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           ],
         ],
       ),
-      floatingActionButton: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (role == RoleEnum.admin) ...[
-            const UserManageButton(),
-            AppGap.v12,
-          ],
-          QRButton(
-            type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
-          ),
-        ],
+      floatingActionButton: QRButton(
+        type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
       ),
     );
   }

@@ -7,6 +7,21 @@ enum OutingStatus {
   rejected,
   admin;
 
+  factory OutingStatus.fromApi(String value) {
+    switch (value.trim().toUpperCase()) {
+      case 'COMING':
+        return OutingStatus.approved;
+      case 'BANNED':
+        return OutingStatus.rejected;
+      case 'COUNCIL':
+      case 'ADMIN':
+        return OutingStatus.admin;
+      case 'WAITING':
+      default:
+        return OutingStatus.waiting;
+    }
+  }
+
   String get statusText {
     switch (this) {
       case OutingStatus.waiting:

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/session/data/response/signin/signin_response_dto.dart';
 
 part 'session_remote_datasource.g.dart';
 

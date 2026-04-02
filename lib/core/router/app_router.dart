@@ -7,8 +7,8 @@ import 'package:goms/features/auth/password_reset/presentation/screens/reset_pas
 import 'package:goms/features/auth/signup/presentation/screens/password_screen.dart';
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
-import 'package:goms/features/home/outing_status/presentation/screens/outing_state_screen.dart';
-import 'package:goms/features/home/outing_waiting/presentation/screens/outing_waiting_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/home/shared/presentation/widgets/main_shell.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';

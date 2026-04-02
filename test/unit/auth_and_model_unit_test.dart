@@ -3,7 +3,8 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
-import 'package:goms/features/home/shared/presentation/widgets/search_profile_container_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_status.dart';
+import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 
 void main() {
   group('LoginState', () {
@@ -42,6 +43,14 @@ void main() {
       expect(model.name, '이주언');
       expect(model.grade, 3);
       expect(model.major, 'AI');
+    });
+  });
+
+  group('OutingStatus', () {
+    test('fromApi maps known values', () {
+      expect(OutingStatus.fromApi('COMING'), OutingStatus.approved);
+      expect(OutingStatus.fromApi('BANNED'), OutingStatus.rejected);
+      expect(OutingStatus.fromApi('WAITING'), OutingStatus.waiting);
     });
   });
 

@@ -9,7 +9,7 @@ class MemberListBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(memberListViewModelProvider);
+    final state = ref.watch(memberListProvider);
 
     return state.when(
       loading: () => const Center(
@@ -19,7 +19,7 @@ class MemberListBody extends ConsumerWidget {
       error: (error, _) => MemberErrorView(
         message: _toErrorMessage(error),
         onRetry: () {
-          ref.read(memberListViewModelProvider.notifier).reload();
+          ref.read(memberListProvider.notifier).reload();
         },
       ),
     );

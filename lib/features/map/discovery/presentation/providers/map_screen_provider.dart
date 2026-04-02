@@ -5,26 +5,26 @@ import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/services/kakao_local_service.dart';
 import 'package:goms/features/map/data/services/map_service_providers.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_review_model.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_state.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 
-final mapPageProvider = NotifierProvider<MapPageNotifier, MapPageState>(
-  MapPageNotifier.new,
+final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
+  MapScreenNotifier.new,
 );
 
-class MapPageNotifier extends Notifier<MapPageState> {
+class MapScreenNotifier extends Notifier<MapScreenState> {
   late final KakaoLocalService _localService;
 
   @override
-  MapPageState build() {
+  MapScreenState build() {
     _localService = ref.read(kakaoLocalServiceProvider);
     Future.microtask(fetchData);
-    return MapPageState.initial();
+    return MapScreenState.initial();
   }
 
   Future<void> fetchData() async {
-    state = state.copyWith(status: MapPageStatus.loading);
+    state = state.copyWith(status: MapScreenStatus.loading);
 
     try {
       final schoolCoordinate = await _resolveSchoolCoordinate();
@@ -32,7 +32,7 @@ class MapPageNotifier extends Notifier<MapPageState> {
       final reviewModels = _buildReviewModels(popularPlaces);
 
       state = state.copyWith(
-        status: MapPageStatus.success,
+        status: MapScreenStatus.success,
         popularPlaces: popularPlaces,
         reviewModels: reviewModels,
         recommendedCount: popularPlaces.length,
@@ -40,7 +40,7 @@ class MapPageNotifier extends Notifier<MapPageState> {
       );
     } catch (_) {
       state = state.copyWith(
-        status: MapPageStatus.failure,
+        status: MapScreenStatus.failure,
         errorMessage: '장소 정보를 불러오는데 실패했습니다.',
       );
     }
@@ -48,7 +48,7 @@ class MapPageNotifier extends Notifier<MapPageState> {
 
   void clearError() {
     state = state.copyWith(
-      status: MapPageStatus.initial,
+      status: MapScreenStatus.initial,
       errorMessage: null,
     );
   }
@@ -117,13 +117,13 @@ class MapPageNotifier extends Notifier<MapPageState> {
     }
   }
 
-  List<MapPageReviewModel> _buildReviewModels(List<PopularPlace> places) {
+  List<MapScreenReviewModel> _buildReviewModels(List<PopularPlace> places) {
     if (places.isEmpty) {
       return const [];
     }
 
     return places.take(min(2, places.length)).map((place) {
-      return MapPageReviewModel(
+      return MapScreenReviewModel(
         placeName: place.name,
         category: place.category,
         address: place.address,

@@ -14,7 +14,7 @@ import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
 import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
-import 'package:goms/features/map/discovery/presentation/screens/map_page.dart';
+import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
 import 'package:goms/features/member/presentation/screens/member_list_screen.dart';
@@ -137,7 +137,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.map,
               name: 'map',
-              builder: (context, state) => const MapPage(),
+              builder: (context, state) => const MapScreen(),
               routes: [
                 GoRoute(
                   path: 'direction',

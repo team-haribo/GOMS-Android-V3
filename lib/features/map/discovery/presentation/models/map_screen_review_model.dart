@@ -1,11 +1,11 @@
-class MapPageReviewModel {
+class MapScreenReviewModel {
   final String placeName;
   final String category;
   final String address;
   final String reviewDetailContent;
   final DateTime createdAt;
 
-  const MapPageReviewModel({
+  const MapScreenReviewModel({
     required this.placeName,
     required this.category,
     required this.address,

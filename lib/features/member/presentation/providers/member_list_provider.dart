@@ -4,12 +4,12 @@ import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/domain/entities/member_entity.dart';
 
-final memberListViewModelProvider =
-    AsyncNotifierProvider<MemberListViewModel, List<MemberEntity>>(
-  MemberListViewModel.new,
+final memberListProvider =
+    AsyncNotifierProvider<MemberListNotifier, List<MemberEntity>>(
+  MemberListNotifier.new,
 );
 
-class MemberListViewModel extends AsyncNotifier<List<MemberEntity>> {
+class MemberListNotifier extends AsyncNotifier<List<MemberEntity>> {
   @override
   Future<List<MemberEntity>> build() async {
     return _fetchMembers();

@@ -9,13 +9,13 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_shared_widgets.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_review_model.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_state.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/shared/presentation/widgets/place_container.dart';
 
 class MapMainOverlay extends StatelessWidget {
-  final MapPageState state;
+  final MapScreenState state;
 
   const MapMainOverlay({
     super.key,
@@ -36,7 +36,11 @@ class MapMainOverlay extends StatelessWidget {
       children: [
         Padding(
           padding: EdgeInsets.fromLTRB(
-              horizontalPadding, topPadding, horizontalPadding, 0),
+            horizontalPadding,
+            topPadding,
+            horizontalPadding,
+            0,
+          ),
           child: const SearchTextField(),
         ),
         Expanded(
@@ -60,7 +64,8 @@ class MapMainOverlay extends StatelessWidget {
                       slivers: [
                         SliverPadding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: horizontalPadding),
+                            horizontal: horizontalPadding,
+                          ),
                           sliver: SliverToBoxAdapter(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +110,7 @@ class MapMainOverlay extends StatelessWidget {
 
 class _PopularPlacesSection extends StatelessWidget {
   final bool isLight;
-  final MapPageStatus status;
+  final MapScreenStatus status;
   final List<PopularPlace> popularPlaces;
 
   const _PopularPlacesSection({
@@ -132,7 +137,7 @@ class _PopularPlacesSection extends StatelessWidget {
           ],
         ),
         AppGap.v16,
-        if (status == MapPageStatus.loading && popularPlaces.isEmpty)
+        if (status == MapScreenStatus.loading && popularPlaces.isEmpty)
           const Center(child: CircularProgressIndicator())
         else if (popularPlaces.isEmpty)
           Text(
@@ -164,7 +169,7 @@ class _PopularPlacesSection extends StatelessWidget {
 class _MyActivitySection extends StatelessWidget {
   final bool isLight;
   final List<PopularPlace> popularPlaces;
-  final List<MapPageReviewModel> reviewModels;
+  final List<MapScreenReviewModel> reviewModels;
   final int recommendedCount;
   final int reviewCount;
 
@@ -236,7 +241,7 @@ class _MyActivitySection extends StatelessWidget {
 }
 
 class _ReviewCard extends StatelessWidget {
-  final MapPageReviewModel review;
+  final MapScreenReviewModel review;
   final bool isLight;
 
   const _ReviewCard({

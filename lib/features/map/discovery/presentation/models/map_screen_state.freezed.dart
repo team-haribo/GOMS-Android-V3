@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'map_page_state.dart';
+part of 'map_screen_state.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,27 +13,27 @@ part of 'map_page_state.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$MapPageState {
-  MapPageStatus get status;
+mixin _$MapScreenState {
+  MapScreenStatus get status;
   List<PopularPlace> get popularPlaces;
-  List<MapPageReviewModel> get reviewModels;
+  List<MapScreenReviewModel> get reviewModels;
   int get recommendedCount;
   int get reviewCount;
   String? get errorMessage;
 
-  /// Create a copy of MapPageState
+  /// Create a copy of MapScreenState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $MapPageStateCopyWith<MapPageState> get copyWith =>
-      _$MapPageStateCopyWithImpl<MapPageState>(
-          this as MapPageState, _$identity);
+  $MapScreenStateCopyWith<MapScreenState> get copyWith =>
+      _$MapScreenStateCopyWithImpl<MapScreenState>(
+          this as MapScreenState, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is MapPageState &&
+            other is MapScreenState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other.popularPlaces, popularPlaces) &&
@@ -59,33 +59,34 @@ mixin _$MapPageState {
 
   @override
   String toString() {
-    return 'MapPageState(status: $status, popularPlaces: $popularPlaces, reviewModels: $reviewModels, recommendedCount: $recommendedCount, reviewCount: $reviewCount, errorMessage: $errorMessage)';
+    return 'MapScreenState(status: $status, popularPlaces: $popularPlaces, reviewModels: $reviewModels, recommendedCount: $recommendedCount, reviewCount: $reviewCount, errorMessage: $errorMessage)';
   }
 }
 
 /// @nodoc
-abstract mixin class $MapPageStateCopyWith<$Res> {
-  factory $MapPageStateCopyWith(
-          MapPageState value, $Res Function(MapPageState) _then) =
-      _$MapPageStateCopyWithImpl;
+abstract mixin class $MapScreenStateCopyWith<$Res> {
+  factory $MapScreenStateCopyWith(
+          MapScreenState value, $Res Function(MapScreenState) _then) =
+      _$MapScreenStateCopyWithImpl;
   @useResult
   $Res call(
-      {MapPageStatus status,
+      {MapScreenStatus status,
       List<PopularPlace> popularPlaces,
-      List<MapPageReviewModel> reviewModels,
+      List<MapScreenReviewModel> reviewModels,
       int recommendedCount,
       int reviewCount,
       String? errorMessage});
 }
 
 /// @nodoc
-class _$MapPageStateCopyWithImpl<$Res> implements $MapPageStateCopyWith<$Res> {
-  _$MapPageStateCopyWithImpl(this._self, this._then);
+class _$MapScreenStateCopyWithImpl<$Res>
+    implements $MapScreenStateCopyWith<$Res> {
+  _$MapScreenStateCopyWithImpl(this._self, this._then);
 
-  final MapPageState _self;
-  final $Res Function(MapPageState) _then;
+  final MapScreenState _self;
+  final $Res Function(MapScreenState) _then;
 
-  /// Create a copy of MapPageState
+  /// Create a copy of MapScreenState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -101,7 +102,7 @@ class _$MapPageStateCopyWithImpl<$Res> implements $MapPageStateCopyWith<$Res> {
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as MapPageStatus,
+              as MapScreenStatus,
       popularPlaces: null == popularPlaces
           ? _self.popularPlaces
           : popularPlaces // ignore: cast_nullable_to_non_nullable
@@ -109,7 +110,7 @@ class _$MapPageStateCopyWithImpl<$Res> implements $MapPageStateCopyWith<$Res> {
       reviewModels: null == reviewModels
           ? _self.reviewModels
           : reviewModels // ignore: cast_nullable_to_non_nullable
-              as List<MapPageReviewModel>,
+              as List<MapScreenReviewModel>,
       recommendedCount: null == recommendedCount
           ? _self.recommendedCount
           : recommendedCount // ignore: cast_nullable_to_non_nullable
@@ -126,8 +127,8 @@ class _$MapPageStateCopyWithImpl<$Res> implements $MapPageStateCopyWith<$Res> {
   }
 }
 
-/// Adds pattern-matching-related methods to [MapPageState].
-extension MapPageStatePatterns on MapPageState {
+/// Adds pattern-matching-related methods to [MapScreenState].
+extension MapScreenStatePatterns on MapScreenState {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -142,12 +143,12 @@ extension MapPageStatePatterns on MapPageState {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_MapPageState value)? $default, {
+    TResult Function(_MapScreenState value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _MapPageState() when $default != null:
+      case _MapScreenState() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -169,11 +170,11 @@ extension MapPageStatePatterns on MapPageState {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_MapPageState value) $default,
+    TResult Function(_MapScreenState value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MapPageState():
+      case _MapScreenState():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -194,11 +195,11 @@ extension MapPageStatePatterns on MapPageState {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_MapPageState value)? $default,
+    TResult? Function(_MapScreenState value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MapPageState() when $default != null:
+      case _MapScreenState() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -220,9 +221,9 @@ extension MapPageStatePatterns on MapPageState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
-            MapPageStatus status,
+            MapScreenStatus status,
             List<PopularPlace> popularPlaces,
-            List<MapPageReviewModel> reviewModels,
+            List<MapScreenReviewModel> reviewModels,
             int recommendedCount,
             int reviewCount,
             String? errorMessage)?
@@ -231,7 +232,7 @@ extension MapPageStatePatterns on MapPageState {
   }) {
     final _that = this;
     switch (_that) {
-      case _MapPageState() when $default != null:
+      case _MapScreenState() when $default != null:
         return $default(_that.status, _that.popularPlaces, _that.reviewModels,
             _that.recommendedCount, _that.reviewCount, _that.errorMessage);
       case _:
@@ -255,9 +256,9 @@ extension MapPageStatePatterns on MapPageState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(
-            MapPageStatus status,
+            MapScreenStatus status,
             List<PopularPlace> popularPlaces,
-            List<MapPageReviewModel> reviewModels,
+            List<MapScreenReviewModel> reviewModels,
             int recommendedCount,
             int reviewCount,
             String? errorMessage)
@@ -265,7 +266,7 @@ extension MapPageStatePatterns on MapPageState {
   ) {
     final _that = this;
     switch (_that) {
-      case _MapPageState():
+      case _MapScreenState():
         return $default(_that.status, _that.popularPlaces, _that.reviewModels,
             _that.recommendedCount, _that.reviewCount, _that.errorMessage);
       case _:
@@ -288,9 +289,9 @@ extension MapPageStatePatterns on MapPageState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
-            MapPageStatus status,
+            MapScreenStatus status,
             List<PopularPlace> popularPlaces,
-            List<MapPageReviewModel> reviewModels,
+            List<MapScreenReviewModel> reviewModels,
             int recommendedCount,
             int reviewCount,
             String? errorMessage)?
@@ -298,7 +299,7 @@ extension MapPageStatePatterns on MapPageState {
   ) {
     final _that = this;
     switch (_that) {
-      case _MapPageState() when $default != null:
+      case _MapScreenState() when $default != null:
         return $default(_that.status, _that.popularPlaces, _that.reviewModels,
             _that.recommendedCount, _that.reviewCount, _that.errorMessage);
       case _:
@@ -309,12 +310,12 @@ extension MapPageStatePatterns on MapPageState {
 
 /// @nodoc
 
-class _MapPageState implements MapPageState {
-  const _MapPageState(
-      {this.status = MapPageStatus.initial,
+class _MapScreenState implements MapScreenState {
+  const _MapScreenState(
+      {this.status = MapScreenStatus.initial,
       final List<PopularPlace> popularPlaces = const <PopularPlace>[],
-      final List<MapPageReviewModel> reviewModels =
-          const <MapPageReviewModel>[],
+      final List<MapScreenReviewModel> reviewModels =
+          const <MapScreenReviewModel>[],
       this.recommendedCount = 0,
       this.reviewCount = 0,
       this.errorMessage})
@@ -323,7 +324,7 @@ class _MapPageState implements MapPageState {
 
   @override
   @JsonKey()
-  final MapPageStatus status;
+  final MapScreenStatus status;
   final List<PopularPlace> _popularPlaces;
   @override
   @JsonKey()
@@ -333,10 +334,10 @@ class _MapPageState implements MapPageState {
     return EqualUnmodifiableListView(_popularPlaces);
   }
 
-  final List<MapPageReviewModel> _reviewModels;
+  final List<MapScreenReviewModel> _reviewModels;
   @override
   @JsonKey()
-  List<MapPageReviewModel> get reviewModels {
+  List<MapScreenReviewModel> get reviewModels {
     if (_reviewModels is EqualUnmodifiableListView) return _reviewModels;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_reviewModels);
@@ -351,19 +352,19 @@ class _MapPageState implements MapPageState {
   @override
   final String? errorMessage;
 
-  /// Create a copy of MapPageState
+  /// Create a copy of MapScreenState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$MapPageStateCopyWith<_MapPageState> get copyWith =>
-      __$MapPageStateCopyWithImpl<_MapPageState>(this, _$identity);
+  _$MapScreenStateCopyWith<_MapScreenState> get copyWith =>
+      __$MapScreenStateCopyWithImpl<_MapScreenState>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _MapPageState &&
+            other is _MapScreenState &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
                 .equals(other._popularPlaces, _popularPlaces) &&
@@ -389,36 +390,36 @@ class _MapPageState implements MapPageState {
 
   @override
   String toString() {
-    return 'MapPageState(status: $status, popularPlaces: $popularPlaces, reviewModels: $reviewModels, recommendedCount: $recommendedCount, reviewCount: $reviewCount, errorMessage: $errorMessage)';
+    return 'MapScreenState(status: $status, popularPlaces: $popularPlaces, reviewModels: $reviewModels, recommendedCount: $recommendedCount, reviewCount: $reviewCount, errorMessage: $errorMessage)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$MapPageStateCopyWith<$Res>
-    implements $MapPageStateCopyWith<$Res> {
-  factory _$MapPageStateCopyWith(
-          _MapPageState value, $Res Function(_MapPageState) _then) =
-      __$MapPageStateCopyWithImpl;
+abstract mixin class _$MapScreenStateCopyWith<$Res>
+    implements $MapScreenStateCopyWith<$Res> {
+  factory _$MapScreenStateCopyWith(
+          _MapScreenState value, $Res Function(_MapScreenState) _then) =
+      __$MapScreenStateCopyWithImpl;
   @override
   @useResult
   $Res call(
-      {MapPageStatus status,
+      {MapScreenStatus status,
       List<PopularPlace> popularPlaces,
-      List<MapPageReviewModel> reviewModels,
+      List<MapScreenReviewModel> reviewModels,
       int recommendedCount,
       int reviewCount,
       String? errorMessage});
 }
 
 /// @nodoc
-class __$MapPageStateCopyWithImpl<$Res>
-    implements _$MapPageStateCopyWith<$Res> {
-  __$MapPageStateCopyWithImpl(this._self, this._then);
+class __$MapScreenStateCopyWithImpl<$Res>
+    implements _$MapScreenStateCopyWith<$Res> {
+  __$MapScreenStateCopyWithImpl(this._self, this._then);
 
-  final _MapPageState _self;
-  final $Res Function(_MapPageState) _then;
+  final _MapScreenState _self;
+  final $Res Function(_MapScreenState) _then;
 
-  /// Create a copy of MapPageState
+  /// Create a copy of MapScreenState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -430,11 +431,11 @@ class __$MapPageStateCopyWithImpl<$Res>
     Object? reviewCount = null,
     Object? errorMessage = freezed,
   }) {
-    return _then(_MapPageState(
+    return _then(_MapScreenState(
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as MapPageStatus,
+              as MapScreenStatus,
       popularPlaces: null == popularPlaces
           ? _self._popularPlaces
           : popularPlaces // ignore: cast_nullable_to_non_nullable
@@ -442,7 +443,7 @@ class __$MapPageStateCopyWithImpl<$Res>
       reviewModels: null == reviewModels
           ? _self._reviewModels
           : reviewModels // ignore: cast_nullable_to_non_nullable
-              as List<MapPageReviewModel>,
+              as List<MapScreenReviewModel>,
       recommendedCount: null == recommendedCount
           ? _self.recommendedCount
           : recommendedCount // ignore: cast_nullable_to_non_nullable

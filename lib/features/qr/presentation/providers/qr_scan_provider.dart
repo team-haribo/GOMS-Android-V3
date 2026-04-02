@@ -27,7 +27,8 @@ class QrScanNotifier extends Notifier<QrScanState> {
 
     try {
       final payload = _parsePayload(rawValue);
-      final myStatus = await ref.read(getMyOutingStatusUseCaseProvider).call();
+      final myStatus =
+          await ref.read(outingRepositoryProvider).getMyOutingStatus();
 
       switch (myStatus.status) {
         case OutingStatusType.cannotOuting:
@@ -35,7 +36,7 @@ class QrScanNotifier extends Notifier<QrScanState> {
           return;
         case OutingStatusType.outing:
           final response =
-              await ref.read(processComingByQrUseCaseProvider).call(
+              await ref.read(outingRepositoryProvider).processComingByQr(
                     uuid: payload.uuid,
                     exp: payload.exp,
                   );
@@ -46,7 +47,7 @@ class QrScanNotifier extends Notifier<QrScanState> {
           );
           return;
         case OutingStatusType.coming:
-          await ref.read(processOutingByQrUseCaseProvider).call(
+          await ref.read(outingRepositoryProvider).processOutingByQr(
                 uuid: payload.uuid,
                 exp: payload.exp,
               );

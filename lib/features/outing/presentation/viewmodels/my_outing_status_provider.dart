@@ -28,7 +28,7 @@ class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusEntity> {
     }
 
     try {
-      return await ref.read(getMyOutingStatusUseCaseProvider).call();
+      return await ref.read(outingRepositoryProvider).getMyOutingStatus();
     } on DioException catch (error) {
       throw MyOutingStatusException(
         NetworkException.fromDioException(error).message,

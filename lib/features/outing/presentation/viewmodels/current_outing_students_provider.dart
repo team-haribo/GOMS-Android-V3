@@ -28,7 +28,9 @@ class CurrentOutingStudentsNotifier
     }
 
     try {
-      return await ref.read(getCurrentOutingStudentsUseCaseProvider).call();
+      return await ref
+          .read(outingRepositoryProvider)
+          .getCurrentOutingStudents();
     } on DioException catch (error) {
       throw CurrentOutingStudentsException(
         NetworkException.fromDioException(error).message,

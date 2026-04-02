@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'search_outing_students_response.dart';
+part of 'current_outing_students_response.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,26 +13,26 @@ part of 'search_outing_students_response.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$SearchOutingStudentsResponse {
+mixin _$CurrentOutingStudentsResponse {
   List<OutingStudentResponse> get students;
 
-  /// Create a copy of SearchOutingStudentsResponse
+  /// Create a copy of CurrentOutingStudentsResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $SearchOutingStudentsResponseCopyWith<SearchOutingStudentsResponse>
-      get copyWith => _$SearchOutingStudentsResponseCopyWithImpl<
-              SearchOutingStudentsResponse>(
-          this as SearchOutingStudentsResponse, _$identity);
+  $CurrentOutingStudentsResponseCopyWith<CurrentOutingStudentsResponse>
+      get copyWith => _$CurrentOutingStudentsResponseCopyWithImpl<
+              CurrentOutingStudentsResponse>(
+          this as CurrentOutingStudentsResponse, _$identity);
 
-  /// Serializes this SearchOutingStudentsResponse to a JSON map.
+  /// Serializes this CurrentOutingStudentsResponse to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is SearchOutingStudentsResponse &&
+            other is CurrentOutingStudentsResponse &&
             const DeepCollectionEquality().equals(other.students, students));
   }
 
@@ -43,29 +43,29 @@ mixin _$SearchOutingStudentsResponse {
 
   @override
   String toString() {
-    return 'SearchOutingStudentsResponse(students: $students)';
+    return 'CurrentOutingStudentsResponse(students: $students)';
   }
 }
 
 /// @nodoc
-abstract mixin class $SearchOutingStudentsResponseCopyWith<$Res> {
-  factory $SearchOutingStudentsResponseCopyWith(
-          SearchOutingStudentsResponse value,
-          $Res Function(SearchOutingStudentsResponse) _then) =
-      _$SearchOutingStudentsResponseCopyWithImpl;
+abstract mixin class $CurrentOutingStudentsResponseCopyWith<$Res> {
+  factory $CurrentOutingStudentsResponseCopyWith(
+          CurrentOutingStudentsResponse value,
+          $Res Function(CurrentOutingStudentsResponse) _then) =
+      _$CurrentOutingStudentsResponseCopyWithImpl;
   @useResult
   $Res call({List<OutingStudentResponse> students});
 }
 
 /// @nodoc
-class _$SearchOutingStudentsResponseCopyWithImpl<$Res>
-    implements $SearchOutingStudentsResponseCopyWith<$Res> {
-  _$SearchOutingStudentsResponseCopyWithImpl(this._self, this._then);
+class _$CurrentOutingStudentsResponseCopyWithImpl<$Res>
+    implements $CurrentOutingStudentsResponseCopyWith<$Res> {
+  _$CurrentOutingStudentsResponseCopyWithImpl(this._self, this._then);
 
-  final SearchOutingStudentsResponse _self;
-  final $Res Function(SearchOutingStudentsResponse) _then;
+  final CurrentOutingStudentsResponse _self;
+  final $Res Function(CurrentOutingStudentsResponse) _then;
 
-  /// Create a copy of SearchOutingStudentsResponse
+  /// Create a copy of CurrentOutingStudentsResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -81,8 +81,9 @@ class _$SearchOutingStudentsResponseCopyWithImpl<$Res>
   }
 }
 
-/// Adds pattern-matching-related methods to [SearchOutingStudentsResponse].
-extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
+/// Adds pattern-matching-related methods to [CurrentOutingStudentsResponse].
+extension CurrentOutingStudentsResponsePatterns
+    on CurrentOutingStudentsResponse {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -97,12 +98,12 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_SearchOutingStudentsResponse value)? $default, {
+    TResult Function(_CurrentOutingStudentsResponse value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse() when $default != null:
+      case _CurrentOutingStudentsResponse() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -124,11 +125,11 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_SearchOutingStudentsResponse value) $default,
+    TResult Function(_CurrentOutingStudentsResponse value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse():
+      case _CurrentOutingStudentsResponse():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -149,11 +150,11 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_SearchOutingStudentsResponse value)? $default,
+    TResult? Function(_CurrentOutingStudentsResponse value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse() when $default != null:
+      case _CurrentOutingStudentsResponse() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -179,7 +180,7 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
   }) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse() when $default != null:
+      case _CurrentOutingStudentsResponse() when $default != null:
         return $default(_that.students);
       case _:
         return orElse();
@@ -205,7 +206,7 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
   ) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse():
+      case _CurrentOutingStudentsResponse():
         return $default(_that.students);
       case _:
         throw StateError('Unexpected subclass');
@@ -230,7 +231,7 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
   ) {
     final _that = this;
     switch (_that) {
-      case _SearchOutingStudentsResponse() when $default != null:
+      case _CurrentOutingStudentsResponse() when $default != null:
         return $default(_that.students);
       case _:
         return null;
@@ -240,12 +241,12 @@ extension SearchOutingStudentsResponsePatterns on SearchOutingStudentsResponse {
 
 /// @nodoc
 @JsonSerializable()
-class _SearchOutingStudentsResponse implements SearchOutingStudentsResponse {
-  const _SearchOutingStudentsResponse(
+class _CurrentOutingStudentsResponse implements CurrentOutingStudentsResponse {
+  const _CurrentOutingStudentsResponse(
       {required final List<OutingStudentResponse> students})
       : _students = students;
-  factory _SearchOutingStudentsResponse.fromJson(Map<String, dynamic> json) =>
-      _$SearchOutingStudentsResponseFromJson(json);
+  factory _CurrentOutingStudentsResponse.fromJson(Map<String, dynamic> json) =>
+      _$CurrentOutingStudentsResponseFromJson(json);
 
   final List<OutingStudentResponse> _students;
   @override
@@ -255,18 +256,18 @@ class _SearchOutingStudentsResponse implements SearchOutingStudentsResponse {
     return EqualUnmodifiableListView(_students);
   }
 
-  /// Create a copy of SearchOutingStudentsResponse
+  /// Create a copy of CurrentOutingStudentsResponse
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$SearchOutingStudentsResponseCopyWith<_SearchOutingStudentsResponse>
-      get copyWith => __$SearchOutingStudentsResponseCopyWithImpl<
-          _SearchOutingStudentsResponse>(this, _$identity);
+  _$CurrentOutingStudentsResponseCopyWith<_CurrentOutingStudentsResponse>
+      get copyWith => __$CurrentOutingStudentsResponseCopyWithImpl<
+          _CurrentOutingStudentsResponse>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$SearchOutingStudentsResponseToJson(
+    return _$CurrentOutingStudentsResponseToJson(
       this,
     );
   }
@@ -275,7 +276,7 @@ class _SearchOutingStudentsResponse implements SearchOutingStudentsResponse {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _SearchOutingStudentsResponse &&
+            other is _CurrentOutingStudentsResponse &&
             const DeepCollectionEquality().equals(other._students, _students));
   }
 
@@ -286,38 +287,38 @@ class _SearchOutingStudentsResponse implements SearchOutingStudentsResponse {
 
   @override
   String toString() {
-    return 'SearchOutingStudentsResponse(students: $students)';
+    return 'CurrentOutingStudentsResponse(students: $students)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$SearchOutingStudentsResponseCopyWith<$Res>
-    implements $SearchOutingStudentsResponseCopyWith<$Res> {
-  factory _$SearchOutingStudentsResponseCopyWith(
-          _SearchOutingStudentsResponse value,
-          $Res Function(_SearchOutingStudentsResponse) _then) =
-      __$SearchOutingStudentsResponseCopyWithImpl;
+abstract mixin class _$CurrentOutingStudentsResponseCopyWith<$Res>
+    implements $CurrentOutingStudentsResponseCopyWith<$Res> {
+  factory _$CurrentOutingStudentsResponseCopyWith(
+          _CurrentOutingStudentsResponse value,
+          $Res Function(_CurrentOutingStudentsResponse) _then) =
+      __$CurrentOutingStudentsResponseCopyWithImpl;
   @override
   @useResult
   $Res call({List<OutingStudentResponse> students});
 }
 
 /// @nodoc
-class __$SearchOutingStudentsResponseCopyWithImpl<$Res>
-    implements _$SearchOutingStudentsResponseCopyWith<$Res> {
-  __$SearchOutingStudentsResponseCopyWithImpl(this._self, this._then);
+class __$CurrentOutingStudentsResponseCopyWithImpl<$Res>
+    implements _$CurrentOutingStudentsResponseCopyWith<$Res> {
+  __$CurrentOutingStudentsResponseCopyWithImpl(this._self, this._then);
 
-  final _SearchOutingStudentsResponse _self;
-  final $Res Function(_SearchOutingStudentsResponse) _then;
+  final _CurrentOutingStudentsResponse _self;
+  final $Res Function(_CurrentOutingStudentsResponse) _then;
 
-  /// Create a copy of SearchOutingStudentsResponse
+  /// Create a copy of CurrentOutingStudentsResponse
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
     Object? students = null,
   }) {
-    return _then(_SearchOutingStudentsResponse(
+    return _then(_CurrentOutingStudentsResponse(
       students: null == students
           ? _self._students
           : students // ignore: cast_nullable_to_non_nullable

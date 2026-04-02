@@ -1,4 +1,5 @@
 import 'package:goms/features/outing/data/datasources/outing_remote_datasource.dart';
+import 'package:goms/features/outing/data/response/list/current_outing_students_response.dart';
 import 'package:goms/features/outing/data/response/search/search_outing_students_response.dart';
 import 'package:goms/features/outing/data/response/status/my_outing_status_response.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
@@ -15,6 +16,12 @@ class OutingRepositoryImpl implements OutingRepository {
   @override
   Future<MyOutingStatusEntity> getMyOutingStatus() async {
     final response = await _remoteDataSource.getMyOutingStatus();
+    return response.toEntity();
+  }
+
+  @override
+  Future<List<OutingStudentEntity>> getCurrentOutingStudents() async {
+    final response = await _remoteDataSource.getCurrentOutingStudents();
     return response.toEntity();
   }
 

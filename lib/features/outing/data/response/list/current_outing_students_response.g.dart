@@ -1,21 +1,21 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_outing_students_response.dart';
+part of 'current_outing_students_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_SearchOutingStudentsResponse _$SearchOutingStudentsResponseFromJson(
+_CurrentOutingStudentsResponse _$CurrentOutingStudentsResponseFromJson(
         Map<String, dynamic> json) =>
-    _SearchOutingStudentsResponse(
+    _CurrentOutingStudentsResponse(
       students: (json['students'] as List<dynamic>)
           .map((e) => OutingStudentResponse.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$SearchOutingStudentsResponseToJson(
-        _SearchOutingStudentsResponse instance) =>
+Map<String, dynamic> _$CurrentOutingStudentsResponseToJson(
+        _CurrentOutingStudentsResponse instance) =>
     <String, dynamic>{
       'students': instance.students,
     };

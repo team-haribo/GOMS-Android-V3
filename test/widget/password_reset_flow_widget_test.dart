@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
@@ -299,6 +298,10 @@ void main() {
 
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.text('인증번호가 올바르지 않습니다.'), findsWidgets);
+
+      container.dispose();
+      await tester.pumpWidget(const SizedBox.shrink());
+      await tester.pump();
     });
   });
 }

@@ -56,10 +56,19 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
           },
         ).show(context);
         notifier.reset();
-      } else if (next.status == VerifyStatus.failure &&
-          next.errorMessage != null) {
+      } else if (next.status == VerifyStatus.failure) {
         notifier.resetStatus();
-        // 에러 호출
+        final message = next.errorMessage ?? next.codeError;
+        if (message == null) {
+          return;
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppColors.negative,
+          ),
+        );
       }
     });
 

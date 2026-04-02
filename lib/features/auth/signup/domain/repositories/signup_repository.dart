@@ -1,4 +1,6 @@
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 
 abstract class SignupRepository {
   Future<void> sendEmailVerification({
@@ -12,7 +14,7 @@ abstract class SignupRepository {
     required String password,
     required String name,
     required int grade,
-    required String department,
-    required String gender,
+    required DepartmentType department,
+    required GenderType gender,
   });
 }

@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:goms/features/member/data/models/current_member_dto.dart';
-import 'package:goms/features/member/data/models/member_dto.dart';
+import 'package:goms/features/member/data/response/current_member_dto.dart';
+import 'package:goms/features/member/data/response/member_dto.dart';
 
 part 'member_remote_datasource.g.dart';
 

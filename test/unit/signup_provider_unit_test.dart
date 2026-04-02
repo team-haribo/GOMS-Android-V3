@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
-import 'package:goms/features/auth/email_verification/data/dto/email_verification/send_email_verification_request_dto.dart';
-import 'package:goms/features/auth/signup/data/dto/signup/signup_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
 import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
-import 'package:goms/features/auth/signup/domain/enums/gender_enum.dart';
-import 'package:goms/features/auth/signup/domain/enums/major_enum.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/viewmodels/signup_provider.dart';
+import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {
@@ -37,8 +37,8 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.validateGrade('3');
-      notifier.setGender(GenderEnum.man);
-      notifier.setMajor(MajorEnum.sw);
+      notifier.setGender(GenderType.male);
+      notifier.setMajor(DepartmentType.sw);
 
       expect(notifier.isFormValid, isTrue);
       expect(container.read(signupProvider).status, SignupStatus.initial);
@@ -90,8 +90,8 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.validateGrade('3');
-      notifier.setGender(GenderEnum.man);
-      notifier.setMajor(MajorEnum.sw);
+      notifier.setGender(GenderType.male);
+      notifier.setMajor(DepartmentType.sw);
       notifier.validatePassword('Abc123!');
       notifier.validatePasswordConfirm('Abc123!');
       authFlow.startSignup('s1001@gsm.hs.kr');
@@ -111,8 +111,8 @@ void main() {
           'department':
               container.read(signupProvider).major!.name.toUpperCase(),
           'gender': switch (container.read(signupProvider).gender!) {
-            GenderEnum.man => 'MALE',
-            GenderEnum.woman => 'FEMALE',
+            GenderType.male => 'MALE',
+            GenderType.female => 'FEMALE',
           },
         }['gender'],
         'MALE',
@@ -137,8 +137,8 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.validateGrade('3');
-      notifier.setGender(GenderEnum.man);
-      notifier.setMajor(MajorEnum.sw);
+      notifier.setGender(GenderType.male);
+      notifier.setMajor(DepartmentType.sw);
       authFlow.startSignup('s1001@gsm.hs.kr');
 
       await notifier.submitSignup();
@@ -167,8 +167,8 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.validateGrade('3');
-      notifier.setGender(GenderEnum.man);
-      notifier.setMajor(MajorEnum.sw);
+      notifier.setGender(GenderType.male);
+      notifier.setMajor(DepartmentType.sw);
       authFlow.startSignup('s1001@gsm.hs.kr');
       authFlow.setVerifiedToken('verified-token');
 
@@ -209,8 +209,8 @@ void main() {
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
       notifier.validateGrade('3');
-      notifier.setGender(GenderEnum.man);
-      notifier.setMajor(MajorEnum.sw);
+      notifier.setGender(GenderType.male);
+      notifier.setMajor(DepartmentType.sw);
 
       await notifier.submitSignup();
 

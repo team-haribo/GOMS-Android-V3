@@ -8,11 +8,11 @@ import 'package:goms/features/map/shared/presentation/widgets/map_direction_over
 import 'package:goms/features/map/shared/presentation/widgets/map_main_overlay.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_scaffold.dart';
 import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
-import 'package:goms/features/map/direction/presentation/viewmodels/direction_provider.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_state.dart';
+import 'package:goms/features/map/direction/presentation/providers/direction_provider.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
-import 'package:goms/features/map/discovery/presentation/viewmodels/map_page_provider.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
 import 'package:goms/features/map/shared/presentation/widgets/kakao_map_background.dart';
 
 class MapBaseScreen extends ConsumerStatefulWidget {
@@ -61,7 +61,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
-    final mapState = ref.watch(mapPageProvider);
+    final mapState = ref.watch(mapScreenProvider);
     final directionState = ref.watch(directionProvider);
 
     if (widget.type != MapScreenType.main && place == null) {
@@ -72,12 +72,13 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
     if (widget.type == MapScreenType.main ||
         widget.type == MapScreenType.detail) {
-      ref.listen<MapPageState>(mapPageProvider, (previous, next) {
+      ref.listen<MapScreenState>(mapScreenProvider, (previous, next) {
         if (!mounted) {
           return;
         }
-        if (next.status == MapPageStatus.failure && next.errorMessage != null) {
-          ref.read(mapPageProvider.notifier).clearError();
+        if (next.status == MapScreenStatus.failure &&
+            next.errorMessage != null) {
+          ref.read(mapScreenProvider.notifier).clearError();
           _showError(next.errorMessage!);
         }
       });
@@ -118,7 +119,8 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
             ),
           ),
           Positioned.fill(
-              child: _buildOverlay(place, mapState, directionState)),
+            child: _buildOverlay(place, mapState, directionState),
+          ),
         ],
       ),
     );
@@ -126,7 +128,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
   Widget _buildOverlay(
     PopularPlace? place,
-    MapPageState mapState,
+    MapScreenState mapState,
     DirectionState directionState,
   ) {
     final overlay = switch (widget.type) {

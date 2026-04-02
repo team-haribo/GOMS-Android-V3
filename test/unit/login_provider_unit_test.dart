@@ -2,12 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/session/data/response/signin/signin_response_dto.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/auth/session/data/repositories/session_repository_impl.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
-import 'package:goms/features/auth/login/presentation/viewmodels/login_provider.dart';
+import 'package:goms/features/auth/login/presentation/providers/login_provider.dart';
 
 void main() {
   group('LoginNotifier', () {

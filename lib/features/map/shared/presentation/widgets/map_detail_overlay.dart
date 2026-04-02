@@ -7,13 +7,13 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_shared_widgets.dart';
-import 'package:goms/features/map/discovery/presentation/models/map_page_state.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/shared/presentation/widgets/arrival_departure_button.dart';
 
 class MapDetailOverlay extends StatelessWidget {
   final PopularPlace place;
-  final MapPageState state;
+  final MapScreenState state;
 
   const MapDetailOverlay({
     super.key,

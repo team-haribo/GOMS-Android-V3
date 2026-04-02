@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/member/presentation/viewmodels/member_list_view_model.dart';
+import 'package:goms/features/member/presentation/providers/member_list_provider.dart';
 import 'package:goms/features/member/presentation/widgets/member_error_view.dart';
 import 'package:goms/features/member/presentation/widgets/member_list_section.dart';
 
@@ -9,7 +9,7 @@ class MemberListBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(memberListViewModelProvider);
+    final state = ref.watch(memberListProvider);
 
     return state.when(
       loading: () => const Center(
@@ -19,7 +19,7 @@ class MemberListBody extends ConsumerWidget {
       error: (error, _) => MemberErrorView(
         message: _toErrorMessage(error),
         onRetry: () {
-          ref.read(memberListViewModelProvider.notifier).reload();
+          ref.read(memberListProvider.notifier).reload();
         },
       ),
     );

@@ -7,21 +7,22 @@ import 'package:goms/features/auth/password_reset/presentation/screens/reset_pas
 import 'package:goms/features/auth/signup/presentation/screens/password_screen.dart';
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
-import 'package:goms/features/home/outing_status/presentation/screens/outing_state_screen.dart';
-import 'package:goms/features/home/outing_waiting/presentation/screens/outing_waiting_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/home/shared/presentation/widgets/main_shell.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
 import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
-import 'package:goms/features/map/discovery/presentation/screens/map_page.dart';
+import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
 import 'package:goms/features/member/presentation/screens/member_list_screen.dart';
-import 'package:goms/features/profile/overview/presentation/screens/my_page_screen.dart';
-import 'package:goms/features/qr/scan/presentation/screens/qr_scan_screen.dart';
-import 'package:goms/features/splash/presentation/pages/onboarding_screen.dart';
-import 'package:goms/features/splash/presentation/pages/splash_screen.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
+import 'package:goms/features/splash/presentation/screens/onboarding_screen.dart';
+import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -77,6 +78,11 @@ final GoRouter router = GoRouter(
       name: 'qr',
       builder: (context, state) => const QrScanScreen(),
     ),
+    GoRoute(
+      path: RoutePath.qrIssue,
+      name: 'qrIssue',
+      builder: (context, state) => const QrIssueScreen(),
+    ),
 
     GoRoute(
       path: RoutePath.outingState,
@@ -131,7 +137,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.map,
               name: 'map',
-              builder: (context, state) => const MapPage(),
+              builder: (context, state) => const MapScreen(),
               routes: [
                 GoRoute(
                   path: 'direction',
@@ -172,10 +178,7 @@ final GoRouter router = GoRouter(
               path: RoutePath.home,
               name: 'home',
               builder: (context, state) {
-                return const OutingWaitingScreen(
-                  approvedStudentCount: 3,
-                  hasLateStudents: false,
-                );
+                return const OutingWaitingScreen();
               },
             ),
           ],

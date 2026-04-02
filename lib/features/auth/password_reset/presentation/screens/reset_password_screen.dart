@@ -6,9 +6,12 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/password_reset/presentation/models/reset_password_state.dart';
-import 'package:goms/features/auth/password_reset/presentation/viewmodels/reset_password_provider.dart';
+import 'package:goms/features/auth/password_reset/presentation/providers/reset_password_provider.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 
@@ -26,6 +29,19 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(resetPasswordProvider.notifier).reset();
+
+      final authFlow = ref.read(authFlowProvider);
+      if (authFlow.verifiedToken != null) {
+        return;
+      }
+
+      if (authFlow.email.isNotEmpty &&
+          authFlow.purpose == EmailVerificationPurpose.passwordChange) {
+        context.go(RoutePath.verify, extra: RoutePath.resetPassword);
+        return;
+      }
+
+      context.go(RoutePath.findPassword);
     });
   }
 
@@ -41,9 +57,12 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         notifier.clearError();
         await GomsDialog.single(
           title: '재설정 완료',
-          content: '비밀번호가 성공적으로 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
-          onConfirm: () {
-            context.go(RoutePath.login);
+          content: '비밀번호가 성공적으로 재설정되었습니다.\n보안을 위해 로그아웃 후 로그인 화면으로 이동합니다.',
+          onConfirm: () async {
+            await ref.read(authProvider.notifier).logout();
+            if (context.mounted) {
+              context.go(RoutePath.login);
+            }
           },
         ).show(context);
       } else if (next.status == ResetPasswordStatus.failure &&

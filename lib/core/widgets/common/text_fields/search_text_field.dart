@@ -4,7 +4,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
-import 'package:goms/core/widgets/common/text_fields/viewmodels/search_text_field_provider.dart';
+import 'package:goms/core/widgets/common/text_fields/providers/search_text_field_provider.dart';
 
 /// 검색 텍스트 필드
 class SearchTextField extends ConsumerStatefulWidget {

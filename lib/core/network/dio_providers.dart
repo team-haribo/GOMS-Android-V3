@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/auth_interceptor.dart';
 import 'package:goms/core/utils/logger.dart';
 
 final dioProvider = Provider<Dio>((ref) {
@@ -19,6 +20,8 @@ final dioProvider = Provider<Dio>((ref) {
       sendTimeout: const Duration(seconds: 10),
     ),
   );
+
+  dio.interceptors.add(AuthInterceptor());
 
   if (kDebugMode) {
     dio.interceptors.add(

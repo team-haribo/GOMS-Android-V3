@@ -285,7 +285,7 @@ class AppIcons {
 
   /// 유저 관리 버튼 아이콘
   static Widget userManageButton(
-          {double? width, double? height, Color? color}) =>
+          {double? width, double? height, Color? color,}) =>
       _loadPng(
         'assets/icons/user_manage_button.png',
         width: width,

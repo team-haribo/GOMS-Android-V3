@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:goms/features/auth/email_verification/data/dto/email_verification/send_email_verification_request_dto.dart';
-import 'package:goms/features/auth/signup/data/dto/signup/signup_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
 
 part 'signup_remote_datasource.g.dart';
 

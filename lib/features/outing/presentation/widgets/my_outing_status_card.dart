@@ -1,0 +1,70 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
+import 'package:goms/features/outing/presentation/models/outing_status.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+
+class MyOutingStatusCard extends ConsumerWidget {
+  const MyOutingStatusCard({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final role = ref.watch(roleProvider);
+    final myOutingStatus = ref.watch(myOutingStatusProvider);
+
+    return myOutingStatus.when(
+      data: (value) => ProfileContainer(
+        name: value.name,
+        grade: value.grade,
+        major: value.department,
+        lateCount: 0,
+        status: role == RoleEnum.admin
+            ? OutingStatus.admin
+            : OutingStatus.fromServer(value.status),
+      ),
+      loading: () => ProfileContainer(
+        name: '불러오는 중',
+        grade: 0,
+        major: '',
+        lateCount: 0,
+        status:
+            role == RoleEnum.admin ? OutingStatus.admin : OutingStatus.waiting,
+      ),
+      error: (error, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ProfileContainer(
+            name: '정보 없음',
+            grade: 0,
+            major: '',
+            lateCount: 0,
+            status: role == RoleEnum.admin
+                ? OutingStatus.admin
+                : OutingStatus.waiting,
+          ),
+          AppGap.v12,
+          Text(
+            error is MyOutingStatusException
+                ? error.message
+                : '내 외출 현황을 불러오지 못했어요.',
+            style: AppTextStyles.text2.copyWith(
+              color: context.sub2Color,
+            ),
+          ),
+          AppGap.v8,
+          TextButton(
+            onPressed: () {
+              ref.read(myOutingStatusProvider.notifier).reload();
+            },
+            child: const Text('다시 시도'),
+          ),
+        ],
+      ),
+    );
+  }
+}

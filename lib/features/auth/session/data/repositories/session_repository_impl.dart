@@ -1,6 +1,6 @@
 import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/session/data/dto/signin/signin_response_dto.dart';
+import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
+import 'package:goms/features/auth/session/data/response/signin/signin_response_dto.dart';
 import 'package:goms/features/auth/session/domain/entities/auth_token_entity.dart';
 import 'package:goms/features/auth/session/domain/repositories/session_repository.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/qr/scan/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
 
 final qrScanProvider =
     NotifierProvider.autoDispose<QrScanNotifier, QrScanState>(

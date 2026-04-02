@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/features/qr/shared/presentation/screens/qr_base_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_base_screen.dart';
 
 /// 지각하셨네요.. 화면
 /// 복귀 시간을 초과했을 때 표시되는 화면 (1주간 외출 금지)

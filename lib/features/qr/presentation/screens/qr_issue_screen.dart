@@ -10,7 +10,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
 import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
-import 'package:goms/features/qr/issue/presentation/viewmodels/issued_qr_provider.dart';
+import 'package:goms/features/qr/presentation/providers/issued_qr_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 

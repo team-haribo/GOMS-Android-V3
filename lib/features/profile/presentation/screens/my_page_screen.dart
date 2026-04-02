@@ -17,10 +17,10 @@ import 'package:goms/features/auth/session/presentation/viewmodels/session_provi
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
 import 'package:goms/features/member/presentation/viewmodels/current_member_provider.dart';
 import 'package:goms/features/outing/presentation/viewmodels/my_outing_status_provider.dart';
-import 'package:goms/features/profile/account/presentation/widgets/account_actions_section.dart';
-import 'package:goms/features/profile/overview/presentation/widgets/profile_summary_section.dart';
-import 'package:goms/features/profile/settings/presentation/viewmodels/settings_provider.dart';
-import 'package:goms/features/profile/settings/presentation/widgets/settings_section.dart';
+import 'package:goms/features/profile/presentation/widgets/account_actions_section.dart';
+import 'package:goms/features/profile/presentation/widgets/profile_summary_section.dart';
+import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/profile/presentation/widgets/settings_section.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 

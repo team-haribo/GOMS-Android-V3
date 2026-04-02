@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/qr/scan/presentation/models/qr_scan_state.dart';
-import 'package:goms/features/qr/scan/presentation/viewmodels/qr_scan_provider.dart';
-import 'package:goms/features/qr/status/presentation/screens/cannot_go_out_screen.dart';
-import 'package:goms/features/qr/status/presentation/screens/late_screen.dart';
-import 'package:goms/features/qr/status/presentation/screens/outing_failed_screen.dart';
-import 'package:goms/features/qr/status/presentation/screens/outing_start_screen.dart';
-import 'package:goms/features/qr/status/presentation/screens/return_success_screen.dart';
+import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/providers/qr_scan_provider.dart';
+import 'package:goms/features/qr/presentation/screens/cannot_go_out_screen.dart';
+import 'package:goms/features/qr/presentation/screens/late_screen.dart';
+import 'package:goms/features/qr/presentation/screens/outing_failed_screen.dart';
+import 'package:goms/features/qr/presentation/screens/outing_start_screen.dart';
+import 'package:goms/features/qr/presentation/screens/return_success_screen.dart';
 
 class QrScanScreen extends ConsumerStatefulWidget {
   const QrScanScreen({super.key});
@@ -115,7 +116,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
+                    onTap: () => context.pop(),
                     child:
                         const Icon(Icons.close, color: Colors.white, size: 28),
                   ),

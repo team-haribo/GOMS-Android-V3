@@ -4,7 +4,7 @@ import 'package:goms/core/theme/config/dark_theme.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/qr/shared/presentation/screens/qr_base_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_base_screen.dart';
 
 void main() async {
   runApp(

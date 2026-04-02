@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -73,8 +72,8 @@ Future<void> main() async {
   final appEnv = AppEnv.fromValue(appEnvValue);
 
   await dotenv.load(fileName: appEnv.fileName);
+  await _bootstrapPlatformServices();
   runApp(const ProviderScope(child: MyApp()));
-  unawaited(_bootstrapPlatformServices());
 }
 
 class MyApp extends ConsumerWidget {

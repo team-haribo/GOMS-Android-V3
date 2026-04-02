@@ -10,8 +10,8 @@ import 'package:goms/features/outing/domain/entities/outing_student_entity.dart'
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
-import 'package:goms/features/qr/scan/presentation/models/qr_scan_state.dart';
-import 'package:goms/features/qr/scan/presentation/viewmodels/qr_scan_provider.dart';
+import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/providers/qr_scan_provider.dart';
 
 void main() {
   group('QrScanNotifier', () {

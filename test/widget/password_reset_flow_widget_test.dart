@@ -25,8 +25,8 @@ import 'package:goms/features/member/presentation/viewmodels/current_member_prov
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/presentation/viewmodels/my_outing_status_provider.dart';
-import 'package:goms/features/profile/overview/presentation/screens/my_page_screen.dart';
-import 'package:goms/features/profile/settings/presentation/viewmodels/settings_provider.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

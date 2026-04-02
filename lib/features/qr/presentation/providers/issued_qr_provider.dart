@@ -22,7 +22,7 @@ class IssuedQrNotifier extends AsyncNotifier<IssuedQrEntity> {
 
   Future<IssuedQrEntity> _issueQr() async {
     try {
-      return await ref.read(issueQrUseCaseProvider).call();
+      return await ref.read(qrRepositoryProvider).issueQr();
     } on DioException catch (error) {
       throw IssueQrException(NetworkException.fromDioException(error).message);
     } catch (error) {

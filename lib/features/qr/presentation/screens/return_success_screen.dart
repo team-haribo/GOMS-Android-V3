@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/features/qr/shared/presentation/screens/qr_base_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_base_screen.dart';
 
 /// 복귀에 성공했어요! 화면
 /// QR 스캔 후 복귀 성공 시 표시되는 화면

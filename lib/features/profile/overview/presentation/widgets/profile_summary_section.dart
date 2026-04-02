@@ -10,9 +10,9 @@ class ProfileSummarySection extends StatelessWidget {
     super.key,
     required this.role,
     required this.name,
-    required this.grade,
-    required this.major,
-    required this.lateCount,
+    this.grade,
+    this.major,
+    this.lateCount,
     required this.textColor,
     required this.subColor,
     required this.surfaceColor,
@@ -20,9 +20,9 @@ class ProfileSummarySection extends StatelessWidget {
 
   final RoleEnum role;
   final String name;
-  final int grade;
-  final String major;
-  final int lateCount;
+  final int? grade;
+  final String? major;
+  final int? lateCount;
   final Color textColor;
   final Color subColor;
   final Color surfaceColor;
@@ -59,7 +59,7 @@ class ProfileSummarySection extends StatelessWidget {
               Text(name, style: AppTextStyles.title3.withColor(textColor)),
               AppGap.v4,
               Text(
-                '$grade기 | $major과',
+                _buildStudentInfoText(),
                 style: AppTextStyles.caption1.withColor(subColor),
               ),
             ],
@@ -72,12 +72,18 @@ class ProfileSummarySection extends StatelessWidget {
             Text('지각 횟수', style: AppTextStyles.text2.withColor(subColor)),
             AppGap.v4,
             Text(
-              '$lateCount번',
+              lateCount == null ? '-' : '$lateCount번',
               style: AppTextStyles.title3.withColor(AppColors.negative),
             ),
           ],
         ),
       ],
     );
+  }
+
+  String _buildStudentInfoText() {
+    final gradeText = grade == null ? '-' : '$grade기';
+    final majorText = (major == null || major!.isEmpty) ? '-' : '$major과';
+    return '$gradeText | $majorText';
   }
 }

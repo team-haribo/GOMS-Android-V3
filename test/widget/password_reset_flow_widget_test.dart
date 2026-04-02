@@ -17,8 +17,8 @@ import 'package:goms/features/auth/email_verification/domain/repositories/email_
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
 import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
-import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/presentation/viewmodels/current_member_provider.dart';

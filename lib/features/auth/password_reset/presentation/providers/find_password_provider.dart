@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/password_reset/presentation/models/find_password_state.dart';
 
 /// 비밀번호 찾기 Provider

@@ -8,9 +8,9 @@ import 'package:goms/features/auth/signup/data/providers/signup_data_providers.d
 import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/viewmodels/signup_provider.dart';
+import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {

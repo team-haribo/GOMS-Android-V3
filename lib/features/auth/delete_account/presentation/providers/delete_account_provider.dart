@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/delete_account/presentation/models/delete_account_state.dart';
-import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 
 /// 회원 탈퇴 Provider

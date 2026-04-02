@@ -8,7 +8,7 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/viewmodels/signup_provider.dart';
+import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
 

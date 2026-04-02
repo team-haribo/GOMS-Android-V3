@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/features/auth/session/presentation/viewmodels/session_provider.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {

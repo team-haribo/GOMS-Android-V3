@@ -7,7 +7,7 @@ import 'package:goms/features/auth/session/data/response/signin/signin_response_
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/auth/session/data/repositories/session_repository_impl.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
-import 'package:goms/features/auth/login/presentation/viewmodels/login_provider.dart';
+import 'package:goms/features/auth/login/presentation/providers/login_provider.dart';
 
 void main() {
   group('LoginNotifier', () {

@@ -8,7 +8,7 @@ import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 
 /// 회원가입 Provider
 final signupProvider = NotifierProvider<SignupNotifier, SignupState>(

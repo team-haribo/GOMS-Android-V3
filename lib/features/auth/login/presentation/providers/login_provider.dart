@@ -4,7 +4,7 @@ import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
-import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 
 /// 로그인 Provider
 final loginProvider = NotifierProvider<LoginNotifier, LoginState>(

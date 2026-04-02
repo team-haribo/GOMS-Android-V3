@@ -5,6 +5,6 @@ enum EmailVerificationPurpose {
   @JsonValue('SIGNUP')
   signup,
 
-  @JsonValue('RESET_PASSWORD')
-  resetPassword,
+  @JsonValue('PASSWORD_CHANGE')
+  passwordChange,
 }

@@ -56,7 +56,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
                       lateCount: 0,
                       status: role == RoleEnum.admin
                           ? OutingStatus.admin
-                          : OutingStatus.fromApi(value.status),
+                          : OutingStatus.fromServer(value.status),
                     ),
                     loading: () => ProfileContainer(
                       name: '불러오는 중',

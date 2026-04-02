@@ -61,7 +61,7 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
       final normalizedEmail = normalizeSchoolEmail(state.email);
       await ref.read(passwordResetRepositoryProvider).sendEmailVerification(
             email: normalizedEmail,
-            purpose: EmailVerificationPurpose.resetPassword,
+            purpose: EmailVerificationPurpose.passwordChange,
           );
       ref.read(authFlowProvider.notifier).startResetPassword(normalizedEmail);
 

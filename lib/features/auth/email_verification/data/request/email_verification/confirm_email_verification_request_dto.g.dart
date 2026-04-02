@@ -25,5 +25,5 @@ Map<String, dynamic> _$ConfirmEmailVerificationRequestDtoToJson(
 
 const _$EmailVerificationPurposeEnumMap = {
   EmailVerificationPurpose.signup: 'SIGNUP',
-  EmailVerificationPurpose.resetPassword: 'RESET_PASSWORD',
+  EmailVerificationPurpose.passwordChange: 'PASSWORD_CHANGE',
 };

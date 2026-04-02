@@ -79,7 +79,7 @@ class AuthFlowNotifier extends Notifier<AuthFlowState> {
   void startResetPassword(String email) {
     state = AuthFlowState(
       email: normalizeSchoolEmail(email),
-      purpose: EmailVerificationPurpose.resetPassword,
+      purpose: EmailVerificationPurpose.passwordChange,
     );
   }
 

@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/auth/signup/domain/enums/gender_enum.dart';
-import 'package:goms/features/auth/signup/domain/enums/major_enum.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
@@ -59,12 +59,12 @@ class SignupNotifier extends Notifier<SignupState> {
   }
 
   /// 성별 변경
-  void setGender(GenderEnum? gender) {
+  void setGender(GenderType? gender) {
     state = state.copyWith(gender: gender);
   }
 
   /// 과 변경
-  void setMajor(MajorEnum? major) {
+  void setMajor(DepartmentType? major) {
     state = state.copyWith(major: major);
   }
 
@@ -215,7 +215,7 @@ class SignupNotifier extends Notifier<SignupState> {
 
     try {
       Logger.d(
-        'signup request: email=${authFlow.email}, name=${state.name}, grade=${state.grade}, department=${_departmentToApiValue(state.major!)}, gender=${_genderToApiValue(state.gender!)}',
+        'signup request: email=${authFlow.email}, name=${state.name}, grade=${state.grade}, department=${state.major!.name.toUpperCase()}, gender=${state.gender!.name.toUpperCase()}',
         tag: 'AUTH',
       );
       await ref.read(signupRepositoryProvider).signUp(
@@ -224,8 +224,8 @@ class SignupNotifier extends Notifier<SignupState> {
             password: state.password,
             name: state.name,
             grade: int.parse(state.grade),
-            department: _departmentToApiValue(state.major!),
-            gender: _genderToApiValue(state.gender!),
+            department: state.major!,
+            gender: state.gender!,
           );
       ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: SignupStatus.success);
@@ -277,14 +277,5 @@ class SignupNotifier extends Notifier<SignupState> {
         errorMessage: null,
       );
     }
-  }
-
-  String _departmentToApiValue(MajorEnum major) => major.name.toUpperCase();
-
-  String _genderToApiValue(GenderEnum gender) {
-    return switch (gender) {
-      GenderEnum.man => 'MALE',
-      GenderEnum.woman => 'FEMALE',
-    };
   }
 }

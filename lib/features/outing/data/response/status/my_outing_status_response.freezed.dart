@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MyOutingStatusResponse {
   int get memberId;
-  String get status;
+  OutingStatusType get status;
   String get name;
   int get grade;
   String get department;
@@ -63,7 +63,11 @@ abstract mixin class $MyOutingStatusResponseCopyWith<$Res> {
       _$MyOutingStatusResponseCopyWithImpl;
   @useResult
   $Res call(
-      {int memberId, String status, String name, int grade, String department});
+      {int memberId,
+      OutingStatusType status,
+      String name,
+      int grade,
+      String department});
 }
 
 /// @nodoc
@@ -93,7 +97,7 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as String,
+              as OutingStatusType,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -203,8 +207,8 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int memberId, String status, String name, int grade,
-            String department)?
+    TResult Function(int memberId, OutingStatusType status, String name,
+            int grade, String department)?
         $default, {
     required TResult orElse(),
   }) {
@@ -233,8 +237,8 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(int memberId, String status, String name, int grade,
-            String department)
+    TResult Function(int memberId, OutingStatusType status, String name,
+            int grade, String department)
         $default,
   ) {
     final _that = this;
@@ -261,8 +265,8 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int memberId, String status, String name, int grade,
-            String department)?
+    TResult? Function(int memberId, OutingStatusType status, String name,
+            int grade, String department)?
         $default,
   ) {
     final _that = this;
@@ -291,7 +295,7 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
   @override
   final int memberId;
   @override
-  final String status;
+  final OutingStatusType status;
   @override
   final String name;
   @override
@@ -349,7 +353,11 @@ abstract mixin class _$MyOutingStatusResponseCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int memberId, String status, String name, int grade, String department});
+      {int memberId,
+      OutingStatusType status,
+      String name,
+      int grade,
+      String department});
 }
 
 /// @nodoc
@@ -379,7 +387,7 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
       status: null == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
-              as String,
+              as OutingStatusType,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable

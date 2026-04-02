@@ -2,46 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/theme/enums/app_theme_option.dart';
 import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
-
-enum AppThemeOption { system, light, dark }
-
-extension AppThemeOptionLabel on AppThemeOption {
-  String get label {
-    switch (this) {
-      case AppThemeOption.system:
-        return '시스템 테마 설정';
-      case AppThemeOption.light:
-        return '라이트 모드';
-      case AppThemeOption.dark:
-        return '다크 모드';
-    }
-  }
-
-  ThemeMode get themeMode {
-    switch (this) {
-      case AppThemeOption.system:
-        return ThemeMode.system;
-      case AppThemeOption.light:
-        return ThemeMode.light;
-      case AppThemeOption.dark:
-        return ThemeMode.dark;
-    }
-  }
-}
-
-extension ThemeModeToOption on ThemeMode {
-  AppThemeOption get option {
-    switch (this) {
-      case ThemeMode.system:
-        return AppThemeOption.system;
-      case ThemeMode.light:
-        return AppThemeOption.light;
-      case ThemeMode.dark:
-        return AppThemeOption.dark;
-    }
-  }
-}
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({

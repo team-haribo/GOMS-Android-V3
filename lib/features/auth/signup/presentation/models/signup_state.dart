@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/auth/signup/domain/enums/gender_enum.dart';
-import 'package:goms/features/auth/signup/domain/enums/major_enum.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 
 part 'signup_state.freezed.dart';
 
@@ -29,8 +29,8 @@ abstract class SignupState with _$SignupState {
     @Default('') String grade,
     @Default('') String password,
     @Default('') String passwordConfirm,
-    GenderEnum? gender,
-    MajorEnum? major,
+    GenderType? gender,
+    DepartmentType? major,
     String? nameError,
     String? emailError,
     String? gradeError,

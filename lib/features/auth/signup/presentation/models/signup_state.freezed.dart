@@ -20,8 +20,8 @@ mixin _$SignupState {
   String get grade;
   String get password;
   String get passwordConfirm;
-  GenderEnum? get gender;
-  MajorEnum? get major;
+  GenderType? get gender;
+  DepartmentType? get major;
   String? get nameError;
   String? get emailError;
   String? get gradeError;
@@ -102,8 +102,8 @@ abstract mixin class $SignupStateCopyWith<$Res> {
       String grade,
       String password,
       String passwordConfirm,
-      GenderEnum? gender,
-      MajorEnum? major,
+      GenderType? gender,
+      DepartmentType? major,
       String? nameError,
       String? emailError,
       String? gradeError,
@@ -167,11 +167,11 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
       gender: freezed == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as GenderEnum?,
+              as GenderType?,
       major: freezed == major
           ? _self.major
           : major // ignore: cast_nullable_to_non_nullable
-              as MajorEnum?,
+              as DepartmentType?,
       nameError: freezed == nameError
           ? _self.nameError
           : nameError // ignore: cast_nullable_to_non_nullable
@@ -300,8 +300,8 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
-            GenderEnum? gender,
-            MajorEnum? major,
+            GenderType? gender,
+            DepartmentType? major,
             String? nameError,
             String? emailError,
             String? gradeError,
@@ -356,8 +356,8 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
-            GenderEnum? gender,
-            MajorEnum? major,
+            GenderType? gender,
+            DepartmentType? major,
             String? nameError,
             String? emailError,
             String? gradeError,
@@ -410,8 +410,8 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
-            GenderEnum? gender,
-            MajorEnum? major,
+            GenderType? gender,
+            DepartmentType? major,
             String? nameError,
             String? emailError,
             String? gradeError,
@@ -482,9 +482,9 @@ class _SignupState implements SignupState {
   @JsonKey()
   final String passwordConfirm;
   @override
-  final GenderEnum? gender;
+  final GenderType? gender;
   @override
-  final MajorEnum? major;
+  final DepartmentType? major;
   @override
   final String? nameError;
   @override
@@ -574,8 +574,8 @@ abstract mixin class _$SignupStateCopyWith<$Res>
       String grade,
       String password,
       String passwordConfirm,
-      GenderEnum? gender,
-      MajorEnum? major,
+      GenderType? gender,
+      DepartmentType? major,
       String? nameError,
       String? emailError,
       String? gradeError,
@@ -639,11 +639,11 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
       gender: freezed == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as GenderEnum?,
+              as GenderType?,
       major: freezed == major
           ? _self.major
           : major // ignore: cast_nullable_to_non_nullable
-              as MajorEnum?,
+              as DepartmentType?,
       nameError: freezed == nameError
           ? _self.nameError
           : nameError // ignore: cast_nullable_to_non_nullable

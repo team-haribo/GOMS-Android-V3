@@ -74,6 +74,36 @@ class _OutingRemoteDataSource implements OutingRemoteDataSource {
   }
 
   @override
+  Future<ProcessOutingByQrResponse> processOutingByQr(
+    ProcessOutingByQrRequestDto requestDto,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(requestDto.toJson());
+    final _options = _setStreamType<ProcessOutingByQrResponse>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/v3/outing/out',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProcessOutingByQrResponse _value;
+    try {
+      _value = ProcessOutingByQrResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<SearchOutingStudentsResponse> searchOutingStudents(String name) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'name': name};

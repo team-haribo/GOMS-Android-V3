@@ -1,3 +1,5 @@
+import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
+
 class MyOutingStatusEntity {
   const MyOutingStatusEntity({
     required this.memberId,
@@ -8,7 +10,7 @@ class MyOutingStatusEntity {
   });
 
   final int memberId;
-  final String status;
+  final OutingStatusType status;
   final String name;
   final int grade;
   final String department;

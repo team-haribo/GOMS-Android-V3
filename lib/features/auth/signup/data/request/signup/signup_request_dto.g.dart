@@ -13,8 +13,8 @@ _SignUpRequestDto _$SignUpRequestDtoFromJson(Map<String, dynamic> json) =>
       password: json['password'] as String,
       name: json['name'] as String,
       grade: (json['grade'] as num).toInt(),
-      department: json['department'] as String,
-      gender: json['gender'] as String,
+      department: $enumDecode(_$DepartmentTypeEnumMap, json['department']),
+      gender: $enumDecode(_$GenderTypeEnumMap, json['gender']),
     );
 
 Map<String, dynamic> _$SignUpRequestDtoToJson(_SignUpRequestDto instance) =>
@@ -24,6 +24,17 @@ Map<String, dynamic> _$SignUpRequestDtoToJson(_SignUpRequestDto instance) =>
       'password': instance.password,
       'name': instance.name,
       'grade': instance.grade,
-      'department': instance.department,
-      'gender': instance.gender,
+      'department': _$DepartmentTypeEnumMap[instance.department]!,
+      'gender': _$GenderTypeEnumMap[instance.gender]!,
     };
+
+const _$DepartmentTypeEnumMap = {
+  DepartmentType.sw: 'SW',
+  DepartmentType.iot: 'IOT',
+  DepartmentType.ai: 'AI',
+};
+
+const _$GenderTypeEnumMap = {
+  GenderType.male: 'MALE',
+  GenderType.female: 'FEMALE',
+};

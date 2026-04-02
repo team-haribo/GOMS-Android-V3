@@ -34,6 +34,7 @@ class CurrentMemberDto {
 
   static RoleEnum _toRoleEnum(String? role) {
     switch (role) {
+      case 'ROLE_STUDENT_COUNCIL':
       case 'ROLE_ADMIN':
         return RoleEnum.admin;
       case 'ROLE_STUDENT':

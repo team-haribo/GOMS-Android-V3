@@ -4,8 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/features/auth/signup/domain/enums/gender_enum.dart';
-import 'package:goms/features/auth/signup/domain/enums/major_enum.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
 import 'package:goms/features/auth/signup/presentation/viewmodels/signup_provider.dart';
@@ -99,19 +99,19 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           onChanged: notifier.validateGrade,
         ),
         AppGap.v16,
-        SelectField<GenderEnum>(
+        SelectField<GenderType>(
           hintText: '성별을 선택해주세요',
           value: signupState.gender,
-          items: GenderEnum.values,
+          items: GenderType.values,
           itemLabel: (g) => g.label,
           enabled: !isLoading,
           onChanged: notifier.setGender,
         ),
         AppGap.v16,
-        SelectField<MajorEnum>(
+        SelectField<DepartmentType>(
           hintText: '과를 선택해주세요',
           value: signupState.major,
-          items: MajorEnum.values,
+          items: DepartmentType.values,
           itemLabel: (m) => m.label,
           enabled: !isLoading,
           onChanged: notifier.setMajor,

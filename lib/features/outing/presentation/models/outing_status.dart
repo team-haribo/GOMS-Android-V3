@@ -1,5 +1,6 @@
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
 enum OutingStatus {
   waiting,
@@ -7,18 +8,13 @@ enum OutingStatus {
   rejected,
   admin;
 
-  factory OutingStatus.fromApi(String value) {
-    switch (value.trim().toUpperCase()) {
-      case 'COMING':
+  factory OutingStatus.fromServer(OutingStatusType value) {
+    switch (value) {
+      case OutingStatusType.outing:
+      case OutingStatusType.coming:
         return OutingStatus.approved;
-      case 'BANNED':
+      case OutingStatusType.cannotOuting:
         return OutingStatus.rejected;
-      case 'COUNCIL':
-      case 'ADMIN':
-        return OutingStatus.admin;
-      case 'WAITING':
-      default:
-        return OutingStatus.waiting;
     }
   }
 

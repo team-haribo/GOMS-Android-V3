@@ -19,8 +19,8 @@ mixin _$SignUpRequestDto {
   String get password;
   String get name;
   int get grade;
-  String get department;
-  String get gender;
+  DepartmentType get department;
+  GenderType get gender;
 
   /// Create a copy of SignUpRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -73,8 +73,8 @@ abstract mixin class $SignUpRequestDtoCopyWith<$Res> {
       String password,
       String name,
       int grade,
-      String department,
-      String gender});
+      DepartmentType department,
+      GenderType gender});
 }
 
 /// @nodoc
@@ -122,11 +122,11 @@ class _$SignUpRequestDtoCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DepartmentType,
       gender: null == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GenderType,
     ));
   }
 }
@@ -224,8 +224,14 @@ extension SignUpRequestDtoPatterns on SignUpRequestDto {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(String email, String verifiedToken, String password,
-            String name, int grade, String department, String gender)?
+    TResult Function(
+            String email,
+            String verifiedToken,
+            String password,
+            String name,
+            int grade,
+            DepartmentType department,
+            GenderType gender)?
         $default, {
     required TResult orElse(),
   }) {
@@ -254,8 +260,14 @@ extension SignUpRequestDtoPatterns on SignUpRequestDto {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(String email, String verifiedToken, String password,
-            String name, int grade, String department, String gender)
+    TResult Function(
+            String email,
+            String verifiedToken,
+            String password,
+            String name,
+            int grade,
+            DepartmentType department,
+            GenderType gender)
         $default,
   ) {
     final _that = this;
@@ -282,8 +294,14 @@ extension SignUpRequestDtoPatterns on SignUpRequestDto {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(String email, String verifiedToken, String password,
-            String name, int grade, String department, String gender)?
+    TResult? Function(
+            String email,
+            String verifiedToken,
+            String password,
+            String name,
+            int grade,
+            DepartmentType department,
+            GenderType gender)?
         $default,
   ) {
     final _that = this;
@@ -322,9 +340,9 @@ class _SignUpRequestDto implements SignUpRequestDto {
   @override
   final int grade;
   @override
-  final String department;
+  final DepartmentType department;
   @override
-  final String gender;
+  final GenderType gender;
 
   /// Create a copy of SignUpRequestDto
   /// with the given fields replaced by the non-null parameter values.
@@ -383,8 +401,8 @@ abstract mixin class _$SignUpRequestDtoCopyWith<$Res>
       String password,
       String name,
       int grade,
-      String department,
-      String gender});
+      DepartmentType department,
+      GenderType gender});
 }
 
 /// @nodoc
@@ -432,11 +450,11 @@ class __$SignUpRequestDtoCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
-              as String,
+              as DepartmentType,
       gender: null == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable
-              as String,
+              as GenderType,
     ));
   }
 }

@@ -58,8 +58,8 @@ class DeleteAccountNotifier extends Notifier<DeleteAccountState> {
 
     try {
       await ref
-          .read(withdrawMemberUseCaseProvider)
-          .call(password: state.password);
+          .read(memberRepositoryProvider)
+          .withdrawMember(password: state.password);
       await TokenStorage.deleteAllTokens();
       ref.read(authProvider.notifier).setUnauthenticated();
       state = state.copyWith(status: DeleteAccountStatus.success);

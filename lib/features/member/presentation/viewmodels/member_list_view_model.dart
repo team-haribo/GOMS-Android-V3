@@ -22,7 +22,7 @@ class MemberListViewModel extends AsyncNotifier<List<MemberEntity>> {
 
   Future<List<MemberEntity>> _fetchMembers() async {
     try {
-      return await ref.read(getMembersUseCaseProvider).call();
+      return await ref.read(memberRepositoryProvider).getMembers();
     } on DioException catch (error) {
       throw MemberListException(
         NetworkException.fromDioException(error).message,

@@ -17,7 +17,8 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
     state = const AsyncLoading();
 
     try {
-      final currentMember = await ref.read(getMyRoleUseCaseProvider).call();
+      final currentMember =
+          await ref.read(memberRepositoryProvider).getMyRole();
       state = AsyncData(currentMember);
       return currentMember;
     } on DioException catch (error, stackTrace) {

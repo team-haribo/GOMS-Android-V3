@@ -49,6 +49,7 @@ dependencies:
   responsive_framework: ^1.5.1
   kakao_map_sdk: ^1.2.6
   geolocator: ^14.0.2
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:

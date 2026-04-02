@@ -51,7 +51,8 @@ class QRButton extends StatelessWidget {
       height: buttonSize,
       child: ElevatedButton(
         onPressed: () {
-          context.push(RoutePath.qr);
+          context
+              .push(type == RoleEnum.admin ? RoutePath.qrIssue : RoutePath.qr);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor,

@@ -46,7 +46,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
     if (!cameraLaunch) return;
     final cameraStatus = await Permission.camera.status;
     if (cameraStatus.isGranted && mounted) {
-      context.push(RoutePath.qr);
+      context.push(RoutePath.qrIssue);
     }
   }
 

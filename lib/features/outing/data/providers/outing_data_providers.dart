@@ -5,6 +5,8 @@ import 'package:goms/features/outing/data/repositories/outing_repository_impl.da
 import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
 import 'package:goms/features/outing/domain/usecases/get_current_outing_students_usecase.dart';
 import 'package:goms/features/outing/domain/usecases/get_my_outing_status_usecase.dart';
+import 'package:goms/features/outing/domain/usecases/process_coming_by_qr_usecase.dart';
+import 'package:goms/features/outing/domain/usecases/process_outing_by_qr_usecase.dart';
 import 'package:goms/features/outing/domain/usecases/search_outing_students_usecase.dart';
 
 final outingRemoteDataSourceProvider = Provider<OutingRemoteDataSource>((ref) {
@@ -26,6 +28,18 @@ final getMyOutingStatusUseCaseProvider = Provider<GetMyOutingStatusUseCase>((
 final getCurrentOutingStudentsUseCaseProvider =
     Provider<GetCurrentOutingStudentsUseCase>((ref) {
   return GetCurrentOutingStudentsUseCase(ref.watch(outingRepositoryProvider));
+});
+
+final processOutingByQrUseCaseProvider = Provider<ProcessOutingByQrUseCase>((
+  ref,
+) {
+  return ProcessOutingByQrUseCase(ref.watch(outingRepositoryProvider));
+});
+
+final processComingByQrUseCaseProvider = Provider<ProcessComingByQrUseCase>((
+  ref,
+) {
+  return ProcessComingByQrUseCase(ref.watch(outingRepositoryProvider));
 });
 
 final searchOutingStudentsUseCaseProvider =

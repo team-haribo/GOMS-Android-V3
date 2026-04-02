@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/qr/scan/presentation/models/qr_scan_state.dart';
 import 'package:goms/features/qr/scan/presentation/viewmodels/qr_scan_provider.dart';
+import 'package:goms/features/qr/status/presentation/screens/cannot_go_out_screen.dart';
+import 'package:goms/features/qr/status/presentation/screens/late_screen.dart';
+import 'package:goms/features/qr/status/presentation/screens/outing_failed_screen.dart';
+import 'package:goms/features/qr/status/presentation/screens/outing_start_screen.dart';
+import 'package:goms/features/qr/status/presentation/screens/return_success_screen.dart';
 
 class QrScanScreen extends ConsumerStatefulWidget {
   const QrScanScreen({super.key});
@@ -18,28 +23,63 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   final MobileScannerController _controller = MobileScannerController(
     detectionSpeed: DetectionSpeed.noDuplicates,
   );
+  late final ProviderSubscription<QrScanState> _qrScanSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _qrScanSubscription = ref.listenManual<QrScanState>(qrScanProvider, (
+      previous,
+      next,
+    ) {
+      if (!mounted) return;
+
+      if (next.status == QrScanStatus.failure && next.errorMessage != null) {
+        _showResultScreen(
+          OutingFailedScreen(
+            onRetryWithCamera: () {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const QrScanScreen()),
+              );
+            },
+          ),
+        );
+        return;
+      }
+
+      if (next.status == QrScanStatus.success && next.resultType != null) {
+        switch (next.resultType!) {
+          case QrScanResultType.outingStarted:
+            _showResultScreen(const OutingStartScreen());
+            return;
+          case QrScanResultType.returnSuccess:
+            _showResultScreen(const ReturnSuccessScreen());
+            return;
+          case QrScanResultType.lateReturn:
+            _showResultScreen(const LateScreen());
+            return;
+          case QrScanResultType.cannotGoOut:
+            _showResultScreen(const CannotGoOutScreen());
+            return;
+        }
+      }
+    });
+  }
 
   @override
   void dispose() {
+    _qrScanSubscription.close();
     _controller.dispose();
     super.dispose();
   }
 
-  void _onDetect(BarcodeCapture capture) {
+  Future<void> _onDetect(BarcodeCapture capture) async {
     if (ref.read(qrScanProcessingProvider)) return;
     final barcode = capture.barcodes.firstOrNull;
     if (barcode == null || barcode.rawValue == null) return;
 
-    ref.read(qrScanProcessingProvider.notifier).state = true;
     _controller.stop();
-
-    // TODO: QR 값으로 API 호출 후 결과 화면으로 이동
-    // 현재는 스캔 값 출력 후 pop
-    final value = barcode.rawValue!;
-    debugPrint('QR scanned: $value');
-
-    // 결과 처리 후 이전 화면으로
-    if (mounted) context.pop();
+    await ref.read(qrScanProvider.notifier).processScan(barcode.rawValue!);
   }
 
   @override
@@ -75,7 +115,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => context.pop(),
+                    onTap: () => Navigator.of(context).pop(),
                     child:
                         const Icon(Icons.close, color: Colors.white, size: 28),
                   ),
@@ -152,4 +192,12 @@ class _OverlayPainter extends CustomPainter {
   @override
   bool shouldRepaint(covariant _OverlayPainter oldDelegate) =>
       oldDelegate.scanRect != scanRect;
+}
+
+extension on _QrScanScreenState {
+  void _showResultScreen(Widget screen) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => screen),
+    );
+  }
 }

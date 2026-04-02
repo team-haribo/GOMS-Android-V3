@@ -19,6 +19,7 @@ import 'package:goms/features/map/discovery/presentation/models/popular_place.da
 import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
 import 'package:goms/features/member/presentation/screens/member_list_screen.dart';
 import 'package:goms/features/profile/overview/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/qr/issue/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/scan/presentation/screens/qr_scan_screen.dart';
 import 'package:goms/features/splash/presentation/pages/onboarding_screen.dart';
 import 'package:goms/features/splash/presentation/pages/splash_screen.dart';
@@ -76,6 +77,11 @@ final GoRouter router = GoRouter(
       path: RoutePath.qr,
       name: 'qr',
       builder: (context, state) => const QrScanScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.qrIssue,
+      name: 'qrIssue',
+      builder: (context, state) => const QrIssueScreen(),
     ),
 
     GoRoute(

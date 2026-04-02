@@ -5,7 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/map/direction/presentation/viewmodels/map_direction_ui_provider.dart';
+import 'package:goms/features/map/direction/presentation/providers/map_direction_ui_provider.dart';
 import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/member/presentation/viewmodels/member_list_view_model.dart';
+import 'package:goms/features/member/presentation/providers/member_list_provider.dart';
 import 'package:goms/features/member/presentation/widgets/member_error_view.dart';
 import 'package:goms/features/member/presentation/widgets/member_list_section.dart';
 

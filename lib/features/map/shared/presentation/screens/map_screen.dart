@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:goms/features/map/shared/presentation/viewmodels/map_screen_provider.dart';
+import 'package:goms/features/map/shared/presentation/providers/map_screen_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 /// 최소 구현용 카카오 지도 화면입니다.

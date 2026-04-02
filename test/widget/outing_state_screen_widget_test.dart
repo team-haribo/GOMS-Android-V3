@@ -5,7 +5,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
-import 'package:goms/features/outing/presentation/viewmodels/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
 void main() {
   testWidgets('OutingStateScreen renders current outing students from provider',

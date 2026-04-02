@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
-import 'package:goms/features/member/presentation/viewmodels/current_member_provider.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 
 /// 인증 상태
 enum AuthStatus {

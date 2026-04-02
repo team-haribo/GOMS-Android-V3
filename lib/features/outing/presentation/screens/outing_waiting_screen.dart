@@ -14,9 +14,9 @@ import 'package:goms/features/home/shared/presentation/widgets/profile_list_cont
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/view_more_users.dart';
 import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
-import 'package:goms/features/late/presentation/viewmodels/late_rank_students_provider.dart';
+import 'package:goms/features/late/presentation/providers/late_rank_students_provider.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
-import 'package:goms/features/outing/presentation/viewmodels/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 import 'package:goms/features/outing/presentation/widgets/my_outing_status_card.dart';
 
 class OutingWaitingScreen extends ConsumerStatefulWidget {

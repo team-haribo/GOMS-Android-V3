@@ -7,7 +7,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/review/presentation/models/write_review_state.dart';
-import 'package:goms/features/map/review/presentation/viewmodels/write_review_provider.dart';
+import 'package:goms/features/map/review/presentation/providers/write_review_provider.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';

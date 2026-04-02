@@ -5,7 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/map/shared/presentation/viewmodels/place_like_provider.dart';
+import 'package:goms/features/map/shared/presentation/providers/place_like_provider.dart';
 
 class PlaceContainer extends ConsumerWidget {
   final String placeName;

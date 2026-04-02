@@ -8,11 +8,11 @@ import 'package:goms/features/map/shared/presentation/widgets/map_direction_over
 import 'package:goms/features/map/shared/presentation/widgets/map_main_overlay.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_scaffold.dart';
 import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
-import 'package:goms/features/map/direction/presentation/viewmodels/direction_provider.dart';
+import 'package:goms/features/map/direction/presentation/providers/direction_provider.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_page_state.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
-import 'package:goms/features/map/discovery/presentation/viewmodels/map_page_provider.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_page_provider.dart';
 import 'package:goms/features/map/shared/presentation/widgets/kakao_map_background.dart';
 
 class MapBaseScreen extends ConsumerStatefulWidget {
@@ -118,7 +118,8 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
             ),
           ),
           Positioned.fill(
-              child: _buildOverlay(place, mapState, directionState)),
+            child: _buildOverlay(place, mapState, directionState),
+          ),
         ],
       ),
     );

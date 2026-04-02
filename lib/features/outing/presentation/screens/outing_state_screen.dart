@@ -19,7 +19,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
-import 'package:goms/features/outing/presentation/viewmodels/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
 final searchTextProvider = StateProvider<String>((ref) => '');
 

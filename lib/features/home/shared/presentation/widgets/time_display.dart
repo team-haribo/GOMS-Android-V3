@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/home/shared/presentation/viewmodels/time_provider.dart';
+import 'package:goms/features/home/shared/presentation/providers/time_provider.dart';
 
 class TimeDisplay extends ConsumerWidget {
   const TimeDisplay({super.key});

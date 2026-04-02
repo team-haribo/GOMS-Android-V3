@@ -21,8 +21,8 @@ import 'package:goms/features/member/presentation/screens/member_list_screen.dar
 import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
-import 'package:goms/features/splash/presentation/pages/onboarding_screen.dart';
-import 'package:goms/features/splash/presentation/pages/splash_screen.dart';
+import 'package:goms/features/splash/presentation/screens/onboarding_screen.dart';
+import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();

@@ -5,7 +5,7 @@ import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
-import 'package:goms/features/map/shared/presentation/viewmodels/kakao_map_background_provider.dart';
+import 'package:goms/features/map/shared/presentation/providers/kakao_map_background_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 class KakaoMapBackground extends ConsumerStatefulWidget {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -11,6 +12,7 @@ class SearchProfileList extends StatelessWidget {
   final int grade;
   final String major;
   final RoleEnum role;
+  final DateTime outingAt;
 
   const SearchProfileList({
     super.key,
@@ -18,6 +20,7 @@ class SearchProfileList extends StatelessWidget {
     required this.grade,
     required this.major,
     required this.role,
+    required this.outingAt,
   });
 
   @override
@@ -66,7 +69,7 @@ class SearchProfileList extends StatelessWidget {
                   ),
                   AppGap.h4,
                   Text(
-                    '10:31에 외출',
+                    '${DateFormat('HH:mm').format(outingAt)}에 외출',
                     style: AppTextStyles.text3.copyWith(
                       color: context.sub2Color,
                     ),

@@ -59,4 +59,18 @@ class OutingRepositoryImpl implements OutingRepository {
     final response = await _remoteDataSource.searchOutingStudents(name);
     return response.toEntity();
   }
+
+  @override
+  Future<OutingQrResultEntity> forceOutStudent({required int memberId}) async {
+    final response = await _remoteDataSource.forceOutStudent(memberId);
+    return response.toEntity();
+  }
+
+  @override
+  Future<OutingComingQrResultEntity> forceInStudent({
+    required int memberId,
+  }) async {
+    final response = await _remoteDataSource.forceInStudent(memberId);
+    return response.toEntity();
+  }
 }

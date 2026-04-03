@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/presentation/widgets/user_role_bottomsheet.dart';
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
+  final int memberId;
   final String name;
   final int grade;
   final String major;
@@ -16,6 +17,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
 
   const AdminOutingStateContainer({
     super.key,
+    required this.memberId,
     required this.name,
     required this.grade,
     required this.major,
@@ -80,19 +82,15 @@ class _AdminOutingStateContainerState
                       ? AppColors.negative
                       : _studentRole == StudentRole.council
                           ? AppColors.admin
-                          : (context.sub1Color),
+                          : context.sub1Color,
                 ),
               ),
               AppGap.h4,
-              Row(
-                children: [
-                  Text(
-                    '${widget.grade}기 | ${widget.major}',
-                    style: AppTextStyles.caption2.copyWith(
-                      color: context.sub2Color,
-                    ),
-                  ),
-                ],
+              Text(
+                '${widget.grade}학년 | ${widget.major}',
+                style: AppTextStyles.caption2.copyWith(
+                  color: context.sub2Color,
+                ),
               ),
             ],
           ),
@@ -118,6 +116,7 @@ class _AdminOutingStateContainerState
                             ? 0.33
                             : 0.24,
                     child: UserRoleBottomSheet(
+                      memberId: widget.memberId,
                       studentRole: _studentRole,
                       onRoleChanged: (newRole) {
                         setState(() {

@@ -21,6 +21,24 @@ class CurrentOutingStudentsNotifier
     state = await AsyncValue.guard(_fetch);
   }
 
+  Future<void> forceInStudent({required int memberId}) async {
+    try {
+      await ref
+          .read(outingRepositoryProvider)
+          .forceInStudent(memberId: memberId);
+      await reload();
+    } on DioException catch (error) {
+      throw CurrentOutingStudentsException(
+        NetworkException.fromDioException(error).message,
+      );
+    } catch (error) {
+      if (error is CurrentOutingStudentsException) {
+        rethrow;
+      }
+      throw const CurrentOutingStudentsException('강제 복귀 처리에 실패했습니다.');
+    }
+  }
+
   Future<List<OutingStudentEntity>> _fetch() async {
     final accessToken = await TokenStorage.getAccessToken();
     if (accessToken == null || accessToken.trim().isEmpty) {

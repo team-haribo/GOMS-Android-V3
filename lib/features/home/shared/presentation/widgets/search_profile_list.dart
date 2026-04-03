@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
@@ -6,8 +7,10 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
-class SearchProfileList extends StatelessWidget {
+class SearchProfileList extends ConsumerWidget {
+  final int memberId;
   final String name;
   final int grade;
   final String major;
@@ -16,6 +19,7 @@ class SearchProfileList extends StatelessWidget {
 
   const SearchProfileList({
     super.key,
+    required this.memberId,
     required this.name,
     required this.grade,
     required this.major,
@@ -24,7 +28,7 @@ class SearchProfileList extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       color: context.backgroundColor,
       width: double.infinity,
@@ -53,7 +57,7 @@ class SearchProfileList extends StatelessWidget {
               Row(
                 children: [
                   Text(
-                    '$grade기 | $major',
+                    '$grade학년 | $major',
                     style: AppTextStyles.text3.copyWith(
                       color: context.sub2Color,
                     ),
@@ -88,6 +92,28 @@ class SearchProfileList extends StatelessWidget {
                     context: context,
                     title: '외출 강제 복귀',
                     content: '\n외출자를 강제로 복귀시키겠습니까?',
+                    onConfirm: () async {
+                      try {
+                        await ref
+                            .read(currentOutingStudentsProvider.notifier)
+                            .forceInStudent(memberId: memberId);
+                        if (context.mounted) {
+                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                            const SnackBar(content: Text('강제 복귀 처리했습니다.')),
+                          );
+                        }
+                      } catch (error) {
+                        if (context.mounted) {
+                          final message =
+                              error is CurrentOutingStudentsException
+                                  ? error.message
+                                  : '강제 복귀 처리에 실패했습니다.';
+                          ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                            SnackBar(content: Text(message)),
+                          );
+                        }
+                      }
+                    },
                   );
                 },
                 icon: AppIcons.forceReturn(

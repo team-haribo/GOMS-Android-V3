@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/features/home/shared/presentation/widgets/date_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_list_container.dart';
-import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
+import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
 
 class AdminLatecomerListScreen extends ConsumerStatefulWidget {
   const AdminLatecomerListScreen({
@@ -23,36 +21,29 @@ class AdminLatecomerListScreen extends ConsumerStatefulWidget {
 
 class _AdminLatecomerListScreenState
     extends ConsumerState<AdminLatecomerListScreen> {
-  List<SearchProfileContainerModel> outingMembers = [
-    const SearchProfileContainerModel(
-        name: '류수연', grade: 9, major: 'SW개발', studentRole: StudentRole.council),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔', grade: 8, major: 'AI', studentRole: StudentRole.student),
-    const SearchProfileContainerModel(
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-  ];
+  static const _weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+
+  Future<void> _pickDate() async {
+    final initialDate =
+        ref.read(studentCouncilLateDateProvider) ?? DateTime.now();
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2100),
+    );
+
+    if (picked != null) {
+      ref.read(studentCouncilLateDateProvider.notifier).state = picked;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider);
+    final selectedDate = ref.watch(studentCouncilLateDateProvider);
+    final lateStudents = ref.watch(studentCouncilLateStudentsProvider);
+    final displayedDate = selectedDate ?? DateTime.now();
 
     return BaseScaffold(
       showAppBar: true,
@@ -69,36 +60,87 @@ class _AdminLatecomerListScreenState
           AppGap.v24,
           Row(
             children: [
-              Text(
-                '2024년 7월 10일 (수)',
-                style: AppTextStyles.title3.copyWith(color: AppColors.mainText),
+              Expanded(
+                child: Text(
+                  _formatDate(displayedDate),
+                  style: AppTextStyles.title3.copyWith(
+                    color: context.mainTextColor,
+                  ),
+                ),
               ),
-              const Spacer(),
-              const DateButton(),
+              DateButton(
+                label: '날짜 선택',
+                onPressed: _pickDate,
+              ),
             ],
           ),
           AppGap.v4,
           Expanded(
-            child: ListView.separated(
-              itemCount: outingMembers.length,
-              itemBuilder: (context, index) {
-                final member = outingMembers[index];
-                return LateProfileListContainer(
-                  name: member.name,
-                  grade: member.grade,
-                  major: member.major,
+            child: lateStudents.when(
+              data: (students) {
+                if (students.isEmpty) {
+                  return Center(
+                    child: Text(
+                      '지각자가 없어요.',
+                      style: AppTextStyles.text2.copyWith(
+                        color: context.sub2Color,
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.separated(
+                  itemCount: students.length,
+                  itemBuilder: (context, index) {
+                    final member = students[index];
+                    return LateProfileListContainer(
+                      name: member.name,
+                      grade: member.grade,
+                      major: member.department,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(
+                      thickness: 1,
+                      color: context.buttonColor,
+                    );
+                  },
                 );
               },
-              separatorBuilder: (context, index) {
-                return Divider(
-                  thickness: 1,
-                  color: context.buttonColor,
-                );
-              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (error, _) => Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      error is StudentCouncilLateStudentsException
+                          ? error.message
+                          : '지각자 명단을 불러오지 못했어요.',
+                      style: AppTextStyles.text2.copyWith(
+                        color: context.sub2Color,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    AppGap.v12,
+                    TextButton(
+                      onPressed: () {
+                        ref
+                            .read(studentCouncilLateStudentsProvider.notifier)
+                            .reload();
+                      },
+                      child: const Text('다시 시도'),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
       ),
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.year}년 ${date.month}월 ${date.day}일 (${_weekdays[date.weekday - 1]})';
   }
 }

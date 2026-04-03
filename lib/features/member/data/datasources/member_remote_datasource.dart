@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
 import 'package:goms/features/member/data/response/current_member_dto.dart';
 import 'package:goms/features/member/data/response/member_dto.dart';
+import 'package:goms/features/member/data/response/student_council_students_response.dart';
+import 'package:retrofit/retrofit.dart';
 
 part 'member_remote_datasource.g.dart';
 
@@ -15,6 +16,26 @@ abstract class MemberRemoteDataSource {
 
   @GET('/api/v3/member/myrole')
   Future<CurrentMemberDto> getMyRole();
+
+  @GET('/api/v3/student-council/member')
+  Future<StudentCouncilStudentsResponse> getStudentCouncilMembers();
+
+  @GET('/api/v3/student-council/search')
+  Future<StudentCouncilStudentsResponse> searchStudentCouncilMembers(
+    @Query('name') String name,
+  );
+
+  @PATCH('/api/v3/student-council/role/{memberId}')
+  Future<void> updateStudentCouncilRole(
+    @Path('memberId') int memberId,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @PATCH('/api/v3/student-council/outing-allowed/{memberId}')
+  Future<void> updateStudentCouncilOutingAllowed(
+    @Path('memberId') int memberId,
+    @Body() Map<String, dynamic> body,
+  );
 
   @DELETE('/api/v3/member/withdraw')
   Future<void> withdrawMember(@Body() Map<String, dynamic> body);

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/features/auth/delete_account/presentation/screens/delete_account_screen.dart';
 import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
@@ -7,17 +7,19 @@ import 'package:goms/features/auth/password_reset/presentation/screens/reset_pas
 import 'package:goms/features/auth/signup/presentation/screens/password_screen.dart';
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
-import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
-import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/home/shared/presentation/widgets/main_shell.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
-import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
-import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
 import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
+import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
+import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
 import 'package:goms/features/member/presentation/screens/member_list_screen.dart';
+import 'package:goms/features/outing/presentation/screens/admin_latecomer_list_screen.dart';
+import 'package:goms/features/outing/presentation/screens/admin_outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
@@ -83,13 +85,20 @@ final GoRouter router = GoRouter(
       name: 'qrIssue',
       builder: (context, state) => const QrIssueScreen(),
     ),
-
     GoRoute(
       path: RoutePath.outingState,
       name: 'outingState',
-      builder: (context, state) {
-        return const OutingStateScreen();
-      },
+      builder: (context, state) => const OutingStateScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.studentCouncilMembers,
+      name: 'studentCouncilMembers',
+      builder: (context, state) => const AdminOutingStateScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.studentCouncilLate,
+      name: 'studentCouncilLate',
+      builder: (context, state) => const AdminLatecomerListScreen(),
     ),
     GoRoute(
       path: RoutePath.deleteAccount,
@@ -127,7 +136,6 @@ final GoRouter router = GoRouter(
         );
       },
     ),
-    // ==================== 바텀 네비게이션 쉘 ====================
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) =>
           MainShell(navigationShell: navigationShell),
@@ -177,9 +185,7 @@ final GoRouter router = GoRouter(
             GoRoute(
               path: RoutePath.home,
               name: 'home',
-              builder: (context, state) {
-                return const OutingWaitingScreen();
-              },
+              builder: (context, state) => const OutingWaitingScreen(),
             ),
           ],
         ),

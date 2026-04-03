@@ -34,4 +34,14 @@ abstract class OutingRemoteDataSource {
   Future<SearchOutingStudentsResponse> searchOutingStudents(
     @Query('name') String name,
   );
+
+  @POST('/api/v3/student-council/status/out/{memberId}')
+  Future<ProcessOutingByQrResponse> forceOutStudent(
+    @Path('memberId') int memberId,
+  );
+
+  @POST('/api/v3/student-council/status/in/{memberId}')
+  Future<ProcessComingByQrResponse> forceInStudent(
+    @Path('memberId') int memberId,
+  );
 }

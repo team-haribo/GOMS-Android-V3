@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 
@@ -18,7 +20,7 @@ class UserManageButton extends StatelessWidget {
       width: buttonSize,
       height: buttonSize,
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: () => context.push(RoutePath.studentCouncilMembers),
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.admin,
           foregroundColor: Colors.white,

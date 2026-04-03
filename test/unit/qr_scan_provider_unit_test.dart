@@ -203,4 +203,16 @@ class _FakeOutingRepository implements OutingRepository {
     required String name,
   }) async =>
       [];
+
+  @override
+  Future<OutingComingQrResultEntity> forceInStudent({
+    required int memberId,
+  }) async =>
+      comingResult;
+
+  @override
+  Future<OutingQrResultEntity> forceOutStudent({
+    required int memberId,
+  }) async =>
+      outingResult;
 }

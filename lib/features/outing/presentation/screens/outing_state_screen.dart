@@ -141,6 +141,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                     itemBuilder: (context, index) {
                       final member = filteredList[index];
                       return SearchProfileList(
+                        memberId: member.memberId,
                         name: member.name,
                         grade: member.grade,
                         major: member.department,

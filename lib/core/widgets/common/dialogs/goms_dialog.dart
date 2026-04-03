@@ -61,41 +61,43 @@ class GomsDialog {
   Future<void> show(BuildContext context) {
     final textColor = context.mainTextColor;
 
-    void onConfirmPressed() {
-      Navigator.of(context).pop();
-      onConfirm?.call();
-    }
-
     return showCupertinoDialog<void>(
       context: context,
       barrierDismissible: barrierDismissible,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(title, style: TextStyle(color: textColor)),
-        content: Text(content, style: TextStyle(color: textColor)),
-        actions: cancelText != null
-            ? [
-                CupertinoDialogAction(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    cancelText!,
-                    style: isDestructive
-                        ? null
-                        : const TextStyle(color: AppColors.negative),
+      builder: (dialogContext) {
+        void onConfirmPressed() {
+          Navigator.of(dialogContext).pop();
+          onConfirm?.call();
+        }
+
+        return CupertinoAlertDialog(
+          title: Text(title, style: TextStyle(color: textColor)),
+          content: Text(content, style: TextStyle(color: textColor)),
+          actions: cancelText != null
+              ? [
+                  CupertinoDialogAction(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: Text(
+                      cancelText!,
+                      style: isDestructive
+                          ? null
+                          : const TextStyle(color: AppColors.negative),
+                    ),
                   ),
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: isDestructive,
-                  onPressed: onConfirmPressed,
-                  child: Text(confirmText),
-                ),
-              ]
-            : [
-                CupertinoDialogAction(
-                  onPressed: onConfirmPressed,
-                  child: Text(confirmText),
-                ),
-              ],
-      ),
+                  CupertinoDialogAction(
+                    isDestructiveAction: isDestructive,
+                    onPressed: onConfirmPressed,
+                    child: Text(confirmText),
+                  ),
+                ]
+              : [
+                  CupertinoDialogAction(
+                    onPressed: onConfirmPressed,
+                    child: Text(confirmText),
+                  ),
+                ],
+        );
+      },
     );
   }
 }

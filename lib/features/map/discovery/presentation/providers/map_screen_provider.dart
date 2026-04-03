@@ -1,42 +1,44 @@
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/features/map/data/map_constants.dart';
-import 'package:goms/features/map/data/services/kakao_local_service.dart';
-import 'package:goms/features/map/data/services/map_service_providers.dart';
-import 'package:goms/features/map/data/models/map_coordinate.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 
 final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
   MapScreenNotifier.new,
 );
 
 class MapScreenNotifier extends Notifier<MapScreenState> {
-  late final KakaoLocalService _localService;
-
   @override
   MapScreenState build() {
-    _localService = ref.read(kakaoLocalServiceProvider);
     Future.microtask(fetchData);
     return MapScreenState.initial();
   }
 
   Future<void> fetchData() async {
-    state = state.copyWith(status: MapScreenStatus.loading);
+    state = state.copyWith(
+      status: MapScreenStatus.loading,
+      errorMessage: null,
+    );
 
     try {
-      final schoolCoordinate = await _resolveSchoolCoordinate();
-      final popularPlaces = await _loadNearbyPlaces(schoolCoordinate);
+      final recommendedPlaces = await _loadRecommendedPlaceEntities();
+      final popularPlaces = recommendedPlaces
+          .map((place) => _toPopularPlace(place))
+          .toList(growable: false);
       final reviewModels = _buildReviewModels(popularPlaces);
 
       state = state.copyWith(
         status: MapScreenStatus.success,
         popularPlaces: popularPlaces,
         reviewModels: reviewModels,
-        recommendedCount: popularPlaces.length,
-        reviewCount: reviewModels.length,
+        recommendedCount: recommendedPlaces.length,
+        reviewCount: _totalReviewCount(recommendedPlaces),
       );
     } catch (_) {
       state = state.copyWith(
@@ -53,83 +55,67 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     );
   }
 
-  Future<List<PopularPlace>> _loadNearbyPlaces(
-    MapCoordinate schoolCoordinate,
-  ) async {
-    const keywords = ['카페', '한식', '분식', '편의점'];
-    final places = <PopularPlace>[];
-    final seenKeys = <String>{};
-
-    for (var index = 0; index < keywords.length; index++) {
-      final results = await _localService.searchNearbyByKeyword(
-        query: keywords[index],
-        center: schoolCoordinate,
-        radius: 1800,
-        size: 4,
-      );
-
-      for (final result in results) {
-        final key = '${result.name}-${result.address}';
-        if (!seenKeys.add(key)) {
-          continue;
-        }
-
-        places.add(
-          PopularPlace(
-            name: result.name,
-            category: result.category,
-            address: result.address,
-            review: 3 + (index * 2),
-            recommended: 8 + (index * 3),
-            distanceMeters: result.distanceMeters,
-            coordinate: result.coordinate,
-          ),
-        );
-
-        if (places.length >= 4) {
-          return places;
-        }
-      }
+  Future<List<RecommendedPlaceEntity>> _loadRecommendedPlaceEntities() async {
+    try {
+      return (await ref.read(getRecommendedPlacesUseCaseProvider).call())
+          .where((place) => place.recommended)
+          .toList(growable: false);
+    } on DioException {
+      return const [];
+    } catch (_) {
+      return const [];
     }
-
-    if (places.isNotEmpty) {
-      return places;
-    }
-
-    return [
-      PopularPlace(
-        name: gomsSchoolName,
-        category: '학교',
-        address: gomsSchoolAddress,
-        review: 0,
-        recommended: 0,
-        distanceMeters: 0,
-        coordinate: schoolCoordinate,
-      ),
-    ];
   }
 
-  Future<MapCoordinate> _resolveSchoolCoordinate() async {
-    try {
-      return await _localService.resolveAddress(gomsSchoolAddress);
-    } on KakaoApiException {
-      return gomsFallbackSchoolCoordinate;
+  PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
+    return PopularPlace(
+      placeId: place.placeId,
+      name: _displayName(place),
+      category: place.category ?? '장소',
+      address: place.address ?? gomsSchoolAddress,
+      review: place.reviewCount,
+      recommended: place.recommendCount,
+      coordinate: place.coordinate ?? gomsFallbackSchoolCoordinate,
+    );
+  }
+
+  String _displayName(RecommendedPlaceEntity place) {
+    final value = place.placeName?.trim();
+    if (value == null || value.isEmpty) {
+      return '추천 장소 ${place.placeId}';
     }
+    return value;
   }
 
   List<MapScreenReviewModel> _buildReviewModels(List<PopularPlace> places) {
-    if (places.isEmpty) {
+    final reviewedPlaces = places.where((place) => place.review > 0).toList();
+    if (reviewedPlaces.isEmpty) {
       return const [];
     }
 
-    return places.take(min(2, places.length)).map((place) {
+    return reviewedPlaces
+        .take(min(2, reviewedPlaces.length))
+        .toList()
+        .asMap()
+        .entries
+        .map((entry) {
+      final index = entry.key;
+      final place = entry.value;
       return MapScreenReviewModel(
         placeName: place.name,
         category: place.category,
         address: place.address,
-        reviewDetailContent: '${place.name} 방문 후기가 자동으로 연결되었습니다.',
-        createdAt: DateTime.now().subtract(const Duration(days: 1)),
+        reviewDetailContent:
+            '${place.name}에서 작성한 후기 ${place.review}건이 연결되었습니다.',
+        createdAt: DateTime.now().subtract(Duration(days: index + 1)),
       );
-    }).toList();
+    }).toList(growable: false);
+  }
+
+  int _totalReviewCount(List<RecommendedPlaceEntity> recommendedPlaces) {
+    return recommendedPlaces.fold<int>(
+      0,
+      (total, place) => total + place.reviewCount,
+    );
   }
 }

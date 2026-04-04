@@ -23,6 +23,8 @@ import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.
 import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
+import 'package:goms/features/report/presentation/screens/admin_report_detail_screen.dart';
+import 'package:goms/features/report/presentation/screens/admin_report_list_screen.dart';
 import 'package:goms/features/splash/presentation/screens/onboarding_screen.dart';
 import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'route_path.dart';
@@ -99,6 +101,24 @@ final GoRouter router = GoRouter(
       path: RoutePath.studentCouncilLate,
       name: 'studentCouncilLate',
       builder: (context, state) => const AdminLatecomerListScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.studentCouncilReports,
+      name: 'studentCouncilReports',
+      builder: (context, state) => const AdminReportListScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.studentCouncilReportDetail,
+      name: 'studentCouncilReportDetail',
+      builder: (context, state) {
+        final extra = state.extra;
+        if (extra is! int) {
+          return const Scaffold(
+            body: Center(child: Text('잘못된 접근입니다.')),
+          );
+        }
+        return AdminReportDetailScreen(reportId: extra);
+      },
     ),
     GoRoute(
       path: RoutePath.deleteAccount,

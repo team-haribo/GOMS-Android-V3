@@ -23,6 +23,7 @@ void main() {
           name: '이주언',
           grade: 8,
           department: 'AI',
+          lateCount: 0,
         ),
       );
       final container = ProviderContainer(
@@ -52,6 +53,7 @@ void main() {
           name: '이주언',
           grade: 8,
           department: 'AI',
+          lateCount: 0,
         ),
       );
       final container = ProviderContainer(
@@ -82,6 +84,7 @@ void main() {
           name: '이주언',
           grade: 8,
           department: 'AI',
+          lateCount: 0,
         ),
         comingResult: OutingComingQrResultEntity(
           action: OutingAction.inAction,
@@ -120,6 +123,7 @@ void main() {
           name: '이주언',
           grade: 8,
           department: 'AI',
+          lateCount: 0,
         ),
       );
       final container = ProviderContainer(

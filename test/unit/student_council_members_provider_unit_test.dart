@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
+import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/domain/entities/member_entity.dart';
 import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
@@ -60,6 +61,13 @@ class _FakeMemberRepository implements MemberRepository {
   @override
   Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
+  }) async {
+    return members;
+  }
+
+  @override
+  Future<List<StudentCouncilStudentEntity>> getFilteredStudentCouncilMembers({
+    required StudentCouncilFilterRequest filter,
   }) async {
     return members;
   }

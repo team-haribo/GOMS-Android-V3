@@ -4,7 +4,6 @@ import 'package:goms/features/map/data/datasources/recommended_place_remote_data
 import 'package:goms/features/map/data/repositories/recommended_place_repository_impl.dart';
 import 'package:goms/features/map/data/response/recommended_place_response.dart';
 import 'package:goms/features/map/data/response/recommended_places_response.dart';
-import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/usecases/get_recommended_places_usecase.dart';
 
 void main() {

@@ -6,7 +6,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/map/shared/presentation/widgets/map_shared_widgets.dart';
+import 'package:goms/features/map/shared/presentation/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/shared/presentation/widgets/arrival_departure_button.dart';
@@ -41,103 +41,96 @@ class MapDetailOverlay extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-          child: DraggableScrollableSheet(
+          child: MapBottomSheet(
+            isLight: isLight,
             initialChildSize: initialSheetSize,
             minChildSize: initialSheetSize,
             maxChildSize: maxSheetSize,
-            snap: true,
             snapSizes: <double>[initialSheetSize, 0.56, maxSheetSize],
-            builder: (context, scrollController) {
-              return MapSheet(
-                isLight: isLight,
-                scrollController: scrollController,
-                slivers: [
-                  SliverPadding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: horizontalPadding),
-                    sliver: SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            slivers: [
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+                sliver: SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _PlaceSummary(place: place, isLight: isLight),
+                      AppGap.v16,
+                      Row(
                         children: [
-                          _PlaceSummary(place: place, isLight: isLight),
-                          AppGap.v16,
-                          Row(
-                            children: [
-                              ArrivalDepartureButton(
-                                buttonText: '도착',
-                                textColor: isLight
-                                    ? AppColors.background
-                                    : AppColors.mainTextDark,
-                                backgroundColor: AppColors.mainColor,
-                                onPressed: () => context.push(
-                                  RoutePath.direction,
-                                  extra: place,
-                                ),
-                              ),
-                              AppGap.h8,
-                              ArrivalDepartureButton(
-                                buttonText: '후기 남기기',
-                                textColor: isLight
-                                    ? AppColors.mainText
-                                    : AppColors.mainTextDark,
-                                backgroundColor: isLight
-                                    ? AppColors.button
-                                    : AppColors.buttonDark,
-                                onPressed: () => context.push(
-                                  RoutePath.writeReview,
-                                  extra: place,
-                                ),
-                              ),
-                            ],
-                          ),
-                          AppGap.v24,
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    '학생 후기',
-                                    style: AppTextStyles.title3.copyWith(
-                                      color: isLight
-                                          ? AppColors.mainText
-                                          : AppColors.mainTextDark,
-                                    ),
-                                  ),
-                                  AppGap.h4,
-                                  Text(
-                                    '${state.reviewModels.length}건',
-                                    style: AppTextStyles.text3.copyWith(
-                                      color: AppColors.mainColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          AppGap.v16,
-                          if (state.reviewModels.isEmpty)
-                            _EmptyReviewState(isLight: isLight)
-                          else
-                            ...state.reviewModels.map(
-                              (review) => Padding(
-                                padding: const EdgeInsets.only(bottom: 12),
-                                child: _ReviewTile(
-                                  title: review.placeName,
-                                  content: review.reviewDetailContent,
-                                  createdAt: review.createdAt,
-                                  isLight: isLight,
-                                ),
-                              ),
+                          ArrivalDepartureButton(
+                            buttonText: '도착',
+                            textColor: isLight
+                                ? AppColors.background
+                                : AppColors.mainTextDark,
+                            backgroundColor: AppColors.mainColor,
+                            onPressed: () => context.push(
+                              RoutePath.direction,
+                              extra: place,
                             ),
-                          AppGap.v24,
+                          ),
+                          AppGap.h8,
+                          ArrivalDepartureButton(
+                            buttonText: '후기 남기기',
+                            textColor: isLight
+                                ? AppColors.mainText
+                                : AppColors.mainTextDark,
+                            backgroundColor: isLight
+                                ? AppColors.button
+                                : AppColors.buttonDark,
+                            onPressed: () => context.push(
+                              RoutePath.writeReview,
+                              extra: place,
+                            ),
+                          ),
                         ],
                       ),
-                    ),
+                      AppGap.v24,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '학생 후기',
+                                style: AppTextStyles.title3.copyWith(
+                                  color: isLight
+                                      ? AppColors.mainText
+                                      : AppColors.mainTextDark,
+                                ),
+                              ),
+                              AppGap.h4,
+                              Text(
+                                '${state.reviewModels.length}건',
+                                style: AppTextStyles.text3.copyWith(
+                                  color: AppColors.mainColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      AppGap.v16,
+                      if (state.reviewModels.isEmpty)
+                        _EmptyReviewState(isLight: isLight)
+                      else
+                        ...state.reviewModels.map(
+                          (review) => Padding(
+                            padding: const EdgeInsets.only(bottom: 12),
+                            child: _ReviewTile(
+                              title: review.placeName,
+                              content: review.reviewDetailContent,
+                              createdAt: review.createdAt,
+                              isLight: isLight,
+                            ),
+                          ),
+                        ),
+                      AppGap.v24,
+                    ],
                   ),
-                ],
-              );
-            },
+                ),
+              ),
+            ],
           ),
         ),
       ],

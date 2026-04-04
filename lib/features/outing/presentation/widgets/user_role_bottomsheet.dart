@@ -179,13 +179,15 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
 
   Future<void> _updateOutingAllowed(bool isAllowed) async {
     await _runAction(
-      () => ref.read(memberRepositoryProvider).updateStudentCouncilOutingAllowed(
-            memberId: widget.memberId,
-            isAllowed: isAllowed,
-          ),
+      () =>
+          ref.read(memberRepositoryProvider).updateStudentCouncilOutingAllowed(
+                memberId: widget.memberId,
+                isAllowed: isAllowed,
+              ),
       onSuccess: () {
         if (!mounted) return;
-        final nextRole = isAllowed ? StudentRole.student : StudentRole.outingBanned;
+        final nextRole =
+            isAllowed ? StudentRole.student : StudentRole.outingBanned;
         ref.read(studentCouncilMembersProvider.notifier).updateMemberRole(
               memberId: widget.memberId,
               studentRole: nextRole,
@@ -275,37 +277,34 @@ class _UserRoleBottomSheetItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: AppPadding.screenVertical,
-      child: SizedBox(
-        height: 92,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: AppTextStyles.text1.copyWith(
-                      color: context.mainTextColor,
-                    ),
+    return SizedBox(
+      height: 92,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: AppTextStyles.text1.copyWith(
+                    color: context.mainTextColor,
                   ),
-                  AppGap.v4,
-                  Text(
-                    description,
-                    style: AppTextStyles.caption1.copyWith(
-                      color: context.sub2Color,
-                    ),
+                ),
+                AppGap.v4,
+                Text(
+                  description,
+                  style: AppTextStyles.caption1.copyWith(
+                    color: context.sub2Color,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            trailing,
-          ],
-        ),
+          ),
+          trailing,
+        ],
       ),
     );
   }

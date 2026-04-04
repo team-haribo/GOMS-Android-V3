@@ -12,6 +12,9 @@ import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
+import 'package:goms/features/home/shared/presentation/widgets/filter_bottomsheet.dart';
+import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
+import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -65,10 +68,6 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () => context.push(RoutePath.studentCouncilLate),
-                child: const Text('지각자 명단'),
-              ),
             ],
           ),
           AppGap.v24,
@@ -107,14 +106,40 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             )
           else ...[
             AppGap.v12,
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '검색결과',
-                style: AppTextStyles.title3.copyWith(
-                  color: context.mainTextColor,
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '검색결과',
+                    style: AppTextStyles.title3.copyWith(
+                      color: context.mainTextColor,
+                    ),
+                  ),
                 ),
-              ),
+                FilterButton(
+                  bottomSheetBuilder: (_) => FilterBottomSheet(
+                    initialSelection: _selectionFromFilter(
+                      ref.read(studentCouncilMemberFilterProvider),
+                    ),
+                    onReset: () {
+                      ref.read(studentCouncilMembersProvider.notifier).clearFilter();
+                      ref.read(studentCouncilMembersProvider.notifier).reload();
+                    },
+                    onApply: (selection) {
+                      ref.read(studentCouncilMembersProvider.notifier).updateFilter(
+                            StudentCouncilFilterRequest(
+                              grade: selection.grade,
+                              gender: selection.gender,
+                              department: selection.department,
+                              status: selection.status,
+                              role: selection.role,
+                            ),
+                          );
+                      ref.read(studentCouncilMembersProvider.notifier).reload();
+                    },
+                  ),
+                ),
+              ],
             ),
             AppGap.v12,
             Expanded(
@@ -195,6 +220,16 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
         ],
       ),
       floatingActionButton: QRButton(type: role),
+    );
+  }
+
+  FilterSheetSelection _selectionFromFilter(StudentCouncilFilterRequest filter) {
+    return FilterSheetSelection(
+      grade: filter.grade,
+      gender: filter.gender,
+      department: filter.department,
+      status: filter.status,
+      role: filter.role,
     );
   }
 }

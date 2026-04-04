@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/enums/app_theme_option.dart';
 import 'package:goms/features/member/data/response/current_member_dto.dart';
+import 'package:goms/features/member/data/response/student_council_students_response.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
@@ -105,6 +106,25 @@ void main() {
       }).role,
       RoleEnum.user,
     );
+  });
+
+  test('StudentCouncilStudentsResponse preserves added role and status fields', () {
+    final student = StudentCouncilStudentsResponse.fromJson({
+      'students': [
+        {
+          'memberId': 1,
+          'name': '이주언',
+          'grade': 2,
+          'department': 'SW',
+          'role': 'ROLE_STUDENT',
+          'status': 'COMING',
+        },
+      ],
+    }).toEntity().single;
+
+    expect(student.role, 'ROLE_STUDENT');
+    expect(student.status, 'COMING');
+    expect(student.studentRole, StudentRole.student);
   });
 
   group('auth flow helpers', () {

@@ -25,6 +25,11 @@ abstract class MemberRemoteDataSource {
     @Query('name') String name,
   );
 
+  @GET('/api/v3/student-council/filter')
+  Future<StudentCouncilStudentsResponse> filterStudentCouncilMembers(
+    @Queries() Map<String, dynamic> filters,
+  );
+
   @PATCH('/api/v3/student-council/role/{memberId}')
   Future<void> updateStudentCouncilRole(
     @Path('memberId') int memberId,

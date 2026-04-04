@@ -30,16 +30,27 @@ class StudentCouncilStudentResponse {
     required this.name,
     required this.grade,
     required this.department,
+    required this.role,
+    required this.status,
     required this.studentRole,
   });
 
   factory StudentCouncilStudentResponse.fromJson(Map<String, dynamic> json) {
+    final role = _asString(json['role'] ?? json['studentRole']);
+    final status = _asString(json['status'] ?? json['outingStatus']);
+
     return StudentCouncilStudentResponse(
       memberId: _asInt(json['memberId'] ?? json['id']),
-      name: json['name'] as String? ?? '',
+      name: _asString(json['name']),
       grade: _asInt(json['grade']),
-      department: json['department'] as String? ?? '',
-      studentRole: _toStudentRole(json),
+      department: _asString(json['department']),
+      role: role,
+      status: status,
+      studentRole: _toStudentRole(
+        role: role,
+        status: status,
+        outingAllowed: json['outingAllowed'],
+      ),
     );
   }
 
@@ -47,6 +58,8 @@ class StudentCouncilStudentResponse {
   final String name;
   final int grade;
   final String department;
+  final String role;
+  final String status;
   final StudentRole studentRole;
 
   StudentCouncilStudentEntity toEntity() {
@@ -55,6 +68,8 @@ class StudentCouncilStudentResponse {
       name: name,
       grade: grade,
       department: department,
+      role: role,
+      status: status,
       studentRole: studentRole,
     );
   }
@@ -64,11 +79,15 @@ class StudentCouncilStudentResponse {
     return int.tryParse('$value') ?? 0;
   }
 
-  static StudentRole _toStudentRole(Map<String, dynamic> json) {
-    final role = (json['role'] ?? json['studentRole']) as String?;
-    final status = (json['status'] ?? json['outingStatus']) as String?;
-    final outingAllowed = json['outingAllowed'];
+  static String _asString(Object? value) {
+    return value as String? ?? '';
+  }
 
+  static StudentRole _toStudentRole({
+    required String role,
+    required String status,
+    required Object? outingAllowed,
+  }) {
     if (role == 'ROLE_STUDENT_COUNCIL' || role == 'ROLE_ADMIN') {
       return StudentRole.council;
     }

@@ -5,7 +5,12 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/home/shared/presentation/widgets/filter_bottomsheet.dart';
 
 class FilterButton extends StatelessWidget {
-  const FilterButton({super.key});
+  const FilterButton({
+    super.key,
+    this.bottomSheetBuilder,
+  });
+
+  final WidgetBuilder? bottomSheetBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -20,10 +25,8 @@ class FilterButton extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
           ),
           backgroundColor: context.surfaceColor,
-          builder: (context) => const FractionallySizedBox(
-            heightFactor: 0.71,
-            child: FilterBottomSheet(),
-          ),
+          builder: (context) =>
+              bottomSheetBuilder?.call(context) ?? const FilterBottomSheet(),
         );
       },
       style: TextButton.styleFrom(

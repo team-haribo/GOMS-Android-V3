@@ -6,7 +6,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
-import 'package:goms/features/outing/presentation/widgets/user_role_bottomsheet.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_bottom_sheet.dart';
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final int memberId;
@@ -37,6 +37,14 @@ class _AdminOutingStateContainerState
   void initState() {
     super.initState();
     _studentRole = widget.studentRole;
+  }
+
+  @override
+  void didUpdateWidget(covariant AdminOutingStateContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.studentRole != widget.studentRole) {
+      _studentRole = widget.studentRole;
+    }
   }
 
   @override
@@ -109,22 +117,14 @@ class _AdminOutingStateContainerState
                         BorderRadius.vertical(top: Radius.circular(12)),
                   ),
                   backgroundColor: context.surfaceColor,
-                  builder: (context) => FractionallySizedBox(
-                    heightFactor: _studentRole == StudentRole.student
-                        ? 0.42
-                        : _studentRole == StudentRole.outingBanned
-                            ? 0.33
-                            : 0.24,
-                    child: UserRoleBottomSheet(
-                      memberId: widget.memberId,
-                      studentRole: _studentRole,
-                      onRoleChanged: (newRole) {
-                        setState(() {
-                          _studentRole = newRole;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
+                  builder: (context) => AdminBottomSheet(
+                    memberId: widget.memberId,
+                    studentRole: _studentRole,
+                    onRoleChanged: (newRole) {
+                      setState(() {
+                        _studentRole = newRole;
+                      });
+                    },
                   ),
                 );
               },

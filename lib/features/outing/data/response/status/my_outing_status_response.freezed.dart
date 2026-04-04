@@ -19,6 +19,7 @@ mixin _$MyOutingStatusResponse {
   String get name;
   int get grade;
   String get department;
+  int get lateCount;
 
   /// Create a copy of MyOutingStatusResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -42,17 +43,19 @@ mixin _$MyOutingStatusResponse {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
-                other.department == department));
+                other.department == department) &&
+            (identical(other.lateCount, lateCount) ||
+                other.lateCount == lateCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, memberId, status, name, grade, department);
+  int get hashCode => Object.hash(
+      runtimeType, memberId, status, name, grade, department, lateCount);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department)';
+    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount)';
   }
 }
 
@@ -67,7 +70,8 @@ abstract mixin class $MyOutingStatusResponseCopyWith<$Res> {
       OutingStatusType status,
       String name,
       int grade,
-      String department});
+      String department,
+      int lateCount});
 }
 
 /// @nodoc
@@ -88,6 +92,7 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
     Object? name = null,
     Object? grade = null,
     Object? department = null,
+    Object? lateCount = null,
   }) {
     return _then(_self.copyWith(
       memberId: null == memberId
@@ -110,6 +115,10 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
               as String,
+      lateCount: null == lateCount
+          ? _self.lateCount
+          : lateCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -208,7 +217,7 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(int memberId, OutingStatusType status, String name,
-            int grade, String department)?
+            int grade, String department, int lateCount)?
         $default, {
     required TResult orElse(),
   }) {
@@ -216,7 +225,7 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
     switch (_that) {
       case _MyOutingStatusResponse() when $default != null:
         return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department);
+            _that.department, _that.lateCount);
       case _:
         return orElse();
     }
@@ -238,14 +247,14 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(int memberId, OutingStatusType status, String name,
-            int grade, String department)
+            int grade, String department, int lateCount)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MyOutingStatusResponse():
         return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department);
+            _that.department, _that.lateCount);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -266,14 +275,14 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(int memberId, OutingStatusType status, String name,
-            int grade, String department)?
+            int grade, String department, int lateCount)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MyOutingStatusResponse() when $default != null:
         return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department);
+            _that.department, _that.lateCount);
       case _:
         return null;
     }
@@ -288,7 +297,8 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
       required this.status,
       required this.name,
       required this.grade,
-      required this.department});
+      required this.department,
+      required this.lateCount});
   factory _MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$MyOutingStatusResponseFromJson(json);
 
@@ -302,6 +312,8 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
   final int grade;
   @override
   final String department;
+  @override
+  final int lateCount;
 
   /// Create a copy of MyOutingStatusResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -330,17 +342,19 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
-                other.department == department));
+                other.department == department) &&
+            (identical(other.lateCount, lateCount) ||
+                other.lateCount == lateCount));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, memberId, status, name, grade, department);
+  int get hashCode => Object.hash(
+      runtimeType, memberId, status, name, grade, department, lateCount);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department)';
+    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount)';
   }
 }
 
@@ -357,7 +371,8 @@ abstract mixin class _$MyOutingStatusResponseCopyWith<$Res>
       OutingStatusType status,
       String name,
       int grade,
-      String department});
+      String department,
+      int lateCount});
 }
 
 /// @nodoc
@@ -378,6 +393,7 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
     Object? name = null,
     Object? grade = null,
     Object? department = null,
+    Object? lateCount = null,
   }) {
     return _then(_MyOutingStatusResponse(
       memberId: null == memberId
@@ -400,6 +416,10 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
               as String,
+      lateCount: null == lateCount
+          ? _self.lateCount
+          : lateCount // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }

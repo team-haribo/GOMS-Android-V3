@@ -56,7 +56,7 @@ void main() {
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('8기 | AI과'), findsOneWidget);
     expect(find.text('지각 횟수'), findsOneWidget);
-    expect(find.text('-'), findsOneWidget);
+    expect(find.text('3번'), findsOneWidget);
   });
 
   testWidgets('MyPageScreen logout confirm closes dialog and routes to onboarding',
@@ -152,6 +152,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
         name: '이주언',
         grade: 8,
         department: 'AI',
+        lateCount: 3,
       );
 }
 

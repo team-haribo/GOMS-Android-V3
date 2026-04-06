@@ -6,7 +6,7 @@ import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 
 final myOutingStatusProvider =
-    AsyncNotifierProvider<MyOutingStatusNotifier, MyOutingStatusEntity>(
+    AsyncNotifierProvider.autoDispose<MyOutingStatusNotifier, MyOutingStatusEntity>(
   MyOutingStatusNotifier.new,
 );
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 
 /// 인증 상태
 enum AuthStatus {
@@ -39,6 +40,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
         return true;
       } catch (_) {
         ref.read(currentMemberProvider.notifier).clear();
+        ref.invalidate(myOutingStatusProvider);
         state = AuthStatus.unauthenticated;
         return false;
       }
@@ -49,6 +51,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
 
     if (!_hasValidToken(refreshToken, refreshTokenExpiry)) {
       await TokenStorage.deleteAllTokens();
+      ref.invalidate(myOutingStatusProvider);
       state = AuthStatus.unauthenticated;
       return false;
     }
@@ -67,11 +70,13 @@ class AuthNotifier extends Notifier<AuthStatus> {
     } on DioException catch (_) {
       await TokenStorage.deleteAllTokens();
       ref.read(currentMemberProvider.notifier).clear();
+      ref.invalidate(myOutingStatusProvider);
       state = AuthStatus.unauthenticated;
       return false;
     } catch (_) {
       await TokenStorage.deleteAllTokens();
       ref.read(currentMemberProvider.notifier).clear();
+      ref.invalidate(myOutingStatusProvider);
       state = AuthStatus.unauthenticated;
       return false;
     }
@@ -85,6 +90,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
     } catch (_) {
       await TokenStorage.deleteAllTokens();
       ref.read(currentMemberProvider.notifier).clear();
+      ref.invalidate(myOutingStatusProvider);
       state = AuthStatus.unauthenticated;
       rethrow;
     }
@@ -93,6 +99,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
   /// 인증 해제 처리
   void setUnauthenticated() {
     ref.read(currentMemberProvider.notifier).clear();
+    ref.invalidate(myOutingStatusProvider);
     state = AuthStatus.unauthenticated;
   }
 
@@ -113,6 +120,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
     } finally {
       await TokenStorage.deleteAllTokens();
       ref.read(currentMemberProvider.notifier).clear();
+      ref.invalidate(myOutingStatusProvider);
       state = AuthStatus.unauthenticated;
     }
   }

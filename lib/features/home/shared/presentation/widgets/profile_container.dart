@@ -4,7 +4,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/outing/presentation/models/outing_status.dart';
+import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/home/shared/presentation/widgets/time_display.dart';
 import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 

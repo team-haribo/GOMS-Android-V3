@@ -57,12 +57,7 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '신고 목록',
-            style: AppTextStyles.title1.copyWith(
-              color: context.mainTextColor,
-            ),
-          ),
+          const _ReportTile(),
           AppGap.v24,
           SearchStudentField(
             controller: _searchController,
@@ -184,6 +179,34 @@ class _ReportListBody extends ConsumerWidget {
   }
 }
 
+class _ReportTile extends StatelessWidget {
+  const _ReportTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+            '신고 목록',
+            style: AppTextStyles.title1.copyWith(
+              color: context.mainTextColor,
+            ),
+          ),
+        const Spacer(),
+        TextButton(
+          onPressed: () {} ,// 필터 바텀싯 로직 추가 예정
+          child: Text(
+            '필터',
+            style: AppTextStyles.caption2.copyWith(
+              color: AppColors.admin,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _ReportListTile extends StatelessWidget {
   const _ReportListTile({
     required this.report,
@@ -217,8 +240,8 @@ class _ReportListTile extends StatelessWidget {
                     headline,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: AppTextStyles.text1.copyWith(
-                      color: context.mainTextColor,
+                    style: AppTextStyles.text2.copyWith(
+                      color: context.sub1Color,
                     ),
                   ),
                   AppGap.v4,
@@ -227,10 +250,10 @@ class _ReportListTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.caption1.copyWith(
-                      color: context.sub1Color,
+                      color: context.sub2Color,
                     ),
                   ),
-                  AppGap.v2,
+                  AppGap.v4,
                   Text(
                     createdAt,
                     style: AppTextStyles.caption1.copyWith(

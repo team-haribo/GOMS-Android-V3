@@ -53,9 +53,6 @@ class QrScanNotifier extends Notifier<QrScanState> {
               );
           state = const QrScanState.success(QrScanResultType.outingStarted);
           return;
-        case null:
-
-          throw UnimplementedError();
       }
     } on FormatException catch (error) {
       state = QrScanState.failure(error.message);
@@ -63,6 +60,8 @@ class QrScanNotifier extends Notifier<QrScanState> {
       state = QrScanState.failure(
         NetworkException.fromDioException(error).message,
       );
+    } on StateError catch (error) {
+      state = QrScanState.failure(error.message);
     } catch (_) {
       state = const QrScanState.failure('QR 처리에 실패했어요. 다시 시도해 주세요.');
     }

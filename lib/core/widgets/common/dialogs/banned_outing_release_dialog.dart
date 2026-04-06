@@ -24,7 +24,8 @@ Future<void> bannedOutingRelease({
         textAlign: TextAlign.center,
         text: TextSpan(
           style: TextStyle(
-              color: context.isLightMode ? Colors.black : Colors.white),
+            color: context.isLightMode ? Colors.black : Colors.white,
+          ),
           children: [
             TextSpan(text: content),
             TextSpan(

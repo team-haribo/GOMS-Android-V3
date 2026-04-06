@@ -276,8 +276,8 @@ class AppIcons {
 
   /// 신고 아이콘
   static Widget report({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/report.png',
+      _loadSvg(
+        'assets/icons/report.svg',
         width: width,
         height: height,
         color: color,

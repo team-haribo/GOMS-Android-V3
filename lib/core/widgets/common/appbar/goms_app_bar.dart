@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -21,7 +22,6 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.role = RoleEnum.user,
   })  : _showLogo = true,
         onBackPressed = null;
-
   factory GomsAppBar.logo({
     Key? key,
     List<Widget>? actions,
@@ -95,6 +95,15 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                         ? context.sub2Color
                         : AppColors.button,
                   ),
+                ),
+                const Spacer(),
+                IconButton(
+                  onPressed: () => context.push(RoutePath.studentCouncilReports),
+                  icon: AppIcons.report(
+                  width: 24,
+                  height: 24,
+                  color: context.sub2Color,
+                ),
                 ),
               ],
             )

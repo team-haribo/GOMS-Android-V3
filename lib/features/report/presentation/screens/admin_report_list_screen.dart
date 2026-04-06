@@ -12,7 +12,6 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
-import 'package:goms/features/report/data/mock/report_mock_data.dart';
 import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
 import 'package:intl/intl.dart';
@@ -117,9 +116,8 @@ class _ReportListBody extends ConsumerWidget {
 
     if (error != null) {
       return _ReportErrorView(
-        message: error is ReportAdminException
-            ? error.message
-            : '신고 목록을 불러오지 못했어요.',
+        message:
+            error is ReportAdminException ? error.message : '신고 목록을 불러오지 못했어요.',
         onRetry: () {
           ref.read(pendingReportsProvider.notifier).reload();
           ref.read(resolvedReportsProvider.notifier).reload();
@@ -145,7 +143,7 @@ class _ReportListBody extends ConsumerWidget {
               report.reviewerDepartment,
               report.reportId.toString(),
               report.reviewId.toString(),
-              _mockHeadline(report),
+              _reportHeadline(report),
             ].join(' ').toLowerCase();
             return searchable.contains(normalizedQuery);
           }).toList(growable: false);
@@ -187,14 +185,14 @@ class _ReportTile extends StatelessWidget {
     return Row(
       children: [
         Text(
-            '신고 목록',
-            style: AppTextStyles.title1.copyWith(
-              color: context.mainTextColor,
-            ),
+          '신고 목록',
+          style: AppTextStyles.title1.copyWith(
+            color: context.mainTextColor,
           ),
+        ),
         const Spacer(),
         TextButton(
-          onPressed: () {} ,// 필터 바텀싯 로직 추가 예정
+          onPressed: () {}, // 필터 바텀싯 로직 추가 예정
           child: Text(
             '필터',
             style: AppTextStyles.caption2.copyWith(
@@ -222,8 +220,8 @@ class _ReportListTile extends StatelessWidget {
     final createdAt = report.reportCreatedAt == null
         ? '-'
         : formatter.format(report.reportCreatedAt!.toLocal());
-    final headline = _mockHeadline(report);
-    final placeName = _mockPlaceName(report);
+    final headline = _reportHeadline(report);
+    final placeName = _reportPlaceName(report);
 
     return InkWell(
       onTap: onTap,
@@ -272,27 +270,11 @@ class _ReportListTile extends StatelessWidget {
   }
 }
 
-String _mockHeadline(ReportSummaryEntity report) {
-  final mockDetail = debugFindReportMockDetail(report.reportId);
-  if (mockDetail != null && mockDetail.reportContent.trim().isNotEmpty) {
-    return mockDetail.reportContent;
-  }
-
+String _reportHeadline(ReportSummaryEntity report) {
   return '후기 신고 #${report.reportId}';
 }
 
-String _mockPlaceName(ReportSummaryEntity report) {
-  final placeName = switch (report.reportId) {
-    9001 => '분식마을',
-    9002 => '떡볶이 연구소',
-    9003 => '야간스터디카페',
-    9101 => '브런치하우스',
-    9102 => '수제버거랩',
-    _ => '',
-  };
-
-  if (placeName.isNotEmpty) return placeName;
-
+String _reportPlaceName(ReportSummaryEntity report) {
   return '장소 정보 없음';
 }
 

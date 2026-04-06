@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
-import 'package:goms/features/map/shared/presentation/models/kakao_map_theme_style.dart';
 import 'package:goms/features/map/shared/presentation/providers/kakao_map_background_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
@@ -31,10 +29,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
-  final Map<Brightness, kakao.KImage> _defaultMarkerImages =
-      <Brightness, kakao.KImage>{};
-  final Map<Brightness, kakao.KImage> _focusedMarkerImages =
-      <Brightness, kakao.KImage>{};
   int _renderToken = 0;
 
   String get _mapId =>
@@ -53,17 +47,11 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     if (controller == null || !KakaoMapRuntime.instance.isMapAvailable) {
       return;
     }
-    final themeStyle = _themeStyle;
 
     final token = ++_renderToken;
 
     try {
       await _clearOverlays(controller);
-      if (!mounted || token != _renderToken) {
-        return;
-      }
-
-      await _ensureMarkerImages(themeStyle);
       if (!mounted || token != _renderToken) {
         return;
       }
@@ -80,9 +68,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
         final poi = await controller.labelLayer.addPoi(
           position,
-          style: kakao.PoiStyle(
-            icon: _isFocused(place) ? _focusedMarker : _defaultMarker,
-          ),
+          style: kakao.PoiStyle(),
           text: place.name,
         );
 
@@ -100,12 +86,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
         _route = await controller.routeLayer.addRoute(
           routePoints,
-          kakao.RouteStyle(
-            themeStyle.routeColor,
-            8,
-            strokeColor: themeStyle.routeStrokeColor,
-            strokeWidth: 2,
-          ),
+          kakao.RouteStyle(Colors.black, 8),
         );
       }
 
@@ -153,67 +134,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     return unique.values.toList(growable: false);
   }
 
-  bool _isFocused(PopularPlace place) {
-    final focusPlace = widget.focusPlace;
-    if (focusPlace == null) {
-      return false;
-    }
-
-    return focusPlace.name == place.name && focusPlace.address == place.address;
-  }
-
-  Future<void> _ensureMarkerImages(KakaoMapThemeStyle themeStyle) async {
-    final brightness = Theme.of(context).brightness;
-
-    _defaultMarkerImages[brightness] ??= await _buildMarkerImage(
-      fillColor: themeStyle.markerFillColor,
-      iconColor: themeStyle.markerIconColor,
-    );
-    _focusedMarkerImages[brightness] ??= await _buildMarkerImage(
-      fillColor: themeStyle.focusedMarkerFillColor,
-      iconColor: themeStyle.focusedMarkerIconColor,
-    );
-  }
-
-  KakaoMapThemeStyle get _themeStyle =>
-      KakaoMapThemeStyle.fromBrightness(Theme.of(context).brightness);
-
-  kakao.KImage? get _defaultMarker =>
-      _defaultMarkerImages[Theme.of(context).brightness];
-
-  kakao.KImage? get _focusedMarker =>
-      _focusedMarkerImages[Theme.of(context).brightness];
-
-  Future<kakao.KImage> _buildMarkerImage({
-    required Color fillColor,
-    required Color iconColor,
-  }) {
-    return kakao.KImage.fromWidget(
-      Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: fillColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(
-          Icons.location_on_rounded,
-          color: iconColor,
-          size: 20,
-        ),
-      ),
-      const Size(34, 34),
-      context: context,
-    );
-  }
-
   Future<void> _clearOverlays(kakao.KakaoMapController controller) async {
     if (_route != null) {
       try {
@@ -254,20 +174,16 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
-    final themeStyle = _themeStyle;
     final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
-      return ColoredBox(
-        color: themeStyle.loadingBackgroundColor,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              unavailableReason ?? '지도를 불러오지 못했습니다.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            unavailableReason ?? '지도를 불러오지 못했습니다.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       );
@@ -305,35 +221,21 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
             },
           ),
         ),
-        if (themeStyle.dimOverlayColor != const Color(0x00000000))
-          Positioned.fill(
-            child: IgnorePointer(
-              child: ColoredBox(color: themeStyle.dimOverlayColor),
-            ),
-          ),
         if (_controller == null && errorMessage == null)
-          Positioned.fill(
-            child: ColoredBox(
-              color: themeStyle.loadingBackgroundColor,
-              child: const Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.mainColor,
-                ),
-              ),
+          const Positioned.fill(
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           ),
         if (errorMessage != null)
           Positioned.fill(
-            child: ColoredBox(
-              color: themeStyle.loadingBackgroundColor,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    errorMessage,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  errorMessage,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),

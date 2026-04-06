@@ -37,18 +37,20 @@ void main() {
       await container.read(mapScreenProvider.notifier).fetchData();
 
       final state = container.read(mapScreenProvider);
-      final place = state.popularPlaces.single;
+      final place =
+          state.popularPlaces.firstWhere((place) => place.placeId == 5001);
 
       expect(state.status, MapScreenStatus.success);
-      expect(state.recommendedCount, 1);
-      expect(state.reviewCount, 2);
+      expect(state.popularPlaces, hasLength(3));
+      expect(state.recommendedCount, 3);
+      expect(state.reviewCount, 9);
       expect(place.placeId, 5001);
       expect(place.name, '테스트 카페');
       expect(place.category, '카페');
       expect(place.address, '광주광역시 테스트로 1');
       expect(place.coordinate.latitude, 35.124);
       expect(place.recommended, 5);
-      expect(state.reviewModels, hasLength(1));
+      expect(state.reviewModels, hasLength(2));
     });
 
     test('falls back to placeholder values when server fields are missing',
@@ -72,8 +74,12 @@ void main() {
 
       await container.read(mapScreenProvider.notifier).fetchData();
 
-      final place = container.read(mapScreenProvider).popularPlaces.single;
+      final state = container.read(mapScreenProvider);
+      final place =
+          state.popularPlaces.firstWhere((place) => place.placeId == 999);
 
+      expect(state.status, MapScreenStatus.success);
+      expect(state.popularPlaces, hasLength(3));
       expect(place.placeId, 999);
       expect(place.name, '추천 장소 999');
       expect(place.address, gomsSchoolAddress);
@@ -82,7 +88,7 @@ void main() {
       expect(place.recommended, 2);
     });
 
-    test('returns empty state when recommended API fails', () async {
+    test('returns failure state when recommended API fails', () async {
       final repository = _ThrowingRecommendedPlaceRepository();
       final container = ProviderContainer(
         overrides: [
@@ -97,7 +103,8 @@ void main() {
 
       final state = container.read(mapScreenProvider);
 
-      expect(state.status, MapScreenStatus.success);
+      expect(state.status, MapScreenStatus.failure);
+      expect(state.errorMessage, '장소 정보를 불러오는데 실패했습니다.');
       expect(state.recommendedCount, 0);
       expect(state.popularPlaces, isEmpty);
     });

@@ -147,7 +147,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
           children: [
             ProfileSummarySection(
               role: role,
-              name: myOutingStatus?.name ?? '정보 없음',
+              name: myOutingStatus?.name ?? currentMember?.name ?? '정보 없음',
               grade: myOutingStatus?.grade,
               major: myOutingStatus?.department,
               lateCount: myOutingStatus?.lateCount,

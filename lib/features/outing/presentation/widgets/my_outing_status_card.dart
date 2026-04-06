@@ -6,7 +6,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
-import 'package:goms/features/outing/presentation/models/outing_status.dart';
+import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 
 class MyOutingStatusCard extends ConsumerWidget {

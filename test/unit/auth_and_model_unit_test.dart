@@ -9,7 +9,7 @@ import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/presentation/models/outing_status.dart';
+import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 
 void main() {

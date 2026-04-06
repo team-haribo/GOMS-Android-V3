@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -64,105 +65,97 @@ class _AdminReportDetailScreenState
   }
 
   Widget _buildContent(BuildContext context, ReportDetailEntity detail) {
-    final formatter = DateFormat('yyyy.MM.dd HH:mm');
+    final reportCreatedAt = _formatDateTime(detail.reportCreatedAt);
+    final reviewCreatedAt = _formatDateTime(detail.reviewCreatedAt);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Text(
-                '신고 상세',
+                '신고 조회',
                 style: AppTextStyles.title1.copyWith(
                   color: context.mainTextColor,
                 ),
               ),
             ),
-            _StatusChip(status: detail.reportStatus),
+            const Spacer(),
+            _StatusText(status: detail.reportStatus),
           ],
         ),
         AppGap.v24,
-        _InfoCard(
-          title: '신고 정보',
-          rows: [
-            _InfoRow(label: '신고 번호', value: '#${detail.reportId}'),
-            _InfoRow(label: '리뷰 번호', value: '#${detail.reviewId}'),
-            _InfoRow(label: '학생', value: detail.reviewerName),
-            _InfoRow(
-              label: '학년/학과',
-              value: '${detail.reviewerGrade}학년 · ${detail.reviewerDepartment}',
-            ),
-            _InfoRow(
-              label: '리뷰 작성일',
-              value: detail.reviewCreatedAt == null
-                  ? '-'
-                  : formatter.format(detail.reviewCreatedAt!.toLocal()),
-            ),
-            _InfoRow(
-              label: '신고 작성일',
-              value: detail.reportCreatedAt == null
-                  ? '-'
-                  : formatter.format(detail.reportCreatedAt!.toLocal()),
-            ),
-          ],
-        ),
-        AppGap.v16,
-        _ContentCard(title: '리뷰 내용', content: detail.reviewContent),
-        AppGap.v16,
-        _ContentCard(title: '신고 사유', content: detail.reportContent),
-        if (detail.deletedAt != null || (detail.deletedBy?.isNotEmpty ?? false)) ...[
-          AppGap.v16,
-          _InfoCard(
-            title: '삭제 정보',
-            rows: [
-              if (detail.deletedAt != null)
-                _InfoRow(
-                  label: '삭제 시각',
-                  value: formatter.format(detail.deletedAt!.toLocal()),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const _SectionTitle(title: '신고 내용'),
+                AppGap.v12,
+                _ContentBox(content: detail.reportContent),
+                AppGap.v4,
+                _MetaText(text: reportCreatedAt, align: TextAlign.right),
+                AppGap.v16,
+                const _SectionTitle(title: '신고 대상자'),
+                AppGap.v12,
+                _ReportedUserTile(detail: detail),
+                AppGap.v16,
+                const _SectionTitle(title: '후기 내용'),
+                AppGap.v12,
+                _ContentBox(content: detail.reviewContent),
+                AppGap.v4,
+                _MetaText(
+                  text: reviewCreatedAt == '-'
+                      ? '리뷰 #${detail.reviewId}'
+                      : '리뷰 #${detail.reviewId} $reviewCreatedAt',
                 ),
-              if (detail.deletedBy?.isNotEmpty ?? false)
-                _InfoRow(label: '삭제자', value: detail.deletedBy!),
-            ],
+                if (detail.deletedAt != null ||
+                    (detail.deletedBy?.isNotEmpty ?? false)) ...[
+                  AppGap.v20,
+                  const _SectionTitle(title: '처리 정보'),
+                  AppGap.v12,
+                  _ResolutionInfo(detail: detail),
+                ],
+              ],
+            ),
           ),
-        ],
-        const Spacer(),
+        ),
+        AppGap.v20,
         if (detail.reportStatus == ReportStatus.pending)
           Row(
             children: [
               Expanded(
-                child: OutlinedButton(
+                child: _ActionButton(
+                  label: '기각',
+                  backgroundColor: context.buttonColor,
+                  foregroundColor: context.sub2Color,
                   onPressed: _isSubmitting
                       ? null
                       : () => _resolve(ReportStatus.rejected),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                    side: const BorderSide(color: AppColors.negative),
-                  ),
-                  child: const Text(
-                    '반려',
-                    style: TextStyle(color: AppColors.negative),
-                  ),
                 ),
               ),
               AppGap.h12,
               Expanded(
-                child: ElevatedButton(
+                child: _ActionButton(
+                  label: _isSubmitting ? '처리 중...' : '리뷰 삭제',
+                  backgroundColor: AppColors.negative,
+                  foregroundColor: Colors.white,
                   onPressed: _isSubmitting
                       ? null
                       : () => _resolve(ReportStatus.approved),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(48),
-                    backgroundColor: AppColors.admin,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text(_isSubmitting ? '처리 중...' : '승인'),
                 ),
               ),
             ],
           ),
       ],
     );
+  }
+
+  String _formatDateTime(DateTime? value) {
+    if (value == null) return '-';
+    return DateFormat('yy.MM.dd HH:mm:ss').format(value.toLocal());
   }
 
   Future<void> _resolve(ReportStatus status) async {
@@ -177,7 +170,7 @@ class _AdminReportDetailScreenState
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            status == ReportStatus.approved ? '신고를 승인했어요.' : '신고를 반려했어요.',
+            status == ReportStatus.approved ? '리뷰를 삭제했어요.' : '신고를 기각했어요.',
           ),
         ),
       );
@@ -194,130 +187,192 @@ class _AdminReportDetailScreenState
   }
 }
 
-class _InfoCard extends StatelessWidget {
-  const _InfoCard({
-    required this.title,
-    required this.rows,
-  });
+class _SectionTitle extends StatelessWidget {
+  const _SectionTitle({required this.title});
 
   final String title;
-  final List<_InfoRow> rows;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.text1.copyWith(color: context.mainTextColor),
-          ),
-          AppGap.v12,
-          ...rows.map(
-            (row) => Padding(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 88,
-                    child: Text(
-                      row.label,
-                      style: AppTextStyles.caption1.copyWith(
-                        color: context.sub2Color,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Text(
-                      row.value,
-                      style: AppTextStyles.text2.copyWith(
-                        color: context.mainTextColor,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+    return Text(
+      title,
+      style: AppTextStyles.title3.copyWith(color: context.mainTextColor),
     );
   }
 }
 
-class _ContentCard extends StatelessWidget {
-  const _ContentCard({
-    required this.title,
-    required this.content,
-  });
+class _ContentBox extends StatelessWidget {
+  const _ContentBox({required this.content});
 
-  final String title;
   final String content;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
       decoration: BoxDecoration(
         color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.text1.copyWith(color: context.mainTextColor),
-          ),
-          AppGap.v12,
-          Text(
-            content.isEmpty ? '-' : content,
-            style: AppTextStyles.text2.copyWith(color: context.mainTextColor),
-          ),
-        ],
+      child: Text(
+        content.isEmpty ? '-' : content,
+        style: AppTextStyles.text2.copyWith(color: context.sub1Color),
       ),
     );
   }
 }
 
-class _InfoRow {
-  const _InfoRow({required this.label, required this.value});
+class _MetaText extends StatelessWidget {
+  const _MetaText({
+    required this.text,
+    this.align = TextAlign.left,
+  });
 
-  final String label;
-  final String value;
+  final String text;
+  final TextAlign align;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: Text(
+        text,
+        textAlign: align,
+        style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
+      ),
+    );
+  }
 }
 
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
+class _ReportedUserTile extends StatelessWidget {
+  const _ReportedUserTile({required this.detail});
+
+  final ReportDetailEntity detail;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 22,
+          backgroundColor: context.surfaceColor,
+          child: AppIcons.profileCircle(width: 44, height: 44),
+        ),
+        AppGap.h12,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                detail.reviewerName,
+                style: AppTextStyles.text1.copyWith(
+                  color: context.mainTextColor,
+                ),
+              ),
+              AppGap.v2,
+              Text(
+                '${detail.reviewerGrade}학년 ${detail.reviewerDepartment}',
+                style: AppTextStyles.caption1.copyWith(
+                  color: context.sub2Color,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ResolutionInfo extends StatelessWidget {
+  const _ResolutionInfo({required this.detail});
+
+  final ReportDetailEntity detail;
+
+  @override
+  Widget build(BuildContext context) {
+    final rows = <String>[
+      if (detail.deletedBy?.isNotEmpty ?? false) '처리자 ${detail.deletedBy}',
+      if (detail.deletedAt != null)
+        '처리 시각 ${DateFormat('yy.MM.dd HH:mm:ss').format(detail.deletedAt!.toLocal())}',
+    ];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      decoration: BoxDecoration(
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        rows.isEmpty ? '-' : rows.join('\n'),
+        style: AppTextStyles.text2.copyWith(color: context.sub1Color),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.label,
+    required this.backgroundColor,
+    required this.foregroundColor,
+    this.onPressed,
+  });
+
+  final String label;
+  final Color backgroundColor;
+  final Color foregroundColor;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDisabled = onPressed == null;
+
+    return SizedBox(
+      height: 52,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: isDisabled
+              ? backgroundColor.withValues(alpha: 0.6)
+              : backgroundColor,
+          foregroundColor: foregroundColor,
+          disabledBackgroundColor: backgroundColor.withValues(alpha: 0.6),
+          disabledForegroundColor: foregroundColor.withValues(alpha: 0.7),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Text(
+          label,
+          style: AppTextStyles.text1.copyWith(color: foregroundColor),
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusText extends StatelessWidget {
+  const _StatusText({required this.status});
 
   final ReportStatus status;
 
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (status) {
-      ReportStatus.pending => ('대기', Colors.orange),
-      ReportStatus.approved => ('승인', AppColors.admin),
-      ReportStatus.rejected => ('반려', AppColors.negative),
+      ReportStatus.pending => ('처리전', AppColors.admin),
+      ReportStatus.approved => ('삭제됨', AppColors.negative),
+      ReportStatus.rejected => ('기각됨', context.sub2Color),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
       child: Text(
         label,
-        style: AppTextStyles.caption2.copyWith(color: color),
+        style: AppTextStyles.caption1.copyWith(color: color),
       ),
     );
   }

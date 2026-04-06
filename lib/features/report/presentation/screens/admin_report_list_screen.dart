@@ -223,7 +223,7 @@ class _ReportListTile extends StatelessWidget {
         ? '-'
         : formatter.format(report.reportCreatedAt!.toLocal());
     final headline = _mockHeadline(report);
-    final subtitle = _mockSubtitle(report);
+    final placeName = _mockPlaceName(report);
 
     return InkWell(
       onTap: onTap,
@@ -246,7 +246,7 @@ class _ReportListTile extends StatelessWidget {
                   ),
                   AppGap.v4,
                   Text(
-                    subtitle,
+                    placeName,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: AppTextStyles.caption1.copyWith(
@@ -281,13 +281,19 @@ String _mockHeadline(ReportSummaryEntity report) {
   return '후기 신고 #${report.reportId}';
 }
 
-String _mockSubtitle(ReportSummaryEntity report) {
-  final mockDetail = debugFindReportMockDetail(report.reportId);
-  if (mockDetail != null && mockDetail.reviewContent.trim().isNotEmpty) {
-    return mockDetail.reviewContent;
-  }
+String _mockPlaceName(ReportSummaryEntity report) {
+  final placeName = switch (report.reportId) {
+    9001 => '분식마을',
+    9002 => '떡볶이 연구소',
+    9003 => '야간스터디카페',
+    9101 => '브런치하우스',
+    9102 => '수제버거랩',
+    _ => '',
+  };
 
-  return '${report.reviewerName} · ${report.reviewerDepartment}';
+  if (placeName.isNotEmpty) return placeName;
+
+  return '장소 정보 없음';
 }
 
 class _StatusChip extends StatelessWidget {

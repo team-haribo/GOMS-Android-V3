@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -8,7 +10,9 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/common/text_fields/search_student.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
+import 'package:goms/features/report/data/mock/report_mock_data.dart';
 import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
 import 'package:intl/intl.dart';
@@ -22,13 +26,30 @@ class AdminReportListScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
-  bool _showPending = true;
+  final TextEditingController _searchController = TextEditingController();
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      ref.invalidate(pendingReportsProvider);
+      ref.invalidate(resolvedReportsProvider);
+      unawaited(ref.read(pendingReportsProvider.future));
+      unawaited(ref.read(resolvedReportsProvider.future));
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final reportsAsync = _showPending
-        ? ref.watch(pendingReportsProvider)
-        : ref.watch(resolvedReportsProvider);
+    final pendingReportsAsync = ref.watch(pendingReportsProvider);
+    final resolvedReportsAsync = ref.watch(resolvedReportsProvider);
 
     return BaseScaffold(
       showAppBar: true,
@@ -37,62 +58,30 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            '신고 관리',
+            '신고 목록',
             style: AppTextStyles.title1.copyWith(
               color: context.mainTextColor,
             ),
           ),
           AppGap.v24,
-          _ReportTabBar(
-            showPending: _showPending,
-            onChanged: (value) => setState(() => _showPending = value),
+          SearchStudentField(
+            controller: _searchController,
+            hintText: '학생 검색',
+            onChanged: (value) => setState(() => _query = value),
           ),
           AppGap.v16,
+          Text(
+            '검색 결과',
+            style: AppTextStyles.title3.copyWith(
+              color: context.mainTextColor,
+            ),
+          ),
+          AppGap.v24,
           Expanded(
-            child: reportsAsync.when(
-              data: (reports) {
-                if (reports.isEmpty) {
-                  return Center(
-                    child: Text(
-                      _showPending ? '대기 중인 신고가 없어요.' : '처리된 신고가 없어요.',
-                      style: AppTextStyles.text2.copyWith(
-                        color: context.sub2Color,
-                      ),
-                    ),
-                  );
-                }
-
-                return ListView.separated(
-                  itemCount: reports.length,
-                  separatorBuilder: (_, __) => Divider(
-                    color: context.buttonColor,
-                    thickness: 1,
-                  ),
-                  itemBuilder: (context, index) {
-                    final report = reports[index];
-                    return _ReportListTile(
-                      report: report,
-                      onTap: () => context.push(
-                        RoutePath.studentCouncilReportDetail,
-                        extra: report.reportId,
-                      ),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, _) => _ReportErrorView(
-                message: error is ReportAdminException
-                    ? error.message
-                    : '신고 목록을 불러오지 못했어요.',
-                onRetry: () {
-                  if (_showPending) {
-                    ref.read(pendingReportsProvider.notifier).reload();
-                    return;
-                  }
-                  ref.read(resolvedReportsProvider.notifier).reload();
-                },
-              ),
+            child: _ReportListBody(
+              pendingReportsAsync: pendingReportsAsync,
+              resolvedReportsAsync: resolvedReportsAsync,
+              query: _query,
             ),
           ),
         ],
@@ -101,74 +90,96 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
   }
 }
 
-class _ReportTabBar extends StatelessWidget {
-  const _ReportTabBar({
-    required this.showPending,
-    required this.onChanged,
+class _ReportListBody extends ConsumerWidget {
+  const _ReportListBody({
+    required this.pendingReportsAsync,
+    required this.resolvedReportsAsync,
+    required this.query,
   });
 
-  final bool showPending;
-  final ValueChanged<bool> onChanged;
+  final AsyncValue<List<ReportSummaryEntity>> pendingReportsAsync;
+  final AsyncValue<List<ReportSummaryEntity>> resolvedReportsAsync;
+  final String query;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(4),
-      child: Row(
-        children: [
-          Expanded(
-            child: _TabButton(
-              label: '대기 중',
-              selected: showPending,
-              onTap: () => onChanged(true),
-            ),
-          ),
-          Expanded(
-            child: _TabButton(
-              label: '처리 완료',
-              selected: !showPending,
-              onTap: () => onChanged(false),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final pendingReports =
+        pendingReportsAsync.asData?.value ?? const <ReportSummaryEntity>[];
+    final resolvedReports =
+        resolvedReportsAsync.asData?.value ?? const <ReportSummaryEntity>[];
 
-class _TabButton extends StatelessWidget {
-  const _TabButton({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
+    final hasAnyData =
+        pendingReportsAsync.hasValue || resolvedReportsAsync.hasValue;
+    final isLoading = !hasAnyData &&
+        (pendingReportsAsync.isLoading || resolvedReportsAsync.isLoading);
+    final error = pendingReportsAsync.hasError && resolvedReportsAsync.hasError
+        ? (pendingReportsAsync.error ?? resolvedReportsAsync.error)
+        : null;
 
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 44,
-        decoration: BoxDecoration(
-          color: selected ? AppColors.admin : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        alignment: Alignment.center,
+    if (error != null) {
+      return _ReportErrorView(
+        message: error is ReportAdminException
+            ? error.message
+            : '신고 목록을 불러오지 못했어요.',
+        onRetry: () {
+          ref.read(pendingReportsProvider.notifier).reload();
+          ref.read(resolvedReportsProvider.notifier).reload();
+        },
+      );
+    }
+
+    final reports = <ReportSummaryEntity>[...pendingReports, ...resolvedReports]
+      ..sort((a, b) {
+        final aTime =
+            a.reportCreatedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        final bTime =
+            b.reportCreatedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
+        return bTime.compareTo(aTime);
+      });
+
+    final normalizedQuery = query.trim().toLowerCase();
+    final List<ReportSummaryEntity> filteredReports = normalizedQuery.isEmpty
+        ? reports
+        : reports.where((report) {
+            final searchable = [
+              report.reviewerName,
+              report.reviewerDepartment,
+              report.reportId.toString(),
+              report.reviewId.toString(),
+              _mockHeadline(report),
+            ].join(' ').toLowerCase();
+            return searchable.contains(normalizedQuery);
+          }).toList(growable: false);
+
+    if (filteredReports.isEmpty) {
+      return Center(
         child: Text(
-          label,
-          style: AppTextStyles.text2.copyWith(
-            color: selected ? Colors.white : context.sub2Color,
-          ),
+          normalizedQuery.isEmpty ? '신고 내역이 없어요.' : '검색 결과가 없어요.',
+          style: AppTextStyles.text2.copyWith(color: context.sub2Color),
         ),
+      );
+    }
+
+    return ListView.separated(
+      itemCount: filteredReports.length,
+      separatorBuilder: (_, __) => Divider(
+        color: context.buttonColor,
+        height: 1,
       ),
+      itemBuilder: (context, index) {
+        final report = filteredReports[index];
+        return _ReportListTile(
+          report: report,
+          onTap: () => context.push(
+            RoutePath.studentCouncilReportDetail,
+            extra: report.reportId,
+          ),
+        );
+      },
     );
   }
 }
@@ -184,58 +195,76 @@ class _ReportListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formatter = DateFormat('yy.MM.dd HH:mm');
+    final formatter = DateFormat('yy.MM.dd HH:mm:ss');
     final createdAt = report.reportCreatedAt == null
         ? '-'
         : formatter.format(report.reportCreatedAt!.toLocal());
+    final headline = _mockHeadline(report);
+    final subtitle = _mockSubtitle(report);
 
     return InkWell(
-      borderRadius: BorderRadius.circular(12),
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.all(12),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          report.reviewerName,
-                          style: AppTextStyles.text1.copyWith(
-                            color: context.mainTextColor,
-                          ),
-                        ),
-                      ),
-                      _StatusChip(status: report.reportStatus),
-                    ],
-                  ),
-                  AppGap.v4,
                   Text(
-                    '${report.reviewerGrade}학년 | ${report.reviewerDepartment}',
-                    style: AppTextStyles.caption1.copyWith(
-                      color: context.sub2Color,
+                    headline,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.text1.copyWith(
+                      color: context.mainTextColor,
                     ),
                   ),
                   AppGap.v4,
                   Text(
-                    '리뷰 #${report.reviewId} · 신고 #${report.reportId} · $createdAt',
-                    style: AppTextStyles.caption2.copyWith(
+                    subtitle,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppTextStyles.caption1.copyWith(
+                      color: context.sub1Color,
+                    ),
+                  ),
+                  AppGap.v2,
+                  Text(
+                    createdAt,
+                    style: AppTextStyles.caption1.copyWith(
                       color: context.sub2Color,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(Icons.chevron_right),
+            AppGap.h12,
+            _StatusChip(status: report.reportStatus),
           ],
         ),
       ),
     );
   }
+}
+
+String _mockHeadline(ReportSummaryEntity report) {
+  final mockDetail = debugFindReportMockDetail(report.reportId);
+  if (mockDetail != null && mockDetail.reportContent.trim().isNotEmpty) {
+    return mockDetail.reportContent;
+  }
+
+  return '후기 신고 #${report.reportId}';
+}
+
+String _mockSubtitle(ReportSummaryEntity report) {
+  final mockDetail = debugFindReportMockDetail(report.reportId);
+  if (mockDetail != null && mockDetail.reviewContent.trim().isNotEmpty) {
+    return mockDetail.reviewContent;
+  }
+
+  return '${report.reviewerName} · ${report.reviewerDepartment}';
 }
 
 class _StatusChip extends StatelessWidget {
@@ -246,20 +275,19 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final (label, color) = switch (status) {
-      ReportStatus.pending => ('대기', Colors.orange),
-      ReportStatus.approved => ('승인', AppColors.admin),
-      ReportStatus.rejected => ('반려', AppColors.negative),
+      ReportStatus.pending => ('처리전', AppColors.admin),
+      ReportStatus.approved => ('처리 완료', context.sub2Color),
+      ReportStatus.rejected => ('기각', context.sub2Color),
     };
 
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(999),
-      ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 2),
       child: Text(
         label,
-        style: AppTextStyles.caption2.copyWith(color: color),
+        style: AppTextStyles.caption1.copyWith(
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }

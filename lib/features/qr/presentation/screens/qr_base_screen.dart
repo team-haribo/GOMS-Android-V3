@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -66,7 +68,7 @@ class QrBaseScreen extends StatelessWidget {
           const Spacer(),
           ConfirmButton(
             text: buttonText,
-            onPressed: onPressed ?? () => Navigator.of(context).maybePop(),
+            onPressed: onPressed ?? () => context.go(RoutePath.home),
           ),
         ],
       ),

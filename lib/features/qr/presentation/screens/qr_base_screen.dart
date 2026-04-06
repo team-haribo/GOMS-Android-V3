@@ -24,7 +24,7 @@ class QrBaseScreen extends StatelessWidget {
   /// 버튼 텍스트
   final String buttonText;
 
-  /// 버튼 콜백 (null 이면 Navigator.maybePop)
+  /// 버튼 콜백 (null 이면 홈으로 이동)
   final VoidCallback? onPressed;
 
   /// 부제목 아래에 삽입할 추가 위젯 (선택)

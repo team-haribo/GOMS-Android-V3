@@ -5,6 +5,7 @@ import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/shared/presentation/models/kakao_map_theme_style.dart';
 import 'package:goms/features/map/shared/presentation/providers/kakao_map_background_provider.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
@@ -30,8 +31,10 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
-  kakao.KImage? _defaultMarker;
-  kakao.KImage? _focusedMarker;
+  final Map<Brightness, kakao.KImage> _defaultMarkerImages =
+      <Brightness, kakao.KImage>{};
+  final Map<Brightness, kakao.KImage> _focusedMarkerImages =
+      <Brightness, kakao.KImage>{};
   int _renderToken = 0;
 
   String get _mapId =>
@@ -50,6 +53,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     if (controller == null || !KakaoMapRuntime.instance.isMapAvailable) {
       return;
     }
+    final themeStyle = _themeStyle;
 
     final token = ++_renderToken;
 
@@ -59,7 +63,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         return;
       }
 
-      await _ensureMarkerImages();
+      await _ensureMarkerImages(themeStyle);
       if (!mounted || token != _renderToken) {
         return;
       }
@@ -97,9 +101,9 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         _route = await controller.routeLayer.addRoute(
           routePoints,
           kakao.RouteStyle(
-            AppColors.mainColor,
+            themeStyle.routeColor,
             8,
-            strokeColor: Colors.white,
+            strokeColor: themeStyle.routeStrokeColor,
             strokeWidth: 2,
           ),
         );
@@ -158,16 +162,27 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     return focusPlace.name == place.name && focusPlace.address == place.address;
   }
 
-  Future<void> _ensureMarkerImages() async {
-    _defaultMarker ??= await _buildMarkerImage(
-      fillColor: const Color(0xFF4A4A4A),
-      iconColor: Colors.white,
+  Future<void> _ensureMarkerImages(KakaoMapThemeStyle themeStyle) async {
+    final brightness = Theme.of(context).brightness;
+
+    _defaultMarkerImages[brightness] ??= await _buildMarkerImage(
+      fillColor: themeStyle.markerFillColor,
+      iconColor: themeStyle.markerIconColor,
     );
-    _focusedMarker ??= await _buildMarkerImage(
-      fillColor: AppColors.mainColor,
-      iconColor: Colors.white,
+    _focusedMarkerImages[brightness] ??= await _buildMarkerImage(
+      fillColor: themeStyle.focusedMarkerFillColor,
+      iconColor: themeStyle.focusedMarkerIconColor,
     );
   }
+
+  KakaoMapThemeStyle get _themeStyle =>
+      KakaoMapThemeStyle.fromBrightness(Theme.of(context).brightness);
+
+  kakao.KImage? get _defaultMarker =>
+      _defaultMarkerImages[Theme.of(context).brightness];
+
+  kakao.KImage? get _focusedMarker =>
+      _focusedMarkerImages[Theme.of(context).brightness];
 
   Future<kakao.KImage> _buildMarkerImage({
     required Color fillColor,
@@ -239,11 +254,12 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
+    final themeStyle = _themeStyle;
     final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
       return ColoredBox(
-        color: AppColors.background,
+        color: themeStyle.loadingBackgroundColor,
         child: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -274,20 +290,32 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
               zoomLevel: 16,
             ),
             onMapReady: (controller) {
-              _controller = controller;
+              if (!mounted) {
+                return;
+              }
+              setState(() {
+                _controller = controller;
+              });
+              debugPrint('KakaoMapBackground onMapReady');
               _renderMapObjects();
             },
             onMapError: (error) {
+              debugPrint('KakaoMapBackground onMapError: $error');
               _setError(_buildErrorMessage(error));
             },
-            forceHybridComposition: true,
           ),
         ),
+        if (themeStyle.dimOverlayColor != const Color(0x00000000))
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ColoredBox(color: themeStyle.dimOverlayColor),
+            ),
+          ),
         if (_controller == null && errorMessage == null)
-          const Positioned.fill(
+          Positioned.fill(
             child: ColoredBox(
-              color: AppColors.background,
-              child: Center(
+              color: themeStyle.loadingBackgroundColor,
+              child: const Center(
                 child: CircularProgressIndicator(
                   color: AppColors.mainColor,
                 ),
@@ -297,7 +325,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         if (errorMessage != null)
           Positioned.fill(
             child: ColoredBox(
-              color: AppColors.background,
+              color: themeStyle.loadingBackgroundColor,
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24),

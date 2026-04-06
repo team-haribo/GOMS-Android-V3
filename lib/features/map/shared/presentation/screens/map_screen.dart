@@ -291,7 +291,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               onMapError: (error) {
                 debugPrint('Kakao map error: $error');
               },
-              forceHybridComposition: true,
             ),
           ),
           Positioned(

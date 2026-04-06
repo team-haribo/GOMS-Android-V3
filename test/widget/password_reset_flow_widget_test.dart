@@ -356,6 +356,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
         name: '홍길동',
         grade: 2,
         department: 'SW',
+        lateCount: 3,
       );
 }
 

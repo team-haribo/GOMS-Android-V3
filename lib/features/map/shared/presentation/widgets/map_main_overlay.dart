@@ -8,7 +8,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
-import 'package:goms/features/map/shared/presentation/widgets/map_shared_widgets.dart';
+import 'package:goms/features/map/shared/presentation/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
@@ -47,50 +47,44 @@ class MapMainOverlay extends StatelessWidget {
           child: Stack(
             children: [
               Positioned.fill(
-                child: DraggableScrollableSheet(
+                child: MapBottomSheet(
+                  isLight: isLight,
                   initialChildSize: initialSheetSize,
                   minChildSize: initialSheetSize,
                   maxChildSize: maxSheetSize,
-                  snap: true,
                   snapSizes: <double>[
                     initialSheetSize,
                     context.isTabletLayout ? 0.62 : 0.62,
                     maxSheetSize,
                   ],
-                  builder: (context, scrollController) {
-                    return MapSheet(
-                      isLight: isLight,
-                      scrollController: scrollController,
-                      slivers: [
-                        SliverPadding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: horizontalPadding,
-                          ),
-                          sliver: SliverToBoxAdapter(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _PopularPlacesSection(
-                                  isLight: isLight,
-                                  status: state.status,
-                                  popularPlaces: state.popularPlaces,
-                                ),
-                                AppGap.v24,
-                                _MyActivitySection(
-                                  isLight: isLight,
-                                  popularPlaces: state.popularPlaces,
-                                  reviewModels: state.reviewModels,
-                                  recommendedCount: state.recommendedCount,
-                                  reviewCount: state.reviewCount,
-                                ),
-                                AppGap.v24,
-                              ],
+                  slivers: [
+                    SliverPadding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: horizontalPadding,
+                      ),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _PopularPlacesSection(
+                              isLight: isLight,
+                              status: state.status,
+                              popularPlaces: state.popularPlaces,
                             ),
-                          ),
+                            AppGap.v24,
+                            _MyActivitySection(
+                              isLight: isLight,
+                              popularPlaces: state.popularPlaces,
+                              reviewModels: state.reviewModels,
+                              recommendedCount: state.recommendedCount,
+                              reviewCount: state.reviewCount,
+                            ),
+                            AppGap.v24,
+                          ],
                         ),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Positioned(

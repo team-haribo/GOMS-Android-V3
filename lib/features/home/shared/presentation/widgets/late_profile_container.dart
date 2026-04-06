@@ -27,7 +27,9 @@ class LateProfileContainer extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            vertical: AppSpacing.s12, horizontal: AppSpacing.s20),
+          vertical: AppSpacing.s12,
+          horizontal: AppSpacing.s20,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

@@ -24,9 +24,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   late final ProviderSubscription<LoginState> _loginSubscription;
 
+  void _onTextChanged() {
+    if (!mounted) return;
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
+    _emailController.addListener(_onTextChanged);
+    _passwordController.addListener(_onTextChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(loginProvider.notifier).reset();
     });
@@ -63,6 +70,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   void dispose() {
     _loginSubscription.close();
+    _emailController.removeListener(_onTextChanged);
+    _passwordController.removeListener(_onTextChanged);
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();

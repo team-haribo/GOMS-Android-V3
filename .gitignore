@@ -58,3 +58,6 @@ google-services.json
 
 # FVM Version Cache
 .fvm/
+
+.omx/
+.codex/

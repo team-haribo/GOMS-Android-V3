@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
@@ -30,8 +29,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
-  kakao.KImage? _defaultMarker;
-  kakao.KImage? _focusedMarker;
   int _renderToken = 0;
 
   String get _mapId =>
@@ -59,11 +56,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         return;
       }
 
-      await _ensureMarkerImages();
-      if (!mounted || token != _renderToken) {
-        return;
-      }
-
       final cameraPoints = <kakao.LatLng>[];
       final renderPlaces = _buildRenderPlaces();
 
@@ -76,9 +68,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
         final poi = await controller.labelLayer.addPoi(
           position,
-          style: kakao.PoiStyle(
-            icon: _isFocused(place) ? _focusedMarker : _defaultMarker,
-          ),
+          style: kakao.PoiStyle(),
           text: place.name,
         );
 
@@ -96,12 +86,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
         _route = await controller.routeLayer.addRoute(
           routePoints,
-          kakao.RouteStyle(
-            AppColors.mainColor,
-            8,
-            strokeColor: Colors.white,
-            strokeWidth: 2,
-          ),
+          kakao.RouteStyle(Colors.black, 8),
         );
       }
 
@@ -149,56 +134,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     return unique.values.toList(growable: false);
   }
 
-  bool _isFocused(PopularPlace place) {
-    final focusPlace = widget.focusPlace;
-    if (focusPlace == null) {
-      return false;
-    }
-
-    return focusPlace.name == place.name && focusPlace.address == place.address;
-  }
-
-  Future<void> _ensureMarkerImages() async {
-    _defaultMarker ??= await _buildMarkerImage(
-      fillColor: const Color(0xFF4A4A4A),
-      iconColor: Colors.white,
-    );
-    _focusedMarker ??= await _buildMarkerImage(
-      fillColor: AppColors.mainColor,
-      iconColor: Colors.white,
-    );
-  }
-
-  Future<kakao.KImage> _buildMarkerImage({
-    required Color fillColor,
-    required Color iconColor,
-  }) {
-    return kakao.KImage.fromWidget(
-      Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          color: fillColor,
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.12),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Icon(
-          Icons.location_on_rounded,
-          color: iconColor,
-          size: 20,
-        ),
-      ),
-      const Size(34, 34),
-      context: context,
-    );
-  }
-
   Future<void> _clearOverlays(kakao.KakaoMapController controller) async {
     if (_route != null) {
       try {
@@ -242,16 +177,13 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
     final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
-      return ColoredBox(
-        color: AppColors.background,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              unavailableReason ?? '지도를 불러오지 못했습니다.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            unavailableReason ?? '지도를 불러오지 못했습니다.',
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       );
@@ -274,38 +206,36 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
               zoomLevel: 16,
             ),
             onMapReady: (controller) {
-              _controller = controller;
+              if (!mounted) {
+                return;
+              }
+              setState(() {
+                _controller = controller;
+              });
+              debugPrint('KakaoMapBackground onMapReady');
               _renderMapObjects();
             },
             onMapError: (error) {
+              debugPrint('KakaoMapBackground onMapError: $error');
               _setError(_buildErrorMessage(error));
             },
-            forceHybridComposition: true,
           ),
         ),
         if (_controller == null && errorMessage == null)
           const Positioned.fill(
-            child: ColoredBox(
-              color: AppColors.background,
-              child: Center(
-                child: CircularProgressIndicator(
-                  color: AppColors.mainColor,
-                ),
-              ),
+            child: Center(
+              child: CircularProgressIndicator(),
             ),
           ),
         if (errorMessage != null)
           Positioned.fill(
-            child: ColoredBox(
-              color: AppColors.background,
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    errorMessage,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(
+                  errorMessage,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
             ),

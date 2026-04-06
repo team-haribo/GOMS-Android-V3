@@ -7,6 +7,7 @@ class MyOutingStatusEntity {
     required this.name,
     required this.grade,
     required this.department,
+    required this.lateCount,
   });
 
   final int memberId;
@@ -14,4 +15,5 @@ class MyOutingStatusEntity {
   final String name;
   final int grade;
   final String department;
+  final int lateCount;
 }

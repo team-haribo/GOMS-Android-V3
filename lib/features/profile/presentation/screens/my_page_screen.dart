@@ -150,7 +150,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               name: myOutingStatus?.name ?? currentMember?.name ?? '정보 없음',
               grade: myOutingStatus?.grade,
               major: myOutingStatus?.department,
-              lateCount: null,
+              lateCount: myOutingStatus?.lateCount,
               textColor: textColor,
               subColor: sub2Color,
               surfaceColor: surfaceColor,

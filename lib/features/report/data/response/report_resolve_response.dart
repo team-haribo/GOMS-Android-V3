@@ -1,0 +1,39 @@
+import 'package:goms/features/map/review/domain/enums/report_status.dart';
+import 'package:goms/features/report/data/response/report_parsers.dart';
+import 'package:goms/features/report/domain/entities/report_resolve_result_entity.dart';
+
+class ReportResolveResponse {
+  const ReportResolveResponse({
+    required this.reportId,
+    required this.reviewId,
+    required this.reportStatus,
+    required this.resolvedBy,
+    this.resolvedAt,
+  });
+
+  factory ReportResolveResponse.fromJson(Map<String, dynamic> json) {
+    return ReportResolveResponse(
+      reportId: parseReportInt(json['report_id']),
+      reviewId: parseReportInt(json['review_id']),
+      reportStatus: parseReportStatus(json['report_status']),
+      resolvedAt: parseReportDateTime(json['resolved_at']),
+      resolvedBy: parseReportInt(json['resolved_by']),
+    );
+  }
+
+  final int reportId;
+  final int reviewId;
+  final ReportStatus reportStatus;
+  final DateTime? resolvedAt;
+  final int resolvedBy;
+
+  ReportResolveResultEntity toEntity() {
+    return ReportResolveResultEntity(
+      reportId: reportId,
+      reviewId: reviewId,
+      reportStatus: reportStatus,
+      resolvedAt: resolvedAt,
+      resolvedBy: resolvedBy,
+    );
+  }
+}

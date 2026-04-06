@@ -22,7 +22,7 @@ class MyOutingStatusCard extends ConsumerWidget {
         name: value.name,
         grade: value.grade,
         major: value.department,
-        lateCount: 0,
+        lateCount: value.lateCount,
         status: role == RoleEnum.admin
             ? OutingStatus.admin
             : OutingStatus.fromServer(value.status),

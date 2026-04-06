@@ -1,26 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/qr_button.dart';
-import 'package:goms/core/widgets/common/text_fields/search_student.dart';
-import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
-import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
-import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-
-final searchTextProvider = StateProvider<String>((ref) => '');
+import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/common/buttons/qr_button.dart';
+import 'package:goms/core/widgets/common/text_fields/search_student.dart';
+import 'package:goms/features/home/shared/presentation/widgets/filter_bottomsheet.dart';
+import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
+import 'package:goms/features/member/data/request/student_council_filter_request.dart';
+import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AdminOutingStateScreen extends ConsumerStatefulWidget {
   const AdminOutingStateScreen({
@@ -50,58 +47,28 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
     }
   }
 
-  List<SearchProfileContainerModel> outingMembers = [
-    const SearchProfileContainerModel(
-        name: '류수연', grade: 9, major: 'SW개발', studentRole: StudentRole.council),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔', grade: 8, major: 'AI', studentRole: StudentRole.student),
-    const SearchProfileContainerModel(
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '이주언',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-    const SearchProfileContainerModel(
-        name: '김민솔',
-        grade: 8,
-        major: 'AI',
-        studentRole: StudentRole.outingBanned),
-  ];
-
   @override
   Widget build(BuildContext context) {
-    final searchText = ref.watch(searchTextProvider);
-
+    final searchText = ref.watch(studentCouncilMemberSearchProvider);
+    final membersAsync = ref.watch(studentCouncilMembersProvider);
     final role = ref.watch(roleProvider);
-
-    final filteredList = searchText.isEmpty
-        ? outingMembers
-        : outingMembers.where((member) {
-            return member.name.toLowerCase().contains(searchText.toLowerCase());
-          }).toList();
 
     return BaseScaffold(
       showAppBar: true,
       role: role,
       body: Column(
         children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              '학생관리',
-              style: AppTextStyles.title1.copyWith(
-                color: context.mainTextColor,
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '학생관리',
+                  style: AppTextStyles.title1.copyWith(
+                    color: context.mainTextColor,
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
           AppGap.v24,
           Align(
@@ -114,7 +81,8 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
               ),
               child: SearchStudentField(
                 onChanged: (value) {
-                  ref.read(searchTextProvider.notifier).state = value;
+                  ref.read(studentCouncilMemberSearchProvider.notifier).state =
+                      value;
                 },
               ),
             ),
@@ -139,44 +107,129 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
           else ...[
             AppGap.v12,
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '검색결과',
-                  style: AppTextStyles.title3.copyWith(
-                    color: context.mainTextColor,
+                Expanded(
+                  child: Text(
+                    '검색결과',
+                    style: AppTextStyles.title3.copyWith(
+                      color: context.mainTextColor,
+                    ),
                   ),
                 ),
-                const FilterButton(),
+                FilterButton(
+                  bottomSheetBuilder: (_) => FilterBottomSheet(
+                    initialSelection: _selectionFromFilter(
+                      ref.read(studentCouncilMemberFilterProvider),
+                    ),
+                    onReset: () {
+                      ref.read(studentCouncilMembersProvider.notifier).clearFilter();
+                      ref.read(studentCouncilMembersProvider.notifier).reload();
+                    },
+                    onApply: (selection) {
+                      ref.read(studentCouncilMembersProvider.notifier).updateFilter(
+                            StudentCouncilFilterRequest(
+                              grade: selection.grade,
+                              gender: selection.gender,
+                              department: selection.department,
+                              status: selection.status,
+                              role: selection.role,
+                            ),
+                          );
+                      ref.read(studentCouncilMembersProvider.notifier).reload();
+                    },
+                  ),
+                ),
               ],
             ),
             AppGap.v12,
             Expanded(
-              child: ListView.separated(
-                itemCount: filteredList.length,
-                itemBuilder: (context, index) {
-                  final member = filteredList[index];
-                  return AdminOutingStateContainer(
-                    name: member.name,
-                    grade: member.grade,
-                    major: member.major,
-                    studentRole: member.studentRole,
+              child: membersAsync.when(
+                data: (members) {
+                  final filteredMembers = searchText.trim().isEmpty
+                      ? members
+                      : members
+                          .where(
+                            (member) => member.name
+                                .toLowerCase()
+                                .contains(searchText.toLowerCase()),
+                          )
+                          .toList();
+
+                  if (filteredMembers.isEmpty) {
+                    return Center(
+                      child: Text(
+                        searchText.trim().isEmpty
+                            ? '조회된 학생이 없어요.'
+                            : '검색 결과가 없어요.',
+                        style: AppTextStyles.text2.copyWith(
+                          color: context.sub2Color,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return ListView.separated(
+                    itemCount: filteredMembers.length,
+                    itemBuilder: (context, index) {
+                      final member = filteredMembers[index];
+                      return AdminOutingStateContainer(
+                        memberId: member.memberId,
+                        name: member.name,
+                        grade: member.grade,
+                        major: member.department,
+                        studentRole: member.studentRole,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return Divider(
+                        thickness: 1,
+                        color: context.buttonColor,
+                      );
+                    },
                   );
                 },
-                separatorBuilder: (context, index) {
-                  return Divider(
-                    thickness: 1,
-                    color: context.buttonColor,
-                  );
-                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (error, _) => Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        error is StudentCouncilMembersException
+                            ? error.message
+                            : '학생 목록을 불러오지 못했어요.',
+                        style: AppTextStyles.text2.copyWith(
+                          color: context.sub2Color,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      AppGap.v12,
+                      TextButton(
+                        onPressed: () {
+                          ref
+                              .read(studentCouncilMembersProvider.notifier)
+                              .reload();
+                        },
+                        child: const Text('다시 시도'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
         ],
       ),
-      floatingActionButton: QRButton(
-        type: role == RoleEnum.admin ? RoleEnum.admin : RoleEnum.user,
-      ),
+      floatingActionButton: QRButton(type: role),
+    );
+  }
+
+  FilterSheetSelection _selectionFromFilter(StudentCouncilFilterRequest filter) {
+    return FilterSheetSelection(
+      grade: filter.grade,
+      gender: filter.gender,
+      department: filter.department,
+      status: filter.status,
+      role: filter.role,
     );
   }
 }

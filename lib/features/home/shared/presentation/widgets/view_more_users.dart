@@ -5,7 +5,12 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 class ViewMoreUsers extends StatelessWidget {
-  const ViewMoreUsers({super.key});
+  const ViewMoreUsers({
+    super.key,
+    this.path = RoutePath.outingState,
+  });
+
+  final String path;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,7 @@ class ViewMoreUsers extends StatelessWidget {
       height: 24,
       child: ElevatedButton(
         onPressed: () {
-          context.push(RoutePath.outingState);
+          context.push(path);
         },
         style: ElevatedButton.styleFrom(
           backgroundColor: context.surfaceColor,

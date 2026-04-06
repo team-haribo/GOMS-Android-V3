@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/outing/presentation/widgets/user_role_bottomsheet.dart';
+import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_bottom_sheet.dart';
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
+  final int memberId;
   final String name;
   final int grade;
   final String major;
@@ -16,6 +17,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
 
   const AdminOutingStateContainer({
     super.key,
+    required this.memberId,
     required this.name,
     required this.grade,
     required this.major,
@@ -35,6 +37,14 @@ class _AdminOutingStateContainerState
   void initState() {
     super.initState();
     _studentRole = widget.studentRole;
+  }
+
+  @override
+  void didUpdateWidget(covariant AdminOutingStateContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.studentRole != widget.studentRole) {
+      _studentRole = widget.studentRole;
+    }
   }
 
   @override
@@ -80,19 +90,15 @@ class _AdminOutingStateContainerState
                       ? AppColors.negative
                       : _studentRole == StudentRole.council
                           ? AppColors.admin
-                          : (context.sub1Color),
+                          : context.sub1Color,
                 ),
               ),
               AppGap.h4,
-              Row(
-                children: [
-                  Text(
-                    '${widget.grade}기 | ${widget.major}',
-                    style: AppTextStyles.caption2.copyWith(
-                      color: context.sub2Color,
-                    ),
-                  ),
-                ],
+              Text(
+                '${widget.grade}학년 | ${widget.major}',
+                style: AppTextStyles.caption2.copyWith(
+                  color: context.sub2Color,
+                ),
               ),
             ],
           ),
@@ -111,21 +117,14 @@ class _AdminOutingStateContainerState
                         BorderRadius.vertical(top: Radius.circular(12)),
                   ),
                   backgroundColor: context.surfaceColor,
-                  builder: (context) => FractionallySizedBox(
-                    heightFactor: _studentRole == StudentRole.student
-                        ? 0.42
-                        : _studentRole == StudentRole.outingBanned
-                            ? 0.33
-                            : 0.24,
-                    child: UserRoleBottomSheet(
-                      studentRole: _studentRole,
-                      onRoleChanged: (newRole) {
-                        setState(() {
-                          _studentRole = newRole;
-                        });
-                        Navigator.pop(context);
-                      },
-                    ),
+                  builder: (context) => AdminBottomSheet(
+                    memberId: widget.memberId,
+                    studentRole: _studentRole,
+                    onRoleChanged: (newRole) {
+                      setState(() {
+                        _studentRole = newRole;
+                      });
+                    },
                   ),
                 );
               },

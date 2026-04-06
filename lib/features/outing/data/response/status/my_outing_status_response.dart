@@ -13,6 +13,7 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
     required String name,
     required int grade,
     required String department,
+    required int lateCount,
   }) = _MyOutingStatusResponse;
 
   factory MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
@@ -30,6 +31,7 @@ extension MyOutingStatusResponseX on MyOutingStatusResponse {
       name: name,
       grade: grade,
       department: department,
+      lateCount: lateCount,
     );
   }
 }

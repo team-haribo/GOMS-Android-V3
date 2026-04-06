@@ -1,6 +1,7 @@
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 
 class PopularPlace {
+  final int? placeId;
   final String name;
   final String category;
   final String address;
@@ -10,6 +11,7 @@ class PopularPlace {
   final MapCoordinate coordinate;
 
   const PopularPlace({
+    this.placeId,
     required this.name,
     required this.category,
     required this.address,

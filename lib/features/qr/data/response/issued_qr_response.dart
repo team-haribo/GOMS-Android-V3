@@ -20,6 +20,10 @@ abstract class IssuedQrResponse with _$IssuedQrResponse {
 
 extension IssuedQrResponseX on IssuedQrResponse {
   IssuedQrEntity toEntity() {
-    return IssuedQrEntity(uuid: uuid, exp: exp);
+    return IssuedQrEntity(
+      uuid: uuid,
+      exp: exp,
+      issuedAt: DateTime.now(),
+    );
   }
 }

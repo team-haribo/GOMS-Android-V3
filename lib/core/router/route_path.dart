@@ -18,6 +18,11 @@ class RoutePath {
   static const String writeReview = '/write-review';
   static const String home = '/home';
   static const String outingState = '/outing-state';
+  static const String studentCouncilMembers = '/student-council/members';
+  static const String studentCouncilLate = '/student-council/late';
+  static const String studentCouncilReports = '/student-council/reports';
+  static const String studentCouncilReportDetail =
+      '/student-council/reports/detail';
   static const String myPage = '/mypage';
   static const String members = '/members';
 }

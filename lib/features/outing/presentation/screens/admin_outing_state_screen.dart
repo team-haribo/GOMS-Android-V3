@@ -122,11 +122,15 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                       ref.read(studentCouncilMemberFilterProvider),
                     ),
                     onReset: () {
-                      ref.read(studentCouncilMembersProvider.notifier).clearFilter();
+                      ref
+                          .read(studentCouncilMembersProvider.notifier)
+                          .clearFilter();
                       ref.read(studentCouncilMembersProvider.notifier).reload();
                     },
                     onApply: (selection) {
-                      ref.read(studentCouncilMembersProvider.notifier).updateFilter(
+                      ref
+                          .read(studentCouncilMembersProvider.notifier)
+                          .updateFilter(
                             StudentCouncilFilterRequest(
                               grade: selection.grade,
                               gender: selection.gender,
@@ -143,73 +147,106 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             ),
             AppGap.v12,
             Expanded(
-              child: membersAsync.when(
-                data: (members) {
-                  final filteredMembers = searchText.trim().isEmpty
-                      ? members
-                      : members
-                          .where(
-                            (member) => member.name
-                                .toLowerCase()
-                                .contains(searchText.toLowerCase()),
-                          )
-                          .toList();
-
-                  if (filteredMembers.isEmpty) {
-                    return Center(
-                      child: Text(
-                        searchText.trim().isEmpty
-                            ? '조회된 학생이 없어요.'
-                            : '검색 결과가 없어요.',
-                        style: AppTextStyles.text2.copyWith(
-                          color: context.sub2Color,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    itemCount: filteredMembers.length,
-                    itemBuilder: (context, index) {
-                      final member = filteredMembers[index];
-                      return AdminOutingStateContainer(
-                        memberId: member.memberId,
-                        name: member.name,
-                        grade: member.grade,
-                        major: member.department,
-                        studentRole: member.studentRole,
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        thickness: 1,
-                        color: context.buttonColor,
-                      );
-                    },
-                  );
+              child: RefreshIndicator(
+                onRefresh: () {
+                  return ref
+                      .read(studentCouncilMembersProvider.notifier)
+                      .reload();
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        error is StudentCouncilMembersException
-                            ? error.message
-                            : '학생 목록을 불러오지 못했어요.',
-                        style: AppTextStyles.text2.copyWith(
-                          color: context.sub2Color,
-                        ),
-                        textAlign: TextAlign.center,
+                child: membersAsync.when(
+                  data: (members) {
+                    final filteredMembers = searchText.trim().isEmpty
+                        ? members
+                        : members
+                            .where(
+                              (member) => member.name
+                                  .toLowerCase()
+                                  .contains(searchText.toLowerCase()),
+                            )
+                            .toList();
+
+                    if (filteredMembers.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: 280,
+                            child: Center(
+                              child: Text(
+                                searchText.trim().isEmpty
+                                    ? '조회된 학생이 없어요.'
+                                    : '검색 결과가 없어요.',
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: filteredMembers.length,
+                      itemBuilder: (context, index) {
+                        final member = filteredMembers[index];
+                        return AdminOutingStateContainer(
+                          memberId: member.memberId,
+                          name: member.name,
+                          grade: member.grade,
+                          major: member.department,
+                          studentRole: member.studentRole,
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          thickness: 1,
+                          color: context.buttonColor,
+                        );
+                      },
+                    );
+                  },
+                  loading: () => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      SizedBox(
+                        height: 280,
+                        child: Center(child: CircularProgressIndicator()),
                       ),
-                      AppGap.v12,
-                      TextButton(
-                        onPressed: () {
-                          ref
-                              .read(studentCouncilMembersProvider.notifier)
-                              .reload();
-                        },
-                        child: const Text('다시 시도'),
+                    ],
+                  ),
+                  error: (error, _) => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: 280,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                error is StudentCouncilMembersException
+                                    ? error.message
+                                    : '학생 목록을 불러오지 못했어요.',
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              AppGap.v12,
+                              TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(studentCouncilMembersProvider
+                                          .notifier)
+                                      .reload();
+                                },
+                                child: const Text('다시 시도'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -223,7 +260,8 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
     );
   }
 
-  FilterSheetSelection _selectionFromFilter(StudentCouncilFilterRequest filter) {
+  FilterSheetSelection _selectionFromFilter(
+      StudentCouncilFilterRequest filter) {
     return FilterSheetSelection(
       grade: filter.grade,
       gender: filter.gender,

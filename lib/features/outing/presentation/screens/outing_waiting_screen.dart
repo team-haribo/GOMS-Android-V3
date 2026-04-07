@@ -31,6 +31,13 @@ class OutingWaitingScreen extends ConsumerStatefulWidget {
 }
 
 class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
+  Future<void> _onRefresh() async {
+    await Future.wait([
+      ref.read(currentOutingStudentsProvider.notifier).reload(),
+      ref.read(lateRankStudentsProvider.notifier).reload(),
+    ]);
+  }
+
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider);
@@ -44,81 +51,85 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
-      body: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 24),
-                  child: MyOutingStatusCard(),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: 24,
+      body: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(bottom: 24),
+                    child: MyOutingStatusCard(),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      bottom: 24,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '지각자 TOP 3',
+                              style: AppTextStyles.title3.copyWith(
+                                color: context.mainTextColor,
+                              ),
+                            ),
+                            role == RoleEnum.admin
+                                ? const ViewMoreUsers(
+                                    path: RoutePath.studentCouncilLate,
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                        AppGap.v12,
+                        _buildLateRankSection(lateRankStudents),
+                        AppGap.v12,
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            '지각자 TOP 3',
+                            '외출 현황',
                             style: AppTextStyles.title3.copyWith(
                               color: context.mainTextColor,
                             ),
                           ),
-                          role == RoleEnum.admin
-                              ? const ViewMoreUsers(
-                                  path: RoutePath.studentCouncilLate,
-                                )
-                              : const SizedBox(),
+                          AppGap.h8,
+                          Text(
+                            '$approvedStudentCount',
+                            style: AppTextStyles.caption1
+                                .copyWith(color: AppColors.mainColor),
+                          ),
+                          Text(
+                            "명이 외출중",
+                            style: AppTextStyles.caption1.copyWith(
+                              color: context.isDarkMode
+                                  ? AppColors.sub1Dark
+                                  : AppColors.sub2,
+                            ),
+                          ),
                         ],
                       ),
-                      AppGap.v12,
-                      _buildLateRankSection(lateRankStudents),
-                      AppGap.v12,
+                      const ViewMoreUsers(),
                     ],
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          '외출 현황',
-                          style: AppTextStyles.title3.copyWith(
-                            color: context.mainTextColor,
-                          ),
-                        ),
-                        AppGap.h8,
-                        Text(
-                          '$approvedStudentCount',
-                          style: AppTextStyles.caption1
-                              .copyWith(color: AppColors.mainColor),
-                        ),
-                        Text(
-                          "명이 외출중",
-                          style: AppTextStyles.caption1.copyWith(
-                            color: context.isDarkMode
-                                ? AppColors.sub1Dark
-                                : AppColors.sub2,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const ViewMoreUsers(),
-                  ],
-                ),
-                AppGap.v12,
-              ],
+                  AppGap.v12,
+                ],
+              ),
             ),
-          ),
-          ..._buildOutingStudentSlivers(currentOutingStudents),
-        ],
+            ..._buildOutingStudentSlivers(currentOutingStudents),
+          ],
+        ),
       ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,

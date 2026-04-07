@@ -119,66 +119,99 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             ),
             AppGap.v12,
             Expanded(
-              child: outingStudents.when(
-                data: (students) {
-                  final filteredList = _filterStudents(students, searchText);
-
-                  if (filteredList.isEmpty) {
-                    return Center(
-                      child: Text(
-                        searchText.isEmpty
-                            ? '현재 외출 중인 학생이 없어요.'
-                            : '검색 결과가 없어요.',
-                        style: AppTextStyles.text2.copyWith(
-                          color: context.sub2Color,
-                        ),
-                      ),
-                    );
-                  }
-
-                  return ListView.separated(
-                    itemCount: filteredList.length,
-                    itemBuilder: (context, index) {
-                      final member = filteredList[index];
-                      return SearchProfileList(
-                        memberId: member.memberId,
-                        name: member.name,
-                        grade: member.grade,
-                        major: member.department,
-                        role: role,
-                        outingAt: member.outingAt,
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        thickness: 1,
-                        color: context.buttonColor,
-                      );
-                    },
-                  );
+              child: RefreshIndicator(
+                onRefresh: () {
+                  return ref
+                      .read(currentOutingStudentsProvider.notifier)
+                      .reload();
                 },
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        error is CurrentOutingStudentsException
-                            ? error.message
-                            : '외출 목록을 불러오지 못했어요.',
-                        style: AppTextStyles.text2.copyWith(
-                          color: context.sub2Color,
-                        ),
-                        textAlign: TextAlign.center,
+                child: outingStudents.when(
+                  data: (students) {
+                    final filteredList = _filterStudents(students, searchText);
+
+                    if (filteredList.isEmpty) {
+                      return ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: [
+                          SizedBox(
+                            height: 280,
+                            child: Center(
+                              child: Text(
+                                searchText.isEmpty
+                                    ? '현재 외출 중인 학생이 없어요.'
+                                    : '검색 결과가 없어요.',
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return ListView.separated(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      itemCount: filteredList.length,
+                      itemBuilder: (context, index) {
+                        final member = filteredList[index];
+                        return SearchProfileList(
+                          memberId: member.memberId,
+                          name: member.name,
+                          grade: member.grade,
+                          major: member.department,
+                          role: role,
+                          outingAt: member.outingAt,
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          thickness: 1,
+                          color: context.buttonColor,
+                        );
+                      },
+                    );
+                  },
+                  loading: () => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: const [
+                      SizedBox(
+                        height: 280,
+                        child: Center(child: CircularProgressIndicator()),
                       ),
-                      AppGap.v12,
-                      TextButton(
-                        onPressed: () {
-                          ref
-                              .read(currentOutingStudentsProvider.notifier)
-                              .reload();
-                        },
-                        child: const Text('다시 시도'),
+                    ],
+                  ),
+                  error: (error, _) => ListView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    children: [
+                      SizedBox(
+                        height: 280,
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                error is CurrentOutingStudentsException
+                                    ? error.message
+                                    : '외출 목록을 불러오지 못했어요.',
+                                style: AppTextStyles.text2.copyWith(
+                                  color: context.sub2Color,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              AppGap.v12,
+                              TextButton(
+                                onPressed: () {
+                                  ref
+                                      .read(currentOutingStudentsProvider
+                                          .notifier)
+                                      .reload();
+                                },
+                                child: const Text('다시 시도'),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ],
                   ),

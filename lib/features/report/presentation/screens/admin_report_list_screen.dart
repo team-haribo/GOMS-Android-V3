@@ -72,10 +72,18 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
           ),
           AppGap.v24,
           Expanded(
-            child: _ReportListBody(
-              pendingReportsAsync: pendingReportsAsync,
-              resolvedReportsAsync: resolvedReportsAsync,
-              query: _query,
+            child: RefreshIndicator(
+              onRefresh: () async {
+                await Future.wait([
+                  ref.read(pendingReportsProvider.notifier).reload(),
+                  ref.read(resolvedReportsProvider.notifier).reload(),
+                ]);
+              },
+              child: _ReportListBody(
+                pendingReportsAsync: pendingReportsAsync,
+                resolvedReportsAsync: resolvedReportsAsync,
+                query: _query,
+              ),
             ),
           ),
         ],
@@ -111,7 +119,15 @@ class _ReportListBody extends ConsumerWidget {
         : null;
 
     if (isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: const [
+          SizedBox(
+            height: 280,
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ],
+      );
     }
 
     if (error != null) {
@@ -149,15 +165,24 @@ class _ReportListBody extends ConsumerWidget {
           }).toList(growable: false);
 
     if (filteredReports.isEmpty) {
-      return Center(
-        child: Text(
-          normalizedQuery.isEmpty ? '신고 내역이 없어요.' : '검색 결과가 없어요.',
-          style: AppTextStyles.text2.copyWith(color: context.sub2Color),
-        ),
+      return ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        children: [
+          SizedBox(
+            height: 280,
+            child: Center(
+              child: Text(
+                normalizedQuery.isEmpty ? '신고 내역이 없어요.' : '검색 결과가 없어요.',
+                style: AppTextStyles.text2.copyWith(color: context.sub2Color),
+              ),
+            ),
+          ),
+        ],
       );
     }
 
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       itemCount: filteredReports.length,
       separatorBuilder: (_, __) => Divider(
         color: context.buttonColor,
@@ -315,19 +340,27 @@ class _ReportErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            message,
-            style: AppTextStyles.text2.copyWith(color: context.sub2Color),
-            textAlign: TextAlign.center,
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      children: [
+        SizedBox(
+          height: 280,
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  message,
+                  style: AppTextStyles.text2.copyWith(color: context.sub2Color),
+                  textAlign: TextAlign.center,
+                ),
+                AppGap.v12,
+                TextButton(onPressed: onRetry, child: const Text('다시 시도')),
+              ],
+            ),
           ),
-          AppGap.v12,
-          TextButton(onPressed: onRetry, child: const Text('다시 시도')),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

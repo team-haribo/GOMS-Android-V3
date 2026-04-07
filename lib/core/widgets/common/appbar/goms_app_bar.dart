@@ -97,7 +97,8 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const Spacer(),
-                IconButton(
+                if(role == RoleEnum.admin)
+                  IconButton(
                   onPressed: () => context.push(RoutePath.studentCouncilReports),
                   icon: AppIcons.report(
                   width: 24,

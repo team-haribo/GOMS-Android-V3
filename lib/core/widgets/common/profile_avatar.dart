@@ -81,7 +81,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
               AppIcons.profileCircle(width: diameter, height: diameter),
           errorBuilder: (_, error) {
             Logger.e(
-              'ProfileAvatar image load failed. url="$imageUrl" error=$error',
+              'ProfileAvatar image load failed. hasImageUrl=${imageUrl.isNotEmpty} error=$error',
               tag: 'PROFILE',
             );
             _showImageErrorMessage();

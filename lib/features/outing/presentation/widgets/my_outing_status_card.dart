@@ -18,20 +18,26 @@ class MyOutingStatusCard extends ConsumerWidget {
     final myOutingStatus = ref.watch(myOutingStatusProvider);
 
     return myOutingStatus.when(
-      data: (value) => ProfileContainer(
-        name: value.name,
-        grade: value.grade,
-        major: value.department,
-        lateCount: value.lateCount,
-        status: role == RoleEnum.admin
-            ? OutingStatus.admin
-            : OutingStatus.fromServer(value.status),
-      ),
+      data: (value) {
+        return ProfileContainer(
+          name: value.name,
+          grade: value.grade,
+          major: value.department,
+          lateCount: value.lateCount,
+          profileImageUrl: value.profileImageUrl,
+          showProfileImageErrorMessage: true,
+          profileImageErrorMessage: '프로필 이미지를 불러오지 못했어요.',
+          status: role == RoleEnum.admin
+              ? OutingStatus.admin
+              : OutingStatus.fromServer(value.status),
+        );
+      },
       loading: () => ProfileContainer(
         name: '불러오는 중',
         grade: 0,
         major: '',
         lateCount: 0,
+        profileImageUrl: '',
         status:
             role == RoleEnum.admin ? OutingStatus.admin : OutingStatus.waiting,
       ),
@@ -43,6 +49,7 @@ class MyOutingStatusCard extends ConsumerWidget {
             grade: 0,
             major: '',
             lateCount: 0,
+            profileImageUrl: '',
             status: role == RoleEnum.admin
                 ? OutingStatus.admin
                 : OutingStatus.waiting,

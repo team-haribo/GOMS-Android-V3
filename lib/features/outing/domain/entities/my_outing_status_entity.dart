@@ -8,6 +8,7 @@ class MyOutingStatusEntity {
     required this.grade,
     required this.department,
     required this.lateCount,
+    this.profileImageUrl = '',
   });
 
   final int memberId;
@@ -16,4 +17,5 @@ class MyOutingStatusEntity {
   final int grade;
   final String department;
   final int lateCount;
+  final String profileImageUrl;
 }

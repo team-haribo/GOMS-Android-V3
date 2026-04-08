@@ -5,7 +5,7 @@ import 'package:goms/features/member/domain/entities/student_council_student_ent
 
 abstract class MemberRepository {
   Future<List<MemberEntity>> getMembers();
-  Future<CurrentMemberEntity> getMyRole();
+  Future<CurrentMemberEntity> getMyProfile();
   Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   });
@@ -20,5 +20,6 @@ abstract class MemberRepository {
     required int memberId,
     required bool isAllowed,
   });
+  Future<String> updateProfileImage({required String imagePath});
   Future<void> withdrawMember({required String password});
 }

@@ -8,6 +8,7 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
@@ -28,6 +29,7 @@ void main() {
           themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
           settingsProvider.overrideWith(_FakeSettingsNotifier.new),
           myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+          currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
         ],
         child: MaterialApp(
           theme: AppTheme.light,
@@ -163,6 +165,8 @@ class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
         email: 's24068@gsm.hs.kr',
         name: '이주언',
         role: RoleEnum.user,
+        grade: 8,
+        department: DepartmentType.ai,
       );
 }
 

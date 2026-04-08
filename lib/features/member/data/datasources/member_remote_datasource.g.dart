@@ -49,7 +49,7 @@ class _MemberRemoteDataSource implements MemberRemoteDataSource {
   }
 
   @override
-  Future<CurrentMemberDto> getMyRole() async {
+  Future<CurrentMemberDto> getMyProfile() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -58,7 +58,7 @@ class _MemberRemoteDataSource implements MemberRemoteDataSource {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v3/member/myrole',
+            '/api/v3/member/profile',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -205,6 +205,41 @@ class _MemberRemoteDataSource implements MemberRemoteDataSource {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     await _dio.fetch<void>(_options);
+  }
+
+  @override
+  Future<ProfileImageUpdateResponse> updateProfileImage(
+    MultipartFile image,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.add(MapEntry('image', image));
+    final _options = _setStreamType<ProfileImageUpdateResponse>(
+      Options(
+        method: 'PATCH',
+        headers: _headers,
+        extra: _extra,
+        contentType: 'multipart/form-data',
+      )
+          .compose(
+            _dio.options,
+            '/api/v3/member/profile-image',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ProfileImageUpdateResponse _value;
+    try {
+      _value = ProfileImageUpdateResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   @override

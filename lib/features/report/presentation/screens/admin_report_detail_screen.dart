@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
@@ -254,10 +254,10 @@ class _ReportedUserTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
+        ProfileAvatar(
           radius: 22,
+          imageUrl: detail.reviewerProfileImageUrl,
           backgroundColor: context.surfaceColor,
-          child: AppIcons.profileCircle(width: 44, height: 44),
         ),
         AppGap.h12,
         Expanded(

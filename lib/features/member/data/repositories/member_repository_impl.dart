@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:goms/features/member/data/datasources/member_remote_datasource.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
@@ -17,8 +18,8 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
-  Future<CurrentMemberEntity> getMyRole() async {
-    final currentMember = await _remoteDataSource.getMyRole();
+  Future<CurrentMemberEntity> getMyProfile() async {
+    final currentMember = await _remoteDataSource.getMyProfile();
     return currentMember.toEntity();
   }
 
@@ -64,6 +65,13 @@ class MemberRepositoryImpl implements MemberRepository {
     return _remoteDataSource.updateStudentCouncilOutingAllowed(memberId, {
       'status': isAllowed ? 'COMING' : 'CANNOT_OUTING',
     });
+  }
+
+  @override
+  Future<String> updateProfileImage({required String imagePath}) async {
+    final image = await MultipartFile.fromFile(imagePath);
+    final response = await _remoteDataSource.updateProfileImage(image);
+    return response.imageUrl;
   }
 
   @override

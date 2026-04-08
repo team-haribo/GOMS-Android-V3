@@ -10,6 +10,7 @@ class ReportResponse {
     required this.reviewerName,
     required this.reviewerGrade,
     required this.reviewerDepartment,
+    required this.reviewerProfileImageUrl,
     required this.reportCreatedAt,
     required this.reportStatus,
     this.deletedAt,
@@ -24,6 +25,11 @@ class ReportResponse {
       reviewerName: parseReportString(json['reviewerName']),
       reviewerGrade: parseReportInt(json['reviewerGrade']),
       reviewerDepartment: parseReportString(json['reviewerDepartment']),
+      reviewerProfileImageUrl:
+        (json['reviewerProfileImageUrl'] ??
+            json['reviewerProfileUrl'] ??
+            json['profileImageUrl'] ??
+        json['profileUrl']) as String? ?? '',
       reportCreatedAt: parseReportDateTime(json['reportCreatedAt']),
       reportStatus: parseReportStatus(json['reportStatus']),
       deletedAt: parseReportDateTime(json['deletedAt']),
@@ -37,6 +43,7 @@ class ReportResponse {
   final String reviewerName;
   final int reviewerGrade;
   final String reviewerDepartment;
+  final String reviewerProfileImageUrl;
   final DateTime? reportCreatedAt;
   final ReportStatus reportStatus;
   final DateTime? deletedAt;
@@ -50,6 +57,7 @@ class ReportResponse {
       reviewerName: reviewerName,
       reviewerGrade: reviewerGrade,
       reviewerDepartment: reviewerDepartment,
+      reviewerProfileImageUrl: reviewerProfileImageUrl,
       reportCreatedAt: reportCreatedAt,
       reportStatus: reportStatus,
       deletedAt: deletedAt,

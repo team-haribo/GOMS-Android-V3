@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 
 class ProfileListContainer extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
+  final String profileImageUrl;
 
   const ProfileListContainer({
     super.key,
     required this.name,
     required this.grade,
     required this.major,
+    required this.profileImageUrl,
   });
 
   @override
@@ -28,7 +30,11 @@ class ProfileListContainer extends StatelessWidget {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 14, child: AppIcons.profileCircle()),
+              ProfileAvatar(
+                radius: 14,
+                imageUrl: profileImageUrl,
+                backgroundColor: context.surfaceColor,
+              ),
               AppGap.h8,
               Text(
                 name,

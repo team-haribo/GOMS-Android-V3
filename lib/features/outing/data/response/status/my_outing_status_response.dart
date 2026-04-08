@@ -14,6 +14,8 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
     required int grade,
     required String department,
     required int lateCount,
+    @Default('') String profileImageUrl,
+    @Default('') String profileUrl,
   }) = _MyOutingStatusResponse;
 
   factory MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
@@ -25,6 +27,8 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
 
 extension MyOutingStatusResponseX on MyOutingStatusResponse {
   MyOutingStatusEntity toEntity() {
+    final resolvedProfile = profileUrl.isNotEmpty ? profileUrl : profileImageUrl;
+
     return MyOutingStatusEntity(
       memberId: memberId,
       status: status,
@@ -32,6 +36,7 @@ extension MyOutingStatusResponseX on MyOutingStatusResponse {
       grade: grade,
       department: department,
       lateCount: lateCount,
+      profileImageUrl: resolvedProfile,
     );
   }
 }

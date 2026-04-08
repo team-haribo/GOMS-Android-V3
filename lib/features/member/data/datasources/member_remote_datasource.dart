@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:goms/features/member/data/response/current_member_dto.dart';
 import 'package:goms/features/member/data/response/member_dto.dart';
+import 'package:goms/features/member/data/response/profile_image_update_response.dart';
 import 'package:goms/features/member/data/response/student_council_students_response.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -14,8 +15,8 @@ abstract class MemberRemoteDataSource {
   @GET('/members')
   Future<List<MemberDto>> getMembers();
 
-  @GET('/api/v3/member/myrole')
-  Future<CurrentMemberDto> getMyRole();
+  @GET('/api/v3/member/profile')
+  Future<CurrentMemberDto> getMyProfile();
 
   @GET('/api/v3/student-council/member')
   Future<StudentCouncilStudentsResponse> getStudentCouncilMembers();
@@ -40,6 +41,12 @@ abstract class MemberRemoteDataSource {
   Future<void> updateStudentCouncilOutingAllowed(
     @Path('memberId') int memberId,
     @Body() Map<String, dynamic> body,
+  );
+
+  @MultiPart()
+  @PATCH('/api/v3/member/profile-image')
+  Future<ProfileImageUpdateResponse> updateProfileImage(
+    @Part(name: 'image') MultipartFile image,
   );
 
   @DELETE('/api/v3/member/withdraw')

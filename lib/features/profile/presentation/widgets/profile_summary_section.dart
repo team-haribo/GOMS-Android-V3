@@ -4,12 +4,16 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 
 class ProfileSummarySection extends StatelessWidget {
   const ProfileSummarySection({
     super.key,
     required this.role,
     required this.name,
+    required this.profileImageUrl,
+    required this.onTapProfileImage,
+    required this.isUploadingProfileImage,
     this.grade,
     this.major,
     this.lateCount,
@@ -20,6 +24,9 @@ class ProfileSummarySection extends StatelessWidget {
 
   final RoleEnum role;
   final String name;
+  final String profileImageUrl;
+  final VoidCallback onTapProfileImage;
+  final bool isUploadingProfileImage;
   final int? grade;
   final String? major;
   final int? lateCount;
@@ -35,11 +42,31 @@ class ProfileSummarySection extends StatelessWidget {
         Stack(
           clipBehavior: Clip.none,
           children: [
-            CircleAvatar(
-              radius: 36,
-              backgroundColor: surfaceColor,
-              child: ClipOval(
-                child: AppIcons.profileCircle(width: 72, height: 72),
+            GestureDetector(
+              onTap: onTapProfileImage,
+              child: Stack(
+                children: [
+                  ProfileAvatar(
+                    radius: 36,
+                    imageUrl: profileImageUrl,
+                    backgroundColor: surfaceColor,
+                  ),
+                  if (isUploadingProfileImage)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             Positioned(

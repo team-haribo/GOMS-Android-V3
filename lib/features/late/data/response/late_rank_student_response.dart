@@ -6,6 +6,7 @@ class LateRankStudentResponse {
     required this.name,
     required this.grade,
     required this.department,
+    required this.profileImageUrl,
     required this.comingAt,
   });
 
@@ -15,6 +16,7 @@ class LateRankStudentResponse {
       name: json['name'] as String? ?? '',
       grade: json['grade'] as int? ?? 0,
       department: json['department'] as String? ?? '',
+      profileImageUrl: (json['profileImageUrl'] ?? json['profileUrl']) as String? ?? '',
       comingAt:
           DateTime.tryParse(json['comingAt'] as String? ?? '') ?? DateTime(0),
     );
@@ -24,6 +26,7 @@ class LateRankStudentResponse {
   final String name;
   final int grade;
   final String department;
+  final String profileImageUrl;
   final DateTime comingAt;
 
   LateRankStudentEntity toEntity() {
@@ -32,6 +35,7 @@ class LateRankStudentResponse {
       name: name,
       grade: grade,
       department: department,
+      profileImageUrl: profileImageUrl,
       comingAt: comingAt,
     );
   }

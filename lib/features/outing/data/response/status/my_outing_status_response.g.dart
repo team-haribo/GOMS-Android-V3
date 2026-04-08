@@ -15,6 +15,8 @@ _MyOutingStatusResponse _$MyOutingStatusResponseFromJson(
       grade: (json['grade'] as num).toInt(),
       department: json['department'] as String,
       lateCount: (json['lateCount'] as num).toInt(),
+      profileImageUrl: json['profileImageUrl'] as String? ?? '',
+      profileUrl: json['profileUrl'] as String? ?? '',
     );
 
 Map<String, dynamic> _$MyOutingStatusResponseToJson(
@@ -26,6 +28,8 @@ Map<String, dynamic> _$MyOutingStatusResponseToJson(
       'grade': instance.grade,
       'department': instance.department,
       'lateCount': instance.lateCount,
+      'profileImageUrl': instance.profileImageUrl,
+      'profileUrl': instance.profileUrl,
     };
 
 const _$OutingStatusTypeEnumMap = {

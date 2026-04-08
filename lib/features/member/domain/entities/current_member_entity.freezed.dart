@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'my_outing_status_response.dart';
+part of 'current_member_entity.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -13,110 +13,112 @@ part of 'my_outing_status_response.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$MyOutingStatusResponse {
+mixin _$CurrentMemberEntity {
   int get memberId;
-  OutingStatusType get status;
+  String get email;
   String get name;
+  RoleEnum get role;
   int get grade;
-  String get department;
-  int get lateCount;
+  DepartmentType get department;
+  GenderType get gender;
+  OutingStatusType get status;
   String get profileImageUrl;
-  String get profileUrl;
 
-  /// Create a copy of MyOutingStatusResponse
+  /// Create a copy of CurrentMemberEntity
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $MyOutingStatusResponseCopyWith<MyOutingStatusResponse> get copyWith =>
-      _$MyOutingStatusResponseCopyWithImpl<MyOutingStatusResponse>(
-          this as MyOutingStatusResponse, _$identity);
-
-  /// Serializes this MyOutingStatusResponse to a JSON map.
-  Map<String, dynamic> toJson();
+  $CurrentMemberEntityCopyWith<CurrentMemberEntity> get copyWith =>
+      _$CurrentMemberEntityCopyWithImpl<CurrentMemberEntity>(
+          this as CurrentMemberEntity, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is MyOutingStatusResponse &&
+            other is CurrentMemberEntity &&
             (identical(other.memberId, memberId) ||
                 other.memberId == memberId) &&
-            (identical(other.status, status) || other.status == status) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
                 other.department == department) &&
-            (identical(other.lateCount, lateCount) ||
-                other.lateCount == lateCount) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
-                other.profileImageUrl == profileImageUrl) &&
-            (identical(other.profileUrl, profileUrl) ||
-                other.profileUrl == profileUrl));
+                other.profileImageUrl == profileImageUrl));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, memberId, status, name, grade,
-      department, lateCount, profileImageUrl, profileUrl);
+  int get hashCode => Object.hash(runtimeType, memberId, email, name, role,
+      grade, department, gender, status, profileImageUrl);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl)';
+    return 'CurrentMemberEntity(memberId: $memberId, email: $email, name: $name, role: $role, grade: $grade, department: $department, gender: $gender, status: $status, profileImageUrl: $profileImageUrl)';
   }
 }
 
 /// @nodoc
-abstract mixin class $MyOutingStatusResponseCopyWith<$Res> {
-  factory $MyOutingStatusResponseCopyWith(MyOutingStatusResponse value,
-          $Res Function(MyOutingStatusResponse) _then) =
-      _$MyOutingStatusResponseCopyWithImpl;
+abstract mixin class $CurrentMemberEntityCopyWith<$Res> {
+  factory $CurrentMemberEntityCopyWith(
+          CurrentMemberEntity value, $Res Function(CurrentMemberEntity) _then) =
+      _$CurrentMemberEntityCopyWithImpl;
   @useResult
   $Res call(
       {int memberId,
-      OutingStatusType status,
+      String email,
       String name,
+      RoleEnum role,
       int grade,
-      String department,
-      int lateCount,
-      String profileImageUrl,
-      String profileUrl});
+      DepartmentType department,
+      GenderType gender,
+      OutingStatusType status,
+      String profileImageUrl});
 }
 
 /// @nodoc
-class _$MyOutingStatusResponseCopyWithImpl<$Res>
-    implements $MyOutingStatusResponseCopyWith<$Res> {
-  _$MyOutingStatusResponseCopyWithImpl(this._self, this._then);
+class _$CurrentMemberEntityCopyWithImpl<$Res>
+    implements $CurrentMemberEntityCopyWith<$Res> {
+  _$CurrentMemberEntityCopyWithImpl(this._self, this._then);
 
-  final MyOutingStatusResponse _self;
-  final $Res Function(MyOutingStatusResponse) _then;
+  final CurrentMemberEntity _self;
+  final $Res Function(CurrentMemberEntity) _then;
 
-  /// Create a copy of MyOutingStatusResponse
+  /// Create a copy of CurrentMemberEntity
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? memberId = null,
-    Object? status = null,
+    Object? email = null,
     Object? name = null,
+    Object? role = null,
     Object? grade = null,
     Object? department = null,
-    Object? lateCount = null,
+    Object? gender = null,
+    Object? status = null,
     Object? profileImageUrl = null,
-    Object? profileUrl = null,
   }) {
     return _then(_self.copyWith(
       memberId: null == memberId
           ? _self.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as int,
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as OutingStatusType,
+      email: null == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as RoleEnum,
       grade: null == grade
           ? _self.grade
           : grade // ignore: cast_nullable_to_non_nullable
@@ -124,25 +126,25 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
-              as String,
-      lateCount: null == lateCount
-          ? _self.lateCount
-          : lateCount // ignore: cast_nullable_to_non_nullable
-              as int,
+              as DepartmentType,
+      gender: null == gender
+          ? _self.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as GenderType,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as OutingStatusType,
       profileImageUrl: null == profileImageUrl
           ? _self.profileImageUrl
           : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileUrl: null == profileUrl
-          ? _self.profileUrl
-          : profileUrl // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
 }
 
-/// Adds pattern-matching-related methods to [MyOutingStatusResponse].
-extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
+/// Adds pattern-matching-related methods to [CurrentMemberEntity].
+extension CurrentMemberEntityPatterns on CurrentMemberEntity {
   /// A variant of `map` that fallback to returning `orElse`.
   ///
   /// It is equivalent to doing:
@@ -157,12 +159,12 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>(
-    TResult Function(_MyOutingStatusResponse value)? $default, {
+    TResult Function(_CurrentMemberEntity value)? $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse() when $default != null:
+      case _CurrentMemberEntity() when $default != null:
         return $default(_that);
       case _:
         return orElse();
@@ -184,11 +186,11 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult map<TResult extends Object?>(
-    TResult Function(_MyOutingStatusResponse value) $default,
+    TResult Function(_CurrentMemberEntity value) $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse():
+      case _CurrentMemberEntity():
         return $default(_that);
       case _:
         throw StateError('Unexpected subclass');
@@ -209,11 +211,11 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>(
-    TResult? Function(_MyOutingStatusResponse value)? $default,
+    TResult? Function(_CurrentMemberEntity value)? $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse() when $default != null:
+      case _CurrentMemberEntity() when $default != null:
         return $default(_that);
       case _:
         return null;
@@ -236,28 +238,30 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(
             int memberId,
-            OutingStatusType status,
+            String email,
             String name,
+            RoleEnum role,
             int grade,
-            String department,
-            int lateCount,
-            String profileImageUrl,
-            String profileUrl)?
+            DepartmentType department,
+            GenderType gender,
+            OutingStatusType status,
+            String profileImageUrl)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse() when $default != null:
+      case _CurrentMemberEntity() when $default != null:
         return $default(
             _that.memberId,
-            _that.status,
+            _that.email,
             _that.name,
+            _that.role,
             _that.grade,
             _that.department,
-            _that.lateCount,
-            _that.profileImageUrl,
-            _that.profileUrl);
+            _that.gender,
+            _that.status,
+            _that.profileImageUrl);
       case _:
         return orElse();
     }
@@ -280,27 +284,29 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   TResult when<TResult extends Object?>(
     TResult Function(
             int memberId,
-            OutingStatusType status,
+            String email,
             String name,
+            RoleEnum role,
             int grade,
-            String department,
-            int lateCount,
-            String profileImageUrl,
-            String profileUrl)
+            DepartmentType department,
+            GenderType gender,
+            OutingStatusType status,
+            String profileImageUrl)
         $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse():
+      case _CurrentMemberEntity():
         return $default(
             _that.memberId,
-            _that.status,
+            _that.email,
             _that.name,
+            _that.role,
             _that.grade,
             _that.department,
-            _that.lateCount,
-            _that.profileImageUrl,
-            _that.profileUrl);
+            _that.gender,
+            _that.status,
+            _that.profileImageUrl);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -322,27 +328,29 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(
             int memberId,
-            OutingStatusType status,
+            String email,
             String name,
+            RoleEnum role,
             int grade,
-            String department,
-            int lateCount,
-            String profileImageUrl,
-            String profileUrl)?
+            DepartmentType department,
+            GenderType gender,
+            OutingStatusType status,
+            String profileImageUrl)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
-      case _MyOutingStatusResponse() when $default != null:
+      case _CurrentMemberEntity() when $default != null:
         return $default(
             _that.memberId,
-            _that.status,
+            _that.email,
             _that.name,
+            _that.role,
             _that.grade,
             _that.department,
-            _that.lateCount,
-            _that.profileImageUrl,
-            _that.profileUrl);
+            _that.gender,
+            _that.status,
+            _that.profileImageUrl);
       case _:
         return null;
     }
@@ -350,140 +358,141 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 }
 
 /// @nodoc
-@JsonSerializable()
-class _MyOutingStatusResponse implements MyOutingStatusResponse {
-  const _MyOutingStatusResponse(
+
+class _CurrentMemberEntity implements CurrentMemberEntity {
+  const _CurrentMemberEntity(
       {required this.memberId,
-      required this.status,
+      required this.email,
       required this.name,
-      required this.grade,
-      required this.department,
-      required this.lateCount,
-      this.profileImageUrl = '',
-      this.profileUrl = ''});
-  factory _MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
-      _$MyOutingStatusResponseFromJson(json);
+      required this.role,
+      this.grade = 0,
+      this.department = DepartmentType.sw,
+      this.gender = GenderType.male,
+      this.status = OutingStatusType.coming,
+      this.profileImageUrl = ''});
 
   @override
   final int memberId;
   @override
-  final OutingStatusType status;
+  final String email;
   @override
   final String name;
   @override
+  final RoleEnum role;
+  @override
+  @JsonKey()
   final int grade;
   @override
-  final String department;
+  @JsonKey()
+  final DepartmentType department;
   @override
-  final int lateCount;
+  @JsonKey()
+  final GenderType gender;
+  @override
+  @JsonKey()
+  final OutingStatusType status;
   @override
   @JsonKey()
   final String profileImageUrl;
-  @override
-  @JsonKey()
-  final String profileUrl;
 
-  /// Create a copy of MyOutingStatusResponse
+  /// Create a copy of CurrentMemberEntity
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$MyOutingStatusResponseCopyWith<_MyOutingStatusResponse> get copyWith =>
-      __$MyOutingStatusResponseCopyWithImpl<_MyOutingStatusResponse>(
+  _$CurrentMemberEntityCopyWith<_CurrentMemberEntity> get copyWith =>
+      __$CurrentMemberEntityCopyWithImpl<_CurrentMemberEntity>(
           this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$MyOutingStatusResponseToJson(
-      this,
-    );
-  }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _MyOutingStatusResponse &&
+            other is _CurrentMemberEntity &&
             (identical(other.memberId, memberId) ||
                 other.memberId == memberId) &&
-            (identical(other.status, status) || other.status == status) &&
+            (identical(other.email, email) || other.email == email) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.role, role) || other.role == role) &&
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
                 other.department == department) &&
-            (identical(other.lateCount, lateCount) ||
-                other.lateCount == lateCount) &&
+            (identical(other.gender, gender) || other.gender == gender) &&
+            (identical(other.status, status) || other.status == status) &&
             (identical(other.profileImageUrl, profileImageUrl) ||
-                other.profileImageUrl == profileImageUrl) &&
-            (identical(other.profileUrl, profileUrl) ||
-                other.profileUrl == profileUrl));
+                other.profileImageUrl == profileImageUrl));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, memberId, status, name, grade,
-      department, lateCount, profileImageUrl, profileUrl);
+  int get hashCode => Object.hash(runtimeType, memberId, email, name, role,
+      grade, department, gender, status, profileImageUrl);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl)';
+    return 'CurrentMemberEntity(memberId: $memberId, email: $email, name: $name, role: $role, grade: $grade, department: $department, gender: $gender, status: $status, profileImageUrl: $profileImageUrl)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$MyOutingStatusResponseCopyWith<$Res>
-    implements $MyOutingStatusResponseCopyWith<$Res> {
-  factory _$MyOutingStatusResponseCopyWith(_MyOutingStatusResponse value,
-          $Res Function(_MyOutingStatusResponse) _then) =
-      __$MyOutingStatusResponseCopyWithImpl;
+abstract mixin class _$CurrentMemberEntityCopyWith<$Res>
+    implements $CurrentMemberEntityCopyWith<$Res> {
+  factory _$CurrentMemberEntityCopyWith(_CurrentMemberEntity value,
+          $Res Function(_CurrentMemberEntity) _then) =
+      __$CurrentMemberEntityCopyWithImpl;
   @override
   @useResult
   $Res call(
       {int memberId,
-      OutingStatusType status,
+      String email,
       String name,
+      RoleEnum role,
       int grade,
-      String department,
-      int lateCount,
-      String profileImageUrl,
-      String profileUrl});
+      DepartmentType department,
+      GenderType gender,
+      OutingStatusType status,
+      String profileImageUrl});
 }
 
 /// @nodoc
-class __$MyOutingStatusResponseCopyWithImpl<$Res>
-    implements _$MyOutingStatusResponseCopyWith<$Res> {
-  __$MyOutingStatusResponseCopyWithImpl(this._self, this._then);
+class __$CurrentMemberEntityCopyWithImpl<$Res>
+    implements _$CurrentMemberEntityCopyWith<$Res> {
+  __$CurrentMemberEntityCopyWithImpl(this._self, this._then);
 
-  final _MyOutingStatusResponse _self;
-  final $Res Function(_MyOutingStatusResponse) _then;
+  final _CurrentMemberEntity _self;
+  final $Res Function(_CurrentMemberEntity) _then;
 
-  /// Create a copy of MyOutingStatusResponse
+  /// Create a copy of CurrentMemberEntity
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
     Object? memberId = null,
-    Object? status = null,
+    Object? email = null,
     Object? name = null,
+    Object? role = null,
     Object? grade = null,
     Object? department = null,
-    Object? lateCount = null,
+    Object? gender = null,
+    Object? status = null,
     Object? profileImageUrl = null,
-    Object? profileUrl = null,
   }) {
-    return _then(_MyOutingStatusResponse(
+    return _then(_CurrentMemberEntity(
       memberId: null == memberId
           ? _self.memberId
           : memberId // ignore: cast_nullable_to_non_nullable
               as int,
-      status: null == status
-          ? _self.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as OutingStatusType,
+      email: null == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String,
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      role: null == role
+          ? _self.role
+          : role // ignore: cast_nullable_to_non_nullable
+              as RoleEnum,
       grade: null == grade
           ? _self.grade
           : grade // ignore: cast_nullable_to_non_nullable
@@ -491,18 +500,18 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
-              as String,
-      lateCount: null == lateCount
-          ? _self.lateCount
-          : lateCount // ignore: cast_nullable_to_non_nullable
-              as int,
+              as DepartmentType,
+      gender: null == gender
+          ? _self.gender
+          : gender // ignore: cast_nullable_to_non_nullable
+              as GenderType,
+      status: null == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as OutingStatusType,
       profileImageUrl: null == profileImageUrl
           ? _self.profileImageUrl
           : profileImageUrl // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileUrl: null == profileUrl
-          ? _self.profileUrl
-          : profileUrl // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }

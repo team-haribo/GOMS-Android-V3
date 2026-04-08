@@ -13,6 +13,8 @@ _OutingStudentResponse _$OutingStudentResponseFromJson(
       name: json['name'] as String,
       grade: (json['grade'] as num).toInt(),
       department: json['department'] as String,
+      profileImageUrl: json['profileImageUrl'] as String? ?? '',
+      profileUrl: json['profileUrl'] as String? ?? '',
       outingAt: DateTime.parse(json['outingAt'] as String),
     );
 
@@ -23,5 +25,7 @@ Map<String, dynamic> _$OutingStudentResponseToJson(
       'name': instance.name,
       'grade': instance.grade,
       'department': instance.department,
+      'profileImageUrl': instance.profileImageUrl,
+      'profileUrl': instance.profileUrl,
       'outingAt': instance.outingAt.toIso8601String(),
     };

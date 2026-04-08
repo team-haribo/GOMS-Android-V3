@@ -112,6 +112,7 @@ class _AdminLatecomerListScreenState
                         name: member.name,
                         grade: member.grade,
                         major: member.department,
+                        profileImageUrl: member.profileImageUrl,
                       );
                     },
                     separatorBuilder: (context, index) {
@@ -154,7 +155,7 @@ class _AdminLatecomerListScreenState
                               onPressed: () {
                                 ref
                                     .read(studentCouncilLateStudentsProvider
-                                        .notifier,)
+                                        .notifier)
                                     .reload();
                               },
                               child: const Text('다시 시도'),

@@ -6,6 +6,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 import 'package:goms/core/widgets/common/dialogs/forced_return_dialog.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
@@ -14,6 +15,7 @@ class SearchProfileList extends ConsumerWidget {
   final String name;
   final int grade;
   final String major;
+  final String profileImageUrl;
   final RoleEnum role;
   final DateTime outingAt;
 
@@ -23,6 +25,7 @@ class SearchProfileList extends ConsumerWidget {
     required this.name,
     required this.grade,
     required this.major,
+    required this.profileImageUrl,
     required this.role,
     required this.outingAt,
   });
@@ -37,9 +40,10 @@ class SearchProfileList extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: CircleAvatar(
+            child: ProfileAvatar(
               radius: 24,
-              child: AppIcons.profileCircle(),
+              imageUrl: profileImageUrl,
+              backgroundColor: context.surfaceColor,
             ),
           ),
           AppGap.v4,

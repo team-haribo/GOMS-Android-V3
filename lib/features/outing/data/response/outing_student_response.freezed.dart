@@ -18,6 +18,8 @@ mixin _$OutingStudentResponse {
   String get name;
   int get grade;
   String get department;
+  String get profileImageUrl;
+  String get profileUrl;
   DateTime get outingAt;
 
   /// Create a copy of OutingStudentResponse
@@ -42,18 +44,22 @@ mixin _$OutingStudentResponse {
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
                 other.department == department) &&
+            (identical(other.profileImageUrl, profileImageUrl) ||
+                other.profileImageUrl == profileImageUrl) &&
+            (identical(other.profileUrl, profileUrl) ||
+                other.profileUrl == profileUrl) &&
             (identical(other.outingAt, outingAt) ||
                 other.outingAt == outingAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, memberId, name, grade, department, outingAt);
+  int get hashCode => Object.hash(runtimeType, memberId, name, grade,
+      department, profileImageUrl, profileUrl, outingAt);
 
   @override
   String toString() {
-    return 'OutingStudentResponse(memberId: $memberId, name: $name, grade: $grade, department: $department, outingAt: $outingAt)';
+    return 'OutingStudentResponse(memberId: $memberId, name: $name, grade: $grade, department: $department, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl, outingAt: $outingAt)';
   }
 }
 
@@ -68,6 +74,8 @@ abstract mixin class $OutingStudentResponseCopyWith<$Res> {
       String name,
       int grade,
       String department,
+      String profileImageUrl,
+      String profileUrl,
       DateTime outingAt});
 }
 
@@ -88,6 +96,8 @@ class _$OutingStudentResponseCopyWithImpl<$Res>
     Object? name = null,
     Object? grade = null,
     Object? department = null,
+    Object? profileImageUrl = null,
+    Object? profileUrl = null,
     Object? outingAt = null,
   }) {
     return _then(_self.copyWith(
@@ -106,6 +116,14 @@ class _$OutingStudentResponseCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImageUrl: null == profileImageUrl
+          ? _self.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileUrl: null == profileUrl
+          ? _self.profileUrl
+          : profileUrl // ignore: cast_nullable_to_non_nullable
               as String,
       outingAt: null == outingAt
           ? _self.outingAt
@@ -209,15 +227,21 @@ extension OutingStudentResponsePatterns on OutingStudentResponse {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(int memberId, String name, int grade, String department,
-            DateTime outingAt)?
+            String profileImageUrl, String profileUrl, DateTime outingAt)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _OutingStudentResponse() when $default != null:
-        return $default(_that.memberId, _that.name, _that.grade,
-            _that.department, _that.outingAt);
+        return $default(
+            _that.memberId,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.profileImageUrl,
+            _that.profileUrl,
+            _that.outingAt);
       case _:
         return orElse();
     }
@@ -239,14 +263,20 @@ extension OutingStudentResponsePatterns on OutingStudentResponse {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(int memberId, String name, int grade, String department,
-            DateTime outingAt)
+            String profileImageUrl, String profileUrl, DateTime outingAt)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OutingStudentResponse():
-        return $default(_that.memberId, _that.name, _that.grade,
-            _that.department, _that.outingAt);
+        return $default(
+            _that.memberId,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.profileImageUrl,
+            _that.profileUrl,
+            _that.outingAt);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -267,14 +297,20 @@ extension OutingStudentResponsePatterns on OutingStudentResponse {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
     TResult? Function(int memberId, String name, int grade, String department,
-            DateTime outingAt)?
+            String profileImageUrl, String profileUrl, DateTime outingAt)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _OutingStudentResponse() when $default != null:
-        return $default(_that.memberId, _that.name, _that.grade,
-            _that.department, _that.outingAt);
+        return $default(
+            _that.memberId,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.profileImageUrl,
+            _that.profileUrl,
+            _that.outingAt);
       case _:
         return null;
     }
@@ -289,6 +325,8 @@ class _OutingStudentResponse implements OutingStudentResponse {
       required this.name,
       required this.grade,
       required this.department,
+      this.profileImageUrl = '',
+      this.profileUrl = '',
       required this.outingAt});
   factory _OutingStudentResponse.fromJson(Map<String, dynamic> json) =>
       _$OutingStudentResponseFromJson(json);
@@ -301,6 +339,12 @@ class _OutingStudentResponse implements OutingStudentResponse {
   final int grade;
   @override
   final String department;
+  @override
+  @JsonKey()
+  final String profileImageUrl;
+  @override
+  @JsonKey()
+  final String profileUrl;
   @override
   final DateTime outingAt;
 
@@ -331,18 +375,22 @@ class _OutingStudentResponse implements OutingStudentResponse {
             (identical(other.grade, grade) || other.grade == grade) &&
             (identical(other.department, department) ||
                 other.department == department) &&
+            (identical(other.profileImageUrl, profileImageUrl) ||
+                other.profileImageUrl == profileImageUrl) &&
+            (identical(other.profileUrl, profileUrl) ||
+                other.profileUrl == profileUrl) &&
             (identical(other.outingAt, outingAt) ||
                 other.outingAt == outingAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, memberId, name, grade, department, outingAt);
+  int get hashCode => Object.hash(runtimeType, memberId, name, grade,
+      department, profileImageUrl, profileUrl, outingAt);
 
   @override
   String toString() {
-    return 'OutingStudentResponse(memberId: $memberId, name: $name, grade: $grade, department: $department, outingAt: $outingAt)';
+    return 'OutingStudentResponse(memberId: $memberId, name: $name, grade: $grade, department: $department, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl, outingAt: $outingAt)';
   }
 }
 
@@ -359,6 +407,8 @@ abstract mixin class _$OutingStudentResponseCopyWith<$Res>
       String name,
       int grade,
       String department,
+      String profileImageUrl,
+      String profileUrl,
       DateTime outingAt});
 }
 
@@ -379,6 +429,8 @@ class __$OutingStudentResponseCopyWithImpl<$Res>
     Object? name = null,
     Object? grade = null,
     Object? department = null,
+    Object? profileImageUrl = null,
+    Object? profileUrl = null,
     Object? outingAt = null,
   }) {
     return _then(_OutingStudentResponse(
@@ -397,6 +449,14 @@ class __$OutingStudentResponseCopyWithImpl<$Res>
       department: null == department
           ? _self.department
           : department // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImageUrl: null == profileImageUrl
+          ? _self.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileUrl: null == profileUrl
+          ? _self.profileUrl
+          : profileUrl // ignore: cast_nullable_to_non_nullable
               as String,
       outingAt: null == outingAt
           ? _self.outingAt

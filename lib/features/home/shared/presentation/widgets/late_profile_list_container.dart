@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 
 class LateProfileListContainer extends StatelessWidget {
   final String name;
   final int grade;
   final String major;
+  final String profileImageUrl;
 
   const LateProfileListContainer({
     super.key,
     required this.name,
     required this.grade,
     required this.major,
+    required this.profileImageUrl,
   });
 
   @override
@@ -26,9 +28,10 @@ class LateProfileListContainer extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: CircleAvatar(
+            child: ProfileAvatar(
               radius: 24,
-              child: AppIcons.profileCircle(),
+              imageUrl: profileImageUrl,
+              backgroundColor: context.surfaceColor,
             ),
           ),
           AppGap.v4,

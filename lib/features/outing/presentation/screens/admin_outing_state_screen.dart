@@ -196,6 +196,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                           name: member.name,
                           grade: member.grade,
                           major: member.department,
+                          profileImageUrl: member.profileImageUrl,
                           studentRole: member.studentRole,
                         );
                       },

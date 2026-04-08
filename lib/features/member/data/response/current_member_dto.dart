@@ -2,6 +2,7 @@ import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
@@ -74,9 +75,33 @@ class CurrentMemberDto {
 
   static String _profileImageUrlFromJson(Object? value) {
     if (value is Map<String, dynamic>) {
-      return (value['profileImageUrl'] ?? value['profileUrl']) as String? ?? '';
+      final resolved = value['profileImageUrl'] ?? value['profileUrl'];
+      if (resolved == null) {
+        return '';
+      }
+      if (resolved is String) {
+        return resolved;
+      }
+
+      Logger.e(
+        'CurrentMemberDto profile image field has unexpected type: ${resolved.runtimeType}',
+        tag: 'MEMBER',
+      );
+      return '';
     }
-    return value as String? ?? '';
+
+    if (value == null) {
+      return '';
+    }
+    if (value is String) {
+      return value;
+    }
+
+    Logger.e(
+      'CurrentMemberDto profile image payload has unexpected type: ${value.runtimeType}',
+      tag: 'MEMBER',
+    );
+    return '';
   }
 
   static String _stringToJson(String value) => value;

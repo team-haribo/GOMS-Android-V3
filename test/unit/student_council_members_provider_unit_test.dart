@@ -73,11 +73,6 @@ class _FakeMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<CurrentMemberEntity> getMyRole() {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<List<MemberEntity>> getMembers() {
     throw UnimplementedError();
   }
@@ -100,6 +95,16 @@ class _FakeMemberRepository implements MemberRepository {
 
   @override
   Future<void> withdrawMember({required String password}) {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<String> updateProfileImage({required String imagePath}) {
+    throw UnimplementedError();
+  }
+  
+  @override
+  Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();
   }
 }

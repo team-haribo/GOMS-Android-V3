@@ -1,6 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-enum AppThemeOption { system, light, dark }
+@JsonEnum()
+enum AppThemeOption {
+  @JsonValue('SYSTEM')
+  system,
+
+  @JsonValue('LIGHT')
+  light,
+
+  @JsonValue('DARK')
+  dark,
+}
 
 extension AppThemeOptionX on AppThemeOption {
   String get label {

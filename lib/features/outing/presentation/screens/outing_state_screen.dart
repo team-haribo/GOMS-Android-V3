@@ -8,7 +8,6 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/buttons/qr_button.dart';
 import 'package:goms/core/widgets/common/text_fields/search_student.dart';
-import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/search_profile_list.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -106,7 +105,6 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
           else ...[
             AppGap.v12,
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '검색결과',
@@ -114,7 +112,6 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                     color: context.mainTextColor,
                   ),
                 ),
-                const FilterButton(),
               ],
             ),
             AppGap.v12,
@@ -205,7 +202,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                                 onPressed: () {
                                   ref
                                       .read(currentOutingStudentsProvider
-                                          .notifier)
+                                          .notifier,)
                                       .reload();
                                 },
                                 child: const Text('다시 시도'),

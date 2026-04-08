@@ -5,6 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_bottom_sheet.dart';
 
@@ -14,6 +15,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final int grade;
   final String major;
   final StudentRole studentRole;
+  final String profileImageUrl;
 
   const AdminOutingStateContainer({
     super.key,
@@ -22,6 +24,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
     required this.grade,
     required this.major,
     required this.studentRole,
+    required this.profileImageUrl,
   });
 
   @override
@@ -69,12 +72,13 @@ class _AdminOutingStateContainerState
                   width: 4,
                 ),
               ),
-              child: CircleAvatar(
+              child: ProfileAvatar(
                 radius: _studentRole == StudentRole.outingBanned ||
                         _studentRole == StudentRole.council
                     ? 22
                     : 24,
-                child: AppIcons.profileCircle(),
+                imageUrl: widget.profileImageUrl,
+                backgroundColor: context.surfaceColor,
               ),
             ),
           ),

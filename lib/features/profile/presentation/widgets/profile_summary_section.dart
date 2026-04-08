@@ -4,6 +4,7 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 
 class ProfileSummarySection extends StatelessWidget {
   const ProfileSummarySection({
@@ -45,28 +46,10 @@ class ProfileSummarySection extends StatelessWidget {
               onTap: onTapProfileImage,
               child: Stack(
                 children: [
-                  CircleAvatar(
+                  ProfileAvatar(
                     radius: 36,
+                    imageUrl: profileImageUrl,
                     backgroundColor: surfaceColor,
-                    child: profileImageUrl.trim().isEmpty
-                        ? ClipOval(
-                            child:
-                                AppIcons.profileCircle(width: 72, height: 72),
-                          )
-                        : ClipOval(
-                            child: Image.network(
-                              profileImageUrl,
-                              width: 72,
-                              height: 72,
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) {
-                                return AppIcons.profileCircle(
-                                  width: 72,
-                                  height: 72,
-                                );
-                              },
-                            ),
-                          ),
                   ),
                   if (isUploadingProfileImage)
                     Positioned.fill(

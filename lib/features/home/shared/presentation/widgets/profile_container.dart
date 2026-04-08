@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/home/shared/presentation/widgets/time_display.dart';
 import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/core/widgets/common/profile_avatar.dart';
 
 class ProfileContainer extends ConsumerWidget {
   final String name;
@@ -14,6 +14,9 @@ class ProfileContainer extends ConsumerWidget {
   final String major;
   final int lateCount;
   final OutingStatus status;
+  final String profileImageUrl;
+  final bool showProfileImageErrorMessage;
+  final String profileImageErrorMessage;
 
   const ProfileContainer({
     super.key,
@@ -22,6 +25,9 @@ class ProfileContainer extends ConsumerWidget {
     required this.major,
     required this.lateCount,
     required this.status,
+    required this.profileImageUrl,
+    this.showProfileImageErrorMessage = false,
+    this.profileImageErrorMessage = '프로필 이미지를 불러오지 못했어요.',
   });
 
   @override
@@ -45,10 +51,13 @@ class ProfileContainer extends ConsumerWidget {
             if (!showClock) ...[
               Container(
                 alignment: Alignment.centerLeft,
-                child: CircleAvatar(
+                child: ProfileAvatar(
                   radius:
                       context.responsive(compact: 22, normal: 26, tablet: 28),
-                  child: AppIcons.profileCircle(),
+                  imageUrl: profileImageUrl,
+                  backgroundColor: context.backgroundColor,
+                  showErrorMessage: showProfileImageErrorMessage,
+                  errorMessage: profileImageErrorMessage,
                 ),
               ),
             ],

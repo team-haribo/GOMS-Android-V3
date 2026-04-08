@@ -5,6 +5,7 @@ import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
@@ -18,20 +19,30 @@ class MyOutingStatusCard extends ConsumerWidget {
     final myOutingStatus = ref.watch(myOutingStatusProvider);
 
     return myOutingStatus.when(
-      data: (value) => ProfileContainer(
-        name: value.name,
-        grade: value.grade,
-        major: value.department,
-        lateCount: value.lateCount,
-        status: role == RoleEnum.admin
-            ? OutingStatus.admin
-            : OutingStatus.fromServer(value.status),
-      ),
+      data: (value) {
+        Logger.d(
+          'MyOutingStatusCard profileImageUrl="${value.profileImageUrl}"',
+          tag: 'OUTING',
+        );
+        return ProfileContainer(
+          name: value.name,
+          grade: value.grade,
+          major: value.department,
+          lateCount: value.lateCount,
+          profileImageUrl: value.profileImageUrl,
+          showProfileImageErrorMessage: true,
+          profileImageErrorMessage: '프로필 이미지를 불러오지 못했어요.',
+          status: role == RoleEnum.admin
+              ? OutingStatus.admin
+              : OutingStatus.fromServer(value.status),
+        );
+      },
       loading: () => ProfileContainer(
         name: '불러오는 중',
         grade: 0,
         major: '',
         lateCount: 0,
+        profileImageUrl: '',
         status:
             role == RoleEnum.admin ? OutingStatus.admin : OutingStatus.waiting,
       ),
@@ -43,6 +54,7 @@ class MyOutingStatusCard extends ConsumerWidget {
             grade: 0,
             major: '',
             lateCount: 0,
+            profileImageUrl: '',
             status: role == RoleEnum.admin
                 ? OutingStatus.admin
                 : OutingStatus.waiting,

@@ -28,7 +28,7 @@ final dioProvider = Provider<Dio>((ref) {
       InterceptorsWrapper(
         onRequest: (options, handler) {
           Logger.d(
-            '[REQ] ${options.method} ${options.baseUrl}${options.path}\n'
+            '[REQ] ${options.method} ${options.uri}\n'
             'headers=${options.headers}\n'
             'query=${options.queryParameters}\n'
             'body=${options.data}',
@@ -39,7 +39,7 @@ final dioProvider = Provider<Dio>((ref) {
         onResponse: (response, handler) {
           Logger.d(
             '[RES] ${response.statusCode} ${response.requestOptions.method} '
-            '${response.requestOptions.baseUrl}${response.requestOptions.path}\n'
+            '${response.requestOptions.uri}\n'
             'body=${response.data}',
             tag: 'DIO',
           );
@@ -49,7 +49,9 @@ final dioProvider = Provider<Dio>((ref) {
           Logger.e(
             '[ERR] ${error.response?.statusCode} '
             '${error.requestOptions.method} '
-            '${error.requestOptions.baseUrl}${error.requestOptions.path}\n'
+            '${error.requestOptions.uri}\n'
+            'type=${error.type}\n'
+            'message=${error.message}\n'
             'body=${error.requestOptions.data}\n'
             'response=${error.response?.data}',
             tag: 'DIO',

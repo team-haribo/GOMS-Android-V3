@@ -15,6 +15,7 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
+import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 import 'package:goms/features/profile/presentation/widgets/account_actions_section.dart';
@@ -23,6 +24,7 @@ import 'package:goms/features/profile/presentation/providers/settings_provider.d
 import 'package:goms/features/profile/presentation/widgets/settings_section.dart';
 import 'package:goms/core/widgets/common/base_scaffold.dart';
 import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MyPageScreen extends ConsumerStatefulWidget {
   const MyPageScreen({super.key});
@@ -32,6 +34,8 @@ class MyPageScreen extends ConsumerStatefulWidget {
 }
 
 class _MyPageScreenState extends ConsumerState<MyPageScreen> {
+  bool _isUploadingProfileImage = false;
+
   void _showThemePicker(BuildContext context, AppThemeOption current) {
     showCupertinoModalPopup<void>(
       context: context,
@@ -109,6 +113,64 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     }
   }
 
+  Future<void> _pickAndUploadProfileImage() async {
+    if (_isUploadingProfileImage) {
+      return;
+    }
+
+    final pickedImage = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 85,
+    );
+
+    if (pickedImage == null) {
+      return;
+    }
+
+    setState(() => _isUploadingProfileImage = true);
+    try {
+      final imageUrl = await ref
+          .read(memberRepositoryProvider)
+          .updateProfileImage(imagePath: pickedImage.path);
+
+      if (!mounted) {
+        return;
+      }
+
+      if (imageUrl.isNotEmpty) {
+        ref
+            .read(currentMemberProvider.notifier)
+            .updateProfileImageUrl(imageUrl);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('프로필 사진이 변경되었어요.')),
+      );
+    } on DioException catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(NetworkException.fromDioException(error).message),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) {
+        return;
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(error.toString())),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUploadingProfileImage = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final role = ref.watch(roleProvider);
@@ -147,9 +209,12 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
           children: [
             ProfileSummarySection(
               role: role,
-              name: myOutingStatus?.name ?? currentMember?.name ?? '정보 없음',
-              grade: myOutingStatus?.grade,
-              major: myOutingStatus?.department,
+              name: currentMember?.name ?? '정보 없음',
+              profileImageUrl: currentMember?.profileImageUrl ?? '',
+              onTapProfileImage: _pickAndUploadProfileImage,
+              isUploadingProfileImage: _isUploadingProfileImage,
+              grade: currentMember?.grade,
+              major: currentMember?.department.name.toUpperCase(),
               lateCount: myOutingStatus?.lateCount,
               textColor: textColor,
               subColor: sub2Color,

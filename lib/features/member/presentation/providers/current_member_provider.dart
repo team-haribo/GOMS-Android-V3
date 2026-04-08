@@ -18,7 +18,7 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
 
     try {
       final currentMember =
-          await ref.read(memberRepositoryProvider).getMyRole();
+          await ref.read(memberRepositoryProvider).getMyProfile();
       state = AsyncData(currentMember);
       return currentMember;
     } on DioException catch (error, stackTrace) {
@@ -35,5 +35,14 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
 
   void clear() {
     state = const AsyncData(null);
+  }
+
+  void updateProfileImageUrl(String imageUrl) {
+    final currentMember = state.asData?.value;
+    if (currentMember == null) {
+      return;
+    }
+
+    state = AsyncData(currentMember.copyWith(profileImageUrl: imageUrl));
   }
 }

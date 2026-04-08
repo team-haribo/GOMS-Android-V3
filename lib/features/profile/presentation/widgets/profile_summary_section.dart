@@ -10,6 +10,9 @@ class ProfileSummarySection extends StatelessWidget {
     super.key,
     required this.role,
     required this.name,
+    required this.profileImageUrl,
+    required this.onTapProfileImage,
+    required this.isUploadingProfileImage,
     this.grade,
     this.major,
     this.lateCount,
@@ -20,6 +23,9 @@ class ProfileSummarySection extends StatelessWidget {
 
   final RoleEnum role;
   final String name;
+  final String profileImageUrl;
+  final VoidCallback onTapProfileImage;
+  final bool isUploadingProfileImage;
   final int? grade;
   final String? major;
   final int? lateCount;
@@ -35,11 +41,49 @@ class ProfileSummarySection extends StatelessWidget {
         Stack(
           clipBehavior: Clip.none,
           children: [
-            CircleAvatar(
-              radius: 36,
-              backgroundColor: surfaceColor,
-              child: ClipOval(
-                child: AppIcons.profileCircle(width: 72, height: 72),
+            GestureDetector(
+              onTap: onTapProfileImage,
+              child: Stack(
+                children: [
+                  CircleAvatar(
+                    radius: 36,
+                    backgroundColor: surfaceColor,
+                    child: profileImageUrl.trim().isEmpty
+                        ? ClipOval(
+                            child:
+                                AppIcons.profileCircle(width: 72, height: 72),
+                          )
+                        : ClipOval(
+                            child: Image.network(
+                              profileImageUrl,
+                              width: 72,
+                              height: 72,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) {
+                                return AppIcons.profileCircle(
+                                  width: 72,
+                                  height: 72,
+                                );
+                              },
+                            ),
+                          ),
+                  ),
+                  if (isUploadingProfileImage)
+                    Positioned.fill(
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
             Positioned(

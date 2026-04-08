@@ -112,6 +112,7 @@ class _AdminLatecomerListScreenState
                         name: member.name,
                         grade: member.grade,
                         major: member.department,
+                        profileImageUrl: member.profileImageUrl,
                       );
                     },
                     separatorBuilder: (context, index) {

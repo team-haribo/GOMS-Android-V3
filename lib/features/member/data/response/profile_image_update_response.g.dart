@@ -7,13 +7,15 @@ part of 'profile_image_update_response.dart';
 // **************************************************************************
 
 ProfileImageUpdateResponse _$ProfileImageUpdateResponseFromJson(
-        Map<String, dynamic> json) =>
+        Map<String, dynamic> json,
+      ) =>
     ProfileImageUpdateResponse(
       imageUrl: json['imageUrl'] as String? ?? '',
     );
 
 Map<String, dynamic> _$ProfileImageUpdateResponseToJson(
-        ProfileImageUpdateResponse instance) =>
+        ProfileImageUpdateResponse instance,
+      ) =>
     <String, dynamic>{
       'imageUrl': instance.imageUrl,
     };

@@ -20,6 +20,8 @@ mixin _$MyOutingStatusResponse {
   int get grade;
   String get department;
   int get lateCount;
+  String get profileImageUrl;
+  String get profileUrl;
 
   /// Create a copy of MyOutingStatusResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -45,17 +47,21 @@ mixin _$MyOutingStatusResponse {
             (identical(other.department, department) ||
                 other.department == department) &&
             (identical(other.lateCount, lateCount) ||
-                other.lateCount == lateCount));
+                other.lateCount == lateCount) &&
+            (identical(other.profileImageUrl, profileImageUrl) ||
+                other.profileImageUrl == profileImageUrl) &&
+            (identical(other.profileUrl, profileUrl) ||
+                other.profileUrl == profileUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, memberId, status, name, grade, department, lateCount);
+  int get hashCode => Object.hash(runtimeType, memberId, status, name, grade,
+      department, lateCount, profileImageUrl, profileUrl);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount)';
+    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl)';
   }
 }
 
@@ -71,7 +77,9 @@ abstract mixin class $MyOutingStatusResponseCopyWith<$Res> {
       String name,
       int grade,
       String department,
-      int lateCount});
+      int lateCount,
+      String profileImageUrl,
+      String profileUrl});
 }
 
 /// @nodoc
@@ -93,6 +101,8 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
     Object? grade = null,
     Object? department = null,
     Object? lateCount = null,
+    Object? profileImageUrl = null,
+    Object? profileUrl = null,
   }) {
     return _then(_self.copyWith(
       memberId: null == memberId
@@ -119,6 +129,14 @@ class _$MyOutingStatusResponseCopyWithImpl<$Res>
           ? _self.lateCount
           : lateCount // ignore: cast_nullable_to_non_nullable
               as int,
+      profileImageUrl: null == profileImageUrl
+          ? _self.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileUrl: null == profileUrl
+          ? _self.profileUrl
+          : profileUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -216,16 +234,30 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
-    TResult Function(int memberId, OutingStatusType status, String name,
-            int grade, String department, int lateCount)?
+    TResult Function(
+            int memberId,
+            OutingStatusType status,
+            String name,
+            int grade,
+            String department,
+            int lateCount,
+            String profileImageUrl,
+            String profileUrl)?
         $default, {
     required TResult orElse(),
   }) {
     final _that = this;
     switch (_that) {
       case _MyOutingStatusResponse() when $default != null:
-        return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department, _that.lateCount);
+        return $default(
+            _that.memberId,
+            _that.status,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.lateCount,
+            _that.profileImageUrl,
+            _that.profileUrl);
       case _:
         return orElse();
     }
@@ -246,15 +278,29 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
-    TResult Function(int memberId, OutingStatusType status, String name,
-            int grade, String department, int lateCount)
+    TResult Function(
+            int memberId,
+            OutingStatusType status,
+            String name,
+            int grade,
+            String department,
+            int lateCount,
+            String profileImageUrl,
+            String profileUrl)
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MyOutingStatusResponse():
-        return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department, _that.lateCount);
+        return $default(
+            _that.memberId,
+            _that.status,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.lateCount,
+            _that.profileImageUrl,
+            _that.profileUrl);
       case _:
         throw StateError('Unexpected subclass');
     }
@@ -274,15 +320,29 @@ extension MyOutingStatusResponsePatterns on MyOutingStatusResponse {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>(
-    TResult? Function(int memberId, OutingStatusType status, String name,
-            int grade, String department, int lateCount)?
+    TResult? Function(
+            int memberId,
+            OutingStatusType status,
+            String name,
+            int grade,
+            String department,
+            int lateCount,
+            String profileImageUrl,
+            String profileUrl)?
         $default,
   ) {
     final _that = this;
     switch (_that) {
       case _MyOutingStatusResponse() when $default != null:
-        return $default(_that.memberId, _that.status, _that.name, _that.grade,
-            _that.department, _that.lateCount);
+        return $default(
+            _that.memberId,
+            _that.status,
+            _that.name,
+            _that.grade,
+            _that.department,
+            _that.lateCount,
+            _that.profileImageUrl,
+            _that.profileUrl);
       case _:
         return null;
     }
@@ -298,7 +358,9 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
       required this.name,
       required this.grade,
       required this.department,
-      required this.lateCount});
+      required this.lateCount,
+      this.profileImageUrl = '',
+      this.profileUrl = ''});
   factory _MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
       _$MyOutingStatusResponseFromJson(json);
 
@@ -314,6 +376,12 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
   final String department;
   @override
   final int lateCount;
+  @override
+  @JsonKey()
+  final String profileImageUrl;
+  @override
+  @JsonKey()
+  final String profileUrl;
 
   /// Create a copy of MyOutingStatusResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -344,17 +412,21 @@ class _MyOutingStatusResponse implements MyOutingStatusResponse {
             (identical(other.department, department) ||
                 other.department == department) &&
             (identical(other.lateCount, lateCount) ||
-                other.lateCount == lateCount));
+                other.lateCount == lateCount) &&
+            (identical(other.profileImageUrl, profileImageUrl) ||
+                other.profileImageUrl == profileImageUrl) &&
+            (identical(other.profileUrl, profileUrl) ||
+                other.profileUrl == profileUrl));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, memberId, status, name, grade, department, lateCount);
+  int get hashCode => Object.hash(runtimeType, memberId, status, name, grade,
+      department, lateCount, profileImageUrl, profileUrl);
 
   @override
   String toString() {
-    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount)';
+    return 'MyOutingStatusResponse(memberId: $memberId, status: $status, name: $name, grade: $grade, department: $department, lateCount: $lateCount, profileImageUrl: $profileImageUrl, profileUrl: $profileUrl)';
   }
 }
 
@@ -372,7 +444,9 @@ abstract mixin class _$MyOutingStatusResponseCopyWith<$Res>
       String name,
       int grade,
       String department,
-      int lateCount});
+      int lateCount,
+      String profileImageUrl,
+      String profileUrl});
 }
 
 /// @nodoc
@@ -394,6 +468,8 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
     Object? grade = null,
     Object? department = null,
     Object? lateCount = null,
+    Object? profileImageUrl = null,
+    Object? profileUrl = null,
   }) {
     return _then(_MyOutingStatusResponse(
       memberId: null == memberId
@@ -420,6 +496,14 @@ class __$MyOutingStatusResponseCopyWithImpl<$Res>
           ? _self.lateCount
           : lateCount // ignore: cast_nullable_to_non_nullable
               as int,
+      profileImageUrl: null == profileImageUrl
+          ? _self.profileImageUrl
+          : profileImageUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileUrl: null == profileUrl
+          ? _self.profileUrl
+          : profileUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }

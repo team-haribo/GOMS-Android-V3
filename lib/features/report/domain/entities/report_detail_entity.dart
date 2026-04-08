@@ -8,6 +8,7 @@ class ReportDetailEntity {
     required this.reviewerName,
     required this.reviewerGrade,
     required this.reviewerDepartment,
+    this.reviewerProfileImageUrl = '',
     required this.reviewContent,
     required this.reportContent,
     required this.reportStatus,
@@ -23,6 +24,7 @@ class ReportDetailEntity {
   final String reviewerName;
   final int reviewerGrade;
   final String reviewerDepartment;
+  final String reviewerProfileImageUrl;
   final String reviewContent;
   final String reportContent;
   final ReportStatus reportStatus;

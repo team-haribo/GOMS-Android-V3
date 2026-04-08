@@ -26,41 +26,31 @@ class CurrentMemberDto {
 
   @JsonKey(defaultValue: 0)
   final int memberId;
-
   @JsonKey(defaultValue: '')
   final String email;
-
   @JsonKey(defaultValue: '')
   final String name;
-
   @JsonKey(fromJson: RoleEnum.fromServer, toJson: _roleEnumToJson)
   final RoleEnum role;
-
   @JsonKey(defaultValue: 0)
   final int grade;
-
   @JsonKey(
     defaultValue: DepartmentType.sw,
     unknownEnumValue: DepartmentType.sw,
   )
   final DepartmentType department;
-
   @JsonKey(
     defaultValue: GenderType.male,
     unknownEnumValue: GenderType.male,
   )
   final GenderType gender;
-
   @JsonKey(
     defaultValue: OutingStatusType.coming,
     unknownEnumValue: OutingStatusType.coming,
   )
   final OutingStatusType status;
-
-  @JsonKey(defaultValue: '')
+  @JsonKey(fromJson: _profileImageUrlFromJson, toJson: _stringToJson)
   final String profileImageUrl;
-
-  Map<String, dynamic> toJson() => _$CurrentMemberDtoToJson(this);
 
   CurrentMemberEntity toEntity() {
     return CurrentMemberEntity(
@@ -76,7 +66,18 @@ class CurrentMemberDto {
     );
   }
 
+  Map<String, dynamic> toJson() => _$CurrentMemberDtoToJson(this);
+
   static String _roleEnumToJson(RoleEnum role) {
     return role.toServer();
   }
+
+  static String _profileImageUrlFromJson(Object? value) {
+    if (value is Map<String, dynamic>) {
+      return (value['profileImageUrl'] ?? value['profileUrl']) as String? ?? '';
+    }
+    return value as String? ?? '';
+  }
+
+  static String _stringToJson(String value) => value;
 }

@@ -30,6 +30,7 @@ class StudentCouncilStudentResponse {
     required this.name,
     required this.grade,
     required this.department,
+    required this.profileImageUrl,
     required this.role,
     required this.status,
     required this.studentRole,
@@ -44,6 +45,7 @@ class StudentCouncilStudentResponse {
       name: _asString(json['name']),
       grade: _asInt(json['grade']),
       department: _asString(json['department']),
+      profileImageUrl: _asString(json['profileImageUrl'] ?? json['profileUrl']),
       role: role,
       status: status,
       studentRole: _toStudentRole(
@@ -58,6 +60,7 @@ class StudentCouncilStudentResponse {
   final String name;
   final int grade;
   final String department;
+  final String profileImageUrl;
   final String role;
   final String status;
   final StudentRole studentRole;
@@ -68,6 +71,7 @@ class StudentCouncilStudentResponse {
       name: name,
       grade: grade,
       department: department,
+      profileImageUrl: profileImageUrl,
       role: role,
       status: status,
       studentRole: studentRole,

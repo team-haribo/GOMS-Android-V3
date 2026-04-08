@@ -160,6 +160,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                           name: member.name,
                           grade: member.grade,
                           major: member.department,
+                          profileImageUrl: member.profileImageUrl,
                           role: role,
                           outingAt: member.outingAt,
                         );

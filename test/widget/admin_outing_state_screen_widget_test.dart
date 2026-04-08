@@ -59,6 +59,7 @@ void main() {
               name: '김민솔',
               grade: 8,
               major: 'AI',
+              profileImageUrl: '',
               studentRole: StudentRole.student,
             ),
           ),
@@ -112,7 +113,7 @@ class _FakeMemberRepository implements MemberRepository {
 
   @override
   Future<List<MemberEntity>> getMembers() async => const [];
-  
+
   @override
   Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
@@ -144,12 +145,12 @@ class _FakeMemberRepository implements MemberRepository {
   Future<void> withdrawMember({required String password}) {
     throw UnimplementedError();
   }
-  
+
   @override
   Future<String> updateProfileImage({required String imagePath}) {
     throw UnimplementedError();
   }
-  
+
   @override
   Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();

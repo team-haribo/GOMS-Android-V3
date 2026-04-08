@@ -11,6 +11,8 @@ abstract class OutingStudentResponse with _$OutingStudentResponse {
     required String name,
     required int grade,
     required String department,
+    @Default('') String profileImageUrl,
+    @Default('') String profileUrl,
     required DateTime outingAt,
   }) = _OutingStudentResponse;
 
@@ -23,11 +25,14 @@ abstract class OutingStudentResponse with _$OutingStudentResponse {
 
 extension OutingStudentResponseX on OutingStudentResponse {
   OutingStudentEntity toEntity() {
+    final resolvedProfile = profileUrl.isNotEmpty ? profileUrl : profileImageUrl;
+
     return OutingStudentEntity(
       memberId: memberId,
       name: name,
       grade: grade,
       department: department,
+      profileImageUrl: resolvedProfile,
       outingAt: outingAt,
     );
   }

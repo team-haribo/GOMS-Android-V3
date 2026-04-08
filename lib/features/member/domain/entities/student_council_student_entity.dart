@@ -7,6 +7,7 @@ class StudentCouncilStudentEntity {
     required this.grade,
     required this.department,
     required this.studentRole,
+    this.profileImageUrl = '',
     this.role = '',
     this.status = '',
   });
@@ -16,6 +17,7 @@ class StudentCouncilStudentEntity {
   final int grade;
   final String department;
   final StudentRole studentRole;
+  final String profileImageUrl;
   final String role;
   final String status;
 
@@ -25,6 +27,7 @@ class StudentCouncilStudentEntity {
     int? grade,
     String? department,
     StudentRole? studentRole,
+    String? profileImageUrl,
     String? role,
     String? status,
   }) {
@@ -34,6 +37,7 @@ class StudentCouncilStudentEntity {
       grade: grade ?? this.grade,
       department: department ?? this.department,
       studentRole: studentRole ?? this.studentRole,
+      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
       role: role ?? this.role,
       status: status ?? this.status,
     );

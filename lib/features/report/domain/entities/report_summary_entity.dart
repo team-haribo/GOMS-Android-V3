@@ -8,6 +8,7 @@ class ReportSummaryEntity {
     required this.reviewerName,
     required this.reviewerGrade,
     required this.reviewerDepartment,
+    this.reviewerProfileImageUrl = '',
     required this.reportCreatedAt,
     required this.reportStatus,
     this.deletedAt,
@@ -20,6 +21,7 @@ class ReportSummaryEntity {
   final String reviewerName;
   final int reviewerGrade;
   final String reviewerDepartment;
+  final String reviewerProfileImageUrl;
   final DateTime? reportCreatedAt;
   final ReportStatus reportStatus;
   final DateTime? deletedAt;

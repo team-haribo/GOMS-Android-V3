@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
@@ -14,6 +15,8 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
     required int grade,
     required String department,
     required int lateCount,
+    @Default('') String profileImageUrl,
+    @Default('') String profileUrl,
   }) = _MyOutingStatusResponse;
 
   factory MyOutingStatusResponse.fromJson(Map<String, dynamic> json) =>
@@ -25,6 +28,14 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
 
 extension MyOutingStatusResponseX on MyOutingStatusResponse {
   MyOutingStatusEntity toEntity() {
+    final resolvedProfile = profileUrl.isNotEmpty ? profileUrl : profileImageUrl;
+
+    Logger.d(
+      'MyOutingStatus profileImageUrl(raw)="$profileImageUrl", '
+      'profileUrl(raw)="$profileUrl", resolved="$resolvedProfile"',
+      tag: 'OUTING',
+    );
+
     return MyOutingStatusEntity(
       memberId: memberId,
       status: status,
@@ -32,6 +43,7 @@ extension MyOutingStatusResponseX on MyOutingStatusResponse {
       grade: grade,
       department: department,
       lateCount: lateCount,
+      profileImageUrl: resolvedProfile,
     );
   }
 }

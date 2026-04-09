@@ -9,13 +9,13 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/qr_button.dart';
-import 'package:goms/core/widgets/common/text_fields/search_student.dart';
-import 'package:goms/features/home/shared/presentation/widgets/filter_bottomsheet.dart';
-import 'package:goms/features/home/shared/presentation/widgets/filter_button.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
+import 'package:goms/core/widgets/buttons/qr_button.dart';
+import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
+import 'package:goms/features/member/presentation/widgets/member_filter_bottom_sheet.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -117,7 +117,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                   ),
                 ),
                 FilterButton(
-                  bottomSheetBuilder: (_) => FilterBottomSheet(
+                  bottomSheetBuilder: (_) => MemberFilterBottomSheet(
                     initialSelection: _selectionFromFilter(
                       ref.read(studentCouncilMemberFilterProvider),
                     ),
@@ -240,7 +240,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                                 onPressed: () {
                                   ref
                                       .read(studentCouncilMembersProvider
-                                          .notifier)
+                                          .notifier,)
                                       .reload();
                                 },
                                 child: const Text('다시 시도'),
@@ -261,9 +261,9 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
     );
   }
 
-  FilterSheetSelection _selectionFromFilter(
-      StudentCouncilFilterRequest filter) {
-    return FilterSheetSelection(
+  MemberFilterSheetSelection _selectionFromFilter(
+      StudentCouncilFilterRequest filter,) {
+    return MemberFilterSheetSelection(
       grade: filter.grade,
       gender: filter.gender,
       department: filter.department,

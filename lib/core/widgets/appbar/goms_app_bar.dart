@@ -72,7 +72,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                         color: AppColors.admin,
                       )
                     : AppIcons.back(width: 24, height: 24),
-                onPressed: onBackPressed ?? () => context.go(RoutePath.home),
+                onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,

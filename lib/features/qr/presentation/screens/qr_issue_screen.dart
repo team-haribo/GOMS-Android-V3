@@ -4,8 +4,10 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -15,26 +17,26 @@ import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
 import 'package:goms/features/qr/presentation/providers/issued_qr_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-final _qrRemainingProvider =
-    StreamProvider.autoDispose.family<Duration, IssuedQrEntity>((ref, value) async* {
-      Duration remaining() {
-        const qrLifetime = Duration(minutes: 5);
-        final serverExpiresAt = DateTime.fromMillisecondsSinceEpoch(
-          value.exp * 1000,
-          isUtc: true,
-        ).toLocal();
-        final clientExpiresAt = value.issuedAt.add(qrLifetime);
-        final expiresAt = serverExpiresAt.isBefore(clientExpiresAt)
-            ? serverExpiresAt
-            : clientExpiresAt;
-        final diff = expiresAt.difference(DateTime.now());
-        return diff.isNegative ? Duration.zero : diff;
-      }
+final _qrRemainingProvider = StreamProvider.autoDispose
+    .family<Duration, IssuedQrEntity>((ref, value) async* {
+  Duration remaining() {
+    const qrLifetime = Duration(minutes: 5);
+    final serverExpiresAt = DateTime.fromMillisecondsSinceEpoch(
+      value.exp * 1000,
+      isUtc: true,
+    ).toLocal();
+    final clientExpiresAt = value.issuedAt.add(qrLifetime);
+    final expiresAt = serverExpiresAt.isBefore(clientExpiresAt)
+        ? serverExpiresAt
+        : clientExpiresAt;
+    final diff = expiresAt.difference(DateTime.now());
+    return diff.isNegative ? Duration.zero : diff;
+  }
 
-      yield remaining();
-      final timer = Stream.periodic(const Duration(seconds: 1), (_) => remaining());
-      yield* timer;
-    });
+  yield remaining();
+  final timer = Stream.periodic(const Duration(seconds: 1), (_) => remaining());
+  yield* timer;
+});
 
 class QrIssueScreen extends ConsumerWidget {
   const QrIssueScreen({super.key});
@@ -47,6 +49,7 @@ class QrIssueScreen extends ConsumerWidget {
       return BaseScaffold(
         showAppBar: true,
         role: role,
+        onBackPressed: () => context.go(RoutePath.home),
         body: Center(
           child: Text(
             '학생회만 QR을 발급할 수 있어요.',
@@ -62,6 +65,7 @@ class QrIssueScreen extends ConsumerWidget {
     return BaseScaffold(
       showAppBar: true,
       role: role,
+      onBackPressed: () => context.go(RoutePath.home),
       body: issuedQr.when(
         data: (value) => _QrIssuedContent(
           value: value,
@@ -89,8 +93,10 @@ class _QrIssuedContent extends ConsumerWidget {
   String _remainingText(WidgetRef ref) {
     final remaining =
         ref.watch(_qrRemainingProvider(value)).asData?.value ?? Duration.zero;
-    final minutes = remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+    final minutes =
+        remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds =
+        remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$minutes분 $seconds초';
   }
 
@@ -125,7 +131,8 @@ class _QrIssuedContent extends ConsumerWidget {
                   children: [
                     Text(
                       '학생 외출·복귀용 QR',
-                      style: AppTextStyles.title2.withColor(context.mainTextColor),
+                      style:
+                          AppTextStyles.title2.withColor(context.mainTextColor),
                       textAlign: TextAlign.center,
                     ),
                     AppGap.v24,
@@ -151,13 +158,15 @@ class _QrIssuedContent extends ConsumerWidget {
                     AppGap.v24,
                     Text(
                       'QR 만료까지',
-                      style: AppTextStyles.caption1.withColor(context.sub2Color),
+                      style:
+                          AppTextStyles.caption1.withColor(context.sub2Color),
                       textAlign: TextAlign.center,
                     ),
                     AppGap.v4,
                     Text(
                       _remainingText(ref),
-                      style: AppTextStyles.title2.withColor(context.mainTextColor),
+                      style:
+                          AppTextStyles.title2.withColor(context.mainTextColor),
                       textAlign: TextAlign.center,
                     ),
                   ],

@@ -24,43 +24,12 @@ class ProfileAvatar extends StatefulWidget {
 }
 
 class _ProfileAvatarState extends State<ProfileAvatar> {
-  bool _didShowImageError = false;
-
-  @override
-  void didUpdateWidget(covariant ProfileAvatar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.imageUrl != widget.imageUrl) {
-      _didShowImageError = false;
-    }
-  }
-
-  void _showImageErrorMessage() {
-    if (!widget.showErrorMessage || _didShowImageError) {
-      return;
-    }
-
-    _didShowImageError = true;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      final messenger = ScaffoldMessenger.maybeOf(context);
-      if (messenger == null) {
-        return;
-      }
-      messenger.showSnackBar(
-        SnackBar(content: Text(widget.errorMessage)),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final imageUrl = (widget.imageUrl ?? '').trim();
     final diameter = widget.radius * 2;
 
     if (imageUrl.isEmpty) {
-      _showImageErrorMessage();
       return CircleAvatar(
         radius: widget.radius,
         backgroundColor: widget.backgroundColor,
@@ -84,7 +53,6 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
               'ProfileAvatar image load failed. hasImageUrl=${imageUrl.isNotEmpty} error=$error',
               tag: 'PROFILE',
             );
-            _showImageErrorMessage();
             return AppIcons.profileCircle(width: diameter, height: diameter);
           },
         ),

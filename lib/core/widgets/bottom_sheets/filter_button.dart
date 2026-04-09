@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/home/shared/presentation/widgets/filter_bottomsheet.dart';
 
 class FilterButton extends StatelessWidget {
   const FilterButton({
     super.key,
-    this.bottomSheetBuilder,
+    required this.bottomSheetBuilder,
   });
 
-  final WidgetBuilder? bottomSheetBuilder;
+  final WidgetBuilder bottomSheetBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +24,13 @@ class FilterButton extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
           ),
           backgroundColor: context.surfaceColor,
-          builder: (context) =>
-              bottomSheetBuilder?.call(context) ?? const FilterBottomSheet(),
+          builder: bottomSheetBuilder,
         );
       },
       style: TextButton.styleFrom(
         padding: EdgeInsets.zero,
         minimumSize: Size.zero,
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap, // 텍스트버튼 크기 딱 맞추기
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Text(
         '필터',

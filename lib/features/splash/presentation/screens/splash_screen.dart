@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});

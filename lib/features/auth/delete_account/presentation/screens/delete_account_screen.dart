@@ -6,8 +6,8 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/delete_account/presentation/models/delete_account_state.dart';
 import 'package:goms/features/auth/delete_account/presentation/providers/delete_account_provider.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
 class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});

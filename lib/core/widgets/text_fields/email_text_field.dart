@@ -3,7 +3,7 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 
 /// 이메일 입력 텍스트 필드
 class EmailTextField extends StatelessWidget {

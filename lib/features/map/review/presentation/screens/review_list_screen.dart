@@ -7,8 +7,8 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/shared/presentation/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/shared/presentation/widgets/drag_handle_header.dart';
 import 'package:goms/features/map/shared/presentation/widgets/review_list_container.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 
 class ReviewListScreen extends StatefulWidget {
   final String placeName;

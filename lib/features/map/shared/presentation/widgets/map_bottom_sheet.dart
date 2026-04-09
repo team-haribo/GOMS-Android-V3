@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/widgets/common/bottom_sheets/common_bottom_sheet.dart';
+import 'package:goms/core/widgets/bottom_sheets/common_bottom_sheet.dart';
 
 class MapBottomSheet extends StatelessWidget {
   const MapBottomSheet({

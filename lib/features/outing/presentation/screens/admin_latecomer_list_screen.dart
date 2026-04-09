@@ -4,7 +4,7 @@ import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/features/home/shared/presentation/widgets/date_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_list_container.dart';
 import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';

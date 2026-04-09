@@ -4,8 +4,8 @@ import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/buttons/confirm_button.dart';
 
 /// QR 응답 화면 공통 베이스
 ///

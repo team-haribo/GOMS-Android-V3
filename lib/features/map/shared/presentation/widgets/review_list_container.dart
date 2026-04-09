@@ -3,8 +3,8 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/dialogs/review_remove_dialog.dart';
-import 'package:goms/core/widgets/common/dialogs/review_report_dialog.dart';
+import 'package:goms/core/widgets/dialogs/review_remove_dialog.dart';
+import 'package:goms/core/widgets/dialogs/review_report_dialog.dart';
 import 'package:intl/intl.dart';
 
 class ReviewListContainer extends StatelessWidget {

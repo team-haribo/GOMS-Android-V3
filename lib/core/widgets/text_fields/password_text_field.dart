@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
-import 'package:goms/core/widgets/common/text_fields/providers/password_visibility_provider.dart';
+import 'package:goms/core/widgets/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/text_fields/providers/password_visibility_provider.dart';
 
 /// 비밀번호 입력 텍스트 필드 (보기/숨기기 기능 포함)
 class PasswordTextField extends ConsumerWidget {

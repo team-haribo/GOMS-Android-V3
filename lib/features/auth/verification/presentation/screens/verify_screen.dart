@@ -10,8 +10,8 @@ import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.
 import 'package:goms/features/auth/verification/presentation/models/verify_state.dart';
 import 'package:goms/features/auth/verification/presentation/providers/verify_provider.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String? redirectPath;

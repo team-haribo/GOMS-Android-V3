@@ -6,8 +6,8 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/buttons/confirm_button.dart';
 
 class OnboardingScreen extends StatelessWidget {
   const OnboardingScreen({super.key});

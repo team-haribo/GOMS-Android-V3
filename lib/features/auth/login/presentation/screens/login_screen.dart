@@ -1,32 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
+import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/login/presentation/providers/login_provider.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
-
-final _loginButtonEnabledProvider =
-    NotifierProvider.autoDispose.family<_LoginButtonEnabledNotifier, bool, Object>(
-      _LoginButtonEnabledNotifier.new,
-    );
-
-class _LoginButtonEnabledNotifier extends Notifier<bool> {
-  _LoginButtonEnabledNotifier(this.key);
-
-  final Object key;
-
-  @override
-  bool build() => false;
-
-  void setEnabled(bool value) => state = value;
-}
+import 'package:permission_handler/permission_handler.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -39,19 +28,33 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late final ProviderSubscription<LoginState> _loginSubscription;
-  late final Object _providerKey;
+  bool _isButtonEnabled = false;
+
+  Future<String> _resolvePostAuthRoute() async {
+    final currentMember = await ref.read(currentMemberProvider.future);
+    final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+      enabled: await SettingsStorage.getCameraLaunch(),
+      isCameraPermissionGranted: (await Permission.camera.status).isGranted,
+      role: currentMember?.role ?? RoleEnum.user,
+    );
+
+    return cameraLaunchRoute ?? RoutePath.home;
+  }
 
   void _onTextChanged() {
-    ref.read(_loginButtonEnabledProvider(_providerKey).notifier).setEnabled(
-          _emailController.text.isNotEmpty &&
-              _passwordController.text.isNotEmpty,
-        );
+    final nextValue =
+        _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+
+    if (_isButtonEnabled == nextValue || !mounted) return;
+
+    setState(() {
+      _isButtonEnabled = nextValue;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    _providerKey = Object();
     _emailController.addListener(_onTextChanged);
     _passwordController.addListener(_onTextChanged);
     _onTextChanged();
@@ -65,8 +68,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.status == LoginStatus.success) {
         try {
           await ref.read(authProvider.notifier).setAuthenticated();
+          final destination = await _resolvePostAuthRoute();
           if (!mounted) return;
-          context.go(RoutePath.home);
+          context.go(destination);
         } catch (_) {
           if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
@@ -112,12 +116,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
     final isLoading = loginState.status == LoginStatus.loading;
-    final isButtonEnabled = ref.watch(_loginButtonEnabledProvider(_providerKey));
 
     return AuthBaseScreen(
       title: '로그인',
       confirmText: '로그인',
-      isConfirmEnabled: isButtonEnabled,
+      isConfirmEnabled: _isButtonEnabled,
       isLoading: isLoading,
       onConfirm: _handleLogin,
       children: [

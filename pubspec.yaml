@@ -52,6 +52,7 @@ dependencies:
   qr_flutter: ^4.1.0
   image_picker: ^1.2.0
   image_fade: ^0.6.2
+  device_info_plus: ^12.4.0
 
 dev_dependencies:
   flutter_test:

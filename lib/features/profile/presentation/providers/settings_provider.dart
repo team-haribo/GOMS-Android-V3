@@ -1,5 +1,7 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/settings_storage.dart';
+import 'package:goms/features/notification/notification_remote_datasource.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SettingsState {
@@ -59,7 +61,14 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
         return false;
       }
       if (!status.isGranted) return false;
+
+      // 토글 켜면 서버에 토큰 등록
+      await NotificationRemoteDataSource(Dio()).registerDeviceToken();
+    } else {
+      // 토글 끄면 서버에서 토큰 삭제
+      await NotificationRemoteDataSource(Dio()).deleteDeviceToken();
     }
+
     await SettingsStorage.setOutingPushAlarm(value);
     state = AsyncData(state.requireValue.copyWith(outingPushAlarm: value));
     return true;

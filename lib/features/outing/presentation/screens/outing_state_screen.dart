@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/theme_context.dart';
@@ -10,13 +9,10 @@ import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/home/shared/presentation/widgets/search_profile_list.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
@@ -33,21 +29,6 @@ class OutingStateScreen extends ConsumerStatefulWidget {
 
 class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
   bool isOutingDay = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkCameraLaunch();
-  }
-
-  Future<void> _checkCameraLaunch() async {
-    final cameraLaunch = await SettingsStorage.getCameraLaunch();
-    if (!cameraLaunch) return;
-    final cameraStatus = await Permission.camera.status;
-    if (cameraStatus.isGranted && mounted) {
-      context.push(RoutePath.qr);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -201,8 +182,9 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                               TextButton(
                                 onPressed: () {
                                   ref
-                                      .read(currentOutingStudentsProvider
-                                          .notifier,)
+                                      .read(
+                                        currentOutingStudentsProvider.notifier,
+                                      )
                                       .reload();
                                 },
                                 child: const Text('다시 시도'),

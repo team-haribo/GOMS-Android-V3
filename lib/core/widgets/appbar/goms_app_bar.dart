@@ -67,7 +67,10 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 constraints: const BoxConstraints(),
                 icon: role == RoleEnum.admin
                     ? AppIcons.back(
-                        width: 24, height: 24, color: AppColors.admin,)
+                        width: 24,
+                        height: 24,
+                        color: AppColors.admin,
+                      )
                     : AppIcons.back(width: 24, height: 24),
                 onPressed: onBackPressed ?? () => context.pop(),
                 splashColor: Colors.transparent,
@@ -97,15 +100,16 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const Spacer(),
-                if(role == RoleEnum.admin)
+                if (role == RoleEnum.admin)
                   IconButton(
-                  onPressed: () => context.push(RoutePath.studentCouncilReports),
-                  icon: AppIcons.report(
-                  width: 24,
-                  height: 24,
-                  color: context.sub2Color,
-                ),
-                ),
+                    onPressed: () =>
+                        context.push(RoutePath.studentCouncilReports),
+                    icon: AppIcons.report(
+                      width: 24,
+                      height: 24,
+                      color: context.sub2Color,
+                    ),
+                  ),
               ],
             )
           : Text(

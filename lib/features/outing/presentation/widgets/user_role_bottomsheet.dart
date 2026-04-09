@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
@@ -63,12 +62,29 @@ class _UserRoleBottomSheetStateModel {
 }
 
 final _userRoleBottomSheetStateProvider =
-    StateProvider.autoDispose.family<
+    NotifierProvider.autoDispose.family<
+      _UserRoleBottomSheetStateNotifier,
       _UserRoleBottomSheetStateModel,
       (Object, StudentRole)
-    >(
-      (ref, args) => _UserRoleBottomSheetStateModel.fromRole(args.$2),
-    );
+    >(_UserRoleBottomSheetStateNotifier.new);
+
+class _UserRoleBottomSheetStateNotifier
+    extends Notifier<_UserRoleBottomSheetStateModel> {
+  _UserRoleBottomSheetStateNotifier(this.args);
+
+  final (Object, StudentRole) args;
+
+  @override
+  _UserRoleBottomSheetStateModel build() =>
+      _UserRoleBottomSheetStateModel.fromRole(args.$2);
+
+  void update(
+    _UserRoleBottomSheetStateModel Function(_UserRoleBottomSheetStateModel state)
+        transform,
+  ) {
+    state = transform(state);
+  }
+}
 
 class UserRoleBottomSheet extends ConsumerStatefulWidget {
   const UserRoleBottomSheet({
@@ -310,7 +326,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
     final notifier = ref.read(
       _userRoleBottomSheetStateProvider(_providerKey).notifier,
     );
-    notifier.state = transform(notifier.state);
+    notifier.update(transform);
   }
 }
 

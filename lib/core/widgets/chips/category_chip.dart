@@ -1,12 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
 final _categoryChipSelectionProvider =
-    StateProvider.autoDispose.family<bool, Object>((ref, key) => false);
+    NotifierProvider.autoDispose.family<
+      _CategoryChipSelectionNotifier,
+      bool,
+      Object
+    >(_CategoryChipSelectionNotifier.new);
+
+class _CategoryChipSelectionNotifier extends Notifier<bool> {
+  _CategoryChipSelectionNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setSelected(bool value) => state = value;
+}
 
 class CategoryChip extends ConsumerStatefulWidget {
   final String category;
@@ -47,8 +61,9 @@ class _CategoryChipState extends ConsumerState<CategoryChip> {
           widget.onChanged?.call(next);
           return;
         }
-        ref.read(_categoryChipSelectionProvider(_providerKey).notifier).state =
-            next;
+        ref
+            .read(_categoryChipSelectionProvider(_providerKey).notifier)
+            .setSelected(next);
         widget.onChanged?.call(next);
       },
       child: Container(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
@@ -46,9 +45,22 @@ class MemberFilterSheetSelection {
 }
 
 final _memberFilterSelectionProvider =
-    StateProvider.autoDispose.family<MemberFilterSheetSelection, (Object, MemberFilterSheetSelection)>(
-      (ref, args) => args.$2,
-    );
+    NotifierProvider.autoDispose.family<
+      _MemberFilterSelectionNotifier,
+      MemberFilterSheetSelection,
+      (Object, MemberFilterSheetSelection)
+    >(_MemberFilterSelectionNotifier.new);
+
+class _MemberFilterSelectionNotifier extends Notifier<MemberFilterSheetSelection> {
+  _MemberFilterSelectionNotifier(this.args);
+
+  final (Object, MemberFilterSheetSelection) args;
+
+  @override
+  MemberFilterSheetSelection build() => args.$2;
+
+  void setSelection(MemberFilterSheetSelection selection) => state = selection;
+}
 
 class MemberFilterBottomSheet extends ConsumerStatefulWidget {
   const MemberFilterBottomSheet({
@@ -313,15 +325,17 @@ class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomShee
   }
 
   void _handleReset() {
-    ref.read(_memberFilterSelectionProvider(_providerKey).notifier).state =
-        const MemberFilterSheetSelection();
+    ref
+        .read(_memberFilterSelectionProvider(_providerKey).notifier)
+        .setSelection(const MemberFilterSheetSelection());
     widget.onReset?.call();
     Navigator.pop(context);
   }
 
   void _updateSelection(MemberFilterSheetSelection selection) {
-    ref.read(_memberFilterSelectionProvider(_providerKey).notifier).state =
-        selection;
+    ref
+        .read(_memberFilterSelectionProvider(_providerKey).notifier)
+        .setSelection(selection);
     _notifySelectionChanged(selection);
   }
 

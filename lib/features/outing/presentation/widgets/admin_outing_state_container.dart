@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -11,9 +10,22 @@ import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_bottom_sheet.dart';
 
 final _adminOutingStudentRoleProvider =
-    StateProvider.autoDispose.family<StudentRole, (Object, StudentRole)>(
-      (ref, args) => args.$2,
-    );
+    NotifierProvider.autoDispose.family<
+      _AdminOutingStudentRoleNotifier,
+      StudentRole,
+      (Object, StudentRole)
+    >(_AdminOutingStudentRoleNotifier.new);
+
+class _AdminOutingStudentRoleNotifier extends Notifier<StudentRole> {
+  _AdminOutingStudentRoleNotifier(this.args);
+
+  final (Object, StudentRole) args;
+
+  @override
+  StudentRole build() => args.$2;
+
+  void setRole(StudentRole role) => state = role;
+}
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final int memberId;
@@ -134,7 +146,7 @@ class _AdminOutingStateContainerState
                               _providerKey,
                             ).notifier,
                           )
-                          .state = newRole;
+                          .setRole(newRole);
                     },
                   ),
                 );

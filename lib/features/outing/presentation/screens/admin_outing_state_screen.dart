@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
@@ -17,7 +14,6 @@ import 'package:goms/features/member/data/request/student_council_filter_request
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 import 'package:goms/features/member/presentation/widgets/member_filter_bottom_sheet.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class AdminOutingStateScreen extends ConsumerStatefulWidget {
   const AdminOutingStateScreen({
@@ -31,21 +27,6 @@ class AdminOutingStateScreen extends ConsumerStatefulWidget {
 
 class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
   bool isOutingDay = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkCameraLaunch();
-  }
-
-  Future<void> _checkCameraLaunch() async {
-    final cameraLaunch = await SettingsStorage.getCameraLaunch();
-    if (!cameraLaunch) return;
-    final cameraStatus = await Permission.camera.status;
-    if (cameraStatus.isGranted && mounted) {
-      context.push(RoutePath.qrIssue);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -239,8 +220,9 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                               TextButton(
                                 onPressed: () {
                                   ref
-                                      .read(studentCouncilMembersProvider
-                                          .notifier,)
+                                      .read(
+                                        studentCouncilMembersProvider.notifier,
+                                      )
                                       .reload();
                                 },
                                 child: const Text('다시 시도'),
@@ -262,7 +244,8 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
   }
 
   MemberFilterSheetSelection _selectionFromFilter(
-      StudentCouncilFilterRequest filter,) {
+    StudentCouncilFilterRequest filter,
+  ) {
     return MemberFilterSheetSelection(
       grade: filter.grade,
       gender: filter.gender,

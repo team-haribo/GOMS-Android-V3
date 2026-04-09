@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/router/route_path.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
@@ -116,7 +117,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => context.pop(),
+                    onTap: () => context.go(RoutePath.home),
                     child:
                         const Icon(Icons.close, color: Colors.white, size: 28),
                   ),

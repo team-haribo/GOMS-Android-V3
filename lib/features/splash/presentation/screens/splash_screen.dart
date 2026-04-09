@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
+import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -40,7 +44,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     String destination = RoutePath.onboarding;
 
     if (hasToken) {
-      destination = RoutePath.home;
+      final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+        enabled: await SettingsStorage.getCameraLaunch(),
+        isCameraPermissionGranted: (await Permission.camera.status).isGranted,
+        role: ref.read(roleProvider),
+      );
+
+      destination = cameraLaunchRoute ?? RoutePath.home;
     }
 
     debugPrint('SplashScreen: navigating to $destination');

@@ -12,8 +12,8 @@ import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/password_reset/presentation/models/reset_password_state.dart';
 import 'package:goms/features/auth/password_reset/presentation/providers/reset_password_provider.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/common/text_fields/password_text_field.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});

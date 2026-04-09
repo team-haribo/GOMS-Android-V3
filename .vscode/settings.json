@@ -1,5 +1,10 @@
 {
   "dart.flutterSdkPath": ".fvm/versions/stable",
+  "editor.formatOnSave": true,
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "Dart-Code.dart-code"
+  },
   "search.exclude": {
     "**/.fvm": true
   },

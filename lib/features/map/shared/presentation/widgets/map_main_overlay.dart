@@ -7,7 +7,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/text_fields/search_text_field.dart';
+import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';

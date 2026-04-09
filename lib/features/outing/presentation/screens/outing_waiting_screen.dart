@@ -8,8 +8,8 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/qr_button.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/features/home/shared/presentation/widgets/late_profile_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/profile_list_container.dart';
 import 'package:goms/features/home/shared/presentation/widgets/user_manage_button.dart';
@@ -51,6 +51,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
+      role: role,
       body: RefreshIndicator(
         onRefresh: _onRefresh,
         child: CustomScrollView(

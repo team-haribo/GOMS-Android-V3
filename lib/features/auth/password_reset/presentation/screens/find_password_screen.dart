@@ -6,7 +6,7 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/password_reset/presentation/models/find_password_state.dart';
 import 'package:goms/features/auth/password_reset/presentation/providers/find_password_provider.dart';
-import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
+import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 
 class FindPasswordScreen extends ConsumerStatefulWidget {
   const FindPasswordScreen({super.key});

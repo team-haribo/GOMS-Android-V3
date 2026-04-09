@@ -10,9 +10,9 @@ import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
 import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/core/widgets/common/select_field.dart';
-import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
-import 'package:goms/core/widgets/common/text_fields/email_text_field.dart';
+import 'package:goms/core/widgets/selects/select_field.dart';
+import 'package:goms/core/widgets/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});

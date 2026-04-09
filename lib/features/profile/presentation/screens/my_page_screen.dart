@@ -22,8 +22,8 @@ import 'package:goms/features/profile/presentation/widgets/account_actions_secti
 import 'package:goms/features/profile/presentation/widgets/profile_summary_section.dart';
 import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 import 'package:goms/features/profile/presentation/widgets/settings_section.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MyPageScreen extends ConsumerStatefulWidget {
@@ -203,6 +203,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
 
     return BaseScaffold(
       showAppBarLogo: true,
+      role: role,
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

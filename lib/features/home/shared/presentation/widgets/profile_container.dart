@@ -6,7 +6,7 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/home/shared/presentation/widgets/time_display.dart';
 import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
-import 'package:goms/core/widgets/common/profile_avatar.dart';
+import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 
 class ProfileContainer extends ConsumerWidget {
   final String name;

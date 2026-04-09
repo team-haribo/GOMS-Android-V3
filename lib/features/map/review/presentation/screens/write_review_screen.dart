@@ -8,9 +8,9 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/map/review/presentation/models/write_review_state.dart';
 import 'package:goms/features/map/review/presentation/providers/write_review_provider.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/buttons/confirm_button.dart';
-import 'package:goms/core/widgets/common/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/buttons/confirm_button.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {
   final String placeName;

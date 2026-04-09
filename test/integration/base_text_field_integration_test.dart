@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/core/widgets/common/text_fields/base_text_field.dart';
+import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 import '../test_app.dart';
 
 void main() {

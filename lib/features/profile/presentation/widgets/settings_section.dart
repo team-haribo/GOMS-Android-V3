@@ -3,7 +3,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/theme/enums/app_theme_option.dart';
-import 'package:goms/core/widgets/common/buttons/toggle_button.dart';
+import 'package:goms/core/widgets/buttons/toggle_button.dart';
 
 class SettingsSection extends StatelessWidget {
   const SettingsSection({

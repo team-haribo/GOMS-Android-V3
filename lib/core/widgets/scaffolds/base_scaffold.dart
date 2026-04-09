@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/widgets/common/appbar/goms_app_bar.dart';
+import 'package:goms/core/widgets/appbar/goms_app_bar.dart';
 
 class BaseScaffold extends ConsumerWidget {
   final Widget body;
@@ -32,7 +32,10 @@ class BaseScaffold extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final effectiveAppBar = showAppBar
         ? (showAppBarLogo
-            ? GomsAppBar.logo(actions: appBarActions)
+            ? GomsAppBar.logo(
+                actions: appBarActions,
+                role: role,
+              )
             : GomsAppBar.back(
                 onBackPressed: onBackPressed,
                 actions: appBarActions,

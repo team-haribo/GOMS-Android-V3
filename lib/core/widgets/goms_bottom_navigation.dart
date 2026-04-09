@@ -17,36 +17,46 @@ class GomsBottomNavigation extends StatelessWidget {
     final theme = Theme.of(context);
     final selectedColor = theme.bottomNavigationBarTheme.selectedItemColor!;
     final unselectedColor = theme.bottomNavigationBarTheme.unselectedItemColor!;
+    final noTouchEffectTheme = theme.copyWith(
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+    );
 
-    return BottomNavigationBar(
-      currentIndex: currentIndex,
-      onTap: onTap,
-      items: [
-        BottomNavigationBarItem(
-          icon: AppIcons.map(
-            width: 24,
-            height: 24,
-            color: currentIndex == 0 ? selectedColor : unselectedColor,
+    return Theme(
+      data: noTouchEffectTheme,
+      child: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: onTap,
+        enableFeedback: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: AppIcons.map(
+              width: 24,
+              height: 24,
+              color: currentIndex == 0 ? selectedColor : unselectedColor,
+            ),
+            label: '',
           ),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.home(
-            width: 24,
-            height: 24,
-            color: currentIndex == 1 ? selectedColor : unselectedColor,
+          BottomNavigationBarItem(
+            icon: AppIcons.home(
+              width: 24,
+              height: 24,
+              color: currentIndex == 1 ? selectedColor : unselectedColor,
+            ),
+            label: '',
           ),
-          label: '',
-        ),
-        BottomNavigationBarItem(
-          icon: AppIcons.user(
-            width: 24,
-            height: 24,
-            color: currentIndex == 2 ? selectedColor : unselectedColor,
+          BottomNavigationBarItem(
+            icon: AppIcons.user(
+              width: 24,
+              height: 24,
+              color: currentIndex == 2 ? selectedColor : unselectedColor,
+            ),
+            label: '',
           ),
-          label: '',
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

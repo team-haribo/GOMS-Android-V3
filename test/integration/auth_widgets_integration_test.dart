@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
 import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 import '../test_app.dart';
+
+final _authHarnessToggleProvider =
+    StateProvider.autoDispose<bool>((ref) => false);
 
 void main() {
   const emailFieldKey = Key('email_field');
@@ -14,9 +19,11 @@ void main() {
     WidgetTester tester,
   ) async {
     await tester.pumpWidget(
-      const _AuthFormHarness(
-        emailFieldKey: emailFieldKey,
-        passwordFieldKey: passwordFieldKey,
+      buildTestApp(
+        const _AuthFormHarness(
+          emailFieldKey: emailFieldKey,
+          passwordFieldKey: passwordFieldKey,
+        ),
       ),
     );
 
@@ -41,7 +48,7 @@ void main() {
   });
 }
 
-class _AuthFormHarness extends StatefulWidget {
+class _AuthFormHarness extends ConsumerWidget {
   const _AuthFormHarness({
     required this.emailFieldKey,
     required this.passwordFieldKey,
@@ -51,34 +58,23 @@ class _AuthFormHarness extends StatefulWidget {
   final Key passwordFieldKey;
 
   @override
-  State<_AuthFormHarness> createState() => _AuthFormHarnessState();
-}
-
-class _AuthFormHarnessState extends State<_AuthFormHarness> {
-  bool isUserEnabled = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return buildTestApp(
-      Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            EmailTextField(key: widget.emailFieldKey),
-            const SizedBox(height: 16),
-            PasswordTextField(key: widget.passwordFieldKey),
-            const SizedBox(height: 16),
-            ToggleButton(
-              type: RoleEnum.user,
-              value: isUserEnabled,
-              onChanged: (value) {
-                setState(() {
-                  isUserEnabled = value;
-                });
-              },
-            ),
-          ],
-        ),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isUserEnabled = ref.watch(_authHarnessToggleProvider);
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          EmailTextField(key: emailFieldKey),
+          const SizedBox(height: 16),
+          PasswordTextField(key: passwordFieldKey),
+          const SizedBox(height: 16),
+          ToggleButton(
+            type: RoleEnum.user,
+            value: isUserEnabled,
+            onChanged: (value) =>
+                ref.read(_authHarnessToggleProvider.notifier).state = value,
+          ),
+        ],
       ),
     );
   }

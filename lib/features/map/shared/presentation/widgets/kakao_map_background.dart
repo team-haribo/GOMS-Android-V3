@@ -37,6 +37,13 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   @override
   void didUpdateWidget(covariant KakaoMapBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.focusPlace?.name != widget.focusPlace?.name ||
+        oldWidget.focusPlace?.address != widget.focusPlace?.address ||
+        oldWidget.places.length != widget.places.length ||
+        oldWidget.routePath.length != widget.routePath.length) {
+      ref.read(kakaoMapBackgroundControllerProvider(_mapId).notifier).state =
+          _controller;
+    }
     if (KakaoMapRuntime.instance.isMapAvailable) {
       _renderMapObjects();
     }
@@ -175,6 +182,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   @override
   Widget build(BuildContext context) {
     final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
+    final controller = ref.watch(kakaoMapBackgroundControllerProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
       return Center(
@@ -209,9 +217,10 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
               if (!mounted) {
                 return;
               }
-              setState(() {
-                _controller = controller;
-              });
+              _controller = controller;
+              ref
+                  .read(kakaoMapBackgroundControllerProvider(_mapId).notifier)
+                  .state = controller;
               debugPrint('KakaoMapBackground onMapReady');
               _renderMapObjects();
             },
@@ -221,7 +230,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
             },
           ),
         ),
-        if (_controller == null && errorMessage == null)
+        if (controller == null && errorMessage == null)
           const Positioned.fill(
             child: Center(
               child: CircularProgressIndicator(),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -14,7 +13,22 @@ import 'package:goms/features/report/presentation/providers/admin_report_provide
 import 'package:intl/intl.dart';
 
 final _reportResolveSubmittingProvider =
-    StateProvider.autoDispose.family<bool, int>((ref, reportId) => false);
+    NotifierProvider.autoDispose.family<
+      _ReportResolveSubmittingNotifier,
+      bool,
+      int
+    >(_ReportResolveSubmittingNotifier.new);
+
+class _ReportResolveSubmittingNotifier extends Notifier<bool> {
+  _ReportResolveSubmittingNotifier(this.reportId);
+
+  final int reportId;
+
+  @override
+  bool build() => false;
+
+  void setSubmitting(bool value) => state = value;
+}
 
 class AdminReportDetailScreen extends ConsumerStatefulWidget {
   const AdminReportDetailScreen({
@@ -168,8 +182,9 @@ class _AdminReportDetailScreenState
   }
 
   Future<void> _resolve(ReportStatus status) async {
-    ref.read(_reportResolveSubmittingProvider(widget.reportId).notifier).state =
-        true;
+    ref
+        .read(_reportResolveSubmittingProvider(widget.reportId).notifier)
+        .setSubmitting(true);
     try {
       await ref.read(pendingReportsProvider.notifier).resolve(
             reportId: widget.reportId,
@@ -192,7 +207,7 @@ class _AdminReportDetailScreenState
     } finally {
       ref
           .read(_reportResolveSubmittingProvider(widget.reportId).notifier)
-          .state = false;
+          .setSubmitting(false);
     }
   }
 }

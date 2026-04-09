@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/router/route_path.dart';
@@ -20,9 +19,37 @@ import 'package:goms/features/report/presentation/widgets/report_filter_bottom_s
 import 'package:intl/intl.dart';
 
 final _reportSearchQueryProvider =
-    StateProvider.autoDispose.family<String, Object>((ref, key) => '');
+    NotifierProvider.autoDispose.family<_ReportSearchQueryNotifier, String, Object>(
+      _ReportSearchQueryNotifier.new,
+    );
 final _reportStatusFilterProvider =
-    StateProvider.autoDispose.family<ReportStatus?, Object>((ref, key) => null);
+    NotifierProvider.autoDispose.family<
+      _ReportStatusFilterNotifier,
+      ReportStatus?,
+      Object
+    >(_ReportStatusFilterNotifier.new);
+
+class _ReportSearchQueryNotifier extends Notifier<String> {
+  _ReportSearchQueryNotifier(this.key);
+
+  final Object key;
+
+  @override
+  String build() => '';
+
+  void setQuery(String value) => state = value;
+}
+
+class _ReportStatusFilterNotifier extends Notifier<ReportStatus?> {
+  _ReportStatusFilterNotifier(this.key);
+
+  final Object key;
+
+  @override
+  ReportStatus? build() => null;
+
+  void setStatus(ReportStatus? value) => state = value;
+}
 
 class AdminReportListScreen extends ConsumerStatefulWidget {
   const AdminReportListScreen({super.key});
@@ -71,18 +98,18 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
             reportStatusFilter: reportStatusFilter,
             onResetFilter: () => ref
                 .read(_reportStatusFilterProvider(_providerKey).notifier)
-                .state = null,
+                .setStatus(null),
             onApplyFilter: (selection) => ref
                 .read(_reportStatusFilterProvider(_providerKey).notifier)
-                .state = selection.reportStatus,
+                .setStatus(selection.reportStatus),
           ),
           AppGap.v24,
           SearchStudentField(
             controller: _searchController,
             hintText: '학생 검색',
-            onChanged: (value) =>
-                ref.read(_reportSearchQueryProvider(_providerKey).notifier).state =
-                    value,
+            onChanged: (value) => ref
+                .read(_reportSearchQueryProvider(_providerKey).notifier)
+                .setQuery(value),
           ),
           AppGap.v16,
           Text(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
@@ -9,7 +8,16 @@ import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 import '../test_app.dart';
 
 final _authHarnessToggleProvider =
-    StateProvider.autoDispose<bool>((ref) => false);
+    NotifierProvider.autoDispose<_AuthHarnessToggleNotifier, bool>(
+      _AuthHarnessToggleNotifier.new,
+    );
+
+class _AuthHarnessToggleNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+
+  void setEnabled(bool value) => state = value;
+}
 
 void main() {
   const emailFieldKey = Key('email_field');
@@ -72,7 +80,7 @@ class _AuthFormHarness extends ConsumerWidget {
             type: RoleEnum.user,
             value: isUserEnabled,
             onChanged: (value) =>
-                ref.read(_authHarnessToggleProvider.notifier).state = value,
+                ref.read(_authHarnessToggleProvider.notifier).setEnabled(value),
           ),
         ],
       ),

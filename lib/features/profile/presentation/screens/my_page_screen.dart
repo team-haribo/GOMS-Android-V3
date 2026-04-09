@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/network/network_exception.dart';
@@ -28,7 +27,22 @@ import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 
 final _profileImageUploadingProvider =
-    StateProvider.autoDispose.family<bool, Object>((ref, key) => false);
+    NotifierProvider.autoDispose.family<
+      _ProfileImageUploadingNotifier,
+      bool,
+      Object
+    >(_ProfileImageUploadingNotifier.new);
+
+class _ProfileImageUploadingNotifier extends Notifier<bool> {
+  _ProfileImageUploadingNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setUploading(bool value) => state = value;
+}
 
 class MyPageScreen extends ConsumerStatefulWidget {
   const MyPageScreen({super.key});
@@ -137,7 +151,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
       return;
     }
 
-    ref.read(_profileImageUploadingProvider(_providerKey).notifier).state = true;
+    ref
+        .read(_profileImageUploadingProvider(_providerKey).notifier)
+        .setUploading(true);
     try {
       final imageUrl = await ref
           .read(memberRepositoryProvider)
@@ -175,8 +191,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         SnackBar(content: Text(error.toString())),
       );
     } finally {
-      ref.read(_profileImageUploadingProvider(_providerKey).notifier).state =
-          false;
+      ref
+          .read(_profileImageUploadingProvider(_providerKey).notifier)
+          .setUploading(false);
     }
   }
 

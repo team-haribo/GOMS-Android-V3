@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
@@ -27,9 +26,22 @@ class ReportFilterSelection {
 }
 
 final _reportFilterSelectionProvider =
-    StateProvider.autoDispose.family<ReportFilterSelection, (Object, ReportFilterSelection)>(
-      (ref, args) => args.$2,
-    );
+    NotifierProvider.autoDispose.family<
+      _ReportFilterSelectionNotifier,
+      ReportFilterSelection,
+      (Object, ReportFilterSelection)
+    >(_ReportFilterSelectionNotifier.new);
+
+class _ReportFilterSelectionNotifier extends Notifier<ReportFilterSelection> {
+  _ReportFilterSelectionNotifier(this.args);
+
+  final (Object, ReportFilterSelection) args;
+
+  @override
+  ReportFilterSelection build() => args.$2;
+
+  void setSelection(ReportFilterSelection selection) => state = selection;
+}
 
 class ReportFilterBottomSheet extends ConsumerStatefulWidget {
   const ReportFilterBottomSheet({
@@ -132,15 +144,17 @@ class _ReportFilterBottomSheetState extends ConsumerState<ReportFilterBottomShee
   }
 
   void _handleReset() {
-    ref.read(_reportFilterSelectionProvider(_providerKey).notifier).state =
-        const ReportFilterSelection();
+    ref
+        .read(_reportFilterSelectionProvider(_providerKey).notifier)
+        .setSelection(const ReportFilterSelection());
     widget.onReset?.call();
     Navigator.pop(context);
   }
 
   void _updateSelection(ReportFilterSelection selection) {
-    ref.read(_reportFilterSelectionProvider(_providerKey).notifier).state =
-        selection;
+    ref
+        .read(_reportFilterSelectionProvider(_providerKey).notifier)
+        .setSelection(selection);
     _notifySelectionChanged(selection);
   }
 

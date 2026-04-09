@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -14,7 +13,20 @@ import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
 final _loginButtonEnabledProvider =
-    StateProvider.autoDispose.family<bool, Object>((ref, key) => false);
+    NotifierProvider.autoDispose.family<_LoginButtonEnabledNotifier, bool, Object>(
+      _LoginButtonEnabledNotifier.new,
+    );
+
+class _LoginButtonEnabledNotifier extends Notifier<bool> {
+  _LoginButtonEnabledNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setEnabled(bool value) => state = value;
+}
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -30,8 +42,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   late final Object _providerKey;
 
   void _onTextChanged() {
-    ref.read(_loginButtonEnabledProvider(_providerKey).notifier).state =
-        _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+    ref.read(_loginButtonEnabledProvider(_providerKey).notifier).setEnabled(
+          _emailController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty,
+        );
   }
 
   @override

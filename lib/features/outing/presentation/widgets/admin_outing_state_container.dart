@@ -9,6 +9,24 @@ import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/presentation/widgets/admin_bottom_sheet.dart';
 
+final _adminOutingStudentRoleProvider =
+    NotifierProvider.autoDispose.family<
+      _AdminOutingStudentRoleNotifier,
+      StudentRole,
+      (Object, StudentRole)
+    >(_AdminOutingStudentRoleNotifier.new);
+
+class _AdminOutingStudentRoleNotifier extends Notifier<StudentRole> {
+  _AdminOutingStudentRoleNotifier(this.args);
+
+  final (Object, StudentRole) args;
+
+  @override
+  StudentRole build() => args.$2;
+
+  void setRole(StudentRole role) => state = role;
+}
+
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final int memberId;
   final String name;
@@ -34,24 +52,21 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
 
 class _AdminOutingStateContainerState
     extends ConsumerState<AdminOutingStateContainer> {
-  late StudentRole _studentRole;
+  late final Object _providerIdentity;
+
+  (Object, StudentRole) get _providerKey =>
+      (_providerIdentity, widget.studentRole);
 
   @override
   void initState() {
     super.initState();
-    _studentRole = widget.studentRole;
-  }
-
-  @override
-  void didUpdateWidget(covariant AdminOutingStateContainer oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.studentRole != widget.studentRole) {
-      _studentRole = widget.studentRole;
-    }
+    _providerIdentity = Object();
   }
 
   @override
   Widget build(BuildContext context) {
+    final studentRole = ref.watch(_adminOutingStudentRoleProvider(_providerKey));
+
     return Container(
       color: context.backgroundColor,
       width: double.infinity,
@@ -64,17 +79,17 @@ class _AdminOutingStateContainerState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: _studentRole == StudentRole.council
+                  color: studentRole == StudentRole.council
                       ? AppColors.admin
-                      : _studentRole == StudentRole.outingBanned
+                      : studentRole == StudentRole.outingBanned
                           ? AppColors.negative
                           : Colors.transparent,
                   width: 4,
                 ),
               ),
               child: ProfileAvatar(
-                radius: _studentRole == StudentRole.outingBanned ||
-                        _studentRole == StudentRole.council
+                radius: studentRole == StudentRole.outingBanned ||
+                        studentRole == StudentRole.council
                     ? 22
                     : 24,
                 imageUrl: widget.profileImageUrl,
@@ -90,9 +105,9 @@ class _AdminOutingStateContainerState
               Text(
                 widget.name,
                 style: AppTextStyles.text1.copyWith(
-                  color: _studentRole == StudentRole.outingBanned
+                  color: studentRole == StudentRole.outingBanned
                       ? AppColors.negative
-                      : _studentRole == StudentRole.council
+                      : studentRole == StudentRole.council
                           ? AppColors.admin
                           : context.sub1Color,
                 ),
@@ -123,11 +138,15 @@ class _AdminOutingStateContainerState
                   backgroundColor: context.surfaceColor,
                   builder: (context) => AdminBottomSheet(
                     memberId: widget.memberId,
-                    studentRole: _studentRole,
+                    studentRole: studentRole,
                     onRoleChanged: (newRole) {
-                      setState(() {
-                        _studentRole = newRole;
-                      });
+                      ref
+                          .read(
+                            _adminOutingStudentRoleProvider(
+                              _providerKey,
+                            ).notifier,
+                          )
+                          .setRole(newRole);
                     },
                   ),
                 );

@@ -14,14 +14,15 @@ class ViewMoreUsers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 51,
-      height: 24,
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 24),
       child: ElevatedButton(
         onPressed: () {
           context.push(path);
         },
         style: ElevatedButton.styleFrom(
+          minimumSize: const Size(0, 24),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           backgroundColor: context.surfaceColor,
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
           shape: RoundedRectangleBorder(

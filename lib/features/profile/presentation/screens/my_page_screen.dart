@@ -26,6 +26,24 @@ import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:image_picker/image_picker.dart';
 
+final _profileImageUploadingProvider =
+    NotifierProvider.autoDispose.family<
+      _ProfileImageUploadingNotifier,
+      bool,
+      Object
+    >(_ProfileImageUploadingNotifier.new);
+
+class _ProfileImageUploadingNotifier extends Notifier<bool> {
+  _ProfileImageUploadingNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setUploading(bool value) => state = value;
+}
+
 class MyPageScreen extends ConsumerStatefulWidget {
   const MyPageScreen({super.key});
 
@@ -34,7 +52,13 @@ class MyPageScreen extends ConsumerStatefulWidget {
 }
 
 class _MyPageScreenState extends ConsumerState<MyPageScreen> {
-  bool _isUploadingProfileImage = false;
+  late final Object _providerKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _providerKey = Object();
+  }
 
   void _showThemePicker(BuildContext context, AppThemeOption current) {
     showCupertinoModalPopup<void>(
@@ -114,7 +138,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
   }
 
   Future<void> _pickAndUploadProfileImage() async {
-    if (_isUploadingProfileImage) {
+    if (ref.read(_profileImageUploadingProvider(_providerKey))) {
       return;
     }
 
@@ -127,7 +151,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
       return;
     }
 
-    setState(() => _isUploadingProfileImage = true);
+    ref
+        .read(_profileImageUploadingProvider(_providerKey).notifier)
+        .setUploading(true);
     try {
       final imageUrl = await ref
           .read(memberRepositoryProvider)
@@ -165,14 +191,17 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         SnackBar(content: Text(error.toString())),
       );
     } finally {
-      if (mounted) {
-        setState(() => _isUploadingProfileImage = false);
-      }
+      ref
+          .read(_profileImageUploadingProvider(_providerKey).notifier)
+          .setUploading(false);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isUploadingProfileImage = ref.watch(
+      _profileImageUploadingProvider(_providerKey),
+    );
     final role = ref.watch(roleProvider);
     final currentMember = switch (ref.watch(currentMemberProvider)) {
       AsyncData(:final value) => value,
@@ -213,7 +242,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               name: currentMember?.name ?? '정보 없음',
               profileImageUrl: currentMember?.profileImageUrl ?? '',
               onTapProfileImage: _pickAndUploadProfileImage,
-              isUploadingProfileImage: _isUploadingProfileImage,
+              isUploadingProfileImage: isUploadingProfileImage,
               grade: currentMember?.grade,
               major: currentMember?.department.name.toUpperCase(),
               lateCount: myOutingStatus?.lateCount,

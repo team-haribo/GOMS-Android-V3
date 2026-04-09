@@ -12,6 +12,24 @@ import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
 import 'package:intl/intl.dart';
 
+final _reportResolveSubmittingProvider =
+    NotifierProvider.autoDispose.family<
+      _ReportResolveSubmittingNotifier,
+      bool,
+      int
+    >(_ReportResolveSubmittingNotifier.new);
+
+class _ReportResolveSubmittingNotifier extends Notifier<bool> {
+  _ReportResolveSubmittingNotifier(this.reportId);
+
+  final int reportId;
+
+  @override
+  bool build() => false;
+
+  void setSubmitting(bool value) => state = value;
+}
+
 class AdminReportDetailScreen extends ConsumerStatefulWidget {
   const AdminReportDetailScreen({
     super.key,
@@ -27,17 +45,18 @@ class AdminReportDetailScreen extends ConsumerStatefulWidget {
 
 class _AdminReportDetailScreenState
     extends ConsumerState<AdminReportDetailScreen> {
-  bool _isSubmitting = false;
-
   @override
   Widget build(BuildContext context) {
     final detailAsync = ref.watch(reportDetailProvider(widget.reportId));
+    final isSubmitting = ref.watch(
+      _reportResolveSubmittingProvider(widget.reportId),
+    );
 
     return BaseScaffold(
       showAppBar: true,
       role: RoleEnum.admin,
       body: detailAsync.when(
-        data: (detail) => _buildContent(context, detail),
+        data: (detail) => _buildContent(context, detail, isSubmitting),
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(
           child: Column(
@@ -64,7 +83,11 @@ class _AdminReportDetailScreenState
     );
   }
 
-  Widget _buildContent(BuildContext context, ReportDetailEntity detail) {
+  Widget _buildContent(
+    BuildContext context,
+    ReportDetailEntity detail,
+    bool isSubmitting,
+  ) {
     final reportCreatedAt = _formatDateTime(detail.reportCreatedAt);
     final reviewCreatedAt = _formatDateTime(detail.reviewCreatedAt);
 
@@ -131,7 +154,7 @@ class _AdminReportDetailScreenState
                   label: '기각',
                   backgroundColor: context.buttonColor,
                   foregroundColor: context.sub2Color,
-                  onPressed: _isSubmitting
+                  onPressed: isSubmitting
                       ? null
                       : () => _resolve(ReportStatus.rejected),
                 ),
@@ -139,10 +162,10 @@ class _AdminReportDetailScreenState
               AppGap.h12,
               Expanded(
                 child: _ActionButton(
-                  label: _isSubmitting ? '처리 중...' : '리뷰 삭제',
+                  label: isSubmitting ? '처리 중...' : '리뷰 삭제',
                   backgroundColor: AppColors.negative,
                   foregroundColor: Colors.white,
-                  onPressed: _isSubmitting
+                  onPressed: isSubmitting
                       ? null
                       : () => _resolve(ReportStatus.approved),
                 ),
@@ -159,7 +182,9 @@ class _AdminReportDetailScreenState
   }
 
   Future<void> _resolve(ReportStatus status) async {
-    setState(() => _isSubmitting = true);
+    ref
+        .read(_reportResolveSubmittingProvider(widget.reportId).notifier)
+        .setSubmitting(true);
     try {
       await ref.read(pendingReportsProvider.notifier).resolve(
             reportId: widget.reportId,
@@ -180,9 +205,9 @@ class _AdminReportDetailScreenState
         SnackBar(content: Text(error.message)),
       );
     } finally {
-      if (mounted) {
-        setState(() => _isSubmitting = false);
-      }
+      ref
+          .read(_reportResolveSubmittingProvider(widget.reportId).notifier)
+          .setSubmitting(false);
     }
   }
 }

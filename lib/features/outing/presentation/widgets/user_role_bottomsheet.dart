@@ -18,6 +18,74 @@ import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 
+class _UserRoleBottomSheetStateModel {
+  const _UserRoleBottomSheetStateModel({
+    required this.isOutingBanned,
+    required this.isCouncil,
+    required this.isOuting,
+    required this.isSubmitting,
+  });
+
+  factory _UserRoleBottomSheetStateModel.fromRole(StudentRole role) {
+    return _UserRoleBottomSheetStateModel(
+      isOutingBanned: role == StudentRole.outingBanned,
+      isCouncil: role == StudentRole.council,
+      isOuting: false,
+      isSubmitting: false,
+    );
+  }
+
+  final bool isOutingBanned;
+  final bool isCouncil;
+  final bool isOuting;
+  final bool isSubmitting;
+
+  StudentRole get currentRole {
+    if (isCouncil) return StudentRole.council;
+    if (isOutingBanned) return StudentRole.outingBanned;
+    return StudentRole.student;
+  }
+
+  _UserRoleBottomSheetStateModel copyWith({
+    bool? isOutingBanned,
+    bool? isCouncil,
+    bool? isOuting,
+    bool? isSubmitting,
+  }) {
+    return _UserRoleBottomSheetStateModel(
+      isOutingBanned: isOutingBanned ?? this.isOutingBanned,
+      isCouncil: isCouncil ?? this.isCouncil,
+      isOuting: isOuting ?? this.isOuting,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
+    );
+  }
+}
+
+final _userRoleBottomSheetStateProvider =
+    NotifierProvider.autoDispose.family<
+      _UserRoleBottomSheetStateNotifier,
+      _UserRoleBottomSheetStateModel,
+      (Object, StudentRole)
+    >(_UserRoleBottomSheetStateNotifier.new);
+
+class _UserRoleBottomSheetStateNotifier
+    extends Notifier<_UserRoleBottomSheetStateModel> {
+  _UserRoleBottomSheetStateNotifier(this.args);
+
+  final (Object, StudentRole) args;
+
+  @override
+  _UserRoleBottomSheetStateModel build() =>
+      _UserRoleBottomSheetStateModel.fromRole(args.$2);
+
+  void update(
+    _UserRoleBottomSheetStateModel Function(_UserRoleBottomSheetStateModel state)
+        transform,
+  ) {
+    state = transform(state);
+  }
+}
+
 class UserRoleBottomSheet extends ConsumerStatefulWidget {
   const UserRoleBottomSheet({
     super.key,
@@ -38,44 +106,41 @@ class UserRoleBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
-  bool isOutingBanned = false;
-  bool isCouncil = false;
-  bool isOuting = false;
-  bool _isSubmitting = false;
+  late final Object _providerIdentity;
 
-  StudentRole get _currentRole {
-    if (isCouncil) return StudentRole.council;
-    if (isOutingBanned) return StudentRole.outingBanned;
-    return StudentRole.student;
-  }
+  (Object, StudentRole) get _providerKey =>
+      (_providerIdentity, widget.studentRole);
 
   @override
   void initState() {
     super.initState();
-    isOutingBanned = widget.studentRole == StudentRole.outingBanned;
-    isCouncil = widget.studentRole == StudentRole.council;
+    _providerIdentity = Object();
   }
 
   @override
   Widget build(BuildContext context) {
+    final uiState = ref.watch(_userRoleBottomSheetStateProvider(_providerKey));
+
     return CommonBottomSheet(
       title: '유저 권한 변경',
       maxHeightRatio: widget.maxHeightRatio,
-      onClose: _isSubmitting ? null : () => Navigator.pop(context),
+      onClose: uiState.isSubmitting ? null : () => Navigator.pop(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (_currentRole == StudentRole.student)
+          if (uiState.currentRole == StudentRole.student)
             _UserRoleBottomSheetItem(
-              title: isOuting ? '강제외출 복귀' : '강제외출',
-              description: isOuting ? '학생을 강제외출 복귀를 시켜요' : '학생을 강제외출 시켜요',
+              title: uiState.isOuting ? '강제외출 복귀' : '강제외출',
+              description: uiState.isOuting
+                  ? '학생을 강제외출 복귀를 시켜요'
+                  : '학생을 강제외출 시켜요',
               trailing: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: IconButton(
-                  onPressed: _isSubmitting
+                  onPressed: uiState.isSubmitting
                       ? null
                       : () {
-                          if (isOuting) {
+                          if (uiState.isOuting) {
                             forcedOutingRelease(
                               context: context,
                               title: '강제외출 복귀',
@@ -91,14 +156,14 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
                             );
                           }
                         },
-                  icon: isOuting
+                  icon: uiState.isOuting
                       ? AppIcons.forceReturn()
                       : AppIcons.forcedOuting(),
                 ),
               ),
             ),
-          if (_currentRole == StudentRole.student ||
-              _currentRole == StudentRole.outingBanned) ...[
+          if (uiState.currentRole == StudentRole.student ||
+              uiState.currentRole == StudentRole.outingBanned) ...[
             AppGap.v12,
             _UserRoleBottomSheetItem(
               title: '외출금지',
@@ -107,11 +172,11 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ToggleButton(
                   type: RoleEnum.admin,
-                  value: isOutingBanned,
-                  onChanged: _isSubmitting
+                  value: uiState.isOutingBanned,
+                  onChanged: uiState.isSubmitting
                       ? (_) {}
                       : (value) {
-                          if (isOutingBanned) {
+                          if (uiState.isOutingBanned) {
                             bannedOutingRelease(
                               context: context,
                               title: '외출금지',
@@ -143,8 +208,8 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: ToggleButton(
                 type: RoleEnum.admin,
-                value: isCouncil,
-                onChanged: _isSubmitting ? (_) {} : _updateCouncil,
+                value: uiState.isCouncil,
+                onChanged: uiState.isSubmitting ? (_) {} : _updateCouncil,
               ),
             ),
           ),
@@ -166,12 +231,12 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
               memberId: widget.memberId,
               studentRole: nextRole,
             );
-        setState(() {
-          isCouncil = value;
-          if (value) {
-            isOutingBanned = false;
-          }
-        });
+        _updateUiState(
+          (state) => state.copyWith(
+            isCouncil: value,
+            isOutingBanned: value ? false : state.isOutingBanned,
+          ),
+        );
         widget.onRoleChanged(nextRole);
       },
     );
@@ -192,12 +257,12 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
               memberId: widget.memberId,
               studentRole: nextRole,
             );
-        setState(() {
-          isOutingBanned = !isAllowed;
-          if (!isAllowed) {
-            isCouncil = false;
-          }
-        });
+        _updateUiState(
+          (state) => state.copyWith(
+            isOutingBanned: !isAllowed,
+            isCouncil: isAllowed ? state.isCouncil : false,
+          ),
+        );
         widget.onRoleChanged(nextRole);
       },
     );
@@ -210,9 +275,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
           ),
       onSuccess: () {
         if (!mounted) return;
-        setState(() {
-          isOuting = true;
-        });
+        _updateUiState((state) => state.copyWith(isOuting: true));
       },
     );
   }
@@ -224,9 +287,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
           ),
       onSuccess: () {
         if (!mounted) return;
-        setState(() {
-          isOuting = false;
-        });
+        _updateUiState((state) => state.copyWith(isOuting: false));
       },
     );
   }
@@ -235,11 +296,11 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
     Future<void> Function() action, {
     VoidCallback? onSuccess,
   }) async {
-    if (_isSubmitting) return;
+    if (ref.read(_userRoleBottomSheetStateProvider(_providerKey)).isSubmitting) {
+      return;
+    }
 
-    setState(() {
-      _isSubmitting = true;
-    });
+    _updateUiState((state) => state.copyWith(isSubmitting: true));
 
     try {
       await action();
@@ -249,11 +310,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
     } catch (_) {
       _showError('요청 처리 중 오류가 발생했습니다.');
     } finally {
-      if (mounted) {
-        setState(() {
-          _isSubmitting = false;
-        });
-      }
+      _updateUiState((state) => state.copyWith(isSubmitting: false));
     }
   }
 
@@ -261,6 +318,15 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       SnackBar(content: Text(message)),
     );
+  }
+  void _updateUiState(
+    _UserRoleBottomSheetStateModel Function(_UserRoleBottomSheetStateModel state)
+        transform,
+  ) {
+    final notifier = ref.read(
+      _userRoleBottomSheetStateProvider(_providerKey).notifier,
+    );
+    notifier.update(transform);
   }
 }
 

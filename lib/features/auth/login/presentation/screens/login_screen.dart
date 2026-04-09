@@ -12,6 +12,22 @@ import 'package:goms/features/auth/login/presentation/providers/login_provider.d
 import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
+final _loginButtonEnabledProvider =
+    NotifierProvider.autoDispose.family<_LoginButtonEnabledNotifier, bool, Object>(
+      _LoginButtonEnabledNotifier.new,
+    );
+
+class _LoginButtonEnabledNotifier extends Notifier<bool> {
+  _LoginButtonEnabledNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setEnabled(bool value) => state = value;
+}
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -23,17 +39,22 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   late final ProviderSubscription<LoginState> _loginSubscription;
+  late final Object _providerKey;
 
   void _onTextChanged() {
-    if (!mounted) return;
-    setState(() {});
+    ref.read(_loginButtonEnabledProvider(_providerKey).notifier).setEnabled(
+          _emailController.text.isNotEmpty &&
+              _passwordController.text.isNotEmpty,
+        );
   }
 
   @override
   void initState() {
     super.initState();
+    _providerKey = Object();
     _emailController.addListener(_onTextChanged);
     _passwordController.addListener(_onTextChanged);
+    _onTextChanged();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(loginProvider.notifier).reset();
     });
@@ -77,9 +98,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  bool get _isButtonEnabled =>
-      _emailController.text.isNotEmpty && _passwordController.text.isNotEmpty;
-
   void _handleLogin() {
     ref
         .read(loginProvider.notifier)
@@ -94,11 +112,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     final loginState = ref.watch(loginProvider);
     final isLoading = loginState.status == LoginStatus.loading;
+    final isButtonEnabled = ref.watch(_loginButtonEnabledProvider(_providerKey));
 
     return AuthBaseScreen(
       title: '로그인',
       confirmText: '로그인',
-      isConfirmEnabled: _isButtonEnabled,
+      isConfirmEnabled: isButtonEnabled,
       isLoading: isLoading,
       onConfirm: _handleLogin,
       children: [

@@ -15,6 +15,27 @@ import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
 import 'package:goms/features/qr/presentation/providers/issued_qr_provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+final _qrRemainingProvider =
+    StreamProvider.autoDispose.family<Duration, IssuedQrEntity>((ref, value) async* {
+      Duration remaining() {
+        const qrLifetime = Duration(minutes: 5);
+        final serverExpiresAt = DateTime.fromMillisecondsSinceEpoch(
+          value.exp * 1000,
+          isUtc: true,
+        ).toLocal();
+        final clientExpiresAt = value.issuedAt.add(qrLifetime);
+        final expiresAt = serverExpiresAt.isBefore(clientExpiresAt)
+            ? serverExpiresAt
+            : clientExpiresAt;
+        final diff = expiresAt.difference(DateTime.now());
+        return diff.isNegative ? Duration.zero : diff;
+      }
+
+      yield remaining();
+      final timer = Stream.periodic(const Duration(seconds: 1), (_) => remaining());
+      yield* timer;
+    });
+
 class QrIssueScreen extends ConsumerWidget {
   const QrIssueScreen({super.key});
 
@@ -56,7 +77,7 @@ class QrIssueScreen extends ConsumerWidget {
   }
 }
 
-class _QrIssuedContent extends StatefulWidget {
+class _QrIssuedContent extends ConsumerWidget {
   const _QrIssuedContent({
     required this.value,
     required this.onRefresh,
@@ -65,75 +86,19 @@ class _QrIssuedContent extends StatefulWidget {
   final IssuedQrEntity value;
   final VoidCallback onRefresh;
 
-  @override
-  State<_QrIssuedContent> createState() => _QrIssuedContentState();
-}
-
-class _QrIssuedContentState extends State<_QrIssuedContent> {
-  static const Duration _qrLifetime = Duration(minutes: 5);
-
-  Timer? _timer;
-  late Duration _remaining;
-
-  DateTime get _expiresAt {
-    final serverExpiresAt = DateTime.fromMillisecondsSinceEpoch(
-      widget.value.exp * 1000,
-      isUtc: true,
-    ).toLocal();
-    final clientExpiresAt = widget.value.issuedAt.add(_qrLifetime);
-
-    return serverExpiresAt.isBefore(clientExpiresAt)
-        ? serverExpiresAt
-        : clientExpiresAt;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _remaining = _calculateRemaining();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (!mounted) return;
-      setState(() {
-        _remaining = _calculateRemaining();
-      });
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant _QrIssuedContent oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.value.uuid != widget.value.uuid ||
-        oldWidget.value.exp != widget.value.exp ||
-        oldWidget.value.issuedAt != widget.value.issuedAt) {
-      _remaining = _calculateRemaining();
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  Duration _calculateRemaining() {
-    final diff = _expiresAt.difference(DateTime.now());
-    if (diff.isNegative) {
-      return Duration.zero;
-    }
-    return diff;
-  }
-
-  String get _remainingText {
-    final minutes = _remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = _remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+  String _remainingText(WidgetRef ref) {
+    final remaining =
+        ref.watch(_qrRemainingProvider(value)).asData?.value ?? Duration.zero;
+    final minutes = remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final seconds = remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$minutes분 $seconds초';
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final qrPayload = jsonEncode({
-      'uuid': widget.value.uuid,
-      'exp': widget.value.exp,
+      'uuid': value.uuid,
+      'exp': value.exp,
     });
 
     return LayoutBuilder(
@@ -191,7 +156,7 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
                     ),
                     AppGap.v4,
                     Text(
-                      _remainingText,
+                      _remainingText(ref),
                       style: AppTextStyles.title2.withColor(context.mainTextColor),
                       textAlign: TextAlign.center,
                     ),
@@ -199,7 +164,7 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
                 ),
               ),
             ),
-            ConfirmButton(text: 'QR 다시 발급하기', onPressed: widget.onRefresh),
+            ConfirmButton(text: 'QR 다시 발급하기', onPressed: onRefresh),
           ],
         );
       },

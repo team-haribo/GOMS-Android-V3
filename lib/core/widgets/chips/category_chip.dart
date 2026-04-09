@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
-class CategoryChip extends StatefulWidget {
+final _categoryChipSelectionProvider =
+    NotifierProvider.autoDispose.family<
+      _CategoryChipSelectionNotifier,
+      bool,
+      Object
+    >(_CategoryChipSelectionNotifier.new);
+
+class _CategoryChipSelectionNotifier extends Notifier<bool> {
+  _CategoryChipSelectionNotifier(this.key);
+
+  final Object key;
+
+  @override
+  bool build() => false;
+
+  void setSelected(bool value) => state = value;
+}
+
+class CategoryChip extends ConsumerStatefulWidget {
   final String category;
   final bool? selected;
   final ValueChanged<bool>? onChanged;
@@ -16,16 +35,24 @@ class CategoryChip extends StatefulWidget {
   });
 
   @override
-  State<CategoryChip> createState() => _CategoryChipState();
+  ConsumerState<CategoryChip> createState() => _CategoryChipState();
 }
 
-class _CategoryChipState extends State<CategoryChip> {
-  bool isSelected = false;
+class _CategoryChipState extends ConsumerState<CategoryChip> {
+  late final Object _providerKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _providerKey = Object();
+  }
 
   @override
   Widget build(BuildContext context) {
     final isControlled = widget.selected != null;
-    final selected = isControlled ? widget.selected! : isSelected;
+    final selected = isControlled
+        ? widget.selected!
+        : ref.watch(_categoryChipSelectionProvider(_providerKey));
 
     return GestureDetector(
       onTap: () {
@@ -34,7 +61,9 @@ class _CategoryChipState extends State<CategoryChip> {
           widget.onChanged?.call(next);
           return;
         }
-        setState(() => isSelected = next);
+        ref
+            .read(_categoryChipSelectionProvider(_providerKey).notifier)
+            .setSelected(next);
         widget.onChanged?.call(next);
       },
       child: Container(

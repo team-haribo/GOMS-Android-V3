@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
@@ -13,9 +15,23 @@ class ReportFilterSelection {
   });
 
   final ReportStatus? reportStatus;
+
+  ReportFilterSelection copyWith({
+    ReportStatus? reportStatus,
+    bool clearReportStatus = false,
+  }) {
+    return ReportFilterSelection(
+      reportStatus: clearReportStatus ? null : (reportStatus ?? this.reportStatus),
+    );
+  }
 }
 
-class ReportFilterBottomSheet extends StatefulWidget {
+final _reportFilterSelectionProvider =
+    StateProvider.autoDispose.family<ReportFilterSelection, (Object, ReportFilterSelection)>(
+      (ref, args) => args.$2,
+    );
+
+class ReportFilterBottomSheet extends ConsumerStatefulWidget {
   const ReportFilterBottomSheet({
     super.key,
     this.initialSelection = const ReportFilterSelection(),
@@ -28,21 +44,26 @@ class ReportFilterBottomSheet extends StatefulWidget {
   final VoidCallback? onReset;
 
   @override
-  State<ReportFilterBottomSheet> createState() =>
+  ConsumerState<ReportFilterBottomSheet> createState() =>
       _ReportFilterBottomSheetState();
 }
 
-class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
-  ReportStatus? _reportStatus;
+class _ReportFilterBottomSheetState extends ConsumerState<ReportFilterBottomSheet> {
+  late final Object _providerIdentity;
+
+  (Object, ReportFilterSelection) get _providerKey =>
+      (_providerIdentity, widget.initialSelection);
 
   @override
   void initState() {
     super.initState();
-    _reportStatus = widget.initialSelection.reportStatus;
+    _providerIdentity = Object();
   }
 
   @override
   Widget build(BuildContext context) {
+    final selection = ref.watch(_reportFilterSelectionProvider(_providerKey));
+
     return CommonBottomSheet(
       title: '필터',
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -62,22 +83,26 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
               Expanded(
                 child: CategoryChip(
                   category: '처리전',
-                  selected: _reportStatus == ReportStatus.pending,
-                  onChanged: (selected) => setState(() {
-                    _reportStatus = selected ? ReportStatus.pending : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.reportStatus == ReportStatus.pending,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      reportStatus: selected ? ReportStatus.pending : null,
+                      clearReportStatus: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: '처리완료',
-                  selected: _reportStatus == ReportStatus.approved,
-                  onChanged: (selected) => setState(() {
-                    _reportStatus = selected ? ReportStatus.approved : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.reportStatus == ReportStatus.approved,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      reportStatus: selected ? ReportStatus.approved : null,
+                      clearReportStatus: !selected,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -107,16 +132,19 @@ class _ReportFilterBottomSheetState extends State<ReportFilterBottomSheet> {
   }
 
   void _handleReset() {
-    setState(() {
-      _reportStatus = null;
-    });
+    ref.read(_reportFilterSelectionProvider(_providerKey).notifier).state =
+        const ReportFilterSelection();
     widget.onReset?.call();
     Navigator.pop(context);
   }
 
-  void _notifySelectionChanged() {
-    widget.onApply?.call(
-      ReportFilterSelection(reportStatus: _reportStatus),
-    );
+  void _updateSelection(ReportFilterSelection selection) {
+    ref.read(_reportFilterSelectionProvider(_providerKey).notifier).state =
+        selection;
+    _notifySelectionChanged(selection);
+  }
+
+  void _notifySelectionChanged(ReportFilterSelection selection) {
+    widget.onApply?.call(selection);
   }
 }

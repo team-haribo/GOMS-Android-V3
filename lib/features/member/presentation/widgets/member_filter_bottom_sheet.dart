@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
@@ -20,9 +22,35 @@ class MemberFilterSheetSelection {
   final String? department;
   final String? status;
   final String? role;
+
+  MemberFilterSheetSelection copyWith({
+    int? grade,
+    String? gender,
+    String? department,
+    String? status,
+    String? role,
+    bool clearGrade = false,
+    bool clearGender = false,
+    bool clearDepartment = false,
+    bool clearStatus = false,
+    bool clearRole = false,
+  }) {
+    return MemberFilterSheetSelection(
+      grade: clearGrade ? null : (grade ?? this.grade),
+      gender: clearGender ? null : (gender ?? this.gender),
+      department: clearDepartment ? null : (department ?? this.department),
+      status: clearStatus ? null : (status ?? this.status),
+      role: clearRole ? null : (role ?? this.role),
+    );
+  }
 }
 
-class MemberFilterBottomSheet extends StatefulWidget {
+final _memberFilterSelectionProvider =
+    StateProvider.autoDispose.family<MemberFilterSheetSelection, (Object, MemberFilterSheetSelection)>(
+      (ref, args) => args.$2,
+    );
+
+class MemberFilterBottomSheet extends ConsumerStatefulWidget {
   const MemberFilterBottomSheet({
     super.key,
     this.initialSelection = const MemberFilterSheetSelection(),
@@ -35,29 +63,26 @@ class MemberFilterBottomSheet extends StatefulWidget {
   final VoidCallback? onReset;
 
   @override
-  State<MemberFilterBottomSheet> createState() =>
+  ConsumerState<MemberFilterBottomSheet> createState() =>
       _MemberFilterBottomSheetState();
 }
 
-class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
-  int? _grade;
-  String? _gender;
-  String? _department;
-  String? _status;
-  String? _role;
+class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomSheet> {
+  late final Object _providerIdentity;
+
+  (Object, MemberFilterSheetSelection) get _providerKey =>
+      (_providerIdentity, widget.initialSelection);
 
   @override
   void initState() {
     super.initState();
-    _grade = widget.initialSelection.grade;
-    _gender = widget.initialSelection.gender;
-    _department = widget.initialSelection.department;
-    _status = widget.initialSelection.status;
-    _role = widget.initialSelection.role;
+    _providerIdentity = Object();
   }
 
   @override
   Widget build(BuildContext context) {
+    final selection = ref.watch(_memberFilterSelectionProvider(_providerKey));
+
     return CommonBottomSheet(
       title: '필터',
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
@@ -78,19 +103,18 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
                 child: CategoryChip(
                   category: '학생',
                   selected:
-                      _role == 'ROLE_STUDENT' && _status != 'CANNOT_OUTING',
+                      selection.role == 'ROLE_STUDENT' &&
+                      selection.status != 'CANNOT_OUTING',
                   onChanged: (selected) {
-                    setState(() {
-                      if (!selected) {
-                        _role = null;
-                      } else {
-                        _role = 'ROLE_STUDENT';
-                        if (_status == 'CANNOT_OUTING') {
-                          _status = null;
-                        }
-                      }
-                    });
-                    _notifySelectionChanged();
+                    _updateSelection(
+                      !selected
+                          ? selection.copyWith(clearRole: true)
+                          : selection.copyWith(
+                              role: 'ROLE_STUDENT',
+                              clearStatus:
+                                  selection.status == 'CANNOT_OUTING',
+                            ),
+                    );
                   },
                 ),
               ),
@@ -98,32 +122,30 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
               Expanded(
                 child: CategoryChip(
                   category: '학생회',
-                  selected: _role == 'ROLE_STUDENT_COUNCIL',
-                  onChanged: (selected) {
-                    setState(() {
-                      _role = selected ? 'ROLE_STUDENT_COUNCIL' : null;
-                      if (selected && _status == 'CANNOT_OUTING') {
-                        _status = null;
-                      }
-                    });
-                    _notifySelectionChanged();
-                  },
+                  selected: selection.role == 'ROLE_STUDENT_COUNCIL',
+                  onChanged: (selected) => _updateSelection(
+                    selected
+                        ? selection.copyWith(
+                            role: 'ROLE_STUDENT_COUNCIL',
+                            clearStatus: selection.status == 'CANNOT_OUTING',
+                          )
+                        : selection.copyWith(clearRole: true),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: '외출 금지',
-                  selected: _status == 'CANNOT_OUTING',
-                  onChanged: (selected) {
-                    setState(() {
-                      _status = selected ? 'CANNOT_OUTING' : null;
-                      if (selected) {
-                        _role = 'ROLE_STUDENT';
-                      }
-                    });
-                    _notifySelectionChanged();
-                  },
+                  selected: selection.status == 'CANNOT_OUTING',
+                  onChanged: (selected) => _updateSelection(
+                    selected
+                        ? selection.copyWith(
+                            status: 'CANNOT_OUTING',
+                            role: 'ROLE_STUDENT',
+                          )
+                        : selection.copyWith(clearStatus: true),
+                  ),
                 ),
               ),
             ],
@@ -141,33 +163,39 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
               Expanded(
                 child: CategoryChip(
                   category: '1학년',
-                  selected: _grade == 1,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 1 : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.grade == 1,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 1 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: '2학년',
-                  selected: _grade == 2,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 2 : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.grade == 2,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 2 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: '3학년',
-                  selected: _grade == 3,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 3 : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.grade == 3,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 3 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -185,22 +213,26 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
               Expanded(
                 child: CategoryChip(
                   category: '남성',
-                  selected: _gender == 'MALE',
-                  onChanged: (selected) => setState(() {
-                    _gender = selected ? 'MALE' : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.gender == 'MALE',
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      gender: selected ? 'MALE' : null,
+                      clearGender: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: '여성',
-                  selected: _gender == 'FEMALE',
-                  onChanged: (selected) => setState(() {
-                    _gender = selected ? 'FEMALE' : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.gender == 'FEMALE',
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      gender: selected ? 'FEMALE' : null,
+                      clearGender: !selected,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -218,33 +250,39 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
               Expanded(
                 child: CategoryChip(
                   category: 'sw',
-                  selected: _department == 'SW',
-                  onChanged: (selected) => setState(() {
-                    _department = selected ? 'SW' : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.department == 'SW',
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      department: selected ? 'SW' : null,
+                      clearDepartment: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: 'iot',
-                  selected: _department == 'IOT',
-                  onChanged: (selected) => setState(() {
-                    _department = selected ? 'IOT' : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.department == 'IOT',
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      department: selected ? 'IOT' : null,
+                      clearDepartment: !selected,
+                    ),
+                  ),
                 ),
               ),
               AppGap.h8,
               Expanded(
                 child: CategoryChip(
                   category: 'ai',
-                  selected: _department == 'AI',
-                  onChanged: (selected) => setState(() {
-                    _department = selected ? 'AI' : null;
-                    _notifySelectionChanged();
-                  }),
+                  selected: selection.department == 'AI',
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      department: selected ? 'AI' : null,
+                      clearDepartment: !selected,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -275,26 +313,19 @@ class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
   }
 
   void _handleReset() {
-    setState(() {
-      _grade = null;
-      _gender = null;
-      _department = null;
-      _status = null;
-      _role = null;
-    });
+    ref.read(_memberFilterSelectionProvider(_providerKey).notifier).state =
+        const MemberFilterSheetSelection();
     widget.onReset?.call();
     Navigator.pop(context);
   }
 
-  void _notifySelectionChanged() {
-    widget.onApply?.call(
-      MemberFilterSheetSelection(
-        grade: _grade,
-        gender: _gender,
-        department: _department,
-        status: _status,
-        role: _role,
-      ),
-    );
+  void _updateSelection(MemberFilterSheetSelection selection) {
+    ref.read(_memberFilterSelectionProvider(_providerKey).notifier).state =
+        selection;
+    _notifySelectionChanged(selection);
+  }
+
+  void _notifySelectionChanged(MemberFilterSheetSelection selection) {
+    widget.onApply?.call(selection);
   }
 }

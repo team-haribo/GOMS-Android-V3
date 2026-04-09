@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/router/route_path.dart';
@@ -18,6 +19,11 @@ import 'package:goms/features/report/presentation/providers/admin_report_provide
 import 'package:goms/features/report/presentation/widgets/report_filter_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
+final _reportSearchQueryProvider =
+    StateProvider.autoDispose.family<String, Object>((ref, key) => '');
+final _reportStatusFilterProvider =
+    StateProvider.autoDispose.family<ReportStatus?, Object>((ref, key) => null);
+
 class AdminReportListScreen extends ConsumerStatefulWidget {
   const AdminReportListScreen({super.key});
 
@@ -28,12 +34,12 @@ class AdminReportListScreen extends ConsumerStatefulWidget {
 
 class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
   final TextEditingController _searchController = TextEditingController();
-  String _query = '';
-  ReportStatus? _reportStatusFilter;
+  late final Object _providerKey;
 
   @override
   void initState() {
     super.initState();
+    _providerKey = Object();
     Future.microtask(() {
       ref.invalidate(pendingReportsProvider);
       ref.invalidate(resolvedReportsProvider);
@@ -52,6 +58,8 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
   Widget build(BuildContext context) {
     final pendingReportsAsync = ref.watch(pendingReportsProvider);
     final resolvedReportsAsync = ref.watch(resolvedReportsProvider);
+    final query = ref.watch(_reportSearchQueryProvider(_providerKey));
+    final reportStatusFilter = ref.watch(_reportStatusFilterProvider(_providerKey));
 
     return BaseScaffold(
       showAppBar: true,
@@ -60,23 +68,21 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ReportTile(
-            reportStatusFilter: _reportStatusFilter,
-            onResetFilter: () {
-              setState(() {
-                _reportStatusFilter = null;
-              });
-            },
-            onApplyFilter: (selection) {
-              setState(() {
-                _reportStatusFilter = selection.reportStatus;
-              });
-            },
+            reportStatusFilter: reportStatusFilter,
+            onResetFilter: () => ref
+                .read(_reportStatusFilterProvider(_providerKey).notifier)
+                .state = null,
+            onApplyFilter: (selection) => ref
+                .read(_reportStatusFilterProvider(_providerKey).notifier)
+                .state = selection.reportStatus,
           ),
           AppGap.v24,
           SearchStudentField(
             controller: _searchController,
             hintText: '학생 검색',
-            onChanged: (value) => setState(() => _query = value),
+            onChanged: (value) =>
+                ref.read(_reportSearchQueryProvider(_providerKey).notifier).state =
+                    value,
           ),
           AppGap.v16,
           Text(
@@ -97,8 +103,8 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
               child: _ReportListBody(
                 pendingReportsAsync: pendingReportsAsync,
                 resolvedReportsAsync: resolvedReportsAsync,
-                query: _query,
-                reportStatusFilter: _reportStatusFilter,
+                query: query,
+                reportStatusFilter: reportStatusFilter,
               ),
             ),
           ),

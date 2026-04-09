@@ -154,8 +154,10 @@ class _AdminLatecomerListScreenState
                             TextButton(
                               onPressed: () {
                                 ref
-                                    .read(studentCouncilLateStudentsProvider
-                                        .notifier)
+                                    .read(
+                                      studentCouncilLateStudentsProvider
+                                          .notifier,
+                                    )
                                     .reload();
                               },
                               child: const Text('다시 시도'),

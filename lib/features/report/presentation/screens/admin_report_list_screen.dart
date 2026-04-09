@@ -9,11 +9,13 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/common/base_scaffold.dart';
-import 'package:goms/core/widgets/common/text_fields/search_student.dart';
+import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
+import 'package:goms/features/report/presentation/widgets/report_filter_bottom_sheet.dart';
 import 'package:intl/intl.dart';
 
 class AdminReportListScreen extends ConsumerStatefulWidget {
@@ -27,6 +29,7 @@ class AdminReportListScreen extends ConsumerStatefulWidget {
 class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _query = '';
+  ReportStatus? _reportStatusFilter;
 
   @override
   void initState() {
@@ -56,7 +59,19 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const _ReportTile(),
+          _ReportTile(
+            reportStatusFilter: _reportStatusFilter,
+            onResetFilter: () {
+              setState(() {
+                _reportStatusFilter = null;
+              });
+            },
+            onApplyFilter: (selection) {
+              setState(() {
+                _reportStatusFilter = selection.reportStatus;
+              });
+            },
+          ),
           AppGap.v24,
           SearchStudentField(
             controller: _searchController,
@@ -83,6 +98,7 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
                 pendingReportsAsync: pendingReportsAsync,
                 resolvedReportsAsync: resolvedReportsAsync,
                 query: _query,
+                reportStatusFilter: _reportStatusFilter,
               ),
             ),
           ),
@@ -97,11 +113,13 @@ class _ReportListBody extends ConsumerWidget {
     required this.pendingReportsAsync,
     required this.resolvedReportsAsync,
     required this.query,
+    required this.reportStatusFilter,
   });
 
   final AsyncValue<List<ReportSummaryEntity>> pendingReportsAsync;
   final AsyncValue<List<ReportSummaryEntity>> resolvedReportsAsync;
   final String query;
+  final ReportStatus? reportStatusFilter;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,18 +169,21 @@ class _ReportListBody extends ConsumerWidget {
       });
 
     final normalizedQuery = query.trim().toLowerCase();
-    final List<ReportSummaryEntity> filteredReports = normalizedQuery.isEmpty
-        ? reports
-        : reports.where((report) {
-            final searchable = [
-              report.reviewerName,
-              report.reviewerDepartment,
-              report.reportId.toString(),
-              report.reviewId.toString(),
-              _reportHeadline(report),
-            ].join(' ').toLowerCase();
-            return searchable.contains(normalizedQuery);
-          }).toList(growable: false);
+    final List<ReportSummaryEntity> filteredReports = reports.where((report) {
+      final matchesStatus = reportStatusFilter == null ||
+          report.reportStatus == reportStatusFilter;
+
+      final matchesQuery = normalizedQuery.isEmpty ||
+          [
+                report.reviewerName,
+                report.reviewerDepartment,
+                report.reportId.toString(),
+                report.reviewId.toString(),
+                _reportHeadline(report),
+              ].join(' ').toLowerCase().contains(normalizedQuery);
+
+      return matchesStatus && matchesQuery;
+    }).toList(growable: false);
 
     if (filteredReports.isEmpty) {
       return ListView(
@@ -203,7 +224,15 @@ class _ReportListBody extends ConsumerWidget {
 }
 
 class _ReportTile extends StatelessWidget {
-  const _ReportTile();
+  const _ReportTile({
+    required this.reportStatusFilter,
+    required this.onApplyFilter,
+    required this.onResetFilter,
+  });
+
+  final ReportStatus? reportStatusFilter;
+  final ValueChanged<ReportFilterSelection> onApplyFilter;
+  final VoidCallback onResetFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -216,13 +245,13 @@ class _ReportTile extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        TextButton(
-          onPressed: () {}, // 필터 바텀싯 로직 추가 예정
-          child: Text(
-            '필터',
-            style: AppTextStyles.caption2.copyWith(
-              color: AppColors.admin,
+        FilterButton(
+          bottomSheetBuilder: (_) => ReportFilterBottomSheet(
+            initialSelection: ReportFilterSelection(
+              reportStatus: reportStatusFilter,
             ),
+            onApply: onApplyFilter,
+            onReset: onResetFilter,
           ),
         ),
       ],

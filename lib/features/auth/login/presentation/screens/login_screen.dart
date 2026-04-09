@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -12,6 +12,7 @@ import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/login/presentation/providers/login_provider.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -30,10 +31,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _isButtonEnabled = false;
 
   Future<String> _resolvePostAuthRoute() async {
+    final currentMember = await ref.read(currentMemberProvider.future);
     final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
       enabled: await SettingsStorage.getCameraLaunch(),
       isCameraPermissionGranted: (await Permission.camera.status).isGranted,
-      role: ref.read(roleProvider),
+      role: currentMember?.role ?? RoleEnum.user,
     );
 
     return cameraLaunchRoute ?? RoutePath.home;

@@ -14,7 +14,9 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
   Future<CurrentMemberEntity?> build() async => null;
 
   Future<CurrentMemberEntity> fetch() async {
-    state = const AsyncLoading();
+    if (!state.hasValue) {
+      state = const AsyncLoading();
+    }
 
     try {
       final currentMember =

@@ -6,7 +6,7 @@ import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 
 final myOutingStatusProvider =
-    AsyncNotifierProvider.autoDispose<MyOutingStatusNotifier, MyOutingStatusEntity>(
+    AsyncNotifierProvider<MyOutingStatusNotifier, MyOutingStatusEntity>(
   MyOutingStatusNotifier.new,
 );
 
@@ -17,7 +17,10 @@ class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusEntity> {
   }
 
   Future<void> reload() async {
-    state = const AsyncLoading();
+    if (!state.hasValue) {
+      state = const AsyncLoading();
+    }
+
     state = await AsyncValue.guard(_fetch);
   }
 

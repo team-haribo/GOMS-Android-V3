@@ -1,7 +1,11 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/report/data/response/report_parsers.dart';
 import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
 
+part 'report_detail_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class ReportDetailResponse {
   const ReportDetailResponse({
     required this.reportId,
@@ -20,42 +24,36 @@ class ReportDetailResponse {
     this.deletedBy,
   });
 
-  factory ReportDetailResponse.fromJson(Map<String, dynamic> json) {
-    return ReportDetailResponse(
-      reportId: parseReportInt(json['reportId']),
-      reviewId: parseReportInt(json['reviewId']),
-      reviewCreatedAt: parseReportDateTime(json['reviewCreatedAt']),
-      reviewerMemberId: parseReportInt(json['reviewerMemberId']),
-      reviewerName: parseReportString(json['reviewerName']),
-      reviewerGrade: parseReportInt(json['reviewerGrade']),
-      reviewerDepartment: parseReportString(json['reviewerDepartment']),
-      reviewerProfileImageUrl:
-        (json['reviewerProfileImageUrl'] ??
-            json['reviewerProfileUrl'] ??
-            json['profileImageUrl'] ??
-        json['profileUrl']) as String? ?? '',
-      reviewContent: parseReportString(json['reviewContent']),
-      reportContent: parseReportString(json['reportContent']),
-      reportCreatedAt: parseReportDateTime(json['reportCreatedAt']),
-      reportStatus: parseReportStatus(json['reportStatus']),
-      deletedAt: parseReportDateTime(json['deletedAt']),
-      deletedBy: parseNullableReportString(json['deletedBy']),
-    );
-  }
+  factory ReportDetailResponse.fromJson(Map<String, dynamic> json) =>
+      _$ReportDetailResponseFromJson(json);
 
+  @JsonKey(fromJson: parseReportInt)
   final int reportId;
+  @JsonKey(fromJson: parseReportInt)
   final int reviewId;
+  @JsonKey(fromJson: parseReportDateTime)
   final DateTime? reviewCreatedAt;
+  @JsonKey(fromJson: parseReportInt)
   final int reviewerMemberId;
+  @JsonKey(fromJson: parseReportString)
   final String reviewerName;
+  @JsonKey(fromJson: parseReportInt)
   final int reviewerGrade;
+  @JsonKey(fromJson: parseReportString)
   final String reviewerDepartment;
+  @JsonKey(readValue: _readReviewerProfileImageUrl, fromJson: parseReportString)
   final String reviewerProfileImageUrl;
+  @JsonKey(fromJson: parseReportString)
   final String reviewContent;
+  @JsonKey(fromJson: parseReportString)
   final String reportContent;
+  @JsonKey(fromJson: parseReportDateTime)
   final DateTime? reportCreatedAt;
+  @JsonKey(fromJson: parseReportStatus)
   final ReportStatus reportStatus;
+  @JsonKey(fromJson: parseReportDateTime)
   final DateTime? deletedAt;
+  @JsonKey(fromJson: parseNullableReportString)
   final String? deletedBy;
 
   ReportDetailEntity toEntity() {
@@ -77,3 +75,9 @@ class ReportDetailResponse {
     );
   }
 }
+
+Object? _readReviewerProfileImageUrl(Map<dynamic, dynamic> json, String key) =>
+    json[key] ??
+    json['reviewerProfileUrl'] ??
+    json['profileImageUrl'] ??
+    json['profileUrl'];

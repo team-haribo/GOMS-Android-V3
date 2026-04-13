@@ -1,7 +1,11 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/report/data/response/report_parsers.dart';
 import 'package:goms/features/report/domain/entities/report_resolve_result_entity.dart';
 
+part 'report_resolve_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class ReportResolveResponse {
   const ReportResolveResponse({
     required this.reportId,
@@ -11,20 +15,18 @@ class ReportResolveResponse {
     this.resolvedAt,
   });
 
-  factory ReportResolveResponse.fromJson(Map<String, dynamic> json) {
-    return ReportResolveResponse(
-      reportId: parseReportInt(json['report_id']),
-      reviewId: parseReportInt(json['review_id']),
-      reportStatus: parseReportStatus(json['report_status']),
-      resolvedAt: parseReportDateTime(json['resolved_at']),
-      resolvedBy: parseReportInt(json['resolved_by']),
-    );
-  }
+  factory ReportResolveResponse.fromJson(Map<String, dynamic> json) =>
+      _$ReportResolveResponseFromJson(json);
 
+  @JsonKey(name: 'report_id', fromJson: parseReportInt)
   final int reportId;
+  @JsonKey(name: 'review_id', fromJson: parseReportInt)
   final int reviewId;
+  @JsonKey(name: 'report_status', fromJson: parseReportStatus)
   final ReportStatus reportStatus;
+  @JsonKey(name: 'resolved_at', fromJson: parseReportDateTime)
   final DateTime? resolvedAt;
+  @JsonKey(name: 'resolved_by', fromJson: parseReportInt)
   final int resolvedBy;
 
   ReportResolveResultEntity toEntity() {

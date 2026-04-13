@@ -1,23 +1,19 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 
-class PopularPlace {
-  final int? placeId;
-  final String name;
-  final String category;
-  final String address;
-  final int review;
-  final int recommended;
-  final int? distanceMeters;
-  final MapCoordinate coordinate;
+part 'popular_place.freezed.dart';
 
-  const PopularPlace({
-    this.placeId,
-    required this.name,
-    required this.category,
-    required this.address,
-    required this.review,
-    required this.recommended,
-    required this.coordinate,
-    this.distanceMeters,
-  });
+@freezed
+abstract class PopularPlace with _$PopularPlace {
+  const factory PopularPlace({
+    int? placeId,
+    required String name,
+    required String category,
+    required String address,
+    required int review,
+    required int recommended,
+    @Default(false) bool isRecommended,
+    int? distanceMeters,
+    required MapCoordinate coordinate,
+  }) = _PopularPlace;
 }

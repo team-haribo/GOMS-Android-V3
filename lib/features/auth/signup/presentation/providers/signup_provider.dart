@@ -17,20 +17,7 @@ final signupProvider = NotifierProvider<SignupNotifier, SignupState>(
 
 /// 회원가입 Notifier
 class SignupNotifier extends Notifier<SignupState> {
-  static const List<int> availableGrades = <int>[
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-  ];
+  static const List<int> availableGrades = <int>[8, 9, 10];
 
   /// 이메일: 학교 이메일만 허용 (s + 숫자)
   static final _emailRegex = RegExp(r'^s\d+$');
@@ -86,9 +73,16 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 기수 변경
   void validateGrade(String grade) {
     String? error;
-    if (grade.isNotEmpty && int.tryParse(grade) == null) {
-      error = '기수는 숫자만 입력 가능합니다';
+    final parsedGrade = int.tryParse(grade);
+
+    if (grade.isNotEmpty) {
+      if (parsedGrade == null) {
+        error = '기수는 숫자만 입력 가능합니다';
+      } else if (!availableGrades.contains(parsedGrade)) {
+        error = '기수는 8기, 9기, 10기만 선택할 수 있습니다';
+      }
     }
+
     state = state.copyWith(grade: grade, gradeError: error);
   }
 

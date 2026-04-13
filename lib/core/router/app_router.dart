@@ -8,7 +8,6 @@ import 'package:goms/features/auth/signup/presentation/screens/password_screen.d
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
 import 'package:goms/features/home/shared/presentation/widgets/main_shell.dart';
-import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
@@ -134,25 +133,20 @@ final GoRouter router = GoRouter(
       path: RoutePath.writeReview,
       name: 'writeReview',
       builder: (context, state) {
-        final place = state.extra is PopularPlace
-            ? state.extra as PopularPlace
-            : const PopularPlace(
-                name: '테스트 가게',
-                category: '카페',
-                address: '광주광역시 광산구 송정동',
-                review: 5,
-                recommended: 10,
-                coordinate: MapCoordinate(
-                  latitude: 35.139783,
-                  longitude: 126.793442,
-                ),
-              );
+        final extra = state.extra;
+        if (extra is! PopularPlace) {
+          return const Scaffold(
+            body: Center(child: Text('잘못된 접근입니다.')),
+          );
+        }
+
         return WriteReviewScreen(
-          placeName: place.name,
-          category: place.category,
-          address: place.address,
-          review: place.review,
-          recommended: place.recommended,
+          placeId: extra.placeId,
+          placeName: extra.name,
+          category: extra.category,
+          address: extra.address,
+          review: extra.review,
+          recommended: extra.recommended,
         );
       },
     ),

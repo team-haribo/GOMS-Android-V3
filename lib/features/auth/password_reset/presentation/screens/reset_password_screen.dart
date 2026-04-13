@@ -57,7 +57,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
         notifier.clearError();
         await GomsDialog.single(
           title: '재설정 완료',
-          content: '비밀번호가 재설정되었습니다.\n로그인 화면으로 이동합니다.',
+          content: '비밀번호가 재설정되었습니다.\n로그인 화면으로 돌아갑니다.',
           onConfirm: () async {
             await ref.read(authProvider.notifier).logout();
             if (context.mounted) {

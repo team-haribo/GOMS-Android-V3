@@ -4,7 +4,6 @@ import 'package:goms/features/map/data/datasources/recommended_place_remote_data
 import 'package:goms/features/map/data/repositories/recommended_place_repository_impl.dart';
 import 'package:goms/features/map/data/response/recommended_place_response.dart';
 import 'package:goms/features/map/data/response/recommended_places_response.dart';
-import 'package:goms/features/map/domain/usecases/get_recommended_places_usecase.dart';
 
 void main() {
   group('RecommendedPlacesResponse', () {
@@ -51,13 +50,11 @@ void main() {
   });
 
   group('RecommendedPlaceRepositoryImpl', () {
-    test('maps datasource response to entities', () async {
+    test('maps all-places datasource response to entities', () async {
       final repository = RecommendedPlaceRepositoryImpl(
         _FakeRecommendedPlaceRemoteDataSource(),
       );
-      final useCase = GetRecommendedPlacesUseCase(repository);
-
-      final entities = await useCase.call();
+      final entities = await repository.getPlaces();
 
       expect(entities, hasLength(2));
       expect(entities.first.placeId, 10);
@@ -75,7 +72,7 @@ class _FakeRecommendedPlaceRemoteDataSource
   _FakeRecommendedPlaceRemoteDataSource() : super(Dio());
 
   @override
-  Future<RecommendedPlacesResponse> getRecommendedPlaces() async {
+  Future<RecommendedPlacesResponse> getPlaces() async {
     return RecommendedPlacesResponse.fromJson({
       'places': [
         {

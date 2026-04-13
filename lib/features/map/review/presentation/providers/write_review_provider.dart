@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
 import 'package:goms/features/map/review/presentation/models/write_review_state.dart';
 
 /// 후기 작성 Provider
@@ -37,6 +39,7 @@ class WriteReviewNotifier extends Notifier<WriteReviewState> {
 
   /// 후기 등록 제출
   Future<void> submitReview({
+    required int? placeId,
     required String placeName,
     required String category,
     required String address,
@@ -47,8 +50,17 @@ class WriteReviewNotifier extends Notifier<WriteReviewState> {
 
     state = state.copyWith(status: WriteReviewStatus.loading);
     try {
-      // TODO: 실제 후기 등록 API 호출
-      await Future.delayed(const Duration(seconds: 1));
+      if (placeId == null) {
+        throw Exception('장소 정보가 올바르지 않습니다.');
+      }
+
+      await ref.read(recommendedPlaceRepositoryProvider).createReview(
+            placeId: placeId,
+            content: state.reviewText.trim(),
+          );
+      ref.invalidate(mapScreenProvider);
+      ref.invalidate(placeDetailProvider(placeId));
+      ref.invalidate(placeReviewsProvider(placeId));
 
       state = state.copyWith(status: WriteReviewStatus.success);
     } catch (e) {

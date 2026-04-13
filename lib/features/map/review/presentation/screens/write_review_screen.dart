@@ -13,6 +13,7 @@ import 'package:goms/core/widgets/buttons/confirm_button.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {
+  final int? placeId;
   final String placeName;
   final String category;
   final String address;
@@ -21,6 +22,7 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
 
   const WriteReviewScreen({
     super.key,
+    required this.placeId,
     required this.placeName,
     required this.category,
     required this.address,
@@ -48,6 +50,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
       cancelText: '취소',
       confirmText: '등록하기',
       onConfirm: () => notifier.submitReview(
+        placeId: widget.placeId,
         placeName: widget.placeName,
         category: widget.category,
         address: widget.address,

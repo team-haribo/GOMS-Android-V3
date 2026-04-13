@@ -14,7 +14,7 @@ _ProcessComingByQrResponse _$ProcessComingByQrResponseFromJson(
       status: $enumDecode(_$OutingStatusTypeEnumMap, json['status']),
       comingAt: DateTime.parse(json['comingAt'] as String),
       lateCreated: json['lateCreated'] as bool,
-      lateId: (json['lateId'] as num).toInt(),
+      lateId: (json['lateId'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$ProcessComingByQrResponseToJson(

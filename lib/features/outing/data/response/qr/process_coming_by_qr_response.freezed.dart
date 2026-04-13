@@ -19,7 +19,7 @@ mixin _$ProcessComingByQrResponse {
   OutingStatusType get status;
   DateTime get comingAt;
   bool get lateCreated;
-  int get lateId;
+  int? get lateId;
 
   /// Create a copy of ProcessComingByQrResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -71,7 +71,7 @@ abstract mixin class $ProcessComingByQrResponseCopyWith<$Res> {
       OutingStatusType status,
       DateTime comingAt,
       bool lateCreated,
-      int lateId});
+      int? lateId});
 }
 
 /// @nodoc
@@ -118,7 +118,7 @@ class _$ProcessComingByQrResponseCopyWithImpl<$Res>
       lateId: null == lateId
           ? _self.lateId
           : lateId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }
@@ -217,7 +217,7 @@ extension ProcessComingByQrResponsePatterns on ProcessComingByQrResponse {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>(
     TResult Function(OutingAction action, int outingId, OutingStatusType status,
-            DateTime comingAt, bool lateCreated, int lateId)?
+            DateTime comingAt, bool lateCreated, int? lateId)?
         $default, {
     required TResult orElse(),
   }) {
@@ -247,7 +247,7 @@ extension ProcessComingByQrResponsePatterns on ProcessComingByQrResponse {
   @optionalTypeArgs
   TResult when<TResult extends Object?>(
     TResult Function(OutingAction action, int outingId, OutingStatusType status,
-            DateTime comingAt, bool lateCreated, int lateId)
+            DateTime comingAt, bool lateCreated, int? lateId)
         $default,
   ) {
     final _that = this;
@@ -280,7 +280,7 @@ extension ProcessComingByQrResponsePatterns on ProcessComingByQrResponse {
             OutingStatusType status,
             DateTime comingAt,
             bool lateCreated,
-            int lateId)?
+            int? lateId)?
         $default,
   ) {
     final _that = this;
@@ -318,7 +318,7 @@ class _ProcessComingByQrResponse implements ProcessComingByQrResponse {
   @override
   final bool lateCreated;
   @override
-  final int lateId;
+  final int? lateId;
 
   /// Create a copy of ProcessComingByQrResponse
   /// with the given fields replaced by the non-null parameter values.
@@ -378,7 +378,7 @@ abstract mixin class _$ProcessComingByQrResponseCopyWith<$Res>
       OutingStatusType status,
       DateTime comingAt,
       bool lateCreated,
-      int lateId});
+      int? lateId});
 }
 
 /// @nodoc
@@ -425,7 +425,7 @@ class __$ProcessComingByQrResponseCopyWithImpl<$Res>
       lateId: null == lateId
           ? _self.lateId
           : lateId // ignore: cast_nullable_to_non_nullable
-              as int,
+              as int?,
     ));
   }
 }

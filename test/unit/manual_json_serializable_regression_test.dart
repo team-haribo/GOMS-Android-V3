@@ -8,6 +8,9 @@ import 'package:goms/features/map/data/response/recommended_places_response.dart
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/member/data/response/member_dto.dart';
 import 'package:goms/features/member/data/response/student_council_students_response.dart';
+import 'package:goms/features/outing/data/response/qr/process_coming_by_qr_response.dart';
+import 'package:goms/features/outing/domain/enums/outing_action.dart';
+import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/report/data/response/report_detail_response.dart';
 import 'package:goms/features/report/data/response/report_list_response.dart';
 import 'package:goms/features/report/data/response/report_resolve_response.dart';
@@ -165,6 +168,22 @@ void main() {
 
       expect(response.students, hasLength(1));
       expect(response.students.single.memberId, 1);
+    });
+
+    test('ProcessComingByQrResponse accepts null lateId', () {
+      final response = ProcessComingByQrResponse.fromJson({
+        'action': 'IN',
+        'outingId': 31,
+        'status': 'COMING',
+        'comingAt': '2026-04-13T16:35:38.1202809',
+        'lateCreated': false,
+        'lateId': null,
+      });
+
+      expect(response.action, OutingAction.inAction);
+      expect(response.status, OutingStatusType.coming);
+      expect(response.lateCreated, isFalse);
+      expect(response.lateId, isNull);
     });
 
     test('Report responses preserve parser behavior and aliases', () {

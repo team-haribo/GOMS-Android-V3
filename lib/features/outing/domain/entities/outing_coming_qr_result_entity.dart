@@ -16,5 +16,5 @@ class OutingComingQrResultEntity {
   final OutingStatusType status;
   final DateTime comingAt;
   final bool lateCreated;
-  final int lateId;
+  final int? lateId;
 }

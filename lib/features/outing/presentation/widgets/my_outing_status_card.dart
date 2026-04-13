@@ -18,6 +18,7 @@ class MyOutingStatusCard extends ConsumerWidget {
     final myOutingStatus = ref.watch(myOutingStatusProvider);
 
     return myOutingStatus.when(
+      skipLoadingOnRefresh: true,
       data: (value) {
         return ProfileContainer(
           name: value.name,

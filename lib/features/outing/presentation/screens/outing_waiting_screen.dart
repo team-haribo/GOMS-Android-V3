@@ -151,6 +151,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     AsyncValue<List<OutingStudentEntity>> currentOutingStudents,
   ) {
     return currentOutingStudents.when(
+      skipLoadingOnRefresh: true,
       data: (students) {
         if (students.isEmpty) {
           return [
@@ -239,6 +240,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     AsyncValue<List<LateRankStudentEntity>> lateRankStudents,
   ) {
     return lateRankStudents.when(
+      skipLoadingOnRefresh: true,
       data: (students) {
         final topStudents = students.take(3).toList();
 

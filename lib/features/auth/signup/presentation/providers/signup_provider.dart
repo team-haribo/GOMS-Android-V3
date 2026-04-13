@@ -17,6 +17,21 @@ final signupProvider = NotifierProvider<SignupNotifier, SignupState>(
 
 /// 회원가입 Notifier
 class SignupNotifier extends Notifier<SignupState> {
+  static const List<int> availableGrades = <int>[
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+  ];
+
   /// 이메일: 학교 이메일만 허용 (s + 숫자)
   static final _emailRegex = RegExp(r'^s\d+$');
 
@@ -76,6 +91,14 @@ class SignupNotifier extends Notifier<SignupState> {
     }
     state = state.copyWith(grade: grade, gradeError: error);
   }
+
+  void setGrade(int? grade) {
+    final nextGrade = grade?.toString() ?? '';
+    gradeController.text = nextGrade;
+    validateGrade(nextGrade);
+  }
+
+  int? get selectedGrade => int.tryParse(state.grade);
 
   // ==================== 유효성 검사 ====================
 

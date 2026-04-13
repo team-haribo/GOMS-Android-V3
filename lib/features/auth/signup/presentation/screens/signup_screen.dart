@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
@@ -89,14 +91,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           onChanged: notifier.validateEmail,
         ),
         AppGap.v16,
-        BaseTextField(
-          controller: notifier.gradeController,
-          hintText: '기수를 입력해주세요',
-          errorText: signupState.gradeError,
-          keyboardType: TextInputType.number,
-          textInputAction: TextInputAction.next,
+        SelectField<int>(
+          hintText: '기수를 선택해주세요',
+          value: notifier.selectedGrade,
+          items: SignupNotifier.availableGrades,
+          itemLabel: (grade) => '$grade기',
           enabled: !isLoading,
-          onChanged: notifier.validateGrade,
+          onChanged: notifier.setGrade,
         ),
         AppGap.v16,
         SelectField<GenderType>(
@@ -115,6 +116,35 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
           itemLabel: (m) => m.label,
           enabled: !isLoading,
           onChanged: notifier.setMajor,
+        ),
+        AppGap.v16,
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => context.push(RoutePath.privacyPolicy),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s4,
+              vertical: AppSpacing.s4,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '개인정보 수집 및 처리방침',
+                    style: AppTextStyles.text1.withColor(AppColors.mainColor),
+                  ),
+                ),
+                Icon(
+                  Icons.check_box_outline_blank_rounded,
+                  color: context.isDarkMode
+                      ? Colors.white70
+                      : context.mainTextColor,
+                  size: 28,
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

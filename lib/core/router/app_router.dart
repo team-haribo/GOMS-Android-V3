@@ -20,6 +20,7 @@ import 'package:goms/features/outing/presentation/screens/admin_outing_state_scr
 import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
 import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/profile/presentation/screens/privacy_policy_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
 import 'package:goms/features/report/presentation/screens/admin_report_detail_screen.dart';
@@ -123,6 +124,11 @@ final GoRouter router = GoRouter(
       path: RoutePath.deleteAccount,
       name: 'deleteAccount',
       builder: (context, state) => const DeleteAccountScreen(),
+    ),
+    GoRoute(
+      path: RoutePath.privacyPolicy,
+      name: 'privacyPolicy',
+      builder: (context, state) => const PrivacyPolicyScreen(),
     ),
     GoRoute(
       path: RoutePath.members,

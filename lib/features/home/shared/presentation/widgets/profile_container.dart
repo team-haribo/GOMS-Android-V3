@@ -17,6 +17,7 @@ class ProfileContainer extends ConsumerWidget {
   final String profileImageUrl;
   final bool showProfileImageErrorMessage;
   final String profileImageErrorMessage;
+  final bool showLateCount;
 
   const ProfileContainer({
     super.key,
@@ -28,6 +29,7 @@ class ProfileContainer extends ConsumerWidget {
     required this.profileImageUrl,
     this.showProfileImageErrorMessage = false,
     this.profileImageErrorMessage = '프로필 이미지를 불러오지 못했어요.',
+    this.showLateCount = true,
   });
 
   @override
@@ -67,32 +69,48 @@ class ProfileContainer extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      children: [
-                        Text(
-                          name,
-                          style: AppTextStyles.title3.copyWith(
-                            color: context.mainTextColor,
-                          ),
-                        ),
-                        AppGap.h8,
-                        Text(
-                          '$grade기| $major과',
-                          style: AppTextStyles.text3.copyWith(
-                            color: context.sub2Color,
-                          ),
-                        ),
-                      ],
+                  if (showClock) ...[
+                    Text(
+                      name,
+                      style: AppTextStyles.title3.copyWith(
+                        color: context.mainTextColor,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '지각 횟수: $lateCount회',
-                    style: AppTextStyles.text3.copyWith(
-                      color: context.sub1Color,
+                    AppGap.v2,
+                    Text(
+                      '$grade기 | $major과',
+                      style: AppTextStyles.text3.copyWith(
+                        color: context.sub2Color,
+                      ),
                     ),
-                  ),
+                  ] else
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                        children: [
+                          Text(
+                            name,
+                            style: AppTextStyles.title3.copyWith(
+                              color: context.mainTextColor,
+                            ),
+                          ),
+                          AppGap.h8,
+                          Text(
+                            '$grade기 | $major과',
+                            style: AppTextStyles.text3.copyWith(
+                              color: context.sub2Color,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (showLateCount)
+                    Text(
+                      '지각 횟수: $lateCount회',
+                      style: AppTextStyles.text3.copyWith(
+                        color: context.sub1Color,
+                      ),
+                    ),
                 ],
               ),
             ),

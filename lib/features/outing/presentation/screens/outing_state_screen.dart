@@ -95,7 +95,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 ),
               ],
             ),
-            AppGap.v12,
+            AppGap.v8,
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () {

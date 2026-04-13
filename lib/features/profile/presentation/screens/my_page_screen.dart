@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/router/route_path.dart';
@@ -115,7 +116,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         return;
       }
 
-      context.push(RoutePath.verify, extra: RoutePath.resetPassword);
+      context.go(RoutePath.verify, extra: RoutePath.resetPassword);
     } on DioException catch (error) {
       if (!mounted) {
         return;
@@ -257,7 +258,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               selectedThemeOption: selectedThemeOption,
               showClock: showClock,
               outingPushAlarm: outingPushAlarm,
-              cameraLaunch: cameraLaunch,
+              cameraLaunch: role == RoleEnum.admin ? false : cameraLaunch,
               textColor: textColor,
               subColor: subColor,
               surfaceColor: surfaceColor,

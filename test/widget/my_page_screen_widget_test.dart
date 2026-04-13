@@ -61,7 +61,8 @@ void main() {
     expect(find.text('3번'), findsOneWidget);
   });
 
-  testWidgets('MyPageScreen logout confirm closes dialog and routes to onboarding',
+  testWidgets(
+      'MyPageScreen logout confirm closes dialog and routes to onboarding',
       (tester) async {
     final authNotifier = _FakeAuthNotifier();
     final container = ProviderContainer(
@@ -129,6 +130,58 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(authNotifier.logoutCallCount, 1);
     expect(find.text('onboarding-screen'), findsOneWidget);
+  });
+
+  testWidgets('MyPageScreen hides admin camera launch', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        roleProvider.overrideWith((ref) => RoleEnum.admin),
+        themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+        settingsProvider.overrideWith(_FakeSettingsNotifier.new),
+        myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+        currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final router = GoRouter(
+      initialLocation: RoutePath.myPage,
+      routes: [
+        GoRoute(
+          path: RoutePath.myPage,
+          builder: (context, state) => const MyPageScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          routerConfig: router,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('카메라 바로 켜기'), findsNothing);
   });
 }
 

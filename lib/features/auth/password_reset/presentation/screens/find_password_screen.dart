@@ -33,7 +33,7 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
     ref.listen<FindPasswordState>(findPasswordProvider, (previous, next) {
       if (next.status == FindPasswordStatus.success) {
         notifier.clearError();
-        context.push(RoutePath.verify, extra: RoutePath.resetPassword);
+        context.go(RoutePath.verify, extra: RoutePath.resetPassword);
       } else if (next.status == FindPasswordStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

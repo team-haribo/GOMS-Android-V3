@@ -49,7 +49,9 @@ class PasswordTextField extends ConsumerWidget {
       validator: validator,
       suffixIcon: IconButton(
         icon: Icon(
-          obscureText ? Icons.visibility_off : Icons.visibility,
+          obscureText
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined,
           size: 24,
           color: context.sub2Color,
         ),

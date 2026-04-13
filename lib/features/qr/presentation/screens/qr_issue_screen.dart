@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/router/route_path.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -91,6 +92,8 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
         : clientExpiresAt;
   }
 
+  bool get _isExpired => _remaining == Duration.zero;
+
   @override
   void initState() {
     super.initState();
@@ -146,95 +149,77 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
       builder: (context, constraints) {
         final qrSize = math
             .max(
-              160.0,
+              180.0,
               math.min(
-                240.0,
+                220.0,
                 math.min(
-                  constraints.maxWidth * 0.64,
-                  constraints.maxHeight * 0.42,
+                  constraints.maxWidth * 0.62,
+                  constraints.maxHeight * 0.34,
                 ),
               ),
             )
             .toDouble();
 
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              '외출 QR코드',
+              style: AppTextStyles.title1.withColor(context.mainTextColor),
+            ),
+            const SizedBox(height: 40),
             Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Column(
-                    children: [
-                      Text(
-                        '학생 외출·복귀용 QR',
-                        style: AppTextStyles.title2.withColor(
-                          context.mainTextColor,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: QrImageView(
+                          data: qrPayload,
+                          size: qrSize,
+                          eyeStyle: const QrEyeStyle(
+                            eyeShape: QrEyeShape.square,
+                            color: Colors.black,
+                          ),
+                          dataModuleStyle: const QrDataModuleStyle(
+                            dataModuleShape: QrDataModuleShape.square,
+                            color: Colors.black,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                      AppGap.v8,
-                      Text(
-                        '학생이 스캔할 수 있도록 화면을 보여주세요',
-                        style: AppTextStyles.text3.withColor(context.sub2Color),
-                        textAlign: TextAlign.center,
-                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    Text(
+                      'QR코드 만료까지',
+                      style: AppTextStyles.caption1.withColor(context.sub2Color),
+                      textAlign: TextAlign.center,
+                    ),
+                    AppGap.v4,
+                    Text(
+                      _remainingText,
+                      style: AppTextStyles.title1.withColor(AppColors.admin),
+                      textAlign: TextAlign.center,
+                    ),
+                    if (_isExpired) ...[
                       AppGap.v24,
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 24,
-                        ),
-                        decoration: BoxDecoration(
-                          color: context.surfaceColor,
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: QrImageView(
-                                data: qrPayload,
-                                size: qrSize,
-                                eyeStyle: const QrEyeStyle(
-                                  eyeShape: QrEyeShape.square,
-                                  color: Colors.black,
-                                ),
-                                dataModuleStyle: const QrDataModuleStyle(
-                                  dataModuleShape: QrDataModuleShape.square,
-                                  color: Colors.black,
-                                ),
-                              ),
-                            ),
-                            AppGap.v24,
-                            Text(
-                              'QR 만료까지',
-                              style: AppTextStyles.caption1.withColor(
-                                context.sub2Color,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            AppGap.v4,
-                            Text(
-                              _remainingText,
-                              style: AppTextStyles.title2.withColor(
-                                context.mainTextColor,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                      SizedBox(
+                        width: math.min(constraints.maxWidth, 280),
+                        child: ConfirmButton(
+                          text: 'QR 다시 발급하기',
+                          onPressed: widget.onRefresh,
                         ),
                       ),
                     ],
-                  ),
+                  ],
                 ),
               ),
             ),
-            ConfirmButton(text: 'QR 다시 발급하기', onPressed: widget.onRefresh),
           ],
         );
       },

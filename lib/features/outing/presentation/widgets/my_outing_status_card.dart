@@ -26,6 +26,7 @@ class MyOutingStatusCard extends ConsumerWidget {
           major: value.department,
           lateCount: value.lateCount,
           showLateCount: role != RoleEnum.admin,
+          showInfoBelowName: role == RoleEnum.admin,
           profileImageUrl: value.profileImageUrl,
           showProfileImageErrorMessage: true,
           profileImageErrorMessage: '프로필 이미지를 불러오지 못했어요.',
@@ -40,6 +41,7 @@ class MyOutingStatusCard extends ConsumerWidget {
         major: '',
         lateCount: 0,
         showLateCount: role != RoleEnum.admin,
+        showInfoBelowName: role == RoleEnum.admin,
         profileImageUrl: '',
         status:
             role == RoleEnum.admin ? OutingStatus.admin : OutingStatus.waiting,
@@ -53,6 +55,7 @@ class MyOutingStatusCard extends ConsumerWidget {
             major: '',
             lateCount: 0,
             showLateCount: role != RoleEnum.admin,
+            showInfoBelowName: role == RoleEnum.admin,
             profileImageUrl: '',
             status: role == RoleEnum.admin
                 ? OutingStatus.admin

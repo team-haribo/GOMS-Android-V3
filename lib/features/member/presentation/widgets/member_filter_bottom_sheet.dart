@@ -99,53 +99,9 @@ class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomShee
       title: '필터',
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '학년',
-            style: AppTextStyles.title3.copyWith(
-              color: context.isLightMode ? Colors.black : Colors.white,
-            ),
-          ),
-          AppGap.v12,
-          Row(
-            children: [
-              Expanded(
-                child: CategoryChip(
-                  category: '1학년',
-                  selected: _grade == 1,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 1 : null;
-                    _notifySelectionChanged();
-                  }),
-                ),
-              ),
-              AppGap.h8,
-              Expanded(
-                child: CategoryChip(
-                  category: '2학년',
-                  selected: _grade == 2,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 2 : null;
-                    _notifySelectionChanged();
-                  }),
-                ),
-              ),
-              AppGap.h8,
-              Expanded(
-                child: CategoryChip(
-                  category: '3학년',
-                  selected: _grade == 3,
-                  onChanged: (selected) => setState(() {
-                    _grade = selected ? 3 : null;
-                    _notifySelectionChanged();
-                  }),
-                ),
-              ),
-            ],
-          ),
-          AppGap.v24,
           Text(
             '역할',
             style: AppTextStyles.title3.copyWith(
@@ -362,7 +318,6 @@ class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomShee
               ),
             ),
           ),
-          AppGap.v12,
         ],
       ),
     );

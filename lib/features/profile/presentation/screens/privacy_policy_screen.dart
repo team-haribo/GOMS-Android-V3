@@ -28,7 +28,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 1. 개인정보 수집 항목 및 방법',
+                    '1. 개인정보 수집 항목 및 방법',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -47,7 +47,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 2. 개인정보의 수집 및 이용 목적',
+                    '2. 개인정보의 수집 및 이용 목적',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -62,7 +62,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 3. 개인정보의 보유 및 이용기간',
+                    '3. 개인정보의 보유 및 이용기간',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -73,7 +73,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 4. 개인정보의 파기절차 및 방법',
+                    '4. 개인정보의 파기절차 및 방법',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -87,7 +87,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 5. 개인정보 제공',
+                    '5. 개인정보 제공',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -99,7 +99,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 6. 수집한 개인정보의 위탁',
+                    '6. 수집한 개인정보의 위탁',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -108,7 +108,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   const _PolicyBody('Goms는 회원 정보를 외부 업체에 위탁하지 않습니다.'),
                   AppGap.v24,
                   Text(
-                    '## 7. 회원 및 법정대리인의 권리와 그 행사방법',
+                    '7. 회원 및 법정대리인의 권리와 그 행사방법',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -122,7 +122,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 8. 개인정보 자동수집 장치의 설치, 운영 및 그 거부에 관한 사항',
+                    '8. 개인정보 자동수집 장치의 설치, 운영 및 그 거부에 관한 사항',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -133,7 +133,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 9. 개인정보의 기술적, 관리적 보호대책',
+                    '9. 개인정보의 기술적, 관리적 보호대책',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -147,7 +147,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 10. 개인정보에 관한 민원서비스',
+                    '10. 개인정보에 관한 민원서비스',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),
@@ -156,7 +156,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   const _PolicyBody(
                     '고객의 개인정보를 보호하고 개인정보와 관련한 불만을 처리하기 위하여 아래와 같이 개인정보관리책임자를 지정하고 있습니다.\n\n'
                     '이용자는 Took 서비스를 이용하며 발생하는 모든 개인정보보호 관련 민원을 개인정보 관리책임자에게 신고하실 수 있습니다.\n\n'
-                    '### 개인정보관리책임자\n\n'
+                    '개인정보관리책임자\n\n'
                     '- 성명 : 서지완\n'
                     '- 직책 : PM & iOS Developer\n'
                     '- 직급 : PM & iOS Developer\n'
@@ -169,7 +169,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
                   ),
                   AppGap.v24,
                   Text(
-                    '## 11. 부칙',
+                    '11. 부칙',
                     style: AppTextStyles.title3.withColor(
                       context.mainTextColor,
                     ),

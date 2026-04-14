@@ -365,6 +365,88 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     });
+
+    testWidgets('VerifyScreen back button pops to previous screen',
+        (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: RoutePath.findPassword,
+        routes: [
+          GoRoute(
+            path: RoutePath.findPassword,
+            builder: (context, state) => Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('find-password-screen'),
+                    ElevatedButton(
+                      onPressed: () => context.push(RoutePath.verify),
+                      child: const Text('open-verify'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: RoutePath.verify,
+            builder: (context, state) =>
+                const VerifyScreen(redirectPath: RoutePath.resetPassword),
+          ),
+          GoRoute(
+            path: RoutePath.password,
+            builder: (context, state) =>
+                const Scaffold(body: Text('password-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-verify'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(IconButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('find-password-screen'), findsOneWidget);
+    });
   });
 }
 

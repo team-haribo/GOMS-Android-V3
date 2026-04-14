@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/widgets/bottom_sheets/common_bottom_sheet.dart';
 import 'package:goms/features/member/presentation/widgets/member_filter_bottom_sheet.dart';
@@ -12,9 +13,11 @@ void main() {
     addTearDown(tester.view.reset);
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: Scaffold(
-          body: MemberFilterBottomSheet(),
+      const ProviderScope(
+        child: MaterialApp(
+          home: Scaffold(
+            body: MemberFilterBottomSheet(),
+          ),
         ),
       ),
     );

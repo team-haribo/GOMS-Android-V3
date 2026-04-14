@@ -1,7 +1,7 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/report/data/response/report_parsers.dart';
-import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
+import 'package:goms/features/report/ui/models/report_summary_model.dart';
 
 part 'report_response.g.dart';
 
@@ -47,8 +47,8 @@ class ReportResponse {
   @JsonKey(fromJson: parseNullableReportString)
   final String? deletedBy;
 
-  ReportSummaryEntity toEntity() {
-    return ReportSummaryEntity(
+  ReportSummaryModel toModel() {
+    return ReportSummaryModel(
       reportId: reportId,
       reviewId: reviewId,
       reviewerMemberId: reviewerMemberId,

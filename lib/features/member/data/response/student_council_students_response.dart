@@ -1,6 +1,6 @@
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
-import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:goms/features/member/ui/models/student_council_student_model.dart';
 
 part 'student_council_students_response.g.dart';
 
@@ -19,8 +19,8 @@ class StudentCouncilStudentsResponse {
   )
   final List<StudentCouncilStudentResponse> students;
 
-  List<StudentCouncilStudentEntity> toEntity() {
-    return students.map((student) => student.toEntity()).toList();
+  List<StudentCouncilStudentModel> toModel() {
+    return students.map((student) => student.toModel()).toList();
   }
 }
 
@@ -52,7 +52,11 @@ class StudentCouncilStudentResponse {
   @JsonKey(defaultValue: '', fromJson: _asString)
   final String department;
 
-  @JsonKey(readValue: _readProfileImageUrl, defaultValue: '', fromJson: _asString)
+  @JsonKey(
+    readValue: _readProfileImageUrl,
+    defaultValue: '',
+    fromJson: _asString,
+  )
   final String profileImageUrl;
 
   @JsonKey(readValue: _readRole, defaultValue: '', fromJson: _asString)
@@ -64,8 +68,8 @@ class StudentCouncilStudentResponse {
   @JsonKey(readValue: _readStudentRole, fromJson: _studentRoleFromJson)
   final StudentRole studentRole;
 
-  StudentCouncilStudentEntity toEntity() {
-    return StudentCouncilStudentEntity(
+  StudentCouncilStudentModel toModel() {
+    return StudentCouncilStudentModel(
       memberId: memberId,
       name: name,
       grade: grade,
@@ -122,7 +126,8 @@ Object? _readRole(Map<dynamic, dynamic> json, String key) =>
 Object? _readStatus(Map<dynamic, dynamic> json, String key) =>
     json[key] ?? json['outingStatus'];
 
-Object? _readStudentRole(Map<dynamic, dynamic> json, String key) => <String, Object?>{
+Object? _readStudentRole(Map<dynamic, dynamic> json, String key) =>
+    <String, Object?>{
       'role': _readRole(json, 'role'),
       'status': _readStatus(json, 'status'),
       'outingAllowed': json['outingAllowed'],

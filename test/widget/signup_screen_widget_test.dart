@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/router/route_path.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
-import 'package:goms/features/profile/presentation/screens/privacy_policy_screen.dart';
+import 'package:goms/features/auth/signup/ui/screens/signup_screen.dart';
+import 'package:goms/features/profile/ui/screens/privacy_policy_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

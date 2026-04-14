@@ -1,7 +1,7 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/report/data/response/report_parsers.dart';
-import 'package:goms/features/report/domain/entities/report_resolve_result_entity.dart';
+import 'package:goms/features/report/ui/models/report_resolve_result_model.dart';
 
 part 'report_resolve_response.g.dart';
 
@@ -29,8 +29,8 @@ class ReportResolveResponse {
   @JsonKey(name: 'resolved_by', fromJson: parseReportInt)
   final int resolvedBy;
 
-  ReportResolveResultEntity toEntity() {
-    return ReportResolveResultEntity(
+  ReportResolveResultModel toModel() {
+    return ReportResolveResultModel(
       reportId: reportId,
       reviewId: reviewId,
       reportStatus: reportStatus,

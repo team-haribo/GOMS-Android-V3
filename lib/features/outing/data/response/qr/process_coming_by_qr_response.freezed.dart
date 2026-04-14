@@ -92,7 +92,7 @@ class _$ProcessComingByQrResponseCopyWithImpl<$Res>
     Object? status = null,
     Object? comingAt = null,
     Object? lateCreated = null,
-    Object? lateId = null,
+    Object? lateId = freezed,
   }) {
     return _then(_self.copyWith(
       action: null == action
@@ -115,7 +115,7 @@ class _$ProcessComingByQrResponseCopyWithImpl<$Res>
           ? _self.lateCreated
           : lateCreated // ignore: cast_nullable_to_non_nullable
               as bool,
-      lateId: null == lateId
+      lateId: freezed == lateId
           ? _self.lateId
           : lateId // ignore: cast_nullable_to_non_nullable
               as int?,
@@ -399,7 +399,7 @@ class __$ProcessComingByQrResponseCopyWithImpl<$Res>
     Object? status = null,
     Object? comingAt = null,
     Object? lateCreated = null,
-    Object? lateId = null,
+    Object? lateId = freezed,
   }) {
     return _then(_ProcessComingByQrResponse(
       action: null == action
@@ -422,7 +422,7 @@ class __$ProcessComingByQrResponseCopyWithImpl<$Res>
           ? _self.lateCreated
           : lateCreated // ignore: cast_nullable_to_non_nullable
               as bool,
-      lateId: null == lateId
+      lateId: freezed == lateId
           ? _self.lateId
           : lateId // ignore: cast_nullable_to_non_nullable
               as int?,

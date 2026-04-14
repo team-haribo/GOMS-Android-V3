@@ -1,6 +1,6 @@
 import 'package:goms/features/late/data/datasources/late_remote_datasource.dart';
-import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
-import 'package:goms/features/late/domain/repositories/late_repository.dart';
+import 'package:goms/features/late/data/repositories/late_repository.dart';
+import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
 import 'package:intl/intl.dart';
 
 class LateRepositoryImpl implements LateRepository {
@@ -9,18 +9,18 @@ class LateRepositoryImpl implements LateRepository {
   final LateRemoteDataSource _remoteDataSource;
 
   @override
-  Future<List<LateRankStudentEntity>> getLateRankStudents() async {
+  Future<List<LateRankStudentModel>> getLateRankStudents() async {
     final response = await _remoteDataSource.getLateRankStudents();
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<List<LateRankStudentEntity>> getStudentCouncilLateStudents({
+  Future<List<LateRankStudentModel>> getStudentCouncilLateStudents({
     DateTime? date,
   }) async {
     final response = await _remoteDataSource.getStudentCouncilLateStudents(
       date: date == null ? null : DateFormat('yyyy-MM-dd').format(date),
     );
-    return response.toEntity();
+    return response.toModel();
   }
 }

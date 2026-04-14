@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/core/router/route_path.dart';
-import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
+import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
 
 void main() {
   group('RoutePath', () {

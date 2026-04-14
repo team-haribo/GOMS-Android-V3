@@ -3,21 +3,21 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_coming_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
-import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
-import 'package:goms/features/qr/presentation/providers/qr_scan_provider.dart';
+import 'package:goms/features/outing/data/repositories/outing_repository.dart';
+import 'package:goms/features/qr/ui/models/qr_scan_state.dart';
+import 'package:goms/features/qr/ui/providers/qr_scan_provider.dart';
 
 void main() {
   group('QrScanNotifier', () {
     test('cannot outing 상태면 API 호출 없이 차단 결과를 반환한다', () async {
       final repository = _FakeOutingRepository(
-        myStatus: const MyOutingStatusEntity(
+        myStatus: const MyOutingStatusModel(
           memberId: 1,
           status: OutingStatusType.cannotOuting,
           name: '이주언',
@@ -47,7 +47,7 @@ void main() {
 
     test('COMING 상태면 외출 API를 호출한다', () async {
       final repository = _FakeOutingRepository(
-        myStatus: const MyOutingStatusEntity(
+        myStatus: const MyOutingStatusModel(
           memberId: 1,
           status: OutingStatusType.coming,
           name: '이주언',
@@ -78,7 +78,7 @@ void main() {
 
     test('OUTING 상태면 복귀 API를 호출하고 지각 여부를 반영한다', () async {
       final repository = _FakeOutingRepository(
-        myStatus: const MyOutingStatusEntity(
+        myStatus: const MyOutingStatusModel(
           memberId: 1,
           status: OutingStatusType.outing,
           name: '이주언',
@@ -86,7 +86,7 @@ void main() {
           department: 'AI',
           lateCount: 0,
         ),
-        comingResult: OutingComingQrResultEntity(
+        comingResult: OutingComingQrResultModel(
           action: OutingAction.inAction,
           outingId: 3,
           status: OutingStatusType.coming,
@@ -117,7 +117,7 @@ void main() {
 
     test('잘못된 QR 형식이면 실패 상태가 된다', () async {
       final repository = _FakeOutingRepository(
-        myStatus: const MyOutingStatusEntity(
+        myStatus: const MyOutingStatusModel(
           memberId: 1,
           status: OutingStatusType.coming,
           name: '이주언',
@@ -146,17 +146,17 @@ final _fixedDateTime = DateTime(2026, 4, 2, 18, 0);
 class _FakeOutingRepository implements OutingRepository {
   _FakeOutingRepository({
     required this.myStatus,
-    OutingQrResultEntity? outingResult,
-    OutingComingQrResultEntity? comingResult,
+    OutingQrResultModel? outingResult,
+    OutingComingQrResultModel? comingResult,
   })  : outingResult = outingResult ??
-            OutingQrResultEntity(
+            OutingQrResultModel(
               action: OutingAction.out,
               outingId: 1,
               status: OutingStatusType.outing,
               outingAt: _fixedDateTime,
             ),
         comingResult = comingResult ??
-            OutingComingQrResultEntity(
+            OutingComingQrResultModel(
               action: OutingAction.inAction,
               outingId: 2,
               status: OutingStatusType.coming,
@@ -165,9 +165,9 @@ class _FakeOutingRepository implements OutingRepository {
               lateId: 0,
             );
 
-  final MyOutingStatusEntity myStatus;
-  final OutingQrResultEntity outingResult;
-  final OutingComingQrResultEntity comingResult;
+  final MyOutingStatusModel myStatus;
+  final OutingQrResultModel outingResult;
+  final OutingComingQrResultModel comingResult;
 
   int processOutingCallCount = 0;
   int processComingCallCount = 0;
@@ -175,13 +175,13 @@ class _FakeOutingRepository implements OutingRepository {
   int? lastExp;
 
   @override
-  Future<List<OutingStudentEntity>> getCurrentOutingStudents() async => [];
+  Future<List<OutingStudentModel>> getCurrentOutingStudents() async => [];
 
   @override
-  Future<MyOutingStatusEntity> getMyOutingStatus() async => myStatus;
+  Future<MyOutingStatusModel> getMyOutingStatus() async => myStatus;
 
   @override
-  Future<OutingComingQrResultEntity> processComingByQr({
+  Future<OutingComingQrResultModel> processComingByQr({
     required String uuid,
     required int exp,
   }) async {
@@ -192,7 +192,7 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<OutingQrResultEntity> processOutingByQr({
+  Future<OutingQrResultModel> processOutingByQr({
     required String uuid,
     required int exp,
   }) async {
@@ -203,19 +203,19 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<List<OutingStudentEntity>> searchOutingStudents({
+  Future<List<OutingStudentModel>> searchOutingStudents({
     required String name,
   }) async =>
       [];
 
   @override
-  Future<OutingComingQrResultEntity> forceInStudent({
+  Future<OutingComingQrResultModel> forceInStudent({
     required int memberId,
   }) async =>
       comingResult;
 
   @override
-  Future<OutingQrResultEntity> forceOutStudent({
+  Future<OutingQrResultModel> forceOutStudent({
     required int memberId,
   }) async =>
       outingResult;

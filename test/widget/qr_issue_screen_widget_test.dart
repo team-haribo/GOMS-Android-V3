@@ -5,9 +5,9 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
-import 'package:goms/features/qr/presentation/providers/issued_qr_provider.dart';
-import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
+import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
+import 'package:goms/features/qr/ui/providers/issued_qr_provider.dart';
+import 'package:goms/features/qr/ui/screens/qr_issue_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -32,7 +32,8 @@ void main() {
     expect(countdown.style?.color, AppColors.admin);
   });
 
-  testWidgets('QrIssueScreen shows access message for non-admin', (tester) async {
+  testWidgets('QrIssueScreen shows access message for non-admin',
+      (tester) async {
     await tester.binding.setSurfaceSize(const Size(430, 932));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -108,9 +109,9 @@ String _findCountdownText(WidgetTester tester) {
 
 class _FakeIssuedQrNotifier extends IssuedQrNotifier {
   @override
-  Future<IssuedQrEntity> build() async {
+  Future<IssuedQrModel> build() async {
     final now = DateTime.now();
-    return IssuedQrEntity(
+    return IssuedQrModel(
       uuid: 'test-uuid',
       exp: now.add(const Duration(minutes: 10)).millisecondsSinceEpoch ~/ 1000,
       issuedAt: now,

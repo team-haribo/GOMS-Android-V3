@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_coming_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
-import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
+import 'package:goms/features/outing/data/repositories/outing_repository.dart';
+import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
 
 void main() {
   group('CurrentOutingStudentsNotifier', () {
@@ -32,7 +32,8 @@ void main() {
           .read(currentOutingStudentsProvider.notifier)
           .forceInStudent(memberId: 1);
 
-      final students = container.read(currentOutingStudentsProvider).requireValue;
+      final students =
+          container.read(currentOutingStudentsProvider).requireValue;
 
       expect(students.map((e) => e.memberId), [2]);
     });
@@ -61,7 +62,8 @@ void main() {
         expect(error, isA<CurrentOutingStudentsException>());
       }
 
-      final students = container.read(currentOutingStudentsProvider).requireValue;
+      final students =
+          container.read(currentOutingStudentsProvider).requireValue;
 
       expect(students.map((e) => e.memberId), [1, 2]);
     });
@@ -73,15 +75,19 @@ class _FakeOutingRepository implements OutingRepository {
 
   final bool shouldFailForceIn;
 
+  // ignore: require_trailing_commas
   @override
-  Future<OutingComingQrResultEntity> forceInStudent({required int memberId}) async {
+  Future<OutingComingQrResultModel> forceInStudent({
+    required int memberId,
+  }) async {
     if (shouldFailForceIn) {
       throw DioException(
-        requestOptions: RequestOptions(path: '/api/v3/student-council/status/in/$memberId'),
+        requestOptions:
+            RequestOptions(path: '/api/v3/student-council/status/in/$memberId'),
       );
     }
 
-    return OutingComingQrResultEntity(
+    return OutingComingQrResultModel(
       action: OutingAction.inAction,
       outingId: 1,
       status: OutingStatusType.coming,
@@ -92,15 +98,15 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<List<OutingStudentEntity>> getCurrentOutingStudents() async => [
-        OutingStudentEntity(
+  Future<List<OutingStudentModel>> getCurrentOutingStudents() async => [
+        OutingStudentModel(
           memberId: 1,
           name: '이주언',
           grade: 8,
           department: 'AI',
           outingAt: DateTime(2026, 4, 2, 10, 30),
         ),
-        OutingStudentEntity(
+        OutingStudentModel(
           memberId: 2,
           name: '김민솔',
           grade: 9,
@@ -110,17 +116,17 @@ class _FakeOutingRepository implements OutingRepository {
       ];
 
   @override
-  Future<OutingQrResultEntity> forceOutStudent({required int memberId}) {
+  Future<OutingQrResultModel> forceOutStudent({required int memberId}) {
     throw UnimplementedError();
   }
 
   @override
-  Future<MyOutingStatusEntity> getMyOutingStatus() {
+  Future<MyOutingStatusModel> getMyOutingStatus() {
     throw UnimplementedError();
   }
 
   @override
-  Future<OutingComingQrResultEntity> processComingByQr({
+  Future<OutingComingQrResultModel> processComingByQr({
     required String uuid,
     required int exp,
   }) {
@@ -128,7 +134,7 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<OutingQrResultEntity> processOutingByQr({
+  Future<OutingQrResultModel> processOutingByQr({
     required String uuid,
     required int exp,
   }) {
@@ -136,7 +142,7 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<List<OutingStudentEntity>> searchOutingStudents({
+  Future<List<OutingStudentModel>> searchOutingStudents({
     required String name,
   }) {
     throw UnimplementedError();
@@ -145,15 +151,15 @@ class _FakeOutingRepository implements OutingRepository {
 
 class _FakeCurrentOutingStudentsNotifier extends CurrentOutingStudentsNotifier {
   @override
-  Future<List<OutingStudentEntity>> build() async => [
-        OutingStudentEntity(
+  Future<List<OutingStudentModel>> build() async => [
+        OutingStudentModel(
           memberId: 1,
           name: '이주언',
           grade: 8,
           department: 'AI',
           outingAt: DateTime(2026, 4, 2, 10, 30),
         ),
-        OutingStudentEntity(
+        OutingStudentModel(
           memberId: 2,
           name: '김민솔',
           grade: 9,

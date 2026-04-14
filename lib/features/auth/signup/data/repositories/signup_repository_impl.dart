@@ -1,4 +1,4 @@
-import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
 import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';

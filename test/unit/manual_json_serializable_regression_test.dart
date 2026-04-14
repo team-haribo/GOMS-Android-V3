@@ -201,7 +201,10 @@ void main() {
       });
 
       expect(summary.reportId, 10);
-      expect(summary.reviewerProfileImageUrl, 'https://example.com/profile.png');
+      expect(
+        summary.reviewerProfileImageUrl,
+        'https://example.com/profile.png',
+      );
       expect(summary.reportStatus, ReportStatus.approved);
       expect(summary.deletedBy, isNull);
 

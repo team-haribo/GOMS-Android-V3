@@ -34,6 +34,11 @@ final settingsProvider = AsyncNotifierProvider<SettingsNotifier, SettingsState>(
 );
 
 class SettingsNotifier extends AsyncNotifier<SettingsState> {
+  final Dio dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://goms.io.kr:23241',
+    ),
+  );
   @override
   Future<SettingsState> build() async {
     return SettingsState(
@@ -51,6 +56,8 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   /// 외출제 푸시 알림 설정 변경
   /// 활성화 시 알림 권한을 요청하며, 거부된 경우 false 반환
   Future<bool> setOutingPushAlarm(bool value) async {
+    final dataSource = NotificationRemoteDataSource(dio);
+
     if (value) {
       var status = await Permission.notification.status;
       if (status.isDenied) {
@@ -62,11 +69,11 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       }
       if (!status.isGranted) return false;
 
-      // 토글 켜면 서버에 토큰 등록
-      await NotificationRemoteDataSource(Dio()).registerDeviceToken();
+      // 토글 등록
+      await dataSource.registerDeviceToken();
     } else {
-      // 토글 끄면 서버에서 토큰 삭제
-      await NotificationRemoteDataSource(Dio()).deleteDeviceToken();
+      // 토글 삭제
+      await dataSource.deleteDeviceToken();
     }
 
     await SettingsStorage.setOutingPushAlarm(value);

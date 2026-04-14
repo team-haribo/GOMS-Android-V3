@@ -1,19 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/router/route_path.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  const permissionChannel = MethodChannel(
+    'flutter.baseflow.com/permissions/methods',
+  );
+
+  setUp(() async {
+    SharedPreferences.setMockInitialValues({});
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(permissionChannel, (call) async {
+          if (call.method == 'checkPermissionStatus') {
+            return 0;
+          }
+          return null;
+        });
+  });
+
+  tearDown(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(permissionChannel, null);
+  });
+
   testWidgets(
     'SplashScreen waits for delayed token refresh before routing home',
     (tester) async {
       final container = ProviderContainer(
         overrides: [
           authProvider.overrideWith(_DelayedAuthenticatedAuthNotifier.new),
+          currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
         ],
       );
       addTearDown(container.dispose);
@@ -80,4 +109,16 @@ class _DelayedAuthenticatedAuthNotifier extends AuthNotifier {
     state = AuthStatus.authenticated;
     return true;
   }
+}
+
+class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
+  @override
+  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
+        memberId: 1,
+        email: 's24068@gsm.hs.kr',
+        name: '이주언',
+        role: RoleEnum.user,
+        grade: 8,
+        department: DepartmentType.ai,
+      );
 }

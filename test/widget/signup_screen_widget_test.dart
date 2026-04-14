@@ -59,7 +59,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('개인정보 수집 및 처리방침'), findsOneWidget);
-    expect(find.textContaining('## 1. 개인정보 수집 항목 및 방법'), findsOneWidget);
+    expect(find.text('1. 개인정보 수집 항목 및 방법'), findsOneWidget);
     expect(find.text('개인정보 수집 동의'), findsOneWidget);
   });
 

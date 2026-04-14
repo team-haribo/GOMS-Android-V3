@@ -25,16 +25,31 @@ class CurrentOutingStudentsNotifier
   }
 
   Future<void> forceInStudent({required int memberId}) async {
+    final previousStudents = state.asData?.value;
+
+    if (previousStudents != null) {
+      state = AsyncData(
+        previousStudents
+            .where((student) => student.memberId != memberId)
+            .toList(),
+      );
+    }
+
     try {
       await ref
           .read(outingRepositoryProvider)
           .forceInStudent(memberId: memberId);
-      await reload();
     } on DioException catch (error) {
+      if (previousStudents != null) {
+        state = AsyncData(previousStudents);
+      }
       throw CurrentOutingStudentsException(
         NetworkException.fromDioException(error).message,
       );
     } catch (error) {
+      if (previousStudents != null) {
+        state = AsyncData(previousStudents);
+      }
       if (error is CurrentOutingStudentsException) {
         rethrow;
       }

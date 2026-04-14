@@ -12,6 +12,9 @@ class KakaoMapBackground extends ConsumerStatefulWidget {
   final PopularPlace? focusPlace;
   final List<MapCoordinate> routePath;
   final bool showRoutePreview;
+  final MapCoordinate? currentLocation;
+  final bool preferCurrentLocation;
+  final ValueChanged<PopularPlace>? onPlaceTap;
 
   const KakaoMapBackground({
     super.key,
@@ -19,6 +22,9 @@ class KakaoMapBackground extends ConsumerStatefulWidget {
     this.focusPlace,
     this.routePath = const <MapCoordinate>[],
     this.showRoutePreview = false,
+    this.currentLocation,
+    this.preferCurrentLocation = false,
+    this.onPlaceTap,
   });
 
   @override
@@ -32,7 +38,7 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   int _renderToken = 0;
 
   String get _mapId =>
-      '${widget.focusPlace?.name}|${widget.focusPlace?.address}|${widget.places.length}|${widget.routePath.length}';
+      '${widget.focusPlace?.name}|${widget.focusPlace?.address}|${widget.places.length}|${widget.routePath.length}|${widget.currentLocation?.latitude}|${widget.currentLocation?.longitude}|${widget.preferCurrentLocation}';
 
   @override
   void didUpdateWidget(covariant KakaoMapBackground oldWidget) {
@@ -66,6 +72,28 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
       final cameraPoints = <kakao.LatLng>[];
       final renderPlaces = _buildRenderPlaces();
+      final currentLocation = widget.currentLocation;
+
+      if (currentLocation != null) {
+        final currentLatLng = kakao.LatLng(
+          currentLocation.latitude,
+          currentLocation.longitude,
+        );
+        if (widget.preferCurrentLocation) {
+          cameraPoints.add(currentLatLng);
+        }
+
+        final poi = await controller.labelLayer.addPoi(
+          currentLatLng,
+          style: kakao.PoiStyle(),
+          text: '내 위치',
+        );
+
+        if (!mounted || token != _renderToken) {
+          return;
+        }
+        _pois.add(poi);
+      }
 
       for (final place in renderPlaces) {
         final position = kakao.LatLng(
@@ -78,6 +106,9 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
           position,
           style: kakao.PoiStyle(),
           text: place.name,
+          onClick: widget.onPlaceTap == null
+              ? null
+              : () => widget.onPlaceTap!(place),
         );
 
         if (!mounted || token != _renderToken) {
@@ -85,6 +116,11 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         }
         _pois.add(poi);
       }
+
+      debugPrint(
+        'KakaoMapBackground rendered ${_pois.length} poi(s) and '
+        '${widget.routePath.length > 1 ? 1 : 0} route(s).',
+      );
 
       if (widget.routePath.length > 1) {
         final routePoints = widget.routePath
@@ -200,10 +236,13 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
       );
     }
 
-    final initialCoordinate = widget.focusPlace?.coordinate ??
-        (widget.places.isNotEmpty
-            ? widget.places.first.coordinate
-            : gomsFallbackSchoolCoordinate);
+    final initialCoordinate =
+        widget.preferCurrentLocation && widget.currentLocation != null
+            ? widget.currentLocation!
+            : widget.focusPlace?.coordinate ??
+                (widget.places.isNotEmpty
+                    ? widget.places.first.coordinate
+                    : gomsFallbackSchoolCoordinate);
 
     return Stack(
       children: [

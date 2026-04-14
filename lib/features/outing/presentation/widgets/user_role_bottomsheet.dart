@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -130,16 +129,18 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
         children: [
           if (uiState.currentRole == StudentRole.student)
             _UserRoleBottomSheetItem(
-              title: uiState.isOuting ? '강제외출 복귀' : '강제외출',
+              title: '외출 토글',
               description: uiState.isOuting
-                  ? '학생을 강제외출 복귀를 시켜요'
-                  : '학생을 강제외출 시켜요',
+                  ? '현재 외출 중이에요. 복귀 처리할 수 있어요'
+                  : '현재 교내에 있어요. 외출 처리할 수 있어요',
               trailing: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: IconButton(
-                  onPressed: uiState.isSubmitting
-                      ? null
-                      : () {
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ToggleButton(
+                  type: RoleEnum.admin,
+                  value: uiState.isOuting,
+                  onChanged: uiState.isSubmitting
+                      ? (_) {}
+                      : (_) {
                           if (uiState.isOuting) {
                             forcedOutingRelease(
                               context: context,
@@ -156,9 +157,6 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
                             );
                           }
                         },
-                  icon: uiState.isOuting
-                      ? AppIcons.forceReturn()
-                      : AppIcons.forcedOuting(),
                 ),
               ),
             ),

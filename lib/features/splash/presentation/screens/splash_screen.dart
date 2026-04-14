@@ -31,14 +31,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     debugPrint('SplashScreen: starting auth check');
 
-    // 토큰 확인이 지연되면 온보딩으로 우선 진입시킨다.
-    final hasToken = await ref.read(authProvider.notifier).checkToken().timeout(
-      const Duration(seconds: 8),
-      onTimeout: () {
-        debugPrint('SplashScreen: auth check timed out');
-        return false;
-      },
-    );
+    final hasToken = await ref.read(authProvider.notifier).checkToken();
 
     if (!mounted) return;
 

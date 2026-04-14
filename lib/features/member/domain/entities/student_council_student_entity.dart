@@ -1,45 +1,18 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 
-class StudentCouncilStudentEntity {
-  const StudentCouncilStudentEntity({
-    required this.memberId,
-    required this.name,
-    required this.grade,
-    required this.department,
-    required this.studentRole,
-    this.profileImageUrl = '',
-    this.role = '',
-    this.status = '',
-  });
+part 'student_council_student_entity.freezed.dart';
 
-  final int memberId;
-  final String name;
-  final int grade;
-  final String department;
-  final StudentRole studentRole;
-  final String profileImageUrl;
-  final String role;
-  final String status;
-
-  StudentCouncilStudentEntity copyWith({
-    int? memberId,
-    String? name,
-    int? grade,
-    String? department,
-    StudentRole? studentRole,
-    String? profileImageUrl,
-    String? role,
-    String? status,
-  }) {
-    return StudentCouncilStudentEntity(
-      memberId: memberId ?? this.memberId,
-      name: name ?? this.name,
-      grade: grade ?? this.grade,
-      department: department ?? this.department,
-      studentRole: studentRole ?? this.studentRole,
-      profileImageUrl: profileImageUrl ?? this.profileImageUrl,
-      role: role ?? this.role,
-      status: status ?? this.status,
-    );
-  }
+@freezed
+abstract class StudentCouncilStudentEntity with _$StudentCouncilStudentEntity {
+  const factory StudentCouncilStudentEntity({
+    required int memberId,
+    required String name,
+    required int grade,
+    required String department,
+    required StudentRole studentRole,
+    @Default('') String profileImageUrl,
+    @Default('') String role,
+    @Default('') String status,
+  }) = _StudentCouncilStudentEntity;
 }

@@ -13,6 +13,10 @@ class CameraLaunchDestinationResolver {
       return null;
     }
 
-    return role == RoleEnum.admin ? RoutePath.qrIssue : RoutePath.qr;
+    if (role == RoleEnum.admin) {
+      return null;
+    }
+
+    return RoutePath.qr;
   }
 }

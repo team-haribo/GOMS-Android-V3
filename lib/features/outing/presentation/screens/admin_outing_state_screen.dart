@@ -126,7 +126,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                 ),
               ],
             ),
-            AppGap.v12,
+            AppGap.v8,
             Expanded(
               child: RefreshIndicator(
                 onRefresh: () {

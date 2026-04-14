@@ -16,7 +16,10 @@ class LateRankStudentsNotifier
   }
 
   Future<void> reload() async {
-    state = const AsyncLoading();
+    if (!state.hasValue) {
+      state = const AsyncLoading();
+    }
+
     state = await AsyncValue.guard(_fetch);
   }
 

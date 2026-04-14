@@ -175,6 +175,12 @@ class VerifyNotifier extends Notifier<VerifyState> {
     _startTimer();
   }
 
+  void clear() {
+    _timer?.cancel();
+    codeController.clear();
+    state = VerifyState.initial();
+  }
+
   /// 상태 초기화 (success/failure 처리 후 호출)
   void resetStatus() {
     state = state.copyWith(

@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:goms/features/map/data/map_constants.dart';
+import 'package:goms/features/map/data/services/current_location_service.dart';
 import 'package:goms/features/map/data/services/kakao_local_service.dart';
 import 'package:goms/features/map/data/services/kakao_mobility_service.dart';
-import 'package:goms/features/map/data/services/map_service_providers.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
+import 'package:goms/features/map/data/services/map_service_providers.dart';
 import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 
@@ -15,6 +15,7 @@ final directionProvider = NotifierProvider<DirectionNotifier, DirectionState>(
 class DirectionNotifier extends Notifier<DirectionState> {
   late final KakaoMobilityService _mobilityService;
   late final KakaoLocalService _localService;
+  late final CurrentLocationService _currentLocationService;
 
   MapCoordinate _schoolCoordinate = gomsFallbackSchoolCoordinate;
   MapCoordinate _departureCoordinate = gomsFallbackSchoolCoordinate;
@@ -24,6 +25,7 @@ class DirectionNotifier extends Notifier<DirectionState> {
   DirectionState build() {
     _mobilityService = ref.read(kakaoMobilityServiceProvider);
     _localService = ref.read(kakaoLocalServiceProvider);
+    _currentLocationService = ref.read(currentLocationServiceProvider);
     Future.microtask(_initializeSchoolCoordinate);
     return DirectionState.initial().copyWith(departure: gomsSchoolName);
   }
@@ -145,40 +147,7 @@ class DirectionNotifier extends Notifier<DirectionState> {
     }
   }
 
-  Future<MapCoordinate> _resolveCurrentLocation() async {
-    final isServiceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!isServiceEnabled) {
-      throw const DirectionLocationException('위치 서비스가 꺼져 있습니다.');
-    }
-
-    var permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      throw const DirectionLocationException('현재 위치 권한이 필요합니다.');
-    }
-
-    final position = await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    );
-
-    return MapCoordinate(
-      latitude: position.latitude,
-      longitude: position.longitude,
-    );
+  Future<MapCoordinate> _resolveCurrentLocation() {
+    return _currentLocationService.getCurrentLocation();
   }
-}
-
-class DirectionLocationException implements Exception {
-  final String message;
-
-  const DirectionLocationException(this.message);
-
-  @override
-  String toString() => message;
 }

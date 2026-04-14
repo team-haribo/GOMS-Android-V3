@@ -109,7 +109,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _handleFindPassword() {
-    context.push(RoutePath.findPassword);
+    context.go(RoutePath.findPassword);
+  }
+
+  void _handleBack() {
+    context.go(RoutePath.onboarding);
   }
 
   @override
@@ -123,6 +127,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       isConfirmEnabled: _isButtonEnabled,
       isLoading: isLoading,
       onConfirm: _handleLogin,
+      onBackPressed: _handleBack,
       children: [
         EmailTextField(
           controller: _emailController,

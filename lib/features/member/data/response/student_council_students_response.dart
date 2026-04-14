@@ -1,22 +1,22 @@
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'student_council_students_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class StudentCouncilStudentsResponse {
   const StudentCouncilStudentsResponse({
     required this.students,
   });
 
-  factory StudentCouncilStudentsResponse.fromJson(Map<String, dynamic> json) {
-    final students = json['students'] as List<dynamic>? ?? const [];
+  factory StudentCouncilStudentsResponse.fromJson(Map<String, dynamic> json) =>
+      _$StudentCouncilStudentsResponseFromJson(json);
 
-    return StudentCouncilStudentsResponse(
-      students: students
-          .whereType<Map<String, dynamic>>()
-          .map(StudentCouncilStudentResponse.fromJson)
-          .toList(),
-    );
-  }
-
+  @JsonKey(
+    defaultValue: <StudentCouncilStudentResponse>[],
+    fromJson: _studentsFromJson,
+  )
   final List<StudentCouncilStudentResponse> students;
 
   List<StudentCouncilStudentEntity> toEntity() {
@@ -24,6 +24,7 @@ class StudentCouncilStudentsResponse {
   }
 }
 
+@JsonSerializable(createToJson: false)
 class StudentCouncilStudentResponse {
   const StudentCouncilStudentResponse({
     required this.memberId,
@@ -36,33 +37,31 @@ class StudentCouncilStudentResponse {
     required this.studentRole,
   });
 
-  factory StudentCouncilStudentResponse.fromJson(Map<String, dynamic> json) {
-    final role = _asString(json['role'] ?? json['studentRole']);
-    final status = _asString(json['status'] ?? json['outingStatus']);
+  factory StudentCouncilStudentResponse.fromJson(Map<String, dynamic> json) =>
+      _$StudentCouncilStudentResponseFromJson(json);
 
-    return StudentCouncilStudentResponse(
-      memberId: _asInt(json['memberId'] ?? json['id']),
-      name: _asString(json['name']),
-      grade: _asInt(json['grade']),
-      department: _asString(json['department']),
-      profileImageUrl: _asString(json['profileImageUrl'] ?? json['profileUrl']),
-      role: role,
-      status: status,
-      studentRole: _toStudentRole(
-        role: role,
-        status: status,
-        outingAllowed: json['outingAllowed'],
-      ),
-    );
-  }
-
+  @JsonKey(readValue: _readMemberId, fromJson: _asInt)
   final int memberId;
+
+  @JsonKey(defaultValue: '', fromJson: _asString)
   final String name;
+
+  @JsonKey(defaultValue: 0, fromJson: _asInt)
   final int grade;
+
+  @JsonKey(defaultValue: '', fromJson: _asString)
   final String department;
+
+  @JsonKey(readValue: _readProfileImageUrl, defaultValue: '', fromJson: _asString)
   final String profileImageUrl;
+
+  @JsonKey(readValue: _readRole, defaultValue: '', fromJson: _asString)
   final String role;
+
+  @JsonKey(readValue: _readStatus, defaultValue: '', fromJson: _asString)
   final String status;
+
+  @JsonKey(readValue: _readStudentRole, fromJson: _studentRoleFromJson)
   final StudentRole studentRole;
 
   StudentCouncilStudentEntity toEntity() {
@@ -80,6 +79,7 @@ class StudentCouncilStudentResponse {
 
   static int _asInt(Object? value) {
     if (value is int) return value;
+    if (value is num) return value.toInt();
     return int.tryParse('$value') ?? 0;
   }
 
@@ -102,4 +102,40 @@ class StudentCouncilStudentResponse {
 
     return StudentRole.student;
   }
+}
+
+List<StudentCouncilStudentResponse> _studentsFromJson(List<dynamic>? values) =>
+    (values ?? const <dynamic>[])
+        .whereType<Map<String, dynamic>>()
+        .map(StudentCouncilStudentResponse.fromJson)
+        .toList(growable: false);
+
+Object? _readMemberId(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['id'];
+
+Object? _readProfileImageUrl(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['profileUrl'];
+
+Object? _readRole(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['studentRole'];
+
+Object? _readStatus(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['outingStatus'];
+
+Object? _readStudentRole(Map<dynamic, dynamic> json, String key) => <String, Object?>{
+      'role': _readRole(json, 'role'),
+      'status': _readStatus(json, 'status'),
+      'outingAllowed': json['outingAllowed'],
+    };
+
+StudentRole _studentRoleFromJson(Object? value) {
+  if (value is! Map) {
+    return StudentRole.student;
+  }
+
+  return StudentCouncilStudentResponse._toStudentRole(
+    role: StudentCouncilStudentResponse._asString(value['role']),
+    status: StudentCouncilStudentResponse._asString(value['status']),
+    outingAllowed: value['outingAllowed'],
+  );
 }

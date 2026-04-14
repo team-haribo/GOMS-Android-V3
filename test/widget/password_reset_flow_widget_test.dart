@@ -16,6 +16,7 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/email_verification/domain/repositories/email_verification_repository.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
+import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
 import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
@@ -241,6 +242,67 @@ void main() {
       expect(find.text('login-screen'), findsOneWidget);
     });
 
+    testWidgets(
+        'LoginScreen back button falls back to onboarding when opened as root',
+        (tester) async {
+      final router = GoRouter(
+        initialLocation: RoutePath.login,
+        routes: [
+          GoRoute(
+            path: RoutePath.login,
+            builder: (context, state) => const LoginScreen(),
+          ),
+          GoRoute(
+            path: RoutePath.onboarding,
+            builder: (context, state) =>
+                const Scaffold(body: Text('onboarding-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(
+                  start: 801,
+                  end: 1920,
+                  name: AppBreakpoints.desktop,
+                ),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(IconButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('onboarding-screen'), findsOneWidget);
+    });
+
     testWidgets('VerifyScreen shows snackbar when verification fails',
         (tester) async {
       final repository = _FakeEmailVerificationRepository(
@@ -302,6 +364,88 @@ void main() {
       container.dispose();
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
+    });
+
+    testWidgets('VerifyScreen back button pops to previous screen',
+        (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: RoutePath.findPassword,
+        routes: [
+          GoRoute(
+            path: RoutePath.findPassword,
+            builder: (context, state) => Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('find-password-screen'),
+                    ElevatedButton(
+                      onPressed: () => context.push(RoutePath.verify),
+                      child: const Text('open-verify'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: RoutePath.verify,
+            builder: (context, state) =>
+                const VerifyScreen(redirectPath: RoutePath.resetPassword),
+          ),
+          GoRoute(
+            path: RoutePath.password,
+            builder: (context, state) =>
+                const Scaffold(body: Text('password-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-verify'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(IconButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('find-password-screen'), findsOneWidget);
     });
   });
 }

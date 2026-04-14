@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/features/map/shared/presentation/providers/place_like_provider.dart';
 
-class PlaceContainer extends ConsumerWidget {
+class PlaceContainer extends StatelessWidget {
   final String placeName;
   final String category;
   final String address;
   final int review;
   final int recommended;
+  final bool isLiked;
   final int? distanceMeters;
   final VoidCallback? onTap;
+  final VoidCallback? onLikePressed;
 
   const PlaceContainer({
     super.key,
@@ -23,15 +23,15 @@ class PlaceContainer extends ConsumerWidget {
     required this.address,
     required this.review,
     required this.recommended,
+    required this.isLiked,
     this.distanceMeters,
     this.onTap,
+    this.onLikePressed,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colors = _PlaceContainerColors.fromTheme(context);
-    final placeId = '$placeName|$address';
-    final isLiked = ref.watch(placeLikeProvider(placeId));
 
     return GestureDetector(
       onTap: onTap,
@@ -62,10 +62,7 @@ class PlaceContainer extends ConsumerWidget {
               AppGap.h8,
               _LikeButton(
                 isLiked: isLiked,
-                onPressed: () {
-                  ref.read(placeLikeProvider(placeId).notifier).state =
-                      !isLiked;
-                },
+                onPressed: onLikePressed,
               ),
             ],
           ),
@@ -204,7 +201,7 @@ class _PlaceTitleRow extends StatelessWidget {
 
 class _LikeButton extends StatelessWidget {
   final bool isLiked;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   const _LikeButton({
     required this.isLiked,

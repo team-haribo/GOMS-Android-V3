@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -6,12 +7,14 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/shared/presentation/widgets/arrival_departure_button.dart';
 
-class MapDetailOverlay extends StatelessWidget {
+class MapDetailOverlay extends ConsumerWidget {
   final PopularPlace place;
   final MapScreenState state;
 
@@ -22,13 +25,40 @@ class MapDetailOverlay extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
     final initialSheetSize = context.isTabletLayout
         ? 0.4
         : (context.screenHeight < 780 ? 0.4 : 0.34);
     final maxSheetSize = context.isTabletLayout ? 0.76 : 0.82;
+    final placeId = place.placeId;
+    final placeDetailAsync =
+        placeId == null ? null : ref.watch(placeDetailProvider(placeId));
+    final placeReviewsAsync =
+        placeId == null ? null : ref.watch(placeReviewsProvider(placeId));
+
+    final detailPlace = placeDetailAsync?.asData?.value;
+    final resolvedPlace = detailPlace == null
+        ? place
+        : place.copyWith(
+            name: detailPlace.placeName?.trim().isNotEmpty == true
+                ? detailPlace.placeName!.trim()
+                : place.name,
+            category: detailPlace.category?.trim().isNotEmpty == true
+                ? detailPlace.category!.trim()
+                : place.category,
+            address: detailPlace.address?.trim().isNotEmpty == true
+                ? detailPlace.address!.trim()
+                : place.address,
+            review: detailPlace.reviewCount,
+            recommended: detailPlace.recommendCount,
+            isRecommended: detailPlace.recommended,
+            coordinate: detailPlace.coordinate ?? place.coordinate,
+          );
+    final reviews =
+        placeReviewsAsync?.asData?.value ?? const <PlaceReviewEntity>[];
+    final isReviewLoading = placeReviewsAsync?.isLoading == true;
 
     return Stack(
       children: [
@@ -54,7 +84,7 @@ class MapDetailOverlay extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _PlaceSummary(place: place, isLight: isLight),
+                      _PlaceSummary(place: resolvedPlace, isLight: isLight),
                       AppGap.v16,
                       Row(
                         children: [
@@ -80,7 +110,7 @@ class MapDetailOverlay extends StatelessWidget {
                                 : AppColors.buttonDark,
                             onPressed: () => context.push(
                               RoutePath.writeReview,
-                              extra: place,
+                              extra: resolvedPlace,
                             ),
                           ),
                         ],
@@ -101,7 +131,7 @@ class MapDetailOverlay extends StatelessWidget {
                               ),
                               AppGap.h4,
                               Text(
-                                '${state.reviewModels.length}건',
+                                '${reviews.length}건',
                                 style: AppTextStyles.text3.copyWith(
                                   color: AppColors.mainColor,
                                 ),
@@ -111,16 +141,19 @@ class MapDetailOverlay extends StatelessWidget {
                         ],
                       ),
                       AppGap.v16,
-                      if (state.reviewModels.isEmpty)
+                      if (isReviewLoading)
+                        const Center(child: CircularProgressIndicator())
+                      else if (reviews.isEmpty)
                         _EmptyReviewState(isLight: isLight)
                       else
-                        ...state.reviewModels.map(
+                        ...reviews.map(
                           (review) => Padding(
                             padding: const EdgeInsets.only(bottom: 12),
                             child: _ReviewTile(
-                              title: review.placeName,
-                              content: review.reviewDetailContent,
-                              createdAt: review.createdAt,
+                              title:
+                                  '${review.name} · ${review.grade}학년 ${review.department}',
+                              content: review.content,
+                              createdAt: review.reviewedAt,
                               isLight: isLight,
                             ),
                           ),
@@ -236,7 +269,7 @@ class _PlaceSummary extends StatelessWidget {
 class _ReviewTile extends StatelessWidget {
   final String title;
   final String content;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final bool isLight;
 
   const _ReviewTile({
@@ -275,7 +308,9 @@ class _ReviewTile extends StatelessWidget {
           ),
           AppGap.v8,
           Text(
-            '${createdAt.year}.${createdAt.month.toString().padLeft(2, '0')}.${createdAt.day.toString().padLeft(2, '0')}',
+            createdAt == null
+                ? '-'
+                : '${createdAt!.year}.${createdAt!.month.toString().padLeft(2, '0')}.${createdAt!.day.toString().padLeft(2, '0')}',
             style: AppTextStyles.caption2.copyWith(color: subColor),
           ),
         ],

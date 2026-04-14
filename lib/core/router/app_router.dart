@@ -8,7 +8,6 @@ import 'package:goms/features/auth/signup/presentation/screens/password_screen.d
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
 import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
 import 'package:goms/features/home/shared/presentation/widgets/main_shell.dart';
-import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
@@ -21,6 +20,7 @@ import 'package:goms/features/outing/presentation/screens/admin_outing_state_scr
 import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
 import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
 import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/profile/presentation/screens/privacy_policy_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:goms/features/qr/presentation/screens/qr_scan_screen.dart';
 import 'package:goms/features/report/presentation/screens/admin_report_detail_screen.dart';
@@ -30,6 +30,13 @@ import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
+String? redirectToMapIfPopularPlaceMissing(Object? extra) {
+  if (extra is! PopularPlace) {
+    return RoutePath.map;
+  }
+  return null;
+}
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
@@ -126,6 +133,11 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const DeleteAccountScreen(),
     ),
     GoRoute(
+      path: RoutePath.privacyPolicy,
+      name: 'privacyPolicy',
+      builder: (context, state) => const PrivacyPolicyScreen(),
+    ),
+    GoRoute(
       path: RoutePath.members,
       name: 'members',
       builder: (context, state) => const MemberListScreen(),
@@ -133,21 +145,12 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.writeReview,
       name: 'writeReview',
+      redirect: (context, state) =>
+          redirectToMapIfPopularPlaceMissing(state.extra),
       builder: (context, state) {
-        final place = state.extra is PopularPlace
-            ? state.extra as PopularPlace
-            : const PopularPlace(
-                name: '테스트 가게',
-                category: '카페',
-                address: '광주광역시 광산구 송정동',
-                review: 5,
-                recommended: 10,
-                coordinate: MapCoordinate(
-                  latitude: 35.139783,
-                  longitude: 126.793442,
-                ),
-              );
+        final place = state.extra as PopularPlace;
         return WriteReviewScreen(
+          placeId: place.placeId,
           placeName: place.name,
           category: place.category,
           address: place.address,

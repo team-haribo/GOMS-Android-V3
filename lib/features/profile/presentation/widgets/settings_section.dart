@@ -88,16 +88,18 @@ class SettingsSection extends StatelessWidget {
           subColor: subColor,
           role: role,
         ),
-        AppGap.v36,
-        _SettingsToggleItem(
-          title: '카메라 바로 켜기',
-          description: '앱을 실행하면 즉시 카메라가 켜져요',
-          value: cameraLaunch,
-          onChanged: onToggleCameraLaunch,
-          textColor: textColor,
-          subColor: subColor,
-          role: role,
-        ),
+        if (role != RoleEnum.admin) ...[
+          AppGap.v36,
+          _SettingsToggleItem(
+            title: '카메라 바로 켜기',
+            description: '앱을 실행하면 즉시 카메라가 켜져요',
+            value: cameraLaunch,
+            onChanged: onToggleCameraLaunch,
+            textColor: textColor,
+            subColor: subColor,
+            role: role,
+          ),
+        ],
       ],
     );
   }

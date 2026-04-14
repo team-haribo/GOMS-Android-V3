@@ -1,23 +1,14 @@
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class MapScreenUiState {
-  final bool isSdkReady;
-  final bool isFetchingRoute;
+part 'map_screen_provider.freezed.dart';
 
-  const MapScreenUiState({
-    this.isSdkReady = false,
-    this.isFetchingRoute = false,
-  });
-
-  MapScreenUiState copyWith({
-    bool? isSdkReady,
-    bool? isFetchingRoute,
-  }) {
-    return MapScreenUiState(
-      isSdkReady: isSdkReady ?? this.isSdkReady,
-      isFetchingRoute: isFetchingRoute ?? this.isFetchingRoute,
-    );
-  }
+@freezed
+abstract class MapScreenUiState with _$MapScreenUiState {
+  const factory MapScreenUiState({
+    @Default(false) bool isSdkReady,
+    @Default(false) bool isFetchingRoute,
+  }) = _MapScreenUiState;
 }
 
 final mapScreenProvider =

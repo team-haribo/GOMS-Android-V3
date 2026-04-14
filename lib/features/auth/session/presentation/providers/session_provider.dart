@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
+import 'package:goms/features/late/presentation/providers/late_rank_students_provider.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 
 /// 인증 상태
@@ -36,12 +40,11 @@ class AuthNotifier extends Notifier<AuthStatus> {
     if (_hasValidToken(accessToken, accessTokenExpiry)) {
       try {
         await _fetchCurrentMember();
+        _warmUpHomeData();
         state = AuthStatus.authenticated;
         return true;
       } catch (_) {
-        ref.read(currentMemberProvider.notifier).clear();
-        ref.invalidate(myOutingStatusProvider);
-        state = AuthStatus.unauthenticated;
+        _clearSessionState();
         return false;
       }
     }
@@ -50,9 +53,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
     final refreshTokenExpiry = await TokenStorage.getRefreshTokenExpiry();
 
     if (!_hasValidToken(refreshToken, refreshTokenExpiry)) {
-      await TokenStorage.deleteAllTokens();
-      ref.invalidate(myOutingStatusProvider);
-      state = AuthStatus.unauthenticated;
+      await _clearSession();
       return false;
     }
 
@@ -65,19 +66,14 @@ class AuthNotifier extends Notifier<AuthStatus> {
       await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
       await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
       await _fetchCurrentMember();
+      _warmUpHomeData();
       state = AuthStatus.authenticated;
       return true;
     } on DioException catch (_) {
-      await TokenStorage.deleteAllTokens();
-      ref.read(currentMemberProvider.notifier).clear();
-      ref.invalidate(myOutingStatusProvider);
-      state = AuthStatus.unauthenticated;
+      await _clearSession();
       return false;
     } catch (_) {
-      await TokenStorage.deleteAllTokens();
-      ref.read(currentMemberProvider.notifier).clear();
-      ref.invalidate(myOutingStatusProvider);
-      state = AuthStatus.unauthenticated;
+      await _clearSession();
       return false;
     }
   }
@@ -86,21 +82,17 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<void> setAuthenticated() async {
     try {
       await _fetchCurrentMember();
+      _warmUpHomeData();
       state = AuthStatus.authenticated;
     } catch (_) {
-      await TokenStorage.deleteAllTokens();
-      ref.read(currentMemberProvider.notifier).clear();
-      ref.invalidate(myOutingStatusProvider);
-      state = AuthStatus.unauthenticated;
+      await _clearSession();
       rethrow;
     }
   }
 
   /// 인증 해제 처리
   void setUnauthenticated() {
-    ref.read(currentMemberProvider.notifier).clear();
-    ref.invalidate(myOutingStatusProvider);
-    state = AuthStatus.unauthenticated;
+    _clearSessionState();
   }
 
   /// 로그아웃
@@ -118,15 +110,40 @@ class AuthNotifier extends Notifier<AuthStatus> {
     } catch (_) {
       // 로컬 세션 종료는 항상 보장한다.
     } finally {
-      await TokenStorage.deleteAllTokens();
-      ref.read(currentMemberProvider.notifier).clear();
-      ref.invalidate(myOutingStatusProvider);
-      state = AuthStatus.unauthenticated;
+      await _clearSession();
     }
+  }
+
+  Future<void> _clearSession() async {
+    await TokenStorage.deleteAllTokens();
+    _clearSessionState();
+  }
+
+  void _clearSessionState() {
+    ref.read(currentMemberProvider.notifier).clear();
+    ref.invalidate(currentOutingStudentsProvider);
+    ref.invalidate(lateRankStudentsProvider);
+    ref.invalidate(myOutingStatusProvider);
+    state = AuthStatus.unauthenticated;
   }
 
   Future<void> _fetchCurrentMember() async {
     await ref.read(currentMemberProvider.notifier).fetch();
+  }
+
+  void _warmUpHomeData() {
+    unawaited(
+      ref.read(myOutingStatusProvider.notifier).reload().catchError((_) {}),
+    );
+    unawaited(
+      ref
+          .read(currentOutingStudentsProvider.notifier)
+          .reload()
+          .catchError((_) {}),
+    );
+    unawaited(
+      ref.read(lateRankStudentsProvider.notifier).reload().catchError((_) {}),
+    );
   }
 
   bool _hasValidToken(String? token, DateTime? expiresAt) {

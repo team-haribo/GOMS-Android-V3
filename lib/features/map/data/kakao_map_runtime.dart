@@ -52,6 +52,11 @@ class KakaoMapRuntime {
     try {
       await KakaoMapSdk.instance.initialize(appKey);
       _initialized = true;
+
+      if (kDebugMode) {
+        final hashKey = await KakaoMapSdk.instance.hashKey();
+        debugPrint('KakaoMapRuntime hashKey: ${hashKey ?? 'unavailable'}');
+      }
     } catch (error) {
       _unavailableReason = '카카오 지도 초기화에 실패했습니다. $error';
     }

@@ -9,10 +9,14 @@ import 'package:goms/features/map/shared/presentation/widgets/map_main_overlay.d
 import 'package:goms/features/map/shared/presentation/widgets/map_scaffold.dart';
 import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
 import 'package:goms/features/map/direction/presentation/providers/direction_provider.dart';
+import 'package:goms/features/map/data/map_constants.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/providers/current_map_location_provider.dart';
 import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
+import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/shared/presentation/widgets/kakao_map_background.dart';
 
 class MapBaseScreen extends ConsumerStatefulWidget {
@@ -30,6 +34,8 @@ class MapBaseScreen extends ConsumerStatefulWidget {
 }
 
 class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
+  PopularPlace? _selectedPlace;
+
   @override
   void initState() {
     super.initState();
@@ -58,11 +64,24 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     });
   }
 
+  void _handlePlaceTap(PopularPlace place) {
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _selectedPlace = place;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
     final mapState = ref.watch(mapScreenProvider);
     final directionState = ref.watch(directionProvider);
+    final searchKeyword = ref.watch(placeSearchKeywordProvider);
+    final searchResults = ref.watch(placeSearchResultsProvider).asData?.value;
+    final allPlaces = ref.watch(allPlacesProvider).asData?.value;
+    final currentLocation = ref.watch(currentMapLocationProvider).asData?.value;
 
     if (widget.type != MapScreenType.main && place == null) {
       return const MapScaffold(
@@ -102,10 +121,22 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
         ? directionState.routeOptions[directionState.selectedRouteIndex].path
         : const <MapCoordinate>[];
 
+    final searchedPlaces =
+        (searchKeyword.trim().isNotEmpty ? searchResults ?? const [] : const [])
+            .map((place) => _toPopularPlace(place))
+            .toList(growable: false);
+    final markerPlaces = (allPlaces ?? const <RecommendedPlaceEntity>[])
+        .map((place) => _toPopularPlace(place))
+        .toList(growable: false);
+
     final places = switch (widget.type) {
-      MapScreenType.main => mapState.popularPlaces,
+      MapScreenType.main => searchedPlaces.isNotEmpty
+          ? searchedPlaces
+          : (markerPlaces.isNotEmpty ? markerPlaces : mapState.popularPlaces),
       _ => place == null ? mapState.popularPlaces : [place],
     };
+
+    final selectedPlace = _resolveSelectedPlace(places);
 
     return MapScaffold(
       body: Stack(
@@ -116,23 +147,66 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
               focusPlace: place,
               routePath: routePath,
               showRoutePreview: widget.type == MapScreenType.direction,
+              currentLocation: currentLocation,
+              preferCurrentLocation: widget.type == MapScreenType.main,
+              onPlaceTap: _handlePlaceTap,
             ),
           ),
           Positioned.fill(
-            child: _buildOverlay(place, mapState, directionState),
+            child: _buildOverlay(
+              place,
+              mapState,
+              directionState,
+              selectedPlace,
+            ),
           ),
         ],
       ),
     );
   }
 
+  PopularPlace? _resolveSelectedPlace(List<PopularPlace> places) {
+    final selectedPlace = _selectedPlace;
+    if (widget.type != MapScreenType.main || selectedPlace == null) {
+      return selectedPlace;
+    }
+
+    for (final place in places) {
+      if (_isSamePlace(place, selectedPlace)) {
+        return place;
+      }
+    }
+
+    return selectedPlace;
+  }
+
+  bool _isSamePlace(PopularPlace a, PopularPlace b) {
+    if (a.placeId != null && b.placeId != null) {
+      return a.placeId == b.placeId;
+    }
+
+    return a.name == b.name && a.address == b.address;
+  }
+
   Widget _buildOverlay(
     PopularPlace? place,
     MapScreenState mapState,
     DirectionState directionState,
+    PopularPlace? selectedPlace,
   ) {
     final overlay = switch (widget.type) {
-      MapScreenType.main => MapMainOverlay(state: mapState),
+      MapScreenType.main => MapMainOverlay(
+          state: mapState,
+          selectedPlace: selectedPlace,
+          onSelectedPlaceDismiss: () {
+            if (!mounted) {
+              return;
+            }
+            setState(() {
+              _selectedPlace = null;
+            });
+          },
+        ),
       MapScreenType.detail => MapDetailOverlay(place: place!, state: mapState),
       MapScreenType.direction => MapDirectionOverlay(
           place: place!,
@@ -166,4 +240,11 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       ),
     );
   }
+}
+
+PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
+  return PopularPlace.fromRecommendedPlace(
+    place,
+    fallbackCoordinate: gomsFallbackSchoolCoordinate,
+  );
 }

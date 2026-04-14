@@ -99,7 +99,7 @@ class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomShee
       title: '필터',
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
@@ -318,7 +318,6 @@ class _MemberFilterBottomSheetState extends ConsumerState<MemberFilterBottomShee
               ),
             ),
           ),
-          AppGap.v12,
         ],
       ),
     );

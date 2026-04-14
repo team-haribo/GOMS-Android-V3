@@ -15,18 +15,16 @@ CurrentMemberDto _$CurrentMemberDtoFromJson(Map<String, dynamic> json) =>
       grade: (json['grade'] as num?)?.toInt() ?? 0,
       department: $enumDecodeNullable(
               _$DepartmentTypeEnumMap, json['department'],
-              unknownValue: DepartmentType.sw,
-            ) ??
+              unknownValue: DepartmentType.sw) ??
           DepartmentType.sw,
       gender: $enumDecodeNullable(_$GenderTypeEnumMap, json['gender'],
-              unknownValue: GenderType.male,
-            ) ??
+              unknownValue: GenderType.male) ??
           GenderType.male,
       status: $enumDecodeNullable(_$OutingStatusTypeEnumMap, json['status'],
-              unknownValue: OutingStatusType.coming,
-            ) ??
+              unknownValue: OutingStatusType.coming) ??
           OutingStatusType.coming,
-      profileImageUrl: CurrentMemberDto._profileImageUrlFromJson(json),
+      profileImageUrl:
+          CurrentMemberDto._profileImageUrlFromJson(json['profileImageUrl']),
     );
 
 Map<String, dynamic> _$CurrentMemberDtoToJson(CurrentMemberDto instance) =>

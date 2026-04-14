@@ -1,29 +1,57 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:goms/core/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
+import 'package:goms/features/map/data/map_constants.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/shared/presentation/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
+import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/shared/presentation/widgets/place_container.dart';
 
-class MapMainOverlay extends StatelessWidget {
+class MapMainOverlay extends ConsumerStatefulWidget {
   final MapScreenState state;
+  final PopularPlace? selectedPlace;
+  final VoidCallback? onSelectedPlaceDismiss;
 
   const MapMainOverlay({
     super.key,
     required this.state,
+    this.selectedPlace,
+    this.onSelectedPlaceDismiss,
   });
 
   @override
+  ConsumerState<MapMainOverlay> createState() => _MapMainOverlayState();
+}
+
+class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
+  late final TextEditingController _searchController;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final state = widget.state;
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
     final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
@@ -41,7 +69,22 @@ class MapMainOverlay extends StatelessWidget {
             horizontalPadding,
             0,
           ),
-          child: const SearchTextField(),
+          child: SearchTextField(
+            controller: _searchController,
+            onChanged: (value) {
+              if (value.trim().isEmpty) {
+                ref.read(placeSearchKeywordProvider.notifier).state = '';
+              }
+            },
+            onSubmitted: (value) {
+              ref.read(placeSearchKeywordProvider.notifier).state =
+                  value.trim();
+            },
+            onBackPressed: () {
+              _searchController.clear();
+              ref.read(placeSearchKeywordProvider.notifier).state = '';
+            },
+          ),
         ),
         Expanded(
           child: Stack(
@@ -66,17 +109,21 @@ class MapMainOverlay extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            if (widget.selectedPlace != null) ...[
+                              _SelectedPlaceSection(
+                                place: widget.selectedPlace!,
+                                onDismiss: widget.onSelectedPlaceDismiss,
+                              ),
+                              AppGap.v24,
+                            ],
                             _PopularPlacesSection(
                               isLight: isLight,
-                              status: state.status,
-                              popularPlaces: state.popularPlaces,
+                              state: state,
                             ),
                             AppGap.v24,
                             _MyActivitySection(
                               isLight: isLight,
-                              popularPlaces: state.popularPlaces,
                               reviewModels: state.reviewModels,
-                              recommendedCount: state.recommendedCount,
                               reviewCount: state.reviewCount,
                             ),
                             AppGap.v24,
@@ -104,134 +151,336 @@ class MapMainOverlay extends StatelessWidget {
 
 class _PopularPlacesSection extends StatelessWidget {
   final bool isLight;
-  final MapScreenStatus status;
-  final List<PopularPlace> popularPlaces;
+  final MapScreenState state;
 
   const _PopularPlacesSection({
     required this.isLight,
-    required this.status,
-    required this.popularPlaces,
+    required this.state,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
+    return Consumer(
+      builder: (context, ref, child) {
+        final searchKeyword = ref.watch(placeSearchKeywordProvider);
+        final searchResultsAsync = ref.watch(placeSearchResultsProvider);
+        final isSearching = searchKeyword.trim().isNotEmpty;
+
+        final popularPlaces = isSearching
+            ? searchResultsAsync.asData?.value
+                    .map(_toPopularPlace)
+                    .toList(growable: false) ??
+                const <PopularPlace>[]
+            : state.popularPlaces;
+        final status = isSearching
+            ? (searchResultsAsync.isLoading
+                ? MapScreenStatus.loading
+                : MapScreenStatus.success)
+            : state.status;
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '인기 장소',
-              style: AppTextStyles.title3.copyWith(
-                color: _mainTextColor(isLight),
-              ),
+            Row(
+              children: [
+                Text(
+                  isSearching ? '검색 결과' : '인기 장소',
+                  style: AppTextStyles.title3.copyWith(
+                    color: _mainTextColor(isLight),
+                  ),
+                ),
+                AppGap.h4,
+                if (!isSearching)
+                  const Icon(
+                    Icons.local_fire_department_rounded,
+                    size: 18,
+                    color: AppColors.negative,
+                  ),
+              ],
             ),
-            AppGap.h4,
-            AppIcons.fire(width: 18, height: 18, color: AppColors.negative),
+            AppGap.v16,
+            if (status == MapScreenStatus.loading && popularPlaces.isEmpty)
+              const Center(child: CircularProgressIndicator())
+            else if (popularPlaces.isEmpty)
+              Text(
+                isSearching ? '검색 결과가 없습니다.' : '표시할 장소가 없습니다.',
+                style: AppTextStyles.text3.copyWith(
+                  color: _subTextColor(isLight),
+                ),
+              )
+            else
+              ...popularPlaces.map(
+                (place) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: PlaceContainer(
+                    placeName: place.name,
+                    category: place.category,
+                    address: place.address,
+                    review: place.review,
+                    recommended: place.recommended,
+                    isLiked: place.isRecommended,
+                    distanceMeters: place.distanceMeters,
+                    onTap: () =>
+                        context.push(RoutePath.mapDetail, extra: place),
+                    onLikePressed: place.placeId == null
+                        ? null
+                        : () async {
+                            try {
+                              await ref
+                                  .read(mapScreenProvider.notifier)
+                                  .toggleRecommendation(place);
+                            } catch (_) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('추천 상태를 변경하지 못했습니다.'),
+                                  backgroundColor: AppColors.negative,
+                                ),
+                              );
+                            }
+                          },
+                  ),
+                ),
+              ),
           ],
-        ),
-        AppGap.v16,
-        if (status == MapScreenStatus.loading && popularPlaces.isEmpty)
-          const Center(child: CircularProgressIndicator())
-        else if (popularPlaces.isEmpty)
-          Text(
-            '표시할 장소가 없습니다.',
-            style: AppTextStyles.text3.copyWith(
-              color: _subTextColor(isLight),
-            ),
-          )
-        else
-          ...popularPlaces.map(
-            (place) => Padding(
-              padding: const EdgeInsets.only(bottom: 12),
-              child: PlaceContainer(
-                placeName: place.name,
-                category: place.category,
-                address: place.address,
-                review: place.review,
-                recommended: place.recommended,
-                distanceMeters: place.distanceMeters,
-                onTap: () => context.push(RoutePath.mapDetail, extra: place),
+        );
+      },
+    );
+  }
+}
+
+class _SelectedPlaceSection extends ConsumerWidget {
+  final PopularPlace place;
+  final VoidCallback? onDismiss;
+
+  const _SelectedPlaceSection({
+    required this.place,
+    this.onDismiss,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.s16),
+      decoration: BoxDecoration(
+        color: context.mapContainerColor,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '선택한 장소',
+                  style: AppTextStyles.title3.copyWith(
+                    color: context.mainTextColor,
+                  ),
+                ),
               ),
-            ),
+              if (onDismiss != null)
+                IconButton(
+                  visualDensity: VisualDensity.compact,
+                  splashRadius: 18,
+                  onPressed: onDismiss,
+                  icon: Icon(
+                    Icons.close_rounded,
+                    size: 18,
+                    color: context.sub2Color,
+                  ),
+                ),
+            ],
           ),
-      ],
+          AppGap.v8,
+          Text(
+            place.category,
+            style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
+          ),
+          AppGap.v4,
+          Text(
+            place.name,
+            style: AppTextStyles.text1.copyWith(color: context.mainTextColor),
+          ),
+          AppGap.v4,
+          Text(
+            place.address,
+            style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
+          ),
+          AppGap.v12,
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () =>
+                      context.push(RoutePath.mapDetail, extra: place),
+                  child: const Text('자세히 보기'),
+                ),
+              ),
+              AppGap.h8,
+              SizedBox(
+                width: 44,
+                height: 44,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: place.placeId == null
+                      ? null
+                      : () async {
+                          try {
+                            await ref
+                                .read(mapScreenProvider.notifier)
+                                .toggleRecommendation(place);
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('추천 상태를 변경하지 못했습니다.'),
+                                backgroundColor: AppColors.negative,
+                              ),
+                            );
+                          }
+                        },
+                  icon: place.isRecommended
+                      ? const Icon(
+                          Icons.favorite_rounded,
+                          color: AppColors.negative,
+                        )
+                      : Icon(
+                          Icons.favorite_border_rounded,
+                          color: context.sub2Color,
+                        ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
 
 class _MyActivitySection extends StatelessWidget {
   final bool isLight;
-  final List<PopularPlace> popularPlaces;
   final List<MapScreenReviewModel> reviewModels;
-  final int recommendedCount;
   final int reviewCount;
 
   const _MyActivitySection({
     required this.isLight,
-    required this.popularPlaces,
     required this.reviewModels,
-    required this.recommendedCount,
     required this.reviewCount,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '내 활동',
-          style: AppTextStyles.title3.copyWith(
-            color: _mainTextColor(isLight),
-          ),
-        ),
-        AppGap.v16,
-        _ActivityCountRow(
-          isLight: isLight,
-          label: '추천한 가게',
-          count: recommendedCount,
-          unit: '곳',
-          labelStyle: AppTextStyles.text1,
-          countStyle: AppTextStyles.text3,
-        ),
-        AppGap.v12,
-        ...popularPlaces.take(2).map(
-              (place) => Padding(
-                padding: const EdgeInsets.only(bottom: 12),
-                child: PlaceContainer(
-                  placeName: place.name,
-                  category: place.category,
-                  address: place.address,
-                  review: place.review,
-                  recommended: place.recommended,
-                  distanceMeters: place.distanceMeters,
-                  onTap: () => context.push(RoutePath.mapDetail, extra: place),
-                ),
+    return Consumer(
+      builder: (context, ref, child) {
+        final recommendedCountAsync = ref.watch(recommendedPlacesCountProvider);
+        final recommendedPlacesAsync = ref.watch(recommendedPlacesProvider);
+        final recommendedPlaces = recommendedPlacesAsync.asData?.value
+                .map(_toPopularPlace)
+                .toList(growable: false) ??
+            const <PopularPlace>[];
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '내 활동',
+              style: AppTextStyles.title3.copyWith(
+                color: _mainTextColor(isLight),
               ),
             ),
-        AppGap.v12,
-        _ActivityCountRow(
-          isLight: isLight,
-          label: '작성한 후기',
-          count: reviewCount,
-          unit: '건',
-          labelStyle: AppTextStyles.text1,
-          countStyle: AppTextStyles.text3,
-        ),
-        AppGap.v12,
-        ...reviewModels.map(
-          (review) => Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _ReviewCard(
-              review: review,
+            AppGap.v16,
+            _ActivityCountRow(
               isLight: isLight,
+              label: '추천한 가게',
+              count: recommendedCountAsync.asData?.value ?? 0,
+              unit: '곳',
+              labelStyle: AppTextStyles.text1,
+              countStyle: AppTextStyles.text3,
             ),
-          ),
-        ),
-      ],
+            AppGap.v12,
+            if (recommendedPlacesAsync.isLoading && recommendedPlaces.isEmpty)
+              const Center(child: CircularProgressIndicator())
+            else if (recommendedPlaces.isEmpty)
+              Text(
+                '아직 추천한 장소가 없습니다.',
+                style: AppTextStyles.text3.copyWith(
+                  color: _subTextColor(isLight),
+                ),
+              )
+            else
+              ...recommendedPlaces.take(2).map(
+                    (place) => Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: PlaceContainer(
+                        placeName: place.name,
+                        category: place.category,
+                        address: place.address,
+                        review: place.review,
+                        recommended: place.recommended,
+                        isLiked: place.isRecommended,
+                        distanceMeters: place.distanceMeters,
+                        onTap: () =>
+                            context.push(RoutePath.mapDetail, extra: place),
+                        onLikePressed: place.placeId == null
+                            ? null
+                            : () async {
+                                try {
+                                  await ref
+                                      .read(mapScreenProvider.notifier)
+                                      .toggleRecommendation(place);
+                                  ref.invalidate(recommendedPlacesProvider);
+                                  ref.invalidate(
+                                    recommendedPlacesCountProvider,
+                                  );
+                                } catch (_) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('추천 상태를 변경하지 못했습니다.'),
+                                      backgroundColor: AppColors.negative,
+                                    ),
+                                  );
+                                }
+                              },
+                      ),
+                    ),
+                  ),
+            AppGap.v12,
+            _ActivityCountRow(
+              isLight: isLight,
+              label: '작성한 후기',
+              count: reviewCount,
+              unit: '건',
+              labelStyle: AppTextStyles.text1,
+              countStyle: AppTextStyles.text3,
+            ),
+            if (reviewModels.isNotEmpty) ...[
+              AppGap.v12,
+              ...reviewModels.map(
+                (review) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: _ReviewCard(
+                    review: review,
+                    isLight: isLight,
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
+}
+
+PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
+  return PopularPlace.fromRecommendedPlace(
+    place,
+    fallbackCoordinate: gomsFallbackSchoolCoordinate,
+  );
 }
 
 class _ReviewCard extends StatelessWidget {

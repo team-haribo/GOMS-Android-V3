@@ -1,6 +1,10 @@
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'recommended_place_response.g.dart';
+
+@JsonSerializable(createToJson: false)
 class RecommendedPlaceResponse {
   const RecommendedPlaceResponse({
     required this.placeId,
@@ -14,28 +18,32 @@ class RecommendedPlaceResponse {
     this.longitude,
   });
 
-  factory RecommendedPlaceResponse.fromJson(Map<String, dynamic> json) {
-    return RecommendedPlaceResponse(
-      placeId: (json['placeId'] as num?)?.toInt() ?? 0,
-      reviewCount: (json['reviewCount'] as num?)?.toInt() ?? 0,
-      recommendCount: (json['recommendCount'] as num?)?.toInt() ?? 0,
-      recommended: json['recommended'] as bool? ?? false,
-      placeName: json['placeName'] as String?,
-      category: json['category'] as String?,
-      address: json['address'] as String?,
-      latitude: (json['latitude'] as num?)?.toDouble(),
-      longitude: (json['longitude'] as num?)?.toDouble(),
-    );
-  }
+  factory RecommendedPlaceResponse.fromJson(Map<String, dynamic> json) =>
+      _$RecommendedPlaceResponseFromJson(json);
 
+  @JsonKey(defaultValue: 0, fromJson: _toInt)
   final int placeId;
+
+  @JsonKey(defaultValue: 0, fromJson: _toInt)
   final int reviewCount;
+
+  @JsonKey(defaultValue: 0, fromJson: _toInt)
   final int recommendCount;
+
+  @JsonKey(defaultValue: false)
   final bool recommended;
   final String? placeName;
+
+  @JsonKey(readValue: _readCategory)
   final String? category;
+
+  @JsonKey(readValue: _readAddress)
   final String? address;
+
+  @JsonKey(fromJson: _toNullableDouble)
   final double? latitude;
+
+  @JsonKey(fromJson: _toNullableDouble)
   final double? longitude;
 
   RecommendedPlaceEntity toEntity() {
@@ -55,3 +63,13 @@ class RecommendedPlaceResponse {
     );
   }
 }
+
+Object? _readCategory(Map<dynamic, dynamic> json, String key) =>
+    json[key] ?? json['categoryGroupName'] ?? json['categoryName'];
+
+Object? _readAddress(Map<dynamic, dynamic> json, String key) =>
+    json['roadAddress'] ?? json[key];
+
+int _toInt(num? value) => value?.toInt() ?? 0;
+
+double? _toNullableDouble(num? value) => value?.toDouble();

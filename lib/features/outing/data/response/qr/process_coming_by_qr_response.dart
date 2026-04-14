@@ -14,7 +14,7 @@ abstract class ProcessComingByQrResponse with _$ProcessComingByQrResponse {
     required OutingStatusType status,
     required DateTime comingAt,
     required bool lateCreated,
-    required int lateId,
+    required int? lateId,
   }) = _ProcessComingByQrResponse;
 
   factory ProcessComingByQrResponse.fromJson(Map<String, dynamic> json) =>

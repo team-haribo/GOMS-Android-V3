@@ -6,13 +6,28 @@ import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
+import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/domain/usecases/get_recommended_places_usecase.dart';
 
 void main() {
   group('MapScreenNotifier', () {
-    test('hydrates popular places from server fields only', () async {
+    test('loads hot place markers first', () async {
+      final repository = _TrackingRecommendedPlaceRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      expect(repository.hotPlacesRequested, isTrue);
+      expect(repository.allPlacesRequested, isFalse);
+    });
+
+    test('hydrates hot places from server fields only', () async {
       const repository = _FakeRecommendedPlaceRepository([
         RecommendedPlaceEntity(
           placeId: 5001,
@@ -27,9 +42,7 @@ void main() {
       ]);
       final container = ProviderContainer(
         overrides: [
-          getRecommendedPlacesUseCaseProvider.overrideWithValue(
-            const GetRecommendedPlacesUseCase(repository),
-          ),
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -41,16 +54,17 @@ void main() {
           state.popularPlaces.firstWhere((place) => place.placeId == 5001);
 
       expect(state.status, MapScreenStatus.success);
-      expect(state.popularPlaces, hasLength(3));
-      expect(state.recommendedCount, 3);
-      expect(state.reviewCount, 9);
+      expect(state.popularPlaces, hasLength(1));
+      expect(state.recommendedCount, 0);
+      expect(state.reviewCount, 0);
       expect(place.placeId, 5001);
       expect(place.name, '테스트 카페');
       expect(place.category, '카페');
       expect(place.address, '광주광역시 테스트로 1');
       expect(place.coordinate.latitude, 35.124);
       expect(place.recommended, 5);
-      expect(state.reviewModels, hasLength(2));
+      expect(place.isRecommended, isTrue);
+      expect(state.reviewModels, isEmpty);
     });
 
     test('falls back to placeholder values when server fields are missing',
@@ -65,9 +79,7 @@ void main() {
       ]);
       final container = ProviderContainer(
         overrides: [
-          getRecommendedPlacesUseCaseProvider.overrideWithValue(
-            const GetRecommendedPlacesUseCase(repository),
-          ),
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -79,7 +91,7 @@ void main() {
           state.popularPlaces.firstWhere((place) => place.placeId == 999);
 
       expect(state.status, MapScreenStatus.success);
-      expect(state.popularPlaces, hasLength(3));
+      expect(state.popularPlaces, hasLength(1));
       expect(place.placeId, 999);
       expect(place.name, '추천 장소 999');
       expect(place.address, gomsSchoolAddress);
@@ -88,13 +100,32 @@ void main() {
       expect(place.recommended, 2);
     });
 
-    test('returns failure state when recommended API fails', () async {
+    test('falls back to all places when hot place API fails', () async {
+      final repository = _HotPlaceFailingRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      final state = container.read(mapScreenProvider);
+
+      expect(state.status, MapScreenStatus.success);
+      expect(state.errorMessage, isNull);
+      expect(state.popularPlaces, hasLength(1));
+      expect(state.popularPlaces.first.name, '대체 장소');
+      expect(repository.allPlacesRequested, isTrue);
+      expect(state.recommendedCount, 0);
+    });
+
+    test('returns failure state when every place API fails', () async {
       final repository = _ThrowingRecommendedPlaceRepository();
       final container = ProviderContainer(
         overrides: [
-          getRecommendedPlacesUseCaseProvider.overrideWithValue(
-            GetRecommendedPlacesUseCase(repository),
-          ),
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -117,15 +148,140 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
   final List<RecommendedPlaceEntity> places;
 
   @override
+  Future<List<RecommendedPlaceEntity>> getPlaces() async => places;
+
+  @override
+  Future<void> createReview({
+    required int placeId,
+    required String content,
+  }) async {}
+
+  @override
+  Future<RecommendedPlaceEntity> getPlaceDetail(int placeId) async =>
+      places.first;
+
+  @override
+  Future<List<PlaceReviewEntity>> getPlaceReviews(int placeId) async =>
+      const [];
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async =>
+      places;
+
+  @override
   Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async => places;
+
+  @override
+  Future<int> getRecommendedPlacesCount() async => places.length;
+
+  @override
+  Future<bool> recommendPlace(int placeId) async => true;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> searchPlaces(String keyword) async =>
+      places;
+
+  @override
+  Future<bool> unRecommendPlace(int placeId) async => false;
+}
+
+class _TrackingRecommendedPlaceRepository
+    extends _FakeRecommendedPlaceRepository {
+  _TrackingRecommendedPlaceRepository() : super(const []);
+
+  bool hotPlacesRequested = false;
+  bool allPlacesRequested = false;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
+    allPlacesRequested = true;
+    return super.getPlaces();
+  }
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async {
+    hotPlacesRequested = true;
+    return const [];
+  }
 }
 
 class _ThrowingRecommendedPlaceRepository
     implements RecommendedPlaceRepository {
   @override
-  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() {
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
     throw DioException(
-      requestOptions: RequestOptions(path: '/api/v3/place/recommended'),
+      requestOptions: RequestOptions(path: '/api/v3/place'),
+    );
+  }
+
+  @override
+  Future<void> createReview({
+    required int placeId,
+    required String content,
+  }) async {}
+
+  @override
+  Future<RecommendedPlaceEntity> getPlaceDetail(int placeId) async {
+    throw DioException(
+      requestOptions: RequestOptions(path: '/api/v3/place/$placeId'),
+    );
+  }
+
+  @override
+  Future<List<PlaceReviewEntity>> getPlaceReviews(int placeId) async =>
+      const [];
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) {
+    throw DioException(
+      requestOptions: RequestOptions(path: '/api/v3/place/hot-place'),
+    );
+  }
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async => const [];
+
+  @override
+  Future<int> getRecommendedPlacesCount() async => 0;
+
+  @override
+  Future<bool> recommendPlace(int placeId) async => true;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> searchPlaces(String keyword) async =>
+      const [];
+
+  @override
+  Future<bool> unRecommendPlace(int placeId) async => false;
+}
+
+class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {
+  _HotPlaceFailingRepository()
+      : super(const [
+          RecommendedPlaceEntity(
+            placeId: 77,
+            placeName: '대체 장소',
+            category: '카페',
+            address: '광주광역시 테스트로 77',
+            coordinate: MapCoordinate(latitude: 35.12, longitude: 126.88),
+            reviewCount: 3,
+            recommendCount: 4,
+            recommended: false,
+          ),
+        ]);
+
+  bool allPlacesRequested = false;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
+    allPlacesRequested = true;
+    return super.getPlaces();
+  }
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async {
+    throw DioException(
+      requestOptions: RequestOptions(path: '/api/v3/place/hot-place'),
     );
   }
 }

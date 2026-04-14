@@ -17,6 +17,8 @@ class ProfileContainer extends ConsumerWidget {
   final String profileImageUrl;
   final bool showProfileImageErrorMessage;
   final String profileImageErrorMessage;
+  final bool showLateCount;
+  final bool showInfoBelowName;
 
   const ProfileContainer({
     super.key,
@@ -28,6 +30,8 @@ class ProfileContainer extends ConsumerWidget {
     required this.profileImageUrl,
     this.showProfileImageErrorMessage = false,
     this.profileImageErrorMessage = '프로필 이미지를 불러오지 못했어요.',
+    this.showLateCount = true,
+    this.showInfoBelowName = false,
   });
 
   @override
@@ -36,9 +40,12 @@ class ProfileContainer extends ConsumerWidget {
       AsyncData(:final value) => value.showClock,
       _ => false,
     };
+    final height = showClock
+        ? context.responsive(compact: 88, normal: 96, tablet: 104)
+        : context.responsive(compact: 76, normal: 84, tablet: 92);
 
     return Container(
-      height: context.responsive(compact: 76, normal: 84, tablet: 92),
+      height: height,
       width: double.infinity,
       decoration: BoxDecoration(
         color: context.surfaceColor,
@@ -49,50 +56,28 @@ class ProfileContainer extends ConsumerWidget {
         child: Row(
           children: [
             if (!showClock) ...[
-              Container(
-                alignment: Alignment.centerLeft,
-                child: ProfileAvatar(
-                  radius:
-                      context.responsive(compact: 22, normal: 26, tablet: 28),
-                  imageUrl: profileImageUrl,
-                  backgroundColor: context.backgroundColor,
-                  showErrorMessage: showProfileImageErrorMessage,
-                  errorMessage: profileImageErrorMessage,
-                ),
+              ProfileAvatar(
+                radius: context.responsive(compact: 22, normal: 26, tablet: 28),
+                imageUrl: profileImageUrl,
+                backgroundColor: context.backgroundColor,
+                showErrorMessage: showProfileImageErrorMessage,
+                errorMessage: profileImageErrorMessage,
               ),
+              AppGap.h12,
             ],
-            if (!showClock) ...[AppGap.h12],
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      children: [
-                        Text(
-                          name,
-                          style: AppTextStyles.title3.copyWith(
-                            color: context.mainTextColor,
-                          ),
-                        ),
-                        AppGap.h8,
-                        Text(
-                          '$grade기| $major과',
-                          style: AppTextStyles.text3.copyWith(
-                            color: context.sub2Color,
-                          ),
-                        ),
-                      ],
+                  _buildIdentity(context, showClock),
+                  if (showLateCount)
+                    Text(
+                      '지각 횟수: $lateCount회',
+                      style: AppTextStyles.text3.copyWith(
+                        color: context.sub1Color,
+                      ),
                     ),
-                  ),
-                  Text(
-                    '지각 횟수: $lateCount회',
-                    style: AppTextStyles.text3.copyWith(
-                      color: context.sub1Color,
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -119,6 +104,48 @@ class ProfileContainer extends ConsumerWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildIdentity(BuildContext context, bool showClock) {
+    if (showClock || showInfoBelowName) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildNameText(context),
+          AppGap.v2,
+          _buildInfoText(context),
+        ],
+      );
+    }
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        children: [
+          _buildNameText(context),
+          AppGap.h8,
+          _buildInfoText(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNameText(BuildContext context) {
+    return Text(
+      name,
+      style: AppTextStyles.title3.copyWith(
+        color: context.mainTextColor,
+      ),
+    );
+  }
+
+  Widget _buildInfoText(BuildContext context) {
+    return Text(
+      '$grade기 | $major과',
+      style: AppTextStyles.text3.copyWith(
+        color: context.sub2Color,
       ),
     );
   }

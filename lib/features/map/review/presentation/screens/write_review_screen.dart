@@ -13,6 +13,7 @@ import 'package:goms/core/widgets/buttons/confirm_button.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {
+  final int? placeId;
   final String placeName;
   final String category;
   final String address;
@@ -21,6 +22,7 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
 
   const WriteReviewScreen({
     super.key,
+    required this.placeId,
     required this.placeName,
     required this.category,
     required this.address,
@@ -33,12 +35,49 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
 }
 
 class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
+  late final ProviderSubscription<WriteReviewState> _writeReviewSubscription;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(writeReviewProvider.notifier).reset();
     });
+    _writeReviewSubscription = ref.listenManual<WriteReviewState>(
+      writeReviewProvider,
+      (previous, next) async {
+        if (!mounted) return;
+        if (next.status == WriteReviewStatus.success) {
+          await GomsDialog.single(
+            title: '후기 등록 완료',
+            content: '후기를 성공적으로 등록했습니다!',
+            confirmText: '돌아가기',
+            onConfirm: () {
+              if (context.mounted) context.pop();
+            },
+          ).show(context);
+        } else if (next.status == WriteReviewStatus.failure &&
+            next.errorMessage != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            final notifier = ref.read(writeReviewProvider.notifier);
+            notifier.clearError();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(next.errorMessage!),
+                backgroundColor: AppColors.negative,
+              ),
+            );
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _writeReviewSubscription.close();
+    super.dispose();
   }
 
   void _onNextPressed(WriteReviewNotifier notifier) {
@@ -48,6 +87,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
       cancelText: '취소',
       confirmText: '등록하기',
       onConfirm: () => notifier.submitReview(
+        placeId: widget.placeId,
         placeName: widget.placeName,
         category: widget.category,
         address: widget.address,
@@ -63,29 +103,6 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final notifier = ref.read(writeReviewProvider.notifier);
     final isLoading = state.status == WriteReviewStatus.loading;
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-
-    ref.listen(writeReviewProvider, (previous, next) async {
-      if (!mounted) return;
-      if (next.status == WriteReviewStatus.success) {
-        await GomsDialog.single(
-          title: '후기 등록 완료',
-          content: '후기를 성공적으로 등록했습니다!',
-          confirmText: '돌아가기',
-          onConfirm: () {
-            if (context.mounted) context.pop();
-          },
-        ).show(context);
-      } else if (next.status == WriteReviewStatus.failure &&
-          next.errorMessage != null) {
-        notifier.clearError();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.errorMessage!),
-            backgroundColor: AppColors.negative,
-          ),
-        );
-      }
-    });
 
     return BaseScaffold(
       showAppBar: true,

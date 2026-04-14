@@ -18,12 +18,51 @@ class DeleteAccountScreen extends ConsumerStatefulWidget {
 }
 
 class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
+  late final ProviderSubscription<DeleteAccountState> _deleteAccountSubscription;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(deleteAccountProvider.notifier).reset();
     });
+    _deleteAccountSubscription = ref.listenManual<DeleteAccountState>(
+      deleteAccountProvider,
+      (previous, next) async {
+        if (!mounted) return;
+        if (next.status == DeleteAccountStatus.success) {
+          await GomsDialog.single(
+            title: '회원 탈퇴 완료',
+            content: '그동안 GOMS를 이용해주셔서 감사합니다.\n안녕히 가세요.',
+            confirmText: '완료',
+            onConfirm: () {
+              if (context.mounted) {
+                context.go(RoutePath.onboarding);
+              }
+            },
+          ).show(context);
+        } else if (next.status == DeleteAccountStatus.failure &&
+            next.errorMessage != null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            final notifier = ref.read(deleteAccountProvider.notifier);
+            notifier.clearError();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(next.errorMessage!),
+                backgroundColor: AppColors.negative,
+              ),
+            );
+          });
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _deleteAccountSubscription.close();
+    super.dispose();
   }
 
   @override
@@ -31,31 +70,6 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
     final deleteAccountState = ref.watch(deleteAccountProvider);
     final notifier = ref.read(deleteAccountProvider.notifier);
     final isLoading = deleteAccountState.status == DeleteAccountStatus.loading;
-
-    ref.listen(deleteAccountProvider, (previous, next) async {
-      if (!mounted) return;
-      if (next.status == DeleteAccountStatus.success) {
-        await GomsDialog.single(
-          title: '회원 탈퇴 완료',
-          content: '그동안 GOMS를 이용해주셔서 감사합니다.\n안녕히 가세요.',
-          confirmText: '완료',
-          onConfirm: () {
-            if (context.mounted) {
-              context.go(RoutePath.onboarding);
-            }
-          },
-        ).show(context);
-      } else if (next.status == DeleteAccountStatus.failure &&
-          next.errorMessage != null) {
-        notifier.clearError();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(next.errorMessage!),
-            backgroundColor: AppColors.negative,
-          ),
-        );
-      }
-    });
 
     return AuthBaseScreen(
       title: '회원 탈퇴',

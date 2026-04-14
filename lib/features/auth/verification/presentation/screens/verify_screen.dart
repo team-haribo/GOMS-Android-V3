@@ -23,9 +23,16 @@ class VerifyScreen extends ConsumerStatefulWidget {
 }
 
 class _VerifyScreenState extends ConsumerState<VerifyScreen> {
+  late final ProviderSubscription<VerifyState> _verifySubscription;
+
   void _clearVerificationState() {
     ref.read(authFlowProvider.notifier).clearVerifiedToken();
-    ref.read(verifyProvider.notifier).reset();
+    ref.read(verifyProvider.notifier).clear();
+  }
+
+  void _handleBack() {
+    _clearVerificationState();
+    context.pop();
   }
 
   @override
@@ -34,6 +41,51 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(verifyProvider.notifier).reset();
     });
+    _verifySubscription = ref.listenManual<VerifyState>(verifyProvider, (
+      previous,
+      next,
+    ) async {
+      if (next.status == VerifyStatus.success) {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (!mounted) return;
+          final notifier = ref.read(verifyProvider.notifier);
+          notifier.resetStatus();
+          final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
+          await GomsDialog.single(
+            title: '인증 확인',
+            content: isResetFlow
+                ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
+                : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
+            onConfirm: () {
+              context.go(widget.redirectPath ?? RoutePath.password);
+            },
+          ).show(context);
+          notifier.reset();
+        });
+      } else if (next.status == VerifyStatus.failure) {
+        final message = next.errorMessage ?? next.codeError;
+        if (message == null) {
+          return;
+        }
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted) return;
+          ref.read(verifyProvider.notifier).resetStatus();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(message),
+              backgroundColor: AppColors.negative,
+            ),
+          );
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _verifySubscription.close();
+    super.dispose();
   }
 
   @override
@@ -41,36 +93,6 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
     final verifyState = ref.watch(verifyProvider);
     final notifier = ref.read(verifyProvider.notifier);
     final isLoading = verifyState.status == VerifyStatus.loading;
-
-    ref.listen(verifyProvider, (previous, next) async {
-      if (next.status == VerifyStatus.success) {
-        notifier.resetStatus();
-        final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
-        await GomsDialog.single(
-          title: '인증 확인',
-          content: isResetFlow
-              ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
-              : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
-          onConfirm: () {
-            context.go(widget.redirectPath ?? RoutePath.password);
-          },
-        ).show(context);
-        notifier.reset();
-      } else if (next.status == VerifyStatus.failure) {
-        notifier.resetStatus();
-        final message = next.errorMessage ?? next.codeError;
-        if (message == null) {
-          return;
-        }
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(message),
-            backgroundColor: AppColors.negative,
-          ),
-        );
-      }
-    });
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -83,6 +105,7 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
         confirmText: '인증',
         isConfirmEnabled: notifier.isFormValid,
         onConfirm: notifier.isFormValid && !isLoading ? notifier.verify : null,
+        onBackPressed: _handleBack,
         showAppBar: true,
         showAppBarLogo: false,
         isLoading: isLoading,

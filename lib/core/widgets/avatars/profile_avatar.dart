@@ -24,6 +24,31 @@ class ProfileAvatar extends StatefulWidget {
 }
 
 class _ProfileAvatarState extends State<ProfileAvatar> {
+  Widget _buildDefaultAvatar(double diameter) {
+    return AppIcons.profileCircle(width: diameter, height: diameter);
+  }
+
+  Widget _buildLoadingAvatar(double diameter) {
+    return SizedBox(
+      width: diameter,
+      height: diameter,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Opacity(
+            opacity: 0.18,
+            child: _buildDefaultAvatar(diameter),
+          ),
+          SizedBox(
+            width: diameter * 0.34,
+            height: diameter * 0.34,
+            child: const CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final imageUrl = (widget.imageUrl ?? '').trim();
@@ -33,7 +58,7 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
       return CircleAvatar(
         radius: widget.radius,
         backgroundColor: widget.backgroundColor,
-        child: AppIcons.profileCircle(width: diameter, height: diameter),
+        child: _buildDefaultAvatar(diameter),
       );
     }
 
@@ -46,14 +71,13 @@ class _ProfileAvatarState extends State<ProfileAvatar> {
           width: diameter,
           height: diameter,
           fit: BoxFit.cover,
-          placeholder:
-              AppIcons.profileCircle(width: diameter, height: diameter),
+          placeholder: _buildLoadingAvatar(diameter),
           errorBuilder: (_, error) {
             Logger.e(
               'ProfileAvatar image load failed. hasImageUrl=${imageUrl.isNotEmpty} error=$error',
               tag: 'PROFILE',
             );
-            return AppIcons.profileCircle(width: diameter, height: diameter);
+            return _buildDefaultAvatar(diameter);
           },
         ),
       ),

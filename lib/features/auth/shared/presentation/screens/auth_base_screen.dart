@@ -17,6 +17,7 @@ class AuthBaseScreen extends ConsumerWidget {
   final bool showAppBar;
   final bool showAppBarLogo;
   final List<Widget>? appBarActions;
+  final VoidCallback? onBackPressed;
 
   const AuthBaseScreen({
     super.key,
@@ -29,6 +30,7 @@ class AuthBaseScreen extends ConsumerWidget {
     this.showAppBar = true,
     this.showAppBarLogo = false,
     this.appBarActions,
+    this.onBackPressed,
   });
 
   @override
@@ -38,7 +40,7 @@ class AuthBaseScreen extends ConsumerWidget {
     return BaseScaffold(
       showAppBar: showAppBar,
       showAppBarLogo: showAppBarLogo,
-      onBackPressed: () => Navigator.of(context).maybePop(),
+      onBackPressed: onBackPressed ?? () => Navigator.of(context).maybePop(),
       appBarActions: appBarActions,
       body: LayoutBuilder(
         builder: (context, constraints) {

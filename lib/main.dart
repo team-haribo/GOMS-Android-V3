@@ -47,13 +47,6 @@ Future<void> _bootstrapPlatformServices() async {
   }
 
   final skipFirebaseOnDebugX86 = await _shouldSkipFirebaseOnDebugX86Android();
-  /* if (skipFirebaseOnDebugX86) {
-    debugPrint(
-      'Skipping Firebase initialization on Android x86/x86_64 debug runtime '
-      'to avoid emulator low-memory kills.',
-    );
-    return;
-  }*/
 
   try {
     await Firebase.initializeApp(

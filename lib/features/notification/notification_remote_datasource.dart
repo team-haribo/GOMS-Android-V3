@@ -64,6 +64,7 @@ class NotificationRemoteDataSource {
       if (e.response?.statusCode == 404) return;
       print('삭제 실패: ${e.response?.statusCode}');
       rethrow;
+
     }
   }
 }

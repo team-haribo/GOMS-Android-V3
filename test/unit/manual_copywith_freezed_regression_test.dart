@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
@@ -46,6 +47,57 @@ void main() {
       expect(updated.recommendCount, 9);
       expect(updated.placeName, original.placeName);
       expect(updated.coordinate, original.coordinate);
+    });
+
+    test('PopularPlace.fromRecommendedPlace trims values and applies defaults',
+        () {
+      const place = RecommendedPlaceEntity(
+        placeId: 7,
+        reviewCount: 11,
+        recommendCount: 13,
+        recommended: true,
+        placeName: '  학생식당  ',
+        category: '  한식  ',
+        address: '  광주 광산구  ',
+        coordinate: MapCoordinate(latitude: 35.2, longitude: 126.8),
+      );
+
+      final popularPlace = PopularPlace.fromRecommendedPlace(place);
+
+      expect(popularPlace.placeId, 7);
+      expect(popularPlace.name, '학생식당');
+      expect(popularPlace.category, '한식');
+      expect(popularPlace.address, '광주 광산구');
+      expect(popularPlace.review, 11);
+      expect(popularPlace.recommended, 13);
+      expect(popularPlace.isRecommended, isTrue);
+      expect(
+        popularPlace.coordinate,
+        const MapCoordinate(latitude: 35.2, longitude: 126.8),
+      );
+    });
+
+    test('PopularPlace.fromRecommendedPlace supports fallback overrides', () {
+      const place = RecommendedPlaceEntity(
+        placeId: 9,
+        reviewCount: 1,
+        recommendCount: 2,
+        recommended: false,
+        placeName: '   ',
+        category: null,
+        address: '   ',
+        coordinate: null,
+      );
+
+      final popularPlace = PopularPlace.fromRecommendedPlace(
+        place,
+        fallbackAddress: gomsSchoolAddress,
+      );
+
+      expect(popularPlace.name, '추천 장소 9');
+      expect(popularPlace.category, '장소');
+      expect(popularPlace.address, gomsSchoolAddress);
+      expect(popularPlace.coordinate, gomsFallbackSchoolCoordinate);
     });
 
     test('StudentCouncilStudentEntity copyWith updates selected role only', () {

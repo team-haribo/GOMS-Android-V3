@@ -137,23 +137,10 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
   }
 
   PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
-    return PopularPlace(
-      placeId: place.placeId,
-      name: _displayName(place),
-      category: place.category ?? '장소',
-      address: place.address ?? gomsSchoolAddress,
-      review: place.reviewCount,
-      recommended: place.recommendCount,
-      isRecommended: place.recommended,
-      coordinate: place.coordinate ?? gomsFallbackSchoolCoordinate,
+    return PopularPlace.fromRecommendedPlace(
+      place,
+      fallbackAddress: gomsSchoolAddress,
+      fallbackCoordinate: gomsFallbackSchoolCoordinate,
     );
-  }
-
-  String _displayName(RecommendedPlaceEntity place) {
-    final value = place.placeName?.trim();
-    if (value == null || value.isEmpty) {
-      return '추천 장소 ${place.placeId}';
-    }
-    return value;
   }
 }

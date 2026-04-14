@@ -243,40 +243,8 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 }
 
 PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
-  final coordinate = place.coordinate;
-  if (coordinate == null) {
-    return PopularPlace(
-      placeId: place.placeId,
-      name: place.placeName?.trim().isNotEmpty == true
-          ? place.placeName!.trim()
-          : '추천 장소 ${place.placeId}',
-      category: (place.category?.trim().isNotEmpty == true)
-          ? place.category!.trim()
-          : '장소',
-      address: (place.address?.trim().isNotEmpty == true)
-          ? place.address!.trim()
-          : '-',
-      review: place.reviewCount,
-      recommended: place.recommendCount,
-      isRecommended: place.recommended,
-      coordinate: gomsFallbackSchoolCoordinate,
-    );
-  }
-
-  return PopularPlace(
-    placeId: place.placeId,
-    name: place.placeName?.trim().isNotEmpty == true
-        ? place.placeName!.trim()
-        : '추천 장소 ${place.placeId}',
-    category: (place.category?.trim().isNotEmpty == true)
-        ? place.category!.trim()
-        : '장소',
-    address: (place.address?.trim().isNotEmpty == true)
-        ? place.address!.trim()
-        : '-',
-    review: place.reviewCount,
-    recommended: place.recommendCount,
-    isRecommended: place.recommended,
-    coordinate: coordinate,
+  return PopularPlace.fromRecommendedPlace(
+    place,
+    fallbackCoordinate: gomsFallbackSchoolCoordinate,
   );
 }

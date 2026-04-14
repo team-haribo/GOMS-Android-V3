@@ -313,7 +313,8 @@ class _SelectedPlaceSection extends ConsumerWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => context.push(RoutePath.mapDetail, extra: place),
+                  onPressed: () =>
+                      context.push(RoutePath.mapDetail, extra: place),
                   child: const Text('자세히 보기'),
                 ),
               ),
@@ -341,7 +342,10 @@ class _SelectedPlaceSection extends ConsumerWidget {
                           }
                         },
                   icon: place.isRecommended
-                      ? const Icon(Icons.favorite_rounded, color: AppColors.negative)
+                      ? const Icon(
+                          Icons.favorite_rounded,
+                          color: AppColors.negative,
+                        )
                       : Icon(
                           Icons.favorite_border_rounded,
                           color: context.sub2Color,
@@ -473,21 +477,9 @@ class _MyActivitySection extends StatelessWidget {
 }
 
 PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
-  return PopularPlace(
-    placeId: place.placeId,
-    name: place.placeName?.trim().isNotEmpty == true
-        ? place.placeName!.trim()
-        : '추천 장소 ${place.placeId}',
-    category: (place.category?.trim().isNotEmpty == true)
-        ? place.category!.trim()
-        : '장소',
-    address: (place.address?.trim().isNotEmpty == true)
-        ? place.address!.trim()
-        : '-',
-    review: place.reviewCount,
-    recommended: place.recommendCount,
-    isRecommended: place.recommended,
-    coordinate: place.coordinate ?? gomsFallbackSchoolCoordinate,
+  return PopularPlace.fromRecommendedPlace(
+    place,
+    fallbackCoordinate: gomsFallbackSchoolCoordinate,
   );
 }
 

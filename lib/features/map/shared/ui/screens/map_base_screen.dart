@@ -37,10 +37,12 @@ class MapBaseScreen extends ConsumerStatefulWidget {
 
 class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   PopularPlace? _selectedPlace;
+  bool _didRequestInitialMapFetch = false;
 
   @override
   void initState() {
     super.initState();
+    _scheduleInitialMapFetch();
     _syncDirectionDestination();
   }
 
@@ -49,8 +51,28 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.place?.name != widget.place?.name ||
         oldWidget.type != widget.type) {
+      _scheduleInitialMapFetch();
       _syncDirectionDestination();
     }
+  }
+
+  void _scheduleInitialMapFetch() {
+    if (_didRequestInitialMapFetch) {
+      return;
+    }
+
+    if (widget.type != MapScreenType.main &&
+        widget.type != MapScreenType.detail) {
+      return;
+    }
+
+    _didRequestInitialMapFetch = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      ref.read(mapScreenProvider.notifier).fetchData();
+    });
   }
 
   void _syncDirectionDestination() {
@@ -114,8 +136,14 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
         }
         if (next.status == MapScreenStatus.failure &&
             next.errorMessage != null) {
-          ref.read(mapScreenProvider.notifier).clearError();
-          _showError(next.errorMessage!);
+          final message = next.errorMessage!;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            ref.read(mapScreenProvider.notifier).clearError();
+            _showError(message);
+          });
         }
       });
     }
@@ -127,8 +155,14 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
         }
         if (next.status == DirectionStatus.failure &&
             next.errorMessage != null) {
-          ref.read(directionProvider.notifier).clearError();
-          _showError(next.errorMessage!);
+          final message = next.errorMessage!;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) {
+              return;
+            }
+            ref.read(directionProvider.notifier).clearError();
+            _showError(message);
+          });
         }
       });
     }

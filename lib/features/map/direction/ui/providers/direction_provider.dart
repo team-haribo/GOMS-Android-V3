@@ -13,6 +13,7 @@ final directionProvider = NotifierProvider<DirectionNotifier, DirectionState>(
 );
 
 class DirectionNotifier extends Notifier<DirectionState> {
+  bool _didScheduleSchoolCoordinateInitialization = false;
   late final KakaoMobilityService _mobilityService;
   late final KakaoLocalService _localService;
   late final CurrentLocationService _currentLocationService;
@@ -26,7 +27,10 @@ class DirectionNotifier extends Notifier<DirectionState> {
     _mobilityService = ref.read(kakaoMobilityServiceProvider);
     _localService = ref.read(kakaoLocalServiceProvider);
     _currentLocationService = ref.read(currentLocationServiceProvider);
-    Future.microtask(_initializeSchoolCoordinate);
+    if (!_didScheduleSchoolCoordinateInitialization) {
+      _didScheduleSchoolCoordinateInitialization = true;
+      Future<void>(_initializeSchoolCoordinate);
+    }
     return DirectionState.initial().copyWith(departure: gomsSchoolName);
   }
 

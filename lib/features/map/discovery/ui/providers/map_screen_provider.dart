@@ -18,11 +18,14 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
 
   @override
   MapScreenState build() {
-    Future.microtask(fetchData);
     return MapScreenState.initial();
   }
 
   Future<void> fetchData() async {
+    if (!ref.mounted) {
+      return;
+    }
+
     state = state.copyWith(
       status: MapScreenStatus.loading,
       errorMessage: null,
@@ -30,6 +33,9 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
 
     try {
       final popularPlaces = await _loadMarkerPlaces();
+      if (!ref.mounted) {
+        return;
+      }
 
       state = state.copyWith(
         status: MapScreenStatus.success,
@@ -39,6 +45,9 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
         reviewCount: 0,
       );
     } catch (error, stackTrace) {
+      if (!ref.mounted) {
+        return;
+      }
       Logger.e(
         'Failed to load place markers.',
         tag: 'MAP',
@@ -115,6 +124,9 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
           .map((place) => _toPopularPlace(place))
           .toList(growable: false);
     } catch (error, stackTrace) {
+      if (!ref.mounted) {
+        return const <PopularPlace>[];
+      }
       Logger.e(
         'Hot place request failed. Falling back to all places.',
         tag: 'MAP',

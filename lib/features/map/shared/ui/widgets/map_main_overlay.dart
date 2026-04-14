@@ -21,12 +21,14 @@ import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
 class MapMainOverlay extends ConsumerStatefulWidget {
   final MapScreenState state;
   final PopularPlace? selectedPlace;
+  final ValueChanged<PopularPlace>? onPlaceTap;
   final VoidCallback? onSelectedPlaceDismiss;
 
   const MapMainOverlay({
     super.key,
     required this.state,
     this.selectedPlace,
+    this.onPlaceTap,
     this.onSelectedPlaceDismiss,
   });
 
@@ -119,12 +121,14 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                             _PopularPlacesSection(
                               isLight: isLight,
                               state: state,
+                              onPlaceTap: widget.onPlaceTap,
                             ),
                             AppGap.v24,
                             _MyActivitySection(
                               isLight: isLight,
                               reviewModels: state.reviewModels,
                               reviewCount: state.reviewCount,
+                              onPlaceTap: widget.onPlaceTap,
                             ),
                             AppGap.v24,
                           ],
@@ -152,10 +156,12 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
 class _PopularPlacesSection extends StatelessWidget {
   final bool isLight;
   final MapScreenState state;
+  final ValueChanged<PopularPlace>? onPlaceTap;
 
   const _PopularPlacesSection({
     required this.isLight,
     required this.state,
+    this.onPlaceTap,
   });
 
   @override
@@ -220,8 +226,13 @@ class _PopularPlacesSection extends StatelessWidget {
                     recommended: place.recommended,
                     isLiked: place.isRecommended,
                     distanceMeters: place.distanceMeters,
-                    onTap: () =>
-                        context.push(RoutePath.mapDetail, extra: place),
+                    onTap: () {
+                      if (onPlaceTap != null) {
+                        onPlaceTap!(place);
+                        return;
+                      }
+                      context.push(RoutePath.mapDetail, extra: place);
+                    },
                     onLikePressed: place.placeId == null
                         ? null
                         : () async {
@@ -364,11 +375,13 @@ class _MyActivitySection extends StatelessWidget {
   final bool isLight;
   final List<MapScreenReviewModel> reviewModels;
   final int reviewCount;
+  final ValueChanged<PopularPlace>? onPlaceTap;
 
   const _MyActivitySection({
     required this.isLight,
     required this.reviewModels,
     required this.reviewCount,
+    this.onPlaceTap,
   });
 
   @override
@@ -422,8 +435,13 @@ class _MyActivitySection extends StatelessWidget {
                         recommended: place.recommended,
                         isLiked: place.isRecommended,
                         distanceMeters: place.distanceMeters,
-                        onTap: () =>
-                            context.push(RoutePath.mapDetail, extra: place),
+                        onTap: () {
+                          if (onPlaceTap != null) {
+                            onPlaceTap!(place);
+                            return;
+                          }
+                          context.push(RoutePath.mapDetail, extra: place);
+                        },
                         onLikePressed: place.placeId == null
                             ? null
                             : () async {

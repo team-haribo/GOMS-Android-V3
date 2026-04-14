@@ -5,6 +5,7 @@ import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/shared/ui/providers/kakao_map_background_provider.dart';
+import 'package:goms/features/map/shared/ui/models/map_poi_marker_asset.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 class KakaoMapBackground extends ConsumerStatefulWidget {
@@ -104,7 +105,13 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
         final poi = await controller.labelLayer.addPoi(
           position,
-          style: kakao.PoiStyle(),
+          style: kakao.PoiStyle(
+            icon: kakao.KImage.fromAsset(
+              MapPoiMarkerAsset.fromCategory(place.category),
+              MapPoiMarkerAsset.iconWidth,
+              MapPoiMarkerAsset.iconHeight,
+            ),
+          ),
           text: place.name,
           onClick: widget.onPlaceTap == null
               ? null

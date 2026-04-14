@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/features/map/shared/ui/models/map_screen_type.dart';
@@ -64,12 +66,27 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     });
   }
 
-  void _handlePlaceTap(PopularPlace place) {
+  void _selectPlace(
+    PopularPlace place, {
+    bool openDetail = false,
+  }) {
     if (!mounted) {
       return;
     }
+
     setState(() {
       _selectedPlace = place;
+    });
+
+    if (!openDetail || widget.type != MapScreenType.main) {
+      return;
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      context.push(RoutePath.mapDetail, extra: place);
     });
   }
 
@@ -149,7 +166,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
               showRoutePreview: widget.type == MapScreenType.direction,
               currentLocation: currentLocation,
               preferCurrentLocation: widget.type == MapScreenType.main,
-              onPlaceTap: _handlePlaceTap,
+              onPlaceTap: (place) => _selectPlace(place, openDetail: true),
             ),
           ),
           Positioned.fill(
@@ -198,6 +215,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       MapScreenType.main => MapMainOverlay(
           state: mapState,
           selectedPlace: selectedPlace,
+          onPlaceTap: (place) => _selectPlace(place, openDetail: true),
           onSelectedPlaceDismiss: () {
             if (!mounted) {
               return;

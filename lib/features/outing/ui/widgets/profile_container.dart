@@ -109,7 +109,19 @@ class ProfileContainer extends ConsumerWidget {
   }
 
   Widget _buildIdentity(BuildContext context, bool showClock) {
-    if (showClock || showInfoBelowName) {
+    if (showClock && !showInfoBelowName) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          _buildNameText(context),
+          AppGap.h8,
+          _buildInfoText(context),
+        ],
+      );
+    }
+
+    if (showInfoBelowName) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -123,6 +135,8 @@ class ProfileContainer extends ConsumerWidget {
     return FittedBox(
       fit: BoxFit.scaleDown,
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
         children: [
           _buildNameText(context),
           AppGap.h8,

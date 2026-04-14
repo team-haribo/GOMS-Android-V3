@@ -31,6 +31,13 @@ import 'route_path.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
+String? redirectToMapIfPopularPlaceMissing(Object? extra) {
+  if (extra is! PopularPlace) {
+    return RoutePath.map;
+  }
+  return null;
+}
+
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: RoutePath.splash,
@@ -138,21 +145,17 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: RoutePath.writeReview,
       name: 'writeReview',
+      redirect: (context, state) =>
+          redirectToMapIfPopularPlaceMissing(state.extra),
       builder: (context, state) {
-        final extra = state.extra;
-        if (extra is! PopularPlace) {
-          return const Scaffold(
-            body: Center(child: Text('잘못된 접근입니다.')),
-          );
-        }
-
+        final place = state.extra as PopularPlace;
         return WriteReviewScreen(
-          placeId: extra.placeId,
-          placeName: extra.name,
-          category: extra.category,
-          address: extra.address,
-          review: extra.review,
-          recommended: extra.recommended,
+          placeId: place.placeId,
+          placeName: place.name,
+          category: place.category,
+          address: place.address,
+          review: place.review,
+          recommended: place.recommended,
         );
       },
     ),

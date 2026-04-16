@@ -168,19 +168,14 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
 
       debugPrint(
         'KakaoMapBackground rendered ${_pois.length} poi(s) and '
-        '${widget.routePath.length > 1 ? 1 : 0} route(s).',
+        '0 route(s).',
       );
 
-      if (widget.routePath.length > 1) {
+      if (widget.showRoutePreview && widget.routePath.length > 1) {
         final routePoints = widget.routePath
             .map((point) => kakao.LatLng(point.latitude, point.longitude))
             .toList(growable: false);
         cameraPoints.addAll(routePoints);
-
-        _route = await controller.routeLayer.addRoute(
-          routePoints,
-          kakao.RouteStyle(Colors.black, 8),
-        );
       }
 
       if (!mounted || token != _renderToken) {

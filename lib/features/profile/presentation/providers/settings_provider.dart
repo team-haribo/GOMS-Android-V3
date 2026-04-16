@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/utils/settings_storage.dart';
+import 'package:goms/features/notification/notification_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class SettingsState {
@@ -26,8 +27,8 @@ class SettingsState {
   }
 }
 
-/// 마이페이지 설정 3종(시계, 외출제 알림, 카메라 바로 켜기)을 관리하는 Provider
-final settingsProvider = AsyncNotifierProvider<SettingsNotifier, SettingsState>(
+final settingsProvider =
+AsyncNotifierProvider<SettingsNotifier, SettingsState>(
   SettingsNotifier.new,
 );
 
@@ -46,9 +47,9 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
     state = AsyncData(state.requireValue.copyWith(showClock: value));
   }
 
-  /// 외출제 푸시 알림 설정 변경
-  /// 활성화 시 알림 권한을 요청하며, 거부된 경우 false 반환
   Future<bool> setOutingPushAlarm(bool value) async {
+    final dataSource = ref.read(notificationDataSourceProvider);
+
     if (value) {
       var status = await Permission.notification.status;
       if (status.isDenied) {
@@ -59,14 +60,17 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
         return false;
       }
       if (!status.isGranted) return false;
+
+      await dataSource.registerDeviceToken();
+    } else {
+      await dataSource.deleteDeviceToken();
     }
+
     await SettingsStorage.setOutingPushAlarm(value);
     state = AsyncData(state.requireValue.copyWith(outingPushAlarm: value));
     return true;
   }
 
-  /// 카메라 바로 켜기 설정 변경
-  /// 활성화 시 카메라 권한을 요청하며, 영구 거부 시 설정 앱을 열고 false 반환
   Future<bool> setCameraLaunch(bool value) async {
     if (value) {
       var status = await Permission.camera.status;
@@ -79,6 +83,7 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
       }
       if (!status.isGranted) return false;
     }
+
     await SettingsStorage.setCameraLaunch(value);
     state = AsyncData(state.requireValue.copyWith(cameraLaunch: value));
     return true;

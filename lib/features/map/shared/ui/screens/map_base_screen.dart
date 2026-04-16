@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -36,8 +38,11 @@ class MapBaseScreen extends ConsumerStatefulWidget {
 
 class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   static const double _mapTapMatchRadiusMeters = 20;
+  static const _instantCameraAnimation = kakao.CameraAnimation(0);
 
-  PopularPlace? _selectedPlace;
+  final ValueNotifier<PopularPlace?> _selectedPlaceNotifier =
+      ValueNotifier<PopularPlace?>(null);
+  kakao.KakaoMapController? _mapController;
   bool _didRequestInitialMapFetch = false;
 
   @override
@@ -45,6 +50,12 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     super.initState();
     _scheduleInitialMapFetch();
     _syncDirectionDestination();
+  }
+
+  @override
+  void dispose() {
+    _selectedPlaceNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -94,9 +105,31 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       return;
     }
 
-    setState(() {
-      _selectedPlace = place;
-    });
+    _selectedPlaceNotifier.value = place;
+    unawaited(_moveCameraToPlace(place));
+  }
+
+  Future<void> _moveCameraToPlace(PopularPlace place) async {
+    final controller = _mapController;
+    if (controller == null) {
+      return;
+    }
+
+    try {
+      final cameraPosition = await controller.getCameraPosition();
+      await controller.moveCamera(
+        kakao.CameraUpdate.newCenterPosition(
+          kakao.LatLng(
+            place.coordinate.latitude,
+            place.coordinate.longitude,
+          ),
+          zoomLevel: cameraPosition.zoomLevel,
+        ),
+        animation: _instantCameraAnimation,
+      );
+    } catch (_) {
+      // Camera movement failure should not block selected place UI updates.
+    }
   }
 
   void _handleMapTap(
@@ -193,11 +226,10 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       markerPlaces: markerPlaces,
       popularPlaces: mapState.popularPlaces,
     );
-    final selectedPlace = _resolveSelectedPlace(candidatePlaces);
     final places = resolveVisiblePlaces(
       type: widget.type,
       routePlace: place,
-      selectedPlace: selectedPlace,
+      selectedPlace: _resolveSelectedPlace(candidatePlaces),
       popularPlaces: mapState.popularPlaces,
     );
 
@@ -215,6 +247,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
               currentLocation: currentLocation,
               preferCurrentLocation: widget.type == MapScreenType.main,
               showCurrentLocationLabel: widget.type != MapScreenType.main,
+              onControllerReady: (controller) => _mapController = controller,
               onPlaceTap: _selectPlace,
               onMapTap: (coordinate) => _handleMapTap(
                 coordinate,
@@ -223,11 +256,14 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
             ),
           ),
           Positioned.fill(
-            child: _buildOverlay(
-              place,
-              mapState,
-              directionState,
-              selectedPlace,
+            child: ValueListenableBuilder<PopularPlace?>(
+              valueListenable: _selectedPlaceNotifier,
+              builder: (context, selectedPlace, child) => _buildOverlay(
+                place,
+                mapState,
+                directionState,
+                selectedPlace,
+              ),
             ),
           ),
         ],
@@ -236,7 +272,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   }
 
   PopularPlace? _resolveSelectedPlace(List<PopularPlace> places) {
-    final selectedPlace = _selectedPlace;
+    final selectedPlace = _selectedPlaceNotifier.value;
     if (widget.type != MapScreenType.main || selectedPlace == null) {
       return selectedPlace;
     }
@@ -269,14 +305,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
           state: mapState,
           selectedPlace: selectedPlace,
           onPlaceTap: _selectPlace,
-          onSelectedPlaceDismiss: () {
-            if (!mounted) {
-              return;
-            }
-            setState(() {
-              _selectedPlace = null;
-            });
-          },
+          onSelectedPlaceDismiss: () => _selectedPlaceNotifier.value = null,
         ),
       MapScreenType.detail => MapDetailOverlay(place: place!, state: mapState),
       MapScreenType.direction => MapDirectionOverlay(

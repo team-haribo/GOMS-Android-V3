@@ -17,6 +17,7 @@ class KakaoMapBackground extends StatefulWidget {
   final MapCoordinate? currentLocation;
   final bool preferCurrentLocation;
   final bool showCurrentLocationLabel;
+  final ValueChanged<kakao.KakaoMapController>? onControllerReady;
   final ValueChanged<PopularPlace>? onPlaceTap;
   final ValueChanged<MapCoordinate>? onMapTap;
 
@@ -30,6 +31,7 @@ class KakaoMapBackground extends StatefulWidget {
     this.currentLocation,
     this.preferCurrentLocation = false,
     this.showCurrentLocationLabel = true,
+    this.onControllerReady,
     this.onPlaceTap,
     this.onMapTap,
   });
@@ -87,8 +89,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
       }
 
       setState(() {
-        _errorMessage =
-            '지도를 불러오지 못했습니다. 카카오 지도 초기화 또는 플랫폼 환경을 확인해주세요.';
+        _errorMessage = '지도를 불러오지 못했습니다. 카카오 지도 초기화 또는 플랫폼 환경을 확인해주세요.';
       });
     });
   }
@@ -113,8 +114,8 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
 
       final shouldIncludeCurrentLocationInCamera =
           widget.preferCurrentLocation &&
-          !widget.showRoutePreview &&
-          renderPlaces.isEmpty;
+              !widget.showRoutePreview &&
+              renderPlaces.isEmpty;
 
       if (currentLocation != null) {
         final currentLatLng = kakao.LatLng(
@@ -377,6 +378,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
                 _controller = controller;
                 _errorMessage = null;
               });
+              widget.onControllerReady?.call(controller);
               debugPrint('KakaoMapBackground onMapReady');
               _renderMapObjects();
             },

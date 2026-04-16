@@ -40,7 +40,11 @@ StatefulShellBranch buildMapShellBranch() {
             name: 'direction',
             builder: (context, state) => buildPopularPlaceRouteScreen(
               extra: state.extra,
-              builder: (place) => DirectionScreen(place: place),
+              builder: (place) => DirectionScreen(
+                place: place,
+                startAsDeparture:
+                    state.uri.queryParameters['start'] == 'departure',
+              ),
             ),
           ),
         ],

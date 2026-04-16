@@ -80,8 +80,10 @@ class MapDetailOverlay extends ConsumerWidget {
             showTrailingActions: false,
             onArrivalPressed: () =>
                 context.push(RoutePath.direction, extra: place),
-            onDeparturePressed: () =>
-                context.push(RoutePath.direction, extra: place),
+            onDeparturePressed: () => context.push(
+              '${RoutePath.direction}?start=departure',
+              extra: resolvedPlace,
+            ),
             onWriteReviewPressed: () =>
                 context.push(RoutePath.writeReview, extra: resolvedPlace),
           ),

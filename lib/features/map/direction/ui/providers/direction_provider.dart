@@ -45,6 +45,29 @@ class DirectionNotifier extends Notifier<DirectionState> {
     await _fetchRoutes();
   }
 
+  Future<void> setDepartureFromPlace(PopularPlace place) async {
+    try {
+      await _initializeSchoolCoordinate();
+      _departureCoordinate = place.coordinate;
+      _destinationCoordinate = _schoolCoordinate;
+
+      state = state.copyWith(
+        departure: place.name,
+        destination: gomsSchoolName,
+        selectedRouteIndex: 0,
+        status: DirectionStatus.loading,
+        errorMessage: null,
+      );
+
+      await _fetchRoutes();
+    } catch (e) {
+      state = state.copyWith(
+        status: DirectionStatus.failure,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
   Future<void> selectDeparture(String departure) async {
     try {
       state = state.copyWith(

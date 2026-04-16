@@ -5,10 +5,12 @@ import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 
 class DirectionScreen extends StatelessWidget {
   final PopularPlace place;
+  final bool startAsDeparture;
 
   const DirectionScreen({
     super.key,
     required this.place,
+    this.startAsDeparture = false,
   });
 
   @override
@@ -16,6 +18,7 @@ class DirectionScreen extends StatelessWidget {
     return MapBaseScreen(
       type: MapScreenType.direction,
       place: place,
+      startAsDeparture: startAsDeparture,
     );
   }
 }

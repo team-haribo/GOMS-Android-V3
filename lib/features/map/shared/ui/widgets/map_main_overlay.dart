@@ -335,8 +335,10 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
             },
       onArrivalPressed: () =>
           context.push(RoutePath.direction, extra: resolvedPlace),
-      onDeparturePressed: () =>
-          context.push(RoutePath.direction, extra: resolvedPlace),
+      onDeparturePressed: () => context.push(
+        '${RoutePath.direction}?start=departure',
+        extra: resolvedPlace,
+      ),
       onWriteReviewPressed: () =>
           context.push(RoutePath.writeReview, extra: resolvedPlace),
     );

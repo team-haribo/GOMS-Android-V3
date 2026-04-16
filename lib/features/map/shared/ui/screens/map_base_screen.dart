@@ -25,11 +25,13 @@ import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 class MapBaseScreen extends ConsumerStatefulWidget {
   final MapScreenType type;
   final PopularPlace? place;
+  final bool startAsDeparture;
 
   const MapBaseScreen({
     super.key,
     required this.type,
     this.place,
+    this.startAsDeparture = false,
   });
 
   @override
@@ -62,7 +64,8 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   void didUpdateWidget(covariant MapBaseScreen oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.place?.name != widget.place?.name ||
-        oldWidget.type != widget.type) {
+        oldWidget.type != widget.type ||
+        oldWidget.startAsDeparture != widget.startAsDeparture) {
       _scheduleInitialMapFetch();
       _syncDirectionDestination();
     }
@@ -96,7 +99,12 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       if (!mounted || widget.place == null) {
         return;
       }
-      ref.read(directionProvider.notifier).setDestination(widget.place!);
+      final notifier = ref.read(directionProvider.notifier);
+      if (widget.startAsDeparture) {
+        notifier.setDepartureFromPlace(widget.place!);
+        return;
+      }
+      notifier.setDestination(widget.place!);
     });
   }
 

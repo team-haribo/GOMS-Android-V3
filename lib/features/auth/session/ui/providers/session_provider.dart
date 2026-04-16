@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/late/ui/providers/late_rank_students_provider.dart';
@@ -29,7 +30,18 @@ final authProvider = NotifierProvider<AuthNotifier, AuthStatus>(() {
 /// 인증 Notifier
 class AuthNotifier extends Notifier<AuthStatus> {
   @override
-  AuthStatus build() => AuthStatus.checking;
+  AuthStatus build() {
+    Future<void> handleSessionExpiry() async {
+      _clearSessionState();
+    }
+
+    SessionExpiryNotifier.register(handleSessionExpiry);
+    ref.onDispose(() {
+      SessionExpiryNotifier.unregister(handleSessionExpiry);
+    });
+
+    return AuthStatus.checking;
+  }
 
   /// 토큰 유효성 확인
   Future<bool> checkToken() async {

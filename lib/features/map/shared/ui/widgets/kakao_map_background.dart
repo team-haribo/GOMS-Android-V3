@@ -1,21 +1,24 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
-import 'package:goms/features/map/shared/ui/providers/kakao_map_background_provider.dart';
 import 'package:goms/features/map/shared/ui/models/map_poi_marker_asset.dart';
 import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
-class KakaoMapBackground extends ConsumerStatefulWidget {
+class KakaoMapBackground extends StatefulWidget {
   final List<PopularPlace> places;
   final PopularPlace? focusPlace;
   final List<MapCoordinate> routePath;
   final bool showRoutePreview;
+  final bool preserveZoomLevelOnSinglePlaceSelection;
   final MapCoordinate? currentLocation;
   final bool preferCurrentLocation;
+  final bool showCurrentLocationLabel;
   final ValueChanged<PopularPlace>? onPlaceTap;
+  final ValueChanged<MapCoordinate>? onMapTap;
 
   const KakaoMapBackground({
     super.key,
@@ -23,38 +26,71 @@ class KakaoMapBackground extends ConsumerStatefulWidget {
     this.focusPlace,
     this.routePath = const <MapCoordinate>[],
     this.showRoutePreview = false,
+    this.preserveZoomLevelOnSinglePlaceSelection = false,
     this.currentLocation,
     this.preferCurrentLocation = false,
+    this.showCurrentLocationLabel = true,
     this.onPlaceTap,
+    this.onMapTap,
   });
 
   @override
-  ConsumerState<KakaoMapBackground> createState() => _KakaoMapBackgroundState();
+  State<KakaoMapBackground> createState() => _KakaoMapBackgroundState();
 }
 
-class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
+class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
+  static const _mapLoadTimeout = Duration(seconds: 10);
+  static const _defaultZoomLevel = 16;
+  static const _selectedPlaceZoomLevel = 18;
+  static const _instantCameraAnimation = kakao.CameraAnimation(0);
+
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
   int _renderToken = 0;
+  String? _lastCameraSignature;
+  String? _errorMessage;
+  Timer? _loadingTimeout;
 
-  String get _mapId =>
-      '${widget.focusPlace?.name}|${widget.focusPlace?.address}|${widget.places.length}|${widget.routePath.length}|${widget.currentLocation?.latitude}|${widget.currentLocation?.longitude}|${widget.preferCurrentLocation}';
+  @override
+  void initState() {
+    super.initState();
+    _armLoadingTimeout();
+  }
 
   @override
   void didUpdateWidget(covariant KakaoMapBackground oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.focusPlace?.name != widget.focusPlace?.name ||
-        oldWidget.focusPlace?.address != widget.focusPlace?.address ||
-        oldWidget.places.length != widget.places.length ||
-        oldWidget.routePath.length != widget.routePath.length) {
-      ref
-          .read(kakaoMapBackgroundControllerProvider(_mapId).notifier)
-          .setController(_controller);
-    }
+    _armLoadingTimeout();
     if (KakaoMapRuntime.instance.isMapAvailable) {
       _renderMapObjects();
     }
+  }
+
+  @override
+  void dispose() {
+    _loadingTimeout?.cancel();
+    super.dispose();
+  }
+
+  void _armLoadingTimeout() {
+    _loadingTimeout?.cancel();
+    if (!KakaoMapRuntime.instance.isMapAvailable ||
+        _controller != null ||
+        _errorMessage != null) {
+      return;
+    }
+
+    _loadingTimeout = Timer(_mapLoadTimeout, () {
+      if (!mounted || _controller != null || _errorMessage != null) {
+        return;
+      }
+
+      setState(() {
+        _errorMessage =
+            '지도를 불러오지 못했습니다. 카카오 지도 초기화 또는 플랫폼 환경을 확인해주세요.';
+      });
+    });
   }
 
   Future<void> _renderMapObjects() async {
@@ -75,19 +111,24 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
       final renderPlaces = _buildRenderPlaces();
       final currentLocation = widget.currentLocation;
 
+      final shouldIncludeCurrentLocationInCamera =
+          widget.preferCurrentLocation &&
+          !widget.showRoutePreview &&
+          renderPlaces.isEmpty;
+
       if (currentLocation != null) {
         final currentLatLng = kakao.LatLng(
           currentLocation.latitude,
           currentLocation.longitude,
         );
-        if (widget.preferCurrentLocation) {
+        if (shouldIncludeCurrentLocationInCamera) {
           cameraPoints.add(currentLatLng);
         }
 
         final poi = await controller.labelLayer.addPoi(
           currentLatLng,
           style: kakao.PoiStyle(),
-          text: '내 위치',
+          text: widget.showCurrentLocationLabel ? '내 위치' : '',
         );
 
         if (!mounted || token != _renderToken) {
@@ -145,30 +186,88 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
         return;
       }
 
-      if (cameraPoints.isEmpty) {
-        await controller.moveCamera(
-          kakao.CameraUpdate.newCenterPosition(
-            kakao.LatLng(
-              gomsFallbackSchoolCoordinate.latitude,
-              gomsFallbackSchoolCoordinate.longitude,
-            ),
-            zoomLevel: 16,
-          ),
+      final cameraSignature = _buildCameraSignature(
+        renderPlaces: renderPlaces,
+        cameraPoints: cameraPoints,
+      );
+      if (cameraSignature != _lastCameraSignature) {
+        await _moveCamera(
+          controller: controller,
+          renderPlaces: renderPlaces,
+          cameraPoints: cameraPoints,
         );
-      } else {
-        await controller.moveCamera(
-          kakao.CameraUpdate.fitMapPoints(
-            cameraPoints,
-            padding: widget.showRoutePreview ? 120 : 96,
-            zoomLevel: 16,
-          ),
-        );
+        _lastCameraSignature = cameraSignature;
       }
 
       _clearError();
     } catch (e) {
       _setError(_buildErrorMessage(e));
     }
+  }
+
+  Future<void> _moveCamera({
+    required kakao.KakaoMapController controller,
+    required List<PopularPlace> renderPlaces,
+    required List<kakao.LatLng> cameraPoints,
+  }) async {
+    if (cameraPoints.isEmpty) {
+      await controller.moveCamera(
+        kakao.CameraUpdate.newCenterPosition(
+          kakao.LatLng(
+            gomsFallbackSchoolCoordinate.latitude,
+            gomsFallbackSchoolCoordinate.longitude,
+          ),
+          zoomLevel: _defaultZoomLevel,
+        ),
+      );
+      return;
+    }
+
+    if (!widget.showRoutePreview && renderPlaces.length == 1) {
+      final place = renderPlaces.first;
+      final zoomLevel = widget.preserveZoomLevelOnSinglePlaceSelection
+          ? (await controller.getCameraPosition()).zoomLevel
+          : _selectedPlaceZoomLevel;
+      await controller.moveCamera(
+        kakao.CameraUpdate.newCenterPosition(
+          kakao.LatLng(
+            place.coordinate.latitude,
+            place.coordinate.longitude,
+          ),
+          zoomLevel: zoomLevel,
+        ),
+        animation: _instantCameraAnimation,
+      );
+      return;
+    }
+
+    await controller.moveCamera(
+      kakao.CameraUpdate.fitMapPoints(
+        cameraPoints,
+        padding: widget.showRoutePreview ? 120 : 96,
+        zoomLevel: _defaultZoomLevel,
+      ),
+    );
+  }
+
+  String _buildCameraSignature({
+    required List<PopularPlace> renderPlaces,
+    required List<kakao.LatLng> cameraPoints,
+  }) {
+    final placeSignature = renderPlaces
+        .map(
+          (place) =>
+              '${place.placeId ?? place.name}:${place.coordinate.latitude.toStringAsFixed(6)},${place.coordinate.longitude.toStringAsFixed(6)}',
+        )
+        .join('|');
+    final pointSignature = cameraPoints
+        .map(
+          (point) =>
+              '${point.latitude.toStringAsFixed(6)},${point.longitude.toStringAsFixed(6)}',
+        )
+        .join('|');
+    return '$placeSignature::$pointSignature::'
+        '${widget.showRoutePreview ? 'route' : 'place'}';
   }
 
   List<PopularPlace> _buildRenderPlaces() {
@@ -202,16 +301,25 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
   }
 
   void _setError(String message) {
-    ref.read(kakaoMapBackgroundErrorProvider(_mapId).notifier).setMessage(
-          message,
-        );
+    _loadingTimeout?.cancel();
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _errorMessage = message;
+    });
   }
 
   void _clearError() {
-    if (ref.read(kakaoMapBackgroundErrorProvider(_mapId)) == null) {
+    if (_errorMessage == null) {
       return;
     }
-    ref.read(kakaoMapBackgroundErrorProvider(_mapId).notifier).setMessage(null);
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _errorMessage = null;
+    });
   }
 
   String _buildErrorMessage(Object error) {
@@ -227,8 +335,6 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = ref.watch(kakaoMapBackgroundErrorProvider(_mapId));
-    final controller = ref.watch(kakaoMapBackgroundControllerProvider(_mapId));
     final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
       return Center(
@@ -266,12 +372,16 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
               if (!mounted) {
                 return;
               }
-              _controller = controller;
-              ref
-                  .read(kakaoMapBackgroundControllerProvider(_mapId).notifier)
-                  .setController(controller);
+              _loadingTimeout?.cancel();
+              setState(() {
+                _controller = controller;
+                _errorMessage = null;
+              });
               debugPrint('KakaoMapBackground onMapReady');
               _renderMapObjects();
+            },
+            onMapClick: (point, position) {
+              widget.onMapTap?.call(MapCoordinate.fromKakaoLatLng(position));
             },
             onMapError: (error) {
               debugPrint('KakaoMapBackground onMapError: $error');
@@ -279,19 +389,19 @@ class _KakaoMapBackgroundState extends ConsumerState<KakaoMapBackground> {
             },
           ),
         ),
-        if (controller == null && errorMessage == null)
+        if (_controller == null && _errorMessage == null)
           const Positioned.fill(
             child: Center(
               child: CircularProgressIndicator(),
             ),
           ),
-        if (errorMessage != null)
+        if (_errorMessage != null)
           Positioned.fill(
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Text(
-                  errorMessage,
+                  _errorMessage!,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),

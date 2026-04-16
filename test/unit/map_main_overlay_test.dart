@@ -62,6 +62,57 @@ void main() {
 
     expect(tappedPlace, place);
   });
+
+  testWidgets('selected place shows detail sheet UI instead of detail button', (
+    tester,
+  ) async {
+    const place = PopularPlace(
+      placeId: 7,
+      name: '학생식당',
+      category: '한식',
+      address: '광주광역시 테스트로 7',
+      review: 2,
+      recommended: 3,
+      coordinate: MapCoordinate(latitude: 35.1, longitude: 126.9),
+      distanceMeters: 339,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(
+            const _FakeRecommendedPlaceRepository(),
+          ),
+        ],
+        child: MaterialApp(
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+              Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+              Breakpoint(start: 451, end: 800, name: 'TABLET'),
+              Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+            ],
+          ),
+          home: const Scaffold(
+            body: MapMainOverlay(
+              state: MapScreenState(status: MapScreenStatus.success),
+              selectedPlace: place,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('자세히 보기'), findsNothing);
+    expect(find.text('도착'), findsOneWidget);
+    expect(find.text('출발'), findsOneWidget);
+    expect(find.text('학생 후기'), findsOneWidget);
+    expect(find.text('후기 남기기'), findsOneWidget);
+    expect(find.textContaining('339m |'), findsOneWidget);
+  });
 }
 
 class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
@@ -74,9 +125,16 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
   }) async {}
 
   @override
-  Future<RecommendedPlaceEntity> getPlaceDetail(int placeId) async {
-    throw UnimplementedError();
-  }
+  Future<RecommendedPlaceEntity> getPlaceDetail(int placeId) async =>
+      RecommendedPlaceEntity(
+        placeId: placeId,
+        placeName: '학생식당',
+        category: '한식',
+        address: '광주광역시 테스트로 7',
+        reviewCount: 2,
+        recommendCount: 3,
+        recommended: false,
+      );
 
   @override
   Future<List<RecommendedPlaceEntity>> getPlaces() async => const [];

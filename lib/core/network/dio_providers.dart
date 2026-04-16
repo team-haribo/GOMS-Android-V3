@@ -21,7 +21,7 @@ final dioProvider = Provider<Dio>((ref) {
     ),
   );
 
-  dio.interceptors.add(AuthInterceptor());
+  dio.interceptors.add(AuthInterceptor(dio: dio));
 
   if (kDebugMode) {
     dio.interceptors.add(

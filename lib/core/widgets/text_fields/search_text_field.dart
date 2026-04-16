@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/text_fields/base_text_field.dart';
-import 'package:goms/core/widgets/text_fields/providers/search_text_field_provider.dart';
 
 /// 검색 텍스트 필드
-class SearchTextField extends ConsumerStatefulWidget {
+class SearchTextField extends StatefulWidget {
   const SearchTextField({
     super.key,
     this.controller,
@@ -36,21 +34,19 @@ class SearchTextField extends ConsumerStatefulWidget {
   final bool showLogo;
 
   @override
-  ConsumerState<SearchTextField> createState() => _SearchTextFieldState();
+  State<SearchTextField> createState() => _SearchTextFieldState();
 }
 
-class _SearchTextFieldState extends ConsumerState<SearchTextField> {
+class _SearchTextFieldState extends State<SearchTextField> {
   late TextEditingController _controller;
-
-  Object get _providerKey =>
-      widget.controller ?? widget.key ?? widget.hintText ?? widget.runtimeType;
+  late bool _showClearButton;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
+    _showClearButton = _controller.text.isNotEmpty;
     _controller.addListener(_updateClearButton);
-    _updateClearButton();
   }
 
   @override
@@ -63,14 +59,20 @@ class _SearchTextFieldState extends ConsumerState<SearchTextField> {
   }
 
   void _updateClearButton() {
-    ref.read(searchTextHasValueProvider(_providerKey).notifier).state =
-        _controller.text.isNotEmpty;
+    final hasValue = _controller.text.isNotEmpty;
+    if (_showClearButton == hasValue || !mounted) {
+      return;
+    }
+
+    setState(() {
+      _showClearButton = hasValue;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final iconColor = context.sub2Color;
-    final showClearButton = ref.watch(searchTextHasValueProvider(_providerKey));
+    final showClearButton = _showClearButton;
 
     return BaseTextField(
       controller: _controller,

@@ -7,6 +7,8 @@ class ArrivalDepartureButton extends StatelessWidget {
   final Color backgroundColor;
   final VoidCallback? onPressed;
   final double? width;
+  final double height;
+  final TextStyle? textStyle;
 
   const ArrivalDepartureButton({
     super.key,
@@ -15,13 +17,15 @@ class ArrivalDepartureButton extends StatelessWidget {
     required this.backgroundColor,
     required this.onPressed,
     this.width,
+    this.height = 33,
+    this.textStyle,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: width ?? 89,
-      height: 33,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
@@ -31,7 +35,8 @@ class ArrivalDepartureButton extends StatelessWidget {
         ),
         child: Text(
           buttonText,
-          style: AppTextStyles.caption1.copyWith(color: textColor),
+          style:
+              (textStyle ?? AppTextStyles.caption1).copyWith(color: textColor),
         ),
       ),
     );

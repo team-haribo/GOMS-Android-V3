@@ -10,12 +10,14 @@ import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
+import 'package:goms/features/map/shared/ui/widgets/place_detail_sheet.dart';
 import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
 
 class MapMainOverlay extends ConsumerStatefulWidget {
@@ -57,6 +59,14 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
     final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
+
+    if (widget.selectedPlace != null) {
+      return _SelectedPlaceOverlay(
+        place: widget.selectedPlace!,
+        onDismiss: widget.onSelectedPlaceDismiss,
+      );
+    }
+
     final initialSheetSize = context.isTabletLayout
         ? 0.44
         : (context.screenHeight < 780 ? 0.42 : 0.38);
@@ -111,13 +121,6 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if (widget.selectedPlace != null) ...[
-                              _SelectedPlaceSection(
-                                place: widget.selectedPlace!,
-                                onDismiss: widget.onSelectedPlaceDismiss,
-                              ),
-                              AppGap.v24,
-                            ],
                             _PopularPlacesSection(
                               isLight: isLight,
                               state: state,
@@ -260,113 +263,82 @@ class _PopularPlacesSection extends StatelessWidget {
   }
 }
 
-class _SelectedPlaceSection extends ConsumerWidget {
+class _SelectedPlaceOverlay extends ConsumerWidget {
   final PopularPlace place;
   final VoidCallback? onDismiss;
 
-  const _SelectedPlaceSection({
+  const _SelectedPlaceOverlay({
     required this.place,
     this.onDismiss,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.s16),
-      decoration: BoxDecoration(
-        color: context.mapContainerColor,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  '선택한 장소',
-                  style: AppTextStyles.title3.copyWith(
-                    color: context.mainTextColor,
+    final isLight = context.isLightMode;
+    final initialSheetSize = context.isTabletLayout
+        ? 0.44
+        : (context.screenHeight < 780 ? 0.40 : 0.34);
+    final maxSheetSize = context.isTabletLayout ? 0.78 : 0.86;
+    final placeId = place.placeId;
+    final placeDetailAsync =
+        placeId == null ? null : ref.watch(placeDetailProvider(placeId));
+    final placeReviewsAsync =
+        placeId == null ? null : ref.watch(placeReviewsProvider(placeId));
+    final detailPlace = placeDetailAsync?.asData?.value;
+    final resolvedPlace = detailPlace == null
+        ? place
+        : place.copyWith(
+            name: detailPlace.placeName?.trim().isNotEmpty == true
+                ? detailPlace.placeName!.trim()
+                : place.name,
+            category: detailPlace.category?.trim().isNotEmpty == true
+                ? detailPlace.category!.trim()
+                : place.category,
+            address: detailPlace.address?.trim().isNotEmpty == true
+                ? detailPlace.address!.trim()
+                : place.address,
+            review: detailPlace.reviewCount,
+            recommended: detailPlace.recommendCount,
+            isRecommended: detailPlace.recommended,
+            coordinate: detailPlace.coordinate ?? place.coordinate,
+          );
+    final reviews =
+        placeReviewsAsync?.asData?.value ?? const <PlaceReviewEntity>[];
+    final isReviewLoading = placeReviewsAsync?.isLoading == true;
+
+    return PlaceDetailSheet(
+      place: resolvedPlace,
+      reviews: reviews,
+      isLight: isLight,
+      isReviewLoading: isReviewLoading,
+      initialChildSize: initialSheetSize,
+      minChildSize: initialSheetSize,
+      maxChildSize: maxSheetSize,
+      snapSizes: <double>[initialSheetSize, 0.58, maxSheetSize],
+      onDismiss: onDismiss,
+      onFavoritePressed: place.placeId == null
+          ? null
+          : () async {
+              try {
+                await ref
+                    .read(mapScreenProvider.notifier)
+                    .toggleRecommendation(resolvedPlace);
+              } catch (_) {
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('추천 상태를 변경하지 못했습니다.'),
+                    backgroundColor: AppColors.negative,
                   ),
-                ),
-              ),
-              if (onDismiss != null)
-                IconButton(
-                  visualDensity: VisualDensity.compact,
-                  splashRadius: 18,
-                  onPressed: onDismiss,
-                  icon: Icon(
-                    Icons.close_rounded,
-                    size: 18,
-                    color: context.sub2Color,
-                  ),
-                ),
-            ],
-          ),
-          AppGap.v8,
-          Text(
-            place.category,
-            style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
-          ),
-          AppGap.v4,
-          Text(
-            place.name,
-            style: AppTextStyles.text1.copyWith(color: context.mainTextColor),
-          ),
-          AppGap.v4,
-          Text(
-            place.address,
-            style: AppTextStyles.caption1.copyWith(color: context.sub2Color),
-          ),
-          AppGap.v12,
-          Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () =>
-                      context.push(RoutePath.mapDetail, extra: place),
-                  child: const Text('자세히 보기'),
-                ),
-              ),
-              AppGap.h8,
-              SizedBox(
-                width: 44,
-                height: 44,
-                child: IconButton(
-                  padding: EdgeInsets.zero,
-                  onPressed: place.placeId == null
-                      ? null
-                      : () async {
-                          try {
-                            await ref
-                                .read(mapScreenProvider.notifier)
-                                .toggleRecommendation(place);
-                          } catch (_) {
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('추천 상태를 변경하지 못했습니다.'),
-                                backgroundColor: AppColors.negative,
-                              ),
-                            );
-                          }
-                        },
-                  icon: place.isRecommended
-                      ? const Icon(
-                          Icons.favorite_rounded,
-                          color: AppColors.negative,
-                        )
-                      : Icon(
-                          Icons.favorite_border_rounded,
-                          color: context.sub2Color,
-                        ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+                );
+              }
+            },
+      onArrivalPressed: () =>
+          context.push(RoutePath.direction, extra: resolvedPlace),
+      onDeparturePressed: () =>
+          context.push(RoutePath.direction, extra: resolvedPlace),
+      onWriteReviewPressed: () =>
+          context.push(RoutePath.writeReview, extra: resolvedPlace),
     );
   }
 }

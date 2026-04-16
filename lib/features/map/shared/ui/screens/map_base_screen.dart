@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/features/map/shared/ui/models/map_screen_type.dart';
@@ -20,6 +18,7 @@ import 'package:goms/features/map/discovery/ui/providers/current_map_location_pr
 import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/kakao_map_background.dart';
+import 'package:kakao_map_sdk/kakao_map_sdk.dart' as kakao;
 
 class MapBaseScreen extends ConsumerStatefulWidget {
   final MapScreenType type;
@@ -36,6 +35,8 @@ class MapBaseScreen extends ConsumerStatefulWidget {
 }
 
 class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
+  static const double _mapTapMatchRadiusMeters = 20;
+
   PopularPlace? _selectedPlace;
   bool _didRequestInitialMapFetch = false;
 
@@ -88,10 +89,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     });
   }
 
-  void _selectPlace(
-    PopularPlace place, {
-    bool openDetail = false,
-  }) {
+  void _selectPlace(PopularPlace place) {
     if (!mounted) {
       return;
     }
@@ -99,17 +97,26 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     setState(() {
       _selectedPlace = place;
     });
+  }
 
-    if (!openDetail || widget.type != MapScreenType.main) {
+  void _handleMapTap(
+    MapCoordinate coordinate,
+    List<PopularPlace> candidatePlaces,
+  ) {
+    if (widget.type != MapScreenType.main) {
       return;
     }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-      context.push(RoutePath.mapDetail, extra: place);
-    });
+    final matchedPlace = findNearestPlaceWithinRadius(
+      tapCoordinate: coordinate,
+      places: candidatePlaces,
+      maxDistanceMeters: _mapTapMatchRadiusMeters,
+    );
+    if (matchedPlace == null) {
+      return;
+    }
+
+    _selectPlace(matchedPlace);
   }
 
   @override
@@ -179,15 +186,20 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     final markerPlaces = (allPlaces ?? const <RecommendedPlaceEntity>[])
         .map((place) => _toPopularPlace(place))
         .toList(growable: false);
-
-    final places = switch (widget.type) {
-      MapScreenType.main => searchedPlaces.isNotEmpty
-          ? searchedPlaces
-          : (markerPlaces.isNotEmpty ? markerPlaces : mapState.popularPlaces),
-      _ => place == null ? mapState.popularPlaces : [place],
-    };
-
-    final selectedPlace = _resolveSelectedPlace(places);
+    final candidatePlaces = resolveCandidatePlaces(
+      type: widget.type,
+      routePlace: place,
+      searchedPlaces: searchedPlaces,
+      markerPlaces: markerPlaces,
+      popularPlaces: mapState.popularPlaces,
+    );
+    final selectedPlace = _resolveSelectedPlace(candidatePlaces);
+    final places = resolveVisiblePlaces(
+      type: widget.type,
+      routePlace: place,
+      selectedPlace: selectedPlace,
+      popularPlaces: mapState.popularPlaces,
+    );
 
     return MapScaffold(
       body: Stack(
@@ -198,9 +210,16 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
               focusPlace: place,
               routePath: routePath,
               showRoutePreview: widget.type == MapScreenType.direction,
+              preserveZoomLevelOnSinglePlaceSelection:
+                  widget.type == MapScreenType.main,
               currentLocation: currentLocation,
               preferCurrentLocation: widget.type == MapScreenType.main,
-              onPlaceTap: (place) => _selectPlace(place, openDetail: true),
+              showCurrentLocationLabel: widget.type != MapScreenType.main,
+              onPlaceTap: _selectPlace,
+              onMapTap: (coordinate) => _handleMapTap(
+                coordinate,
+                candidatePlaces,
+              ),
             ),
           ),
           Positioned.fill(
@@ -249,7 +268,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       MapScreenType.main => MapMainOverlay(
           state: mapState,
           selectedPlace: selectedPlace,
-          onPlaceTap: (place) => _selectPlace(place, openDetail: true),
+          onPlaceTap: _selectPlace,
           onSelectedPlaceDismiss: () {
             if (!mounted) {
               return;
@@ -292,6 +311,63 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       ),
     );
   }
+}
+
+List<PopularPlace> resolveCandidatePlaces({
+  required MapScreenType type,
+  required PopularPlace? routePlace,
+  required List<PopularPlace> searchedPlaces,
+  required List<PopularPlace> markerPlaces,
+  required List<PopularPlace> popularPlaces,
+}) {
+  return switch (type) {
+    MapScreenType.main => searchedPlaces.isNotEmpty
+        ? searchedPlaces
+        : (markerPlaces.isNotEmpty ? markerPlaces : popularPlaces),
+    _ => routePlace == null ? popularPlaces : [routePlace],
+  };
+}
+
+List<PopularPlace> resolveVisiblePlaces({
+  required MapScreenType type,
+  required PopularPlace? routePlace,
+  required PopularPlace? selectedPlace,
+  required List<PopularPlace> popularPlaces,
+}) {
+  return switch (type) {
+    MapScreenType.main => selectedPlace == null ? const [] : [selectedPlace],
+    _ => routePlace == null ? popularPlaces : [routePlace],
+  };
+}
+
+PopularPlace? findNearestPlaceWithinRadius({
+  required MapCoordinate tapCoordinate,
+  required List<PopularPlace> places,
+  required double maxDistanceMeters,
+}) {
+  PopularPlace? nearestPlace;
+  double? nearestDistance;
+  final tapLatLng = kakao.LatLng(
+    tapCoordinate.latitude,
+    tapCoordinate.longitude,
+  );
+
+  for (final place in places) {
+    final placeLatLng = kakao.LatLng(
+      place.coordinate.latitude,
+      place.coordinate.longitude,
+    );
+    final distance = tapLatLng.distance(placeLatLng);
+    if (distance > maxDistanceMeters) {
+      continue;
+    }
+    if (nearestDistance == null || distance < nearestDistance) {
+      nearestPlace = place;
+      nearestDistance = distance;
+    }
+  }
+
+  return nearestPlace;
 }
 
 PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {

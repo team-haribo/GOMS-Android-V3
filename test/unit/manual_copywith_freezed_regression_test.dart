@@ -2,10 +2,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
-import 'package:goms/features/map/shared/presentation/providers/map_screen_provider.dart';
-import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
+import 'package:goms/features/member/ui/models/student_council_student_model.dart';
 
 void main() {
   group('manual copyWith to freezed regression', () {
@@ -100,8 +99,8 @@ void main() {
       expect(popularPlace.coordinate, gomsFallbackSchoolCoordinate);
     });
 
-    test('StudentCouncilStudentEntity copyWith updates selected role only', () {
-      const original = StudentCouncilStudentEntity(
+    test('StudentCouncilStudentModel copyWith updates selected role only', () {
+      const original = StudentCouncilStudentModel(
         memberId: 1,
         name: '학생',
         grade: 2,
@@ -114,18 +113,6 @@ void main() {
       expect(updated.studentRole, StudentRole.council);
       expect(updated.name, original.name);
       expect(updated.profileImageUrl, original.profileImageUrl);
-    });
-
-    test('MapScreenUiState copyWith preserves untouched flags', () {
-      const original = MapScreenUiState(
-        isSdkReady: true,
-        isFetchingRoute: false,
-      );
-
-      final updated = original.copyWith(isFetchingRoute: true);
-
-      expect(updated.isSdkReady, isTrue);
-      expect(updated.isFetchingRoute, isTrue);
     });
   });
 }

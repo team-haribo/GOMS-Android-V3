@@ -6,15 +6,15 @@ import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
-import 'package:goms/features/late/presentation/providers/late_rank_students_provider.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
+import 'package:goms/features/late/ui/providers/late_rank_students_provider.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
-import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
-import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/outing/ui/screens/outing_waiting_screen.dart';
+import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
+import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/ui/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -85,7 +85,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
+  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
         memberId: 1,
         status: OutingStatusType.coming,
         name: '이주언',
@@ -97,15 +97,15 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentOutingStudentsNotifier extends CurrentOutingStudentsNotifier {
   @override
-  Future<List<OutingStudentEntity>> build() async => [
-        OutingStudentEntity(
+  Future<List<OutingStudentModel>> build() async => [
+        OutingStudentModel(
           memberId: 1,
           name: '한지호',
           grade: 8,
           department: 'AI',
           outingAt: DateTime(2026, 4, 2, 10, 30),
         ),
-        OutingStudentEntity(
+        OutingStudentModel(
           memberId: 2,
           name: '김하린',
           grade: 9,
@@ -117,33 +117,37 @@ class _FakeCurrentOutingStudentsNotifier extends CurrentOutingStudentsNotifier {
 
 class _FakeLateRankStudentsNotifier extends LateRankStudentsNotifier {
   @override
-  Future<List<LateRankStudentEntity>> build() async => [
-        LateRankStudentEntity(
+  Future<List<LateRankStudentModel>> build() async => [
+        LateRankStudentModel(
           memberId: 1,
           name: '민준',
           grade: 8,
           department: 'AI',
+          profileImageUrl: '',
           comingAt: DateTime(2026, 4, 2, 8, 30),
         ),
-        LateRankStudentEntity(
+        LateRankStudentModel(
           memberId: 2,
           name: '서윤',
           grade: 9,
           department: 'SW',
+          profileImageUrl: '',
           comingAt: DateTime(2026, 4, 2, 8, 32),
         ),
-        LateRankStudentEntity(
+        LateRankStudentModel(
           memberId: 3,
           name: '도윤',
           grade: 7,
           department: 'DESIGN',
+          profileImageUrl: '',
           comingAt: DateTime(2026, 4, 2, 8, 35),
         ),
-        LateRankStudentEntity(
+        LateRankStudentModel(
           memberId: 4,
           name: '하은',
           grade: 6,
           department: 'IOT',
+          profileImageUrl: '',
           comingAt: DateTime(2026, 4, 2, 8, 40),
         ),
       ];

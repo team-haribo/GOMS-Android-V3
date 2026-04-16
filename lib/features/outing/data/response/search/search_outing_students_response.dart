@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/outing/data/response/outing_student_response.dart';
-import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 
 part 'search_outing_students_response.freezed.dart';
 part 'search_outing_students_response.g.dart';
@@ -20,7 +20,7 @@ abstract class SearchOutingStudentsResponse
 }
 
 extension SearchOutingStudentsResponseX on SearchOutingStudentsResponse {
-  List<OutingStudentEntity> toEntity() {
-    return students.map((student) => student.toEntity()).toList();
+  List<OutingStudentModel> toModel() {
+    return students.map((student) => student.toModel()).toList();
   }
 }

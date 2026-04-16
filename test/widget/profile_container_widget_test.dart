@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/features/home/shared/presentation/widgets/profile_container.dart';
-import 'package:goms/features/home/shared/presentation/widgets/time_display.dart';
+import 'package:goms/features/outing/ui/widgets/profile_container.dart';
+import 'package:goms/features/outing/ui/widgets/time_display.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
-import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/profile/ui/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -53,8 +53,6 @@ void main() {
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('8기 | AI과'), findsOneWidget);
   });
-
-
 
   testWidgets('어드민 컨테이너에서는 기수 정보가 이름 아래에 표시된다', (tester) async {
     await tester.pumpWidget(

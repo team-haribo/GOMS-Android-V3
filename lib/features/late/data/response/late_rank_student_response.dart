@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
+import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
 
 part 'late_rank_student_response.g.dart';
 
@@ -38,8 +38,8 @@ class LateRankStudentResponse {
   @JsonKey(fromJson: _comingAtFromJson)
   final DateTime comingAt;
 
-  LateRankStudentEntity toEntity() {
-    return LateRankStudentEntity(
+  LateRankStudentModel toModel() {
+    return LateRankStudentModel(
       memberId: memberId,
       name: name,
       grade: grade,

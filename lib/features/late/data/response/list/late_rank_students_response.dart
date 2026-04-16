@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/late/data/response/late_rank_student_response.dart';
-import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
+import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
 
 part 'late_rank_students_response.g.dart';
 
@@ -13,11 +13,14 @@ class LateRankStudentsResponse {
   factory LateRankStudentsResponse.fromJson(Map<String, dynamic> json) =>
       _$LateRankStudentsResponseFromJson(json);
 
-  @JsonKey(defaultValue: <LateRankStudentResponse>[], fromJson: _studentsFromJson)
+  @JsonKey(
+    defaultValue: <LateRankStudentResponse>[],
+    fromJson: _studentsFromJson,
+  )
   final List<LateRankStudentResponse> students;
 
-  List<LateRankStudentEntity> toEntity() {
-    return students.map((student) => student.toEntity()).toList();
+  List<LateRankStudentModel> toModel() {
+    return students.map((student) => student.toModel()).toList();
   }
 }
 

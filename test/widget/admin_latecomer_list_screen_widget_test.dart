@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/late/domain/entities/late_rank_student_entity.dart';
-import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
-import 'package:goms/features/outing/presentation/screens/admin_latecomer_list_screen.dart';
+import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
+import 'package:goms/features/late/ui/providers/student_council_late_students_provider.dart';
+import 'package:goms/features/outing/ui/screens/admin_latecomer_list_screen.dart';
 
 void main() {
   testWidgets('AdminLatecomerListScreen renders late students for selected day',
@@ -38,20 +38,22 @@ void main() {
 class _FakeStudentCouncilLateStudentsNotifier
     extends StudentCouncilLateStudentsNotifier {
   @override
-  Future<List<LateRankStudentEntity>> build() async {
+  Future<List<LateRankStudentModel>> build() async {
     return [
-      LateRankStudentEntity(
+      LateRankStudentModel(
         memberId: 1,
         name: '민준',
         grade: 8,
         department: 'AI',
+        profileImageUrl: '',
         comingAt: DateTime(2026, 4, 2, 8, 30),
       ),
-      LateRankStudentEntity(
+      LateRankStudentModel(
         memberId: 2,
         name: '서윤',
         grade: 9,
         department: 'SW',
+        profileImageUrl: '',
         comingAt: DateTime(2026, 4, 2, 8, 35),
       ),
     ];

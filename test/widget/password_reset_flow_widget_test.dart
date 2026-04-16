@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/core/router/route_path.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/enums/app_theme_option.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -16,18 +16,18 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/email_verification/domain/repositories/email_verification_repository.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
-import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
-import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
-import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
-import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
-import 'package:goms/features/member/domain/entities/current_member_entity.dart';
-import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
+import 'package:goms/features/auth/login/ui/screens/login_screen.dart';
+import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
+import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
+import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
+import 'package:goms/features/member/ui/models/current_member_model.dart';
+import 'package:goms/features/member/ui/providers/current_member_provider.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
-import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
+import 'package:goms/features/profile/ui/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -494,7 +494,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
+  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
         memberId: 1,
         status: OutingStatusType.outing,
         name: '홍길동',
@@ -506,7 +506,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
+  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '홍길동',

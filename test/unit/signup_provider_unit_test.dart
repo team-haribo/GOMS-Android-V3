@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
-import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
 import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
-import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
+import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
+import 'package:goms/features/auth/signup/ui/providers/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {

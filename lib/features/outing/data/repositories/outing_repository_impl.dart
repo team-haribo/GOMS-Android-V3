@@ -5,11 +5,11 @@ import 'package:goms/features/outing/data/response/qr/process_coming_by_qr_respo
 import 'package:goms/features/outing/data/response/qr/process_outing_by_qr_response.dart';
 import 'package:goms/features/outing/data/response/search/search_outing_students_response.dart';
 import 'package:goms/features/outing/data/response/status/my_outing_status_response.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_coming_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
-import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
-import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/data/repositories/outing_repository.dart';
 
 class OutingRepositoryImpl implements OutingRepository {
   const OutingRepositoryImpl({
@@ -19,58 +19,58 @@ class OutingRepositoryImpl implements OutingRepository {
   final OutingRemoteDataSource _remoteDataSource;
 
   @override
-  Future<MyOutingStatusEntity> getMyOutingStatus() async {
+  Future<MyOutingStatusModel> getMyOutingStatus() async {
     final response = await _remoteDataSource.getMyOutingStatus();
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<List<OutingStudentEntity>> getCurrentOutingStudents() async {
+  Future<List<OutingStudentModel>> getCurrentOutingStudents() async {
     final response = await _remoteDataSource.getCurrentOutingStudents();
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<OutingQrResultEntity> processOutingByQr({
+  Future<OutingQrResultModel> processOutingByQr({
     required String uuid,
     required int exp,
   }) async {
     final response = await _remoteDataSource.processOutingByQr(
       ProcessOutingByQrRequestDto(uuid: uuid, exp: exp),
     );
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<OutingComingQrResultEntity> processComingByQr({
+  Future<OutingComingQrResultModel> processComingByQr({
     required String uuid,
     required int exp,
   }) async {
     final response = await _remoteDataSource.processComingByQr(
       ProcessOutingByQrRequestDto(uuid: uuid, exp: exp),
     );
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<List<OutingStudentEntity>> searchOutingStudents({
+  Future<List<OutingStudentModel>> searchOutingStudents({
     required String name,
   }) async {
     final response = await _remoteDataSource.searchOutingStudents(name);
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<OutingQrResultEntity> forceOutStudent({required int memberId}) async {
+  Future<OutingQrResultModel> forceOutStudent({required int memberId}) async {
     final response = await _remoteDataSource.forceOutStudent(memberId);
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<OutingComingQrResultEntity> forceInStudent({
+  Future<OutingComingQrResultModel> forceInStudent({
     required int memberId,
   }) async {
     final response = await _remoteDataSource.forceInStudent(memberId);
-    return response.toEntity();
+    return response.toModel();
   }
 }

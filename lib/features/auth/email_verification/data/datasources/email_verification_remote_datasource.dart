@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:goms/features/auth/email_verification/data/request/email_verification/confirm_email_verification_request_dto.dart';
-import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
-import 'package:goms/features/auth/email_verification/data/response/email_verification/confirm_email_verification_response_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/response/email_verification/confirm_email_verification_response_dto.dart';
 
 part 'email_verification_remote_datasource.g.dart';
 

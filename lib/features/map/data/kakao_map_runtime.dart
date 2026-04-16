@@ -25,7 +25,7 @@ class KakaoMapRuntime {
     }
     _checked = true;
 
-    if (!Platform.isAndroid) {
+    if (!Platform.isAndroid && !Platform.isIOS) {
       _unavailableReason = '이 플랫폼에서는 카카오 지도를 지원하지 않습니다.';
       return;
     }

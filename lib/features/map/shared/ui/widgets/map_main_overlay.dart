@@ -7,6 +7,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
@@ -358,6 +359,51 @@ class _MyActivitySection extends StatelessWidget {
     this.onPlaceTap,
   });
 
+  Future<void> _showDeleteReviewDialog({
+    required BuildContext context,
+    required WidgetRef ref,
+    required MapScreenReviewModel review,
+  }) {
+    return GomsDialog.confirm(
+      title: '후기 삭제',
+      content: '정말 후기를 삭제하시겠습니까?',
+      cancelText: '취소',
+      confirmText: '삭제',
+      isDestructive: true,
+      onConfirm: () => _deleteReview(
+        context: context,
+        ref: ref,
+        review: review,
+      ),
+    ).show(context);
+  }
+
+  void _deleteReview({
+    required BuildContext context,
+    required WidgetRef ref,
+    required MapScreenReviewModel review,
+  }) async {
+    try {
+      await ref
+          .read(mapScreenProvider.notifier)
+          .deleteMyReview(review.reviewId);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('후기를 삭제했습니다.'),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('후기 삭제에 실패했습니다.'),
+          backgroundColor: AppColors.negative,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -460,6 +506,11 @@ class _MyActivitySection extends StatelessWidget {
                     address: review.address,
                     reviewContent: review.reviewDetailContent,
                     reviewCreatedAt: review.createdAt,
+                    onActionPressed: () => _showDeleteReviewDialog(
+                      context: context,
+                      ref: ref,
+                      review: review,
+                    ),
                   ),
                 ),
               ),

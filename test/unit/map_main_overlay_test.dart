@@ -5,12 +5,14 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/features/map/discovery/ui/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_main_overlay.dart';
+import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
 
 void main() {
   testWidgets('tapping a place card forwards the selected place callback', (
@@ -114,6 +116,61 @@ void main() {
     expect(find.text('후기 남기기'), findsOneWidget);
     expect(find.textContaining('339m |'), findsOneWidget);
   });
+
+  testWidgets('my review bin action opens delete confirmation dialog', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(
+            const _FakeRecommendedPlaceRepository(),
+          ),
+        ],
+        child: MaterialApp(
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+              Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+              Breakpoint(start: 451, end: 800, name: 'TABLET'),
+              Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+            ],
+          ),
+          home: Scaffold(
+            body: MapMainOverlay(
+              state: MapScreenState(
+                status: MapScreenStatus.success,
+                reviewModels: [
+                  MapScreenReviewModel(
+                    reviewId: 1,
+                    placeName: '학생식당',
+                    category: '한식',
+                    address: '광주광역시 테스트로 7',
+                    reviewDetailContent: '리뷰 내용',
+                    createdAt: DateTime(2026, 4, 21),
+                  ),
+                ],
+                reviewCount: 1,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final reviewContainer = tester.widget<PlaceContainer>(
+      find.byType(PlaceContainer).last,
+    );
+    reviewContainer.onActionPressed?.call();
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('후기 삭제'), findsOneWidget);
+    expect(find.text('정말 후기를 삭제하시겠습니까?'), findsOneWidget);
+  });
 }
 
 class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
@@ -165,20 +222,11 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
   Future<bool> unRecommendPlace(int placeId) async => false;
 
   @override
-  Future<void> deleteReview(int reviewId) {
-    // TODO: implement deleteReview
-    throw UnimplementedError();
-  }
+  Future<void> deleteReview(int reviewId) async {}
 
   @override
-  Future<int> getMyReviewCount() {
-    // TODO: implement getMyReviewCount
-    throw UnimplementedError();
-  }
+  Future<int> getMyReviewCount() async => 0;
 
   @override
-  Future<List<MyReviewEntity>> getMyReviews() {
-    // TODO: implement getMyReviews
-    throw UnimplementedError();
-  }
+  Future<List<MyReviewEntity>> getMyReviews() async => const [];
 }

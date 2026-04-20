@@ -125,6 +125,37 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     }
   }
 
+  Future<void> deleteMyReview(int reviewId) async {
+    final currentReviews = state.reviewModels;
+    final nextReviews = currentReviews
+        .where((review) => review.reviewId != reviewId)
+        .toList(growable: false);
+    final removedCount = currentReviews.length - nextReviews.length;
+
+    if (removedCount == 0) {
+      return;
+    }
+
+    state = state.copyWith(
+      reviewModels: nextReviews,
+      reviewCount: max(0, state.reviewCount - removedCount),
+    );
+
+    try {
+      await ref.read(recommendedPlaceRepositoryProvider).deleteReview(reviewId);
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        Logger.e(
+          'Delete my review request failed.',
+          tag: 'MAP',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+      rethrow;
+    }
+  }
+
   Future<List<PopularPlace>> _loadMarkerPlaces() async {
     try {
       final hotPlaces = await _loadHotPlaceEntities();
@@ -194,6 +225,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
 
   MapScreenReviewModel _toMapScreenReviewModel(MyReviewEntity review) {
     return MapScreenReviewModel(
+      reviewId: review.reviewId,
       placeName: review.placeName,
       category: review.categoryName,
       address: review.address,

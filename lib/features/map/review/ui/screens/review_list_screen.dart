@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/map/shared/ui/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/shared/ui/widgets/drag_handle_header.dart';
 import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 
-class ReviewListScreen extends StatefulWidget {
+class ReviewListScreen extends ConsumerStatefulWidget {
   final String placeName;
   final String category;
   final String address;
@@ -31,17 +34,71 @@ class ReviewListScreen extends StatefulWidget {
   });
 
   @override
-  State<ReviewListScreen> createState() => _ReviewListScreenState();
+  ConsumerState<ReviewListScreen> createState() => _ReviewListScreenState();
 }
 
-class _ReviewListScreenState extends State<ReviewListScreen> {
+class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
   final DraggableScrollableController sheetController =
       DraggableScrollableController();
+  late final List<_ReviewListItem> _reviews;
+
+  @override
+  void initState() {
+    super.initState();
+    _reviews = <_ReviewListItem>[
+      _ReviewListItem(
+        reviewId: 1,
+        name: '류수연',
+        grade: 9,
+        major: 'SW개발',
+        content: '굳굳',
+        createdAt: DateTime.now(),
+        isMine: true,
+      ),
+      _ReviewListItem(
+        reviewId: 2,
+        name: '류수연',
+        grade: 9,
+        major: 'SW개발',
+        content: '굳굳',
+        createdAt: DateTime.now(),
+        isMine: true,
+      ),
+      _ReviewListItem(
+        reviewId: 3,
+        name: '류수연',
+        grade: 9,
+        major: 'SW개발',
+        content: '굳굳',
+        createdAt: DateTime.now(),
+        isMine: false,
+      ),
+    ];
+  }
+
+  Future<void> _deleteReview(int reviewId) async {
+    setState(() {
+      _reviews.removeWhere((review) => review.reviewId == reviewId);
+    });
+
+    try {
+      await ref.read(recommendedPlaceRepositoryProvider).deleteReview(reviewId);
+    } catch (error, stackTrace) {
+      Logger.e(
+        'Review list delete request failed.',
+        tag: 'MAP',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
+    final reviewCount = _reviews.length;
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
@@ -196,7 +253,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                             ),
                                             AppGap.h4,
                                             Text(
-                                              '${widget.review}',
+                                              '$reviewCount',
                                               style:
                                                   AppTextStyles.text2.copyWith(
                                                 color: isLight
@@ -280,8 +337,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                                   text: TextSpan(
                                                     children: [
                                                       TextSpan(
-                                                        text:
-                                                            '${widget.review}',
+                                                        text: '$reviewCount',
                                                         style: AppTextStyles
                                                             .text3
                                                             .copyWith(
@@ -331,7 +387,7 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                             ),
                                           ],
                                         ),
-                                        if (widget.review == 0) ...[
+                                        if (_reviews.isEmpty) ...[
                                           AppGap.v12,
                                           AppIcons.coffee(),
                                           AppGap.v12,
@@ -346,32 +402,21 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
                                           AppGap.v20,
                                         ] else ...[
                                           Column(
-                                            children: [
-                                              ReviewListContainer(
-                                                name: '류수연',
-                                                grade: 9,
-                                                major: 'SW개발',
-                                                reviewDetailContent: '굳굳',
-                                                createdAt: DateTime.now(),
-                                                isMine: true,
-                                              ),
-                                              ReviewListContainer(
-                                                name: '류수연',
-                                                grade: 9,
-                                                major: 'SW개발',
-                                                reviewDetailContent: '굳굳',
-                                                createdAt: DateTime.now(),
-                                                isMine: true,
-                                              ),
-                                              ReviewListContainer(
-                                                name: '류수연',
-                                                grade: 9,
-                                                major: 'SW개발',
-                                                reviewDetailContent: '굳굳',
-                                                createdAt: DateTime.now(),
-                                                isMine: false,
-                                              ),
-                                            ],
+                                            children: _reviews
+                                                .map(
+                                                  (review) => ReviewListContainer(
+                                                    reviewId: review.reviewId,
+                                                    name: review.name,
+                                                    grade: review.grade,
+                                                    major: review.major,
+                                                    reviewDetailContent:
+                                                        review.content,
+                                                    createdAt: review.createdAt,
+                                                    isMine: review.isMine,
+                                                    onDelete: _deleteReview,
+                                                  ),
+                                                )
+                                                .toList(growable: false),
                                           ),
                                         ],
                                       ],
@@ -393,4 +438,24 @@ class _ReviewListScreenState extends State<ReviewListScreen> {
       ),
     );
   }
+}
+
+class _ReviewListItem {
+  const _ReviewListItem({
+    required this.reviewId,
+    required this.name,
+    required this.grade,
+    required this.major,
+    required this.content,
+    required this.createdAt,
+    required this.isMine,
+  });
+
+  final int reviewId;
+  final String name;
+  final int grade;
+  final String major;
+  final String content;
+  final DateTime createdAt;
+  final bool isMine;
 }

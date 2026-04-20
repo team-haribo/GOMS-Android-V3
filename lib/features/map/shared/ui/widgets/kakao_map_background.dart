@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
@@ -166,17 +167,25 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
         _pois.add(poi);
       }
 
-      debugPrint(
-        'KakaoMapBackground rendered ${_pois.length} poi(s) and '
-        '0 route(s).',
-      );
+      var renderedRouteCount = 0;
 
       if (widget.showRoutePreview && widget.routePath.length > 1) {
         final routePoints = widget.routePath
             .map((point) => kakao.LatLng(point.latitude, point.longitude))
             .toList(growable: false);
         cameraPoints.addAll(routePoints);
+
+        _route = await controller.routeLayer.addRoute(
+          routePoints,
+          kakao.RouteStyle(AppColors.mainColor, 6.0),
+        );
+        renderedRouteCount = 1;
       }
+
+      debugPrint(
+        'KakaoMapBackground rendered ${_pois.length} poi(s) and '
+        '$renderedRouteCount route(s).',
+      );
 
       if (!mounted || token != _renderToken) {
         return;

@@ -182,7 +182,7 @@ void main() {
       expect(state.reviewModels.single.reviewId, 12);
     });
 
-    test('keeps local my review state when delete API fails', () async {
+    test('restores my review state when delete API fails', () async {
       final repository = _ReviewDeletingRepository(
         shouldThrowOnDelete: true,
         reviews: [
@@ -223,9 +223,9 @@ void main() {
 
       final state = container.read(mapScreenProvider);
       expect(repository.deletedReviewIds, isEmpty);
-      expect(state.reviewCount, 1);
-      expect(state.reviewModels, hasLength(1));
-      expect(state.reviewModels.single.reviewId, 22);
+      expect(state.reviewCount, 2);
+      expect(state.reviewModels, hasLength(2));
+      expect(state.reviewModels.first.reviewId, 21);
     });
   });
 }

@@ -130,6 +130,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
 
   Future<void> deleteMyReview(int reviewId) async {
     final currentReviews = state.reviewModels;
+    final previousReviewCount = state.reviewCount;
     final nextReviews = currentReviews
         .where((review) => review.reviewId != reviewId)
         .toList(growable: false);
@@ -153,6 +154,10 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
           tag: 'MAP',
           error: error,
           stackTrace: stackTrace,
+        );
+        state = state.copyWith(
+          reviewModels: currentReviews,
+          reviewCount: previousReviewCount,
         );
       }
       rethrow;

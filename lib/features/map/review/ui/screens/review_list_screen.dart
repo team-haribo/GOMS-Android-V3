@@ -15,7 +15,8 @@ import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 
 final myReviewIdsProvider = FutureProvider<Set<int>>((ref) async {
-  final myReviews = await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
+  final myReviews =
+      await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
   return myReviews.map((review) => review.reviewId).toSet();
 });
 
@@ -79,14 +80,14 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
     final placeReviewsAsync = ref.watch(placeReviewsProvider(widget.placeId));
     final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
     final placeReviews =
-      placeReviewsAsync.asData?.value ?? const <PlaceReviewEntity>[];
+        placeReviewsAsync.asData?.value ?? const <PlaceReviewEntity>[];
     final myReviewIds = myReviewIdsAsync.asData?.value ?? const <int>{};
     final reviews = placeReviews
-      .where((review) => !_deletedReviewIds.contains(review.reviewId))
-      .toList(growable: false);
+        .where((review) => !_deletedReviewIds.contains(review.reviewId))
+        .toList(growable: false);
     final reviewCount = reviews.length;
     final isReviewLoading =
-      placeReviewsAsync.isLoading && placeReviewsAsync.asData == null;
+        placeReviewsAsync.isLoading && placeReviewsAsync.asData == null;
     final isReviewLoadFailed = placeReviewsAsync.hasError;
 
     return BaseScaffold(
@@ -402,7 +403,8 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                           Column(
                                             children: reviews
                                                 .map(
-                                                  (review) => ReviewListContainer(
+                                                  (review) =>
+                                                      ReviewListContainer(
                                                     reviewId: review.reviewId,
                                                     name: review.name,
                                                     grade: review.grade,
@@ -412,8 +414,8 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                                     createdAt:
                                                         review.reviewedAt ??
                                                             DateTime.now(),
-                                                    isMine: myReviewIds
-                                                        .contains(
+                                                    isMine:
+                                                        myReviewIds.contains(
                                                             review.reviewId),
                                                     onDelete: _deleteReview,
                                                   ),

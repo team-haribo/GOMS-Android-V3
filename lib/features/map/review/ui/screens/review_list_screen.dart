@@ -6,6 +6,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/utils/logger.dart';
+import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/shared/ui/widgets/drag_handle_header.dart';
 import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
@@ -13,7 +14,13 @@ import 'package:goms/features/map/data/providers/recommended_place_providers.dar
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 
+final myReviewIdsProvider = FutureProvider<Set<int>>((ref) async {
+  final myReviews = await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
+  return myReviews.map((review) => review.reviewId).toSet();
+});
+
 class ReviewListScreen extends ConsumerStatefulWidget {
+  final int placeId;
   final String placeName;
   final String category;
   final String address;
@@ -24,6 +31,7 @@ class ReviewListScreen extends ConsumerStatefulWidget {
 
   const ReviewListScreen({
     super.key,
+    required this.placeId,
     required this.placeName,
     required this.category,
     required this.address,
@@ -40,45 +48,15 @@ class ReviewListScreen extends ConsumerStatefulWidget {
 class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
   final DraggableScrollableController sheetController =
       DraggableScrollableController();
-  late final List<_ReviewListItem> _reviews;
-
-  @override
-  void initState() {
-    super.initState();
-    _reviews = <_ReviewListItem>[
-      _ReviewListItem(
-        reviewId: 1,
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        content: '굳굳',
-        createdAt: DateTime.now(),
-        isMine: true,
-      ),
-      _ReviewListItem(
-        reviewId: 2,
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        content: '굳굳',
-        createdAt: DateTime.now(),
-        isMine: true,
-      ),
-      _ReviewListItem(
-        reviewId: 3,
-        name: '류수연',
-        grade: 9,
-        major: 'SW개발',
-        content: '굳굳',
-        createdAt: DateTime.now(),
-        isMine: false,
-      ),
-    ];
-  }
+  final Set<int> _deletedReviewIds = <int>{};
 
   Future<void> _deleteReview(int reviewId) async {
+    if (_deletedReviewIds.contains(reviewId)) {
+      return;
+    }
+
     setState(() {
-      _reviews.removeWhere((review) => review.reviewId == reviewId);
+      _deletedReviewIds.add(reviewId);
     });
 
     try {
@@ -98,7 +76,19 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
   Widget build(BuildContext context) {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
-    final reviewCount = _reviews.length;
+    final placeReviewsAsync = ref.watch(placeReviewsProvider(widget.placeId));
+    final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
+    final placeReviews =
+      placeReviewsAsync.asData?.value ?? const <PlaceReviewEntity>[];
+    final myReviewIds = myReviewIdsAsync.asData?.value ?? const <int>{};
+    final reviews = placeReviews
+      .where((review) => !_deletedReviewIds.contains(review.reviewId))
+      .toList(growable: false);
+    final reviewCount = reviews.length;
+    final isReviewLoading =
+      placeReviewsAsync.isLoading && placeReviewsAsync.asData == null;
+    final isReviewLoadFailed = placeReviewsAsync.hasError;
+
     return BaseScaffold(
       showAppBar: false,
       contentPadding: EdgeInsets.zero,
@@ -387,12 +377,20 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                             ),
                                           ],
                                         ),
-                                        if (_reviews.isEmpty) ...[
+                                        if (isReviewLoading) ...[
+                                          AppGap.v20,
+                                          const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          AppGap.v20,
+                                        ] else if (reviews.isEmpty) ...[
                                           AppGap.v12,
                                           AppIcons.coffee(),
                                           AppGap.v12,
                                           Text(
-                                            '아직 후기가 없어요!\n첫 후기를 작성해봐요!',
+                                            isReviewLoadFailed
+                                                ? '후기를 불러오지 못했어요.\n잠시 후 다시 시도해 주세요.'
+                                                : '아직 후기가 없어요!\n첫 후기를 작성해봐요!',
                                             style:
                                                 AppTextStyles.caption1.copyWith(
                                               color: AppColors.sub2,
@@ -402,17 +400,21 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                           AppGap.v20,
                                         ] else ...[
                                           Column(
-                                            children: _reviews
+                                            children: reviews
                                                 .map(
                                                   (review) => ReviewListContainer(
                                                     reviewId: review.reviewId,
                                                     name: review.name,
                                                     grade: review.grade,
-                                                    major: review.major,
+                                                    major: review.department,
                                                     reviewDetailContent:
                                                         review.content,
-                                                    createdAt: review.createdAt,
-                                                    isMine: review.isMine,
+                                                    createdAt:
+                                                        review.reviewedAt ??
+                                                            DateTime.now(),
+                                                    isMine: myReviewIds
+                                                        .contains(
+                                                            review.reviewId),
                                                     onDelete: _deleteReview,
                                                   ),
                                                 )
@@ -438,24 +440,4 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
       ),
     );
   }
-}
-
-class _ReviewListItem {
-  const _ReviewListItem({
-    required this.reviewId,
-    required this.name,
-    required this.grade,
-    required this.major,
-    required this.content,
-    required this.createdAt,
-    required this.isMine,
-  });
-
-  final int reviewId;
-  final String name;
-  final int grade;
-  final String major;
-  final String content;
-  final DateTime createdAt;
-  final bool isMine;
 }

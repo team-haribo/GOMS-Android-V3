@@ -33,11 +33,14 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     );
 
     try {
-      final popularPlaces = await _loadMarkerPlaces();
-      final myReviewModels = await _loadMyReviewModels();
-      final myReviewCount = await _loadMyReviewCount(
-        fallbackCount: myReviewModels.length,
-      );
+      final results = await Future.wait<Object?>([
+        _loadMarkerPlaces(),
+        _loadMyReviewModels(),
+        _loadMyReviewCountOrNull(),
+      ]);
+      final popularPlaces = results[0]! as List<PopularPlace>;
+      final myReviewModels = results[1]! as List<MapScreenReviewModel>;
+      final myReviewCount = (results[2] as int?) ?? myReviewModels.length;
       final normalizedMyReviewModels = _normalizeMyReviewModels(
         myReviewModels,
         myReviewCount,
@@ -205,7 +208,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     }
   }
 
-  Future<int> _loadMyReviewCount({required int fallbackCount}) async {
+  Future<int?> _loadMyReviewCountOrNull() async {
     try {
       return await ref
           .read(recommendedPlaceRepositoryProvider)
@@ -213,13 +216,13 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     } catch (error, stackTrace) {
       if (ref.mounted) {
         Logger.e(
-          'My review count request failed. Falling back to list length.',
+          'My review count request failed. Falling back to loaded review list length.',
           tag: 'MAP',
           error: error,
           stackTrace: stackTrace,
         );
       }
-      return fallbackCount;
+      return null;
     }
   }
 

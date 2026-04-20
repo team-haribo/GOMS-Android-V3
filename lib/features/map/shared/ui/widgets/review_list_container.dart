@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/widgets/dialogs/review_remove_dialog.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/dialogs/review_report_dialog.dart';
 import 'package:intl/intl.dart';
 
 class ReviewListContainer extends StatelessWidget {
+  final int? reviewId;
   final String name;
   final int grade;
   final String major;
   final String reviewDetailContent;
   final DateTime createdAt;
   final bool isMine;
+  final Future<void> Function(int reviewId)? onDelete;
 
   const ReviewListContainer({
     super.key,
+    this.reviewId,
     required this.name,
     required this.grade,
     required this.major,
     required this.reviewDetailContent,
     required this.createdAt,
     required this.isMine,
+    this.onDelete,
   });
 
   @override
@@ -90,11 +95,36 @@ class ReviewListContainer extends StatelessWidget {
             child: isMine
                 ? IconButton(
                     onPressed: () {
-                      reviewRemove(
-                        context: context,
+                      GomsDialog.confirm(
                         title: '후기 삭제',
-                        content: '\n 정말 후기를 삭제하시겠습니까?',
-                      );
+                        content: '정말 후기를 삭제하시겠습니까?',
+                        cancelText: '취소',
+                        confirmText: '삭제',
+                        isDestructive: true,
+                        onConfirm: () async {
+                          if (reviewId == null || onDelete == null) {
+                            return;
+                          }
+
+                          try {
+                            await onDelete!(reviewId!);
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('후기를 삭제했습니다.'),
+                              ),
+                            );
+                          } catch (_) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('후기 삭제에 실패했습니다.'),
+                                backgroundColor: AppColors.negative,
+                              ),
+                            );
+                          }
+                        },
+                      ).show(context);
                     },
                     icon: AppIcons.bin(
                       color: context.sub2Color,

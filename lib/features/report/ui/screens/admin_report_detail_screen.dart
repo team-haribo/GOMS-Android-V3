@@ -132,13 +132,6 @@ class _AdminReportDetailScreenState
                       ? '리뷰 #${detail.reviewId}'
                       : '리뷰 #${detail.reviewId} $reviewCreatedAt',
                 ),
-                if (detail.deletedAt != null ||
-                    (detail.deletedBy?.isNotEmpty ?? false)) ...[
-                  AppGap.v20,
-                  const _SectionTitle(title: '처리 정보'),
-                  AppGap.v12,
-                  _ResolutionInfo(detail: detail),
-                ],
               ],
             ),
           ),
@@ -304,34 +297,6 @@ class _ReportedUserTile extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ResolutionInfo extends StatelessWidget {
-  const _ResolutionInfo({required this.detail});
-
-  final ReportDetailModel detail;
-
-  @override
-  Widget build(BuildContext context) {
-    final rows = <String>[
-      if (detail.deletedBy?.isNotEmpty ?? false) '처리자 ${detail.deletedBy}',
-      if (detail.deletedAt != null)
-        '처리 시각 ${DateFormat('yy.MM.dd HH:mm:ss').format(detail.deletedAt!.toLocal())}',
-    ];
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Text(
-        rows.isEmpty ? '-' : rows.join('\n'),
-        style: AppTextStyles.text2.copyWith(color: context.sub1Color),
-      ),
     );
   }
 }

@@ -1,7 +1,11 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/map/data/datasources/recommended_place_remote_datasource.dart';
 import 'package:goms/features/map/data/repositories/recommended_place_repository_impl.dart';
+import 'package:goms/features/map/data/response/my_review_count_response.dart';
+import 'package:goms/features/map/data/response/my_review_list_response.dart';
+import 'package:goms/features/map/data/response/place_review_list_response.dart';
+import 'package:goms/features/map/data/response/place_recommend_response.dart';
+import 'package:goms/features/map/data/response/recommended_place_count_response.dart';
 import 'package:goms/features/map/data/response/recommended_place_response.dart';
 import 'package:goms/features/map/data/response/recommended_places_response.dart';
 
@@ -68,9 +72,7 @@ void main() {
 }
 
 class _FakeRecommendedPlaceRemoteDataSource
-    extends RecommendedPlaceRemoteDataSource {
-  _FakeRecommendedPlaceRemoteDataSource() : super(Dio());
-
+    implements RecommendedPlaceRemoteDataSource {
   @override
   Future<RecommendedPlacesResponse> getPlaces() async {
     return RecommendedPlacesResponse.fromJson({
@@ -95,5 +97,71 @@ class _FakeRecommendedPlaceRemoteDataSource
         },
       ],
     });
+  }
+
+  @override
+  Future<void> deleteReview(int reviewId) {
+    // TODO: implement deleteReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<RecommendedPlacesResponse> getHotPlaces({int? days}) {
+    // TODO: implement getHotPlaces
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<MyReviewListResponse> getMyReviews() {
+    // TODO: implement getMyReviews
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<RecommendedPlaceResponse> getPlaceDetail(int placeId) {
+    // TODO: implement getPlaceDetail
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<PlaceReviewListResponse> getPlaceReviews(int placeId) {
+    // TODO: implement getPlaceReviews
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<RecommendedPlacesResponse> getRecommendedPlaces() {
+    // TODO: implement getRecommendedPlaces
+    throw UnimplementedError();
+  }
+
+  @override
+  @override
+  Future<RecommendedPlacesResponse> searchPlaces(String keyword) {
+    // TODO: implement searchPlaces
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<RecommendedPlaceCountResponse> getRecommendedPlacesCountRaw() async {
+    return const RecommendedPlaceCountResponse(recommendCount: 0);
+  }
+
+  @override
+  Future<PlaceRecommendResponse> recommendPlaceRaw(int placeId) async {
+    return const PlaceRecommendResponse(recommended: true);
+  }
+
+  @override
+  Future<PlaceRecommendResponse> unRecommendPlaceRaw(int placeId) async {
+    return const PlaceRecommendResponse(recommended: false);
+  }
+
+  @override
+  Future<void> createReviewRaw(int placeId, Map<String, dynamic> body) async {}
+
+  @override
+  Future<MyReviewCountResponse> getMyReviewCountRaw() async {
+    return const MyReviewCountResponse(count: 0);
   }
 }

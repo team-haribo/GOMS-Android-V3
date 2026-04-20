@@ -45,7 +45,7 @@ class VerifyNotifier extends Notifier<VerifyState> {
           remainingSeconds: 0,
           resendCooldownSeconds: nextResendCooldownSeconds,
           isExpired: true,
-          codeError: '인증시간이 만료되었습니다',
+          codeError: '인증시간이 만료되었습니다.',
         );
         return;
       }

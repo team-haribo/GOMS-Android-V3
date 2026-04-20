@@ -72,7 +72,7 @@ class SignupNotifier extends Notifier<SignupState> {
   void validateGrade(String grade) {
     String? error;
     if (grade.isNotEmpty && int.tryParse(grade) == null) {
-      error = '기수는 숫자만 입력 가능합니다';
+      error = '기수는 숫자만 입력 가능합니다.';
     }
     state = state.copyWith(grade: grade, gradeError: error);
   }
@@ -83,7 +83,7 @@ class SignupNotifier extends Notifier<SignupState> {
   void validateEmail(String email) {
     String? error;
     if (email.isNotEmpty && !_emailRegex.hasMatch(email)) {
-      error = '학교에서 제공한 이메일만 사용 가능합니다';
+      error = '학교에서 제공한 이메일만 사용 가능합니다.';
     }
     state = state.copyWith(email: email, emailError: error);
   }
@@ -92,7 +92,7 @@ class SignupNotifier extends Notifier<SignupState> {
   void validatePassword(String password) {
     String? error;
     if (password.isNotEmpty && !_passwordRegex.hasMatch(password)) {
-      error = '잘못된 형식의 비밀번호입니다';
+      error = '잘못된 형식의 비밀번호입니다.';
     }
     state = state.copyWith(password: password, passwordError: error);
 
@@ -106,7 +106,7 @@ class SignupNotifier extends Notifier<SignupState> {
   void validatePasswordConfirm(String passwordConfirm) {
     String? error;
     if (passwordConfirm.isNotEmpty && passwordConfirm != state.password) {
-      error = '비밀번호가 일치하지 않습니다';
+      error = '비밀번호가 일치하지 않습니다.';
     }
     state = state.copyWith(
       passwordConfirm: passwordConfirm,
@@ -119,7 +119,7 @@ class SignupNotifier extends Notifier<SignupState> {
     String? error;
     if (state.passwordConfirm.isNotEmpty &&
         state.passwordConfirm != state.password) {
-      error = '비밀번호가 일치하지 않습니다';
+      error = '비밀번호가 일치하지 않습니다.';
     }
     state = state.copyWith(passwordConfirmError: error);
   }

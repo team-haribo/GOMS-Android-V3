@@ -38,7 +38,7 @@ class OnboardingScreen extends StatelessWidget {
               ],
             ),
           ),
-          AppGap.v16,
+          AppGap.v24,
           // 설명
           Column(
             children: [
@@ -80,7 +80,7 @@ class OnboardingScreen extends StatelessWidget {
                   horizontal: AppSpacing.s4,
                 ),
                 child: Text(
-                  'GOMS가 처음이신가요?',
+                  'GOMS가 처음이라면?',
                   style: AppTextStyles.caption3.withColor(
                     context.isDarkMode ? context.sub2Color : AppColors.button,
                   ),

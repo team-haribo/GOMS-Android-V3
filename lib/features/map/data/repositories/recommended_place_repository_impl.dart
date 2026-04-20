@@ -1,4 +1,5 @@
 import 'package:goms/features/map/data/datasources/recommended_place_remote_datasource.dart';
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
@@ -68,5 +69,21 @@ class RecommendedPlaceRepositoryImpl implements RecommendedPlaceRepository {
       placeId: placeId,
       content: content,
     );
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async {
+    final response = await _remoteDataSource.getMyReviews();
+    return response.toEntity();
+  }
+
+  @override
+  Future<int> getMyReviewCount() {
+    return _remoteDataSource.getMyReviewCount();
+  }
+
+  @override
+  Future<void> deleteReview(int reviewId) {
+    return _remoteDataSource.deleteReview(reviewId);
   }
 }

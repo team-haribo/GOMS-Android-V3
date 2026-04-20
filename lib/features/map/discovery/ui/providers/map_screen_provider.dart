@@ -7,6 +7,7 @@ import 'package:goms/features/map/data/providers/recommended_place_providers.dar
 import 'package:goms/features/map/discovery/ui/models/map_screen_review_model.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 
 final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
@@ -33,6 +34,14 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
 
     try {
       final popularPlaces = await _loadMarkerPlaces();
+      final myReviewModels = await _loadMyReviewModels();
+      final myReviewCount = await _loadMyReviewCount(
+        fallbackCount: myReviewModels.length,
+      );
+      final normalizedMyReviewModels = _normalizeMyReviewModels(
+        myReviewModels,
+        myReviewCount,
+      );
       if (!ref.mounted) {
         return;
       }
@@ -40,9 +49,8 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
       state = state.copyWith(
         status: MapScreenStatus.success,
         popularPlaces: popularPlaces,
-        reviewModels: const <MapScreenReviewModel>[],
-        recommendedCount: 0,
-        reviewCount: 0,
+        reviewModels: normalizedMyReviewModels,
+        reviewCount: myReviewCount,
       );
     } catch (error, stackTrace) {
       if (!ref.mounted) {
@@ -146,6 +154,73 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     return ref
         .read(recommendedPlaceRepositoryProvider)
         .getHotPlaces(days: _hotPlaceDays);
+  }
+
+  Future<List<MapScreenReviewModel>> _loadMyReviewModels() async {
+    try {
+      final reviews =
+          await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
+      return reviews.map(_toMapScreenReviewModel).toList(growable: false);
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        Logger.e(
+          'My review list request failed. Falling back to empty list.',
+          tag: 'MAP',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+      return const <MapScreenReviewModel>[];
+    }
+  }
+
+  Future<int> _loadMyReviewCount({required int fallbackCount}) async {
+    try {
+      return await ref
+          .read(recommendedPlaceRepositoryProvider)
+          .getMyReviewCount();
+    } catch (error, stackTrace) {
+      if (ref.mounted) {
+        Logger.e(
+          'My review count request failed. Falling back to list length.',
+          tag: 'MAP',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+      return fallbackCount;
+    }
+  }
+
+  MapScreenReviewModel _toMapScreenReviewModel(MyReviewEntity review) {
+    return MapScreenReviewModel(
+      placeName: review.placeName,
+      category: review.categoryName,
+      address: review.address,
+      reviewDetailContent: review.content,
+      createdAt: review.reviewedAt ?? DateTime.now(),
+    );
+  }
+
+  List<MapScreenReviewModel> _normalizeMyReviewModels(
+    List<MapScreenReviewModel> reviews,
+    int reviewCount,
+  ) {
+    if (reviewCount < 0) {
+      return const <MapScreenReviewModel>[];
+    }
+
+    if (reviews.length <= reviewCount) {
+      return reviews;
+    }
+
+    Logger.e(
+      'My review list size (${reviews.length}) exceeded my review count ($reviewCount). '
+      'Trimming list for safety.',
+      tag: 'MAP',
+    );
+
+    return reviews.take(reviewCount).toList(growable: false);
   }
 
   PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {

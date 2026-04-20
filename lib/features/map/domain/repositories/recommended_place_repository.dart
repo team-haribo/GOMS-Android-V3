@@ -1,3 +1,4 @@
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 
@@ -15,4 +16,7 @@ abstract class RecommendedPlaceRepository {
     required int placeId,
     required String content,
   });
+  Future<List<MyReviewEntity>> getMyReviews();
+  Future<int> getMyReviewCount();
+  Future<void> deleteReview(int reviewId);
 }

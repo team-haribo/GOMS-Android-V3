@@ -6,6 +6,7 @@ import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
@@ -183,6 +184,24 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
 
   @override
   Future<bool> unRecommendPlace(int placeId) async => false;
+
+  @override
+  Future<void> deleteReview(int reviewId) {
+    // TODO: implement deleteReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getMyReviewCount() {
+    // TODO: implement getMyReviewCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() {
+    // TODO: implement getMyReviews
+    throw UnimplementedError();
+  }
 }
 
 class _TrackingRecommendedPlaceRepository
@@ -253,6 +272,24 @@ class _ThrowingRecommendedPlaceRepository
 
   @override
   Future<bool> unRecommendPlace(int placeId) async => false;
+
+  @override
+  Future<void> deleteReview(int reviewId) {
+    // TODO: implement deleteReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getMyReviewCount() {
+    // TODO: implement getMyReviewCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() {
+    // TODO: implement getMyReviews
+    throw UnimplementedError();
+  }
 }
 
 class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {

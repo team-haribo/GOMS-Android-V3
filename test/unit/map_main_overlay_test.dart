@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
@@ -162,4 +163,22 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
 
   @override
   Future<bool> unRecommendPlace(int placeId) async => false;
+
+  @override
+  Future<void> deleteReview(int reviewId) {
+    // TODO: implement deleteReview
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<int> getMyReviewCount() {
+    // TODO: implement getMyReviewCount
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() {
+    // TODO: implement getMyReviews
+    throw UnimplementedError();
+  }
 }

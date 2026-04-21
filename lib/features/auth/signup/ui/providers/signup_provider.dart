@@ -161,9 +161,9 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 비밀번호 설정 폼 유효성
   bool get isPasswordFormValid =>
       state.password.isNotEmpty &&
-      state.passwordError == null &&
-      state.passwordConfirm.isNotEmpty &&
-      state.passwordConfirmError == null;
+          state.passwordError == null &&
+          state.passwordConfirm.isNotEmpty &&
+          state.passwordConfirmError == null;
 
   // ==================== 회원가입 ====================
 
@@ -185,9 +185,9 @@ class SignupNotifier extends Notifier<SignupState> {
 
     try {
       await ref.read(signupRepositoryProvider).sendEmailVerification(
-            email: normalizedEmail,
-            purpose: EmailVerificationPurpose.signup,
-          );
+        email: normalizedEmail,
+        purpose: EmailVerificationPurpose.signup,
+      );
       ref.read(authFlowProvider.notifier).startSignup(normalizedEmail);
 
       state = state.copyWith(status: SignupStatus.success);
@@ -241,14 +241,14 @@ class SignupNotifier extends Notifier<SignupState> {
         tag: 'AUTH',
       );
       await ref.read(signupRepositoryProvider).signUp(
-            email: authFlow.email,
-            verifiedToken: authFlow.verifiedToken!,
-            password: state.password,
-            name: state.name,
-            grade: int.parse(state.grade),
-            department: state.major!,
-            gender: state.gender!,
-          );
+        email: authFlow.email,
+        verifiedToken: authFlow.verifiedToken!,
+        password: state.password,
+        name: state.name,
+        grade: int.parse(state.grade),
+        department: state.major!,
+        gender: state.gender!,
+      );
       ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: SignupStatus.success);
     } on DioException catch (e) {

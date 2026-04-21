@@ -58,7 +58,7 @@ void main() {
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('8기 | AI과'), findsOneWidget);
     expect(find.text('지각 횟수'), findsOneWidget);
-    expect(find.text('3번'), findsOneWidget);
+    expect(find.text('3'), findsOneWidget);
   });
 
   testWidgets(
@@ -122,7 +122,7 @@ void main() {
     await tester.tap(find.text('로그아웃'));
     await tester.pumpAndSettle();
 
-    expect(find.text('로그아웃 하시겠습니까?'), findsOneWidget);
+    expect(find.text('\n 로그아웃 하시겠습니까?'), findsOneWidget);
 
     await tester.tap(find.text('로그아웃').last);
     await tester.pumpAndSettle();

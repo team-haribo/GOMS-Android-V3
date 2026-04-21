@@ -3,6 +3,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 
@@ -98,10 +99,11 @@ class ProfileSummarySection extends StatelessWidget {
           children: [
             Text('지각 횟수', style: AppTextStyles.text2.withColor(subColor)),
             AppGap.v4,
-            Text(
-              lateCount == null ? '-' : '$lateCount번',
+            Row(children: [Text(
+              lateCount == null ? '-' : '$lateCount',
               style: AppTextStyles.title3.withColor(AppColors.negative),
-            ),
+            ), AppGap.h2,
+              Text('번', style: AppTextStyles.title3.withColor(context.mainTextColor,),),],)
           ],
         ),
       ],

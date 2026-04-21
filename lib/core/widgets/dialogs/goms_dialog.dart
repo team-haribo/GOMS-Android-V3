@@ -87,13 +87,13 @@ class GomsDialog {
                   CupertinoDialogAction(
                     isDestructiveAction: isDestructive,
                     onPressed: onConfirmPressed,
-                    child: Text(confirmText),
+                    child: Text(confirmText, style: const TextStyle(color: AppColors.blue),),
                   ),
                 ]
               : [
                   CupertinoDialogAction(
                     onPressed: onConfirmPressed,
-                    child: Text(confirmText),
+                    child: Text(confirmText, style: const TextStyle(color: AppColors.blue,),),
                   ),
                 ],
         );

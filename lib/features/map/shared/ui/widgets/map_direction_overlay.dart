@@ -62,6 +62,11 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
         false;
   }
 
+  Color _routeSheetBarrierColor(bool dark) {
+    final baseColor = dark ? AppColors.backgroundDark : AppColors.background;
+    return baseColor.withValues(alpha: 0.56);
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedIndex =
@@ -83,6 +88,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
     };
+    final dark = _isDark(themeMode, context);
 
     return Stack(
       children: [
@@ -93,7 +99,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
           child: DirectionTopPanel(
             departureName: departureName,
             destinationName: destinationName,
-            dark: _isDark(themeMode, context),
+            dark: dark,
             onSwap: widget.onSwap,
             onDepartureSelect: widget.onDepartureSelect,
           ),
@@ -104,9 +110,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
               onTap: _closeRouteSheet,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                color: (_isDark(themeMode, context)
-                    ? AppColors.backgroundDark
-                    : AppColors.background),
+                color: _routeSheetBarrierColor(dark),
               ),
             ),
           ),
@@ -120,7 +124,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
               scrollController: _routeScrollController,
               routeOptions: widget.state.routeOptions,
               selectedIndex: selectedIndex,
-              dark: _isDark(themeMode, context),
+              dark: dark,
               onTap: _handleRouteTap,
             ),
             routeSheet: selectedOption == null
@@ -129,7 +133,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
                     option: selectedOption,
                     departureName: departureName,
                     destinationName: destinationName,
-                    dark: _isDark(themeMode, context),
+                    dark: dark,
                     onClose: _closeRouteSheet,
                   ),
             isRouteSheetVisible: isRouteSheetVisible,

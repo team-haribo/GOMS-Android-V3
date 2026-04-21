@@ -246,7 +246,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
               selectedThemeOption: selectedThemeOption,
               showClock: showClock,
               outingPushAlarm: outingPushAlarm,
-              cameraLaunch: role == RoleEnum.admin ? false : cameraLaunch,
+              cameraLaunch: cameraLaunch,
               textColor: textColor,
               subColor: subColor,
               surfaceColor: surfaceColor,
@@ -268,7 +268,9 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                     .read(settingsProvider.notifier)
                     .setCameraLaunch(value);
                 if (!granted && mounted) {
-                  _showPermissionDeniedSnackBar('카메라 바로 켜기');
+                  _showPermissionDeniedSnackBar(
+                    role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
+                  );
                 }
               },
             ),

@@ -132,7 +132,8 @@ void main() {
     expect(find.text('onboarding-screen'), findsOneWidget);
   });
 
-  testWidgets('MyPageScreen hides admin camera launch', (tester) async {
+  testWidgets('MyPageScreen shows admin QR auto open setting only',
+      (tester) async {
     final container = ProviderContainer(
       overrides: [
         roleProvider.overrideWith((ref) => RoleEnum.admin),
@@ -181,7 +182,8 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('카메라 바로 켜기'), findsNothing);
+    expect(find.text('외출제 푸시 알림'), findsNothing);
+    expect(find.text('QR 생성 바로 켜기'), findsOneWidget);
   });
 }
 

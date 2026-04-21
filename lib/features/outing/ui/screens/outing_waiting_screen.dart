@@ -9,6 +9,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
@@ -50,18 +51,19 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
   }
 
   Future<void> _checkCameraLaunch() async {
-    if (!mounted || ref.read(roleProvider) == RoleEnum.admin) {
+    if (!mounted) {
       return;
     }
 
-    final cameraLaunch = await SettingsStorage.getCameraLaunch();
-    if (!cameraLaunch) {
-      return;
-    }
+    final role = ref.read(roleProvider);
+    final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+      enabled: await SettingsStorage.getCameraLaunch(),
+      isCameraPermissionGranted: (await Permission.camera.status).isGranted,
+      role: role,
+    );
 
-    final cameraStatus = await Permission.camera.status;
-    if (cameraStatus.isGranted && mounted) {
-      context.push(RoutePath.qr);
+    if (cameraLaunchRoute != null && mounted) {
+      context.push(cameraLaunchRoute);
     }
   }
 

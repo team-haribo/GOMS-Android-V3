@@ -40,11 +40,11 @@ void main() {
     await tester.enterText(find.byKey(emailFieldKey), 'student');
     await tester.enterText(find.byKey(passwordFieldKey), 'secret123');
 
-    expect(find.byIcon(Icons.visibility_off), findsOneWidget);
-    await tester.tap(find.byIcon(Icons.visibility_off));
+    expect(find.byIcon(Icons.visibility_off_outlined), findsOneWidget);
+    await tester.tap(find.byIcon(Icons.visibility_off_outlined));
     await tester.pumpAndSettle();
 
-    expect(find.byIcon(Icons.visibility), findsOneWidget);
+    expect(find.byIcon(Icons.visibility_outlined), findsOneWidget);
 
     final toggleFinder = find.byType(Switch);
     expect(tester.widget<Switch>(toggleFinder).value, isFalse);

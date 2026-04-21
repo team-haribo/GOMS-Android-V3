@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/core/router/route_path.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/enums/app_theme_option.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
@@ -16,17 +16,18 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/email_verification/domain/repositories/email_verification_repository.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
-import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
-import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
-import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
-import 'package:goms/features/member/domain/entities/current_member_entity.dart';
-import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
+import 'package:goms/features/auth/login/ui/screens/login_screen.dart';
+import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
+import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
+import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
+import 'package:goms/features/member/ui/models/current_member_model.dart';
+import 'package:goms/features/member/ui/providers/current_member_provider.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
-import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
+import 'package:goms/features/profile/ui/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -241,6 +242,67 @@ void main() {
       expect(find.text('login-screen'), findsOneWidget);
     });
 
+    testWidgets(
+        'LoginScreen back button falls back to onboarding when opened as root',
+        (tester) async {
+      final router = GoRouter(
+        initialLocation: RoutePath.login,
+        routes: [
+          GoRoute(
+            path: RoutePath.login,
+            builder: (context, state) => const LoginScreen(),
+          ),
+          GoRoute(
+            path: RoutePath.onboarding,
+            builder: (context, state) =>
+                const Scaffold(body: Text('onboarding-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(
+                  start: 801,
+                  end: 1920,
+                  name: AppBreakpoints.desktop,
+                ),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(IconButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('onboarding-screen'), findsOneWidget);
+    });
+
     testWidgets('VerifyScreen shows snackbar when verification fails',
         (tester) async {
       final repository = _FakeEmailVerificationRepository(
@@ -303,6 +365,88 @@ void main() {
       await tester.pumpWidget(const SizedBox.shrink());
       await tester.pump();
     });
+
+    testWidgets('VerifyScreen back button pops to previous screen',
+        (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: RoutePath.findPassword,
+        routes: [
+          GoRoute(
+            path: RoutePath.findPassword,
+            builder: (context, state) => Scaffold(
+              body: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text('find-password-screen'),
+                    ElevatedButton(
+                      onPressed: () => context.push(RoutePath.verify),
+                      child: const Text('open-verify'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: RoutePath.verify,
+            builder: (context, state) =>
+                const VerifyScreen(redirectPath: RoutePath.resetPassword),
+          ),
+          GoRoute(
+            path: RoutePath.password,
+            builder: (context, state) =>
+                const Scaffold(body: Text('password-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-verify'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(IconButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('find-password-screen'), findsOneWidget);
+    });
   });
 }
 
@@ -350,7 +494,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
+  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
         memberId: 1,
         status: OutingStatusType.outing,
         name: '홍길동',
@@ -362,7 +506,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
+  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '홍길동',

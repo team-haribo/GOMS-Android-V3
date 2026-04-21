@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
+import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
 
 part 'issued_qr_response.freezed.dart';
 part 'issued_qr_response.g.dart';
@@ -19,8 +19,8 @@ abstract class IssuedQrResponse with _$IssuedQrResponse {
 }
 
 extension IssuedQrResponseX on IssuedQrResponse {
-  IssuedQrEntity toEntity() {
-    return IssuedQrEntity(
+  IssuedQrModel toModel() {
+    return IssuedQrModel(
       uuid: uuid,
       exp: exp,
       issuedAt: DateTime.now(),

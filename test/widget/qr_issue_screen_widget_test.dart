@@ -3,15 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/features/qr/domain/entities/issued_qr_entity.dart';
-import 'package:goms/features/qr/presentation/providers/issued_qr_provider.dart';
-import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
+import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
+import 'package:goms/features/qr/ui/providers/issued_qr_provider.dart';
+import 'package:goms/features/qr/ui/screens/qr_issue_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
-  testWidgets('QrIssueScreen renders centered QR with countdown for admin', (
+  testWidgets('QrIssueScreen matches the simplified QR layout for admin', (
     tester,
   ) async {
     await tester.binding.setSurfaceSize(const Size(430, 932));
@@ -19,21 +20,20 @@ void main() {
 
     await _pumpScreen(tester);
 
+    expect(find.text('외출 QR코드'), findsOneWidget);
     expect(find.byType(QrImageView), findsOneWidget);
-    expect(
-      find.ancestor(
-        of: find.byType(QrImageView),
-        matching: find.byType(Center),
-      ),
-      findsWidgets,
-    );
-    expect(find.text('QR 만료까지'), findsOneWidget);
+    expect(find.text('QR코드 만료까지'), findsOneWidget);
+    expect(find.text('QR 다시 발급하기'), findsNothing);
 
     final countdownText = _findCountdownText(tester);
     expect(RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(countdownText), isTrue);
+
+    final countdown = tester.widget<Text>(find.text(countdownText));
+    expect(countdown.style?.color, AppColors.admin);
   });
 
-  testWidgets('QrIssueScreen shows access message for non-admin', (tester) async {
+  testWidgets('QrIssueScreen shows access message for non-admin',
+      (tester) async {
     await tester.binding.setSurfaceSize(const Size(430, 932));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
@@ -109,9 +109,9 @@ String _findCountdownText(WidgetTester tester) {
 
 class _FakeIssuedQrNotifier extends IssuedQrNotifier {
   @override
-  Future<IssuedQrEntity> build() async {
+  Future<IssuedQrModel> build() async {
     final now = DateTime.now();
-    return IssuedQrEntity(
+    return IssuedQrModel(
       uuid: 'test-uuid',
       exp: now.add(const Duration(minutes: 10)).millisecondsSinceEpoch ~/ 1000,
       issuedAt: now,

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/outing/domain/entities/outing_coming_qr_result_entity.dart';
+import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
@@ -14,7 +14,7 @@ abstract class ProcessComingByQrResponse with _$ProcessComingByQrResponse {
     required OutingStatusType status,
     required DateTime comingAt,
     required bool lateCreated,
-    required int lateId,
+    required int? lateId,
   }) = _ProcessComingByQrResponse;
 
   factory ProcessComingByQrResponse.fromJson(Map<String, dynamic> json) =>
@@ -25,14 +25,14 @@ abstract class ProcessComingByQrResponse with _$ProcessComingByQrResponse {
 }
 
 extension ProcessComingByQrResponseX on ProcessComingByQrResponse {
-  OutingComingQrResultEntity toEntity() {
-    return OutingComingQrResultEntity(
+  OutingComingQrResultModel toModel() {
+    return OutingComingQrResultModel(
       action: action,
       outingId: outingId,
       status: status,
       comingAt: comingAt,
       lateCreated: lateCreated,
-      lateId: lateId,
+      lateId: lateId ?? 0,
     );
   }
 }

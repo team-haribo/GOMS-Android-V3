@@ -4,12 +4,10 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 
-final _categoryChipSelectionProvider =
-    NotifierProvider.autoDispose.family<
-      _CategoryChipSelectionNotifier,
-      bool,
-      Object
-    >(_CategoryChipSelectionNotifier.new);
+final _categoryChipSelectionProvider = NotifierProvider.autoDispose
+    .family<_CategoryChipSelectionNotifier, bool, Object>(
+  _CategoryChipSelectionNotifier.new,
+);
 
 class _CategoryChipSelectionNotifier extends Notifier<bool> {
   _CategoryChipSelectionNotifier(this.key);

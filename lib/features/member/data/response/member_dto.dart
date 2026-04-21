@@ -1,5 +1,9 @@
-import 'package:goms/features/member/domain/entities/member_entity.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:goms/features/member/ui/models/member_model.dart';
 
+part 'member_dto.g.dart';
+
+@JsonSerializable()
 class MemberDto {
   const MemberDto({
     required this.id,
@@ -9,34 +13,28 @@ class MemberDto {
     required this.profileImageUrl,
   });
 
-  factory MemberDto.fromJson(Map<String, dynamic> json) {
-    return MemberDto(
-      id: json['id'] as int? ?? 0,
-      name: json['name'] as String? ?? '',
-      studentNumber: json['studentNumber'] as String? ?? '',
-      role: json['role'] as String? ?? '',
-      profileImageUrl: json['profileImageUrl'] as String? ?? '',
-    );
-  }
+  factory MemberDto.fromJson(Map<String, dynamic> json) =>
+      _$MemberDtoFromJson(json);
 
+  @JsonKey(defaultValue: 0)
   final int id;
+
+  @JsonKey(defaultValue: '')
   final String name;
+
+  @JsonKey(defaultValue: '')
   final String studentNumber;
+
+  @JsonKey(defaultValue: '')
   final String role;
+
+  @JsonKey(defaultValue: '')
   final String profileImageUrl;
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'studentNumber': studentNumber,
-      'role': role,
-      'profileImageUrl': profileImageUrl,
-    };
-  }
+  Map<String, dynamic> toJson() => _$MemberDtoToJson(this);
 
-  MemberEntity toEntity() {
-    return MemberEntity(
+  MemberModel toModel() {
+    return MemberModel(
       id: id,
       name: name,
       studentNumber: studentNumber,

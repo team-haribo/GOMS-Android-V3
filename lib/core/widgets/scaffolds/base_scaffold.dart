@@ -47,9 +47,11 @@ class BaseScaffold extends ConsumerWidget {
       appBar: effectiveAppBar,
       body: Padding(
         padding: contentPadding ??
-            const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s24,
-              vertical: AppSpacing.s24,
+            const EdgeInsets.fromLTRB(
+              AppSpacing.s24,
+              AppSpacing.s16,
+              AppSpacing.s24,
+              AppSpacing.s24,
             ),
         child: body,
       ),

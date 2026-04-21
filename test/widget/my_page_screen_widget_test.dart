@@ -4,19 +4,19 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/core/router/route_path.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
-import 'package:goms/features/member/domain/entities/current_member_entity.dart';
-import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
-import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
+import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
+import 'package:goms/features/member/ui/models/current_member_model.dart';
+import 'package:goms/features/member/ui/providers/current_member_provider.dart';
+import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
-import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
+import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
+import 'package:goms/features/profile/ui/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -61,7 +61,8 @@ void main() {
     expect(find.text('3번'), findsOneWidget);
   });
 
-  testWidgets('MyPageScreen logout confirm closes dialog and routes to onboarding',
+  testWidgets(
+      'MyPageScreen logout confirm closes dialog and routes to onboarding',
       (tester) async {
     final authNotifier = _FakeAuthNotifier();
     final container = ProviderContainer(
@@ -130,6 +131,58 @@ void main() {
     expect(authNotifier.logoutCallCount, 1);
     expect(find.text('onboarding-screen'), findsOneWidget);
   });
+
+  testWidgets('MyPageScreen hides admin camera launch', (tester) async {
+    final container = ProviderContainer(
+      overrides: [
+        roleProvider.overrideWith((ref) => RoleEnum.admin),
+        themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+        settingsProvider.overrideWith(_FakeSettingsNotifier.new),
+        myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+        currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    final router = GoRouter(
+      initialLocation: RoutePath.myPage,
+      routes: [
+        GoRoute(
+          path: RoutePath.myPage,
+          builder: (context, state) => const MyPageScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          routerConfig: router,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('카메라 바로 켜기'), findsNothing);
+  });
 }
 
 class _FakeThemeModeNotifier extends ThemeModeNotifier {
@@ -148,7 +201,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
+  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
         memberId: 1,
         status: OutingStatusType.outing,
         name: '이주언',
@@ -160,7 +213,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
+  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '이주언',

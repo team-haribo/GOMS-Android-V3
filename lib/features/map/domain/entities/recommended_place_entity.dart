@@ -1,51 +1,18 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 
-class RecommendedPlaceEntity {
-  const RecommendedPlaceEntity({
-    required this.placeId,
-    required this.reviewCount,
-    required this.recommendCount,
-    required this.recommended,
-    this.placeName,
-    this.category,
-    this.address,
-    this.coordinate,
-  });
+part 'recommended_place_entity.freezed.dart';
 
-  final int placeId;
-  final int reviewCount;
-  final int recommendCount;
-  final bool recommended;
-  final String? placeName;
-  final String? category;
-  final String? address;
-  final MapCoordinate? coordinate;
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) {
-      return true;
-    }
-    return other is RecommendedPlaceEntity &&
-        other.placeId == placeId &&
-        other.reviewCount == reviewCount &&
-        other.recommendCount == recommendCount &&
-        other.recommended == recommended &&
-        other.placeName == placeName &&
-        other.category == category &&
-        other.address == address &&
-        other.coordinate == coordinate;
-  }
-
-  @override
-  int get hashCode => Object.hash(
-        placeId,
-        reviewCount,
-        recommendCount,
-        recommended,
-        placeName,
-        category,
-        address,
-        coordinate,
-      );
+@freezed
+abstract class RecommendedPlaceEntity with _$RecommendedPlaceEntity {
+  const factory RecommendedPlaceEntity({
+    required int placeId,
+    required int reviewCount,
+    required int recommendCount,
+    required bool recommended,
+    String? placeName,
+    String? category,
+    String? address,
+    MapCoordinate? coordinate,
+  }) = _RecommendedPlaceEntity;
 }

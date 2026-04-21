@@ -1,0 +1,89 @@
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/core/utils/token_storage.dart';
+import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
+import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+
+final currentOutingStudentsProvider = AsyncNotifierProvider<
+    CurrentOutingStudentsNotifier,
+    List<OutingStudentModel>>(CurrentOutingStudentsNotifier.new);
+
+class CurrentOutingStudentsNotifier
+    extends AsyncNotifier<List<OutingStudentModel>> {
+  @override
+  Future<List<OutingStudentModel>> build() async {
+    return _fetch();
+  }
+
+  Future<void> reload() async {
+    if (!state.hasValue) {
+      state = const AsyncLoading();
+    }
+
+    state = await AsyncValue.guard(_fetch);
+  }
+
+  Future<void> forceInStudent({required int memberId}) async {
+    final previousStudents = state.asData?.value;
+
+    if (previousStudents != null) {
+      state = AsyncData(
+        previousStudents
+            .where((student) => student.memberId != memberId)
+            .toList(),
+      );
+    }
+
+    try {
+      await ref
+          .read(outingRepositoryProvider)
+          .forceInStudent(memberId: memberId);
+    } on DioException catch (error) {
+      if (previousStudents != null) {
+        state = AsyncData(previousStudents);
+      }
+      throw CurrentOutingStudentsException(
+        NetworkException.fromDioException(error).message,
+      );
+    } catch (error) {
+      if (previousStudents != null) {
+        state = AsyncData(previousStudents);
+      }
+      if (error is CurrentOutingStudentsException) {
+        rethrow;
+      }
+      throw const CurrentOutingStudentsException('강제 복귀 처리에 실패했습니다.');
+    }
+  }
+
+  Future<List<OutingStudentModel>> _fetch() async {
+    final accessToken = await TokenStorage.getAccessToken();
+    if (accessToken == null || accessToken.trim().isEmpty) {
+      throw const CurrentOutingStudentsException('로그인이 필요합니다.');
+    }
+
+    try {
+      return await ref
+          .read(outingRepositoryProvider)
+          .getCurrentOutingStudents();
+    } on DioException catch (error) {
+      throw CurrentOutingStudentsException(
+        NetworkException.fromDioException(error).message,
+      );
+    } catch (error) {
+      if (error is CurrentOutingStudentsException) {
+        rethrow;
+      }
+      throw const CurrentOutingStudentsException(
+        '현재 외출 중인 학생 목록을 불러오지 못했습니다.',
+      );
+    }
+  }
+}
+
+class CurrentOutingStudentsException implements Exception {
+  const CurrentOutingStudentsException(this.message);
+
+  final String message;
+}

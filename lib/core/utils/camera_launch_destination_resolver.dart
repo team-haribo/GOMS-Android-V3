@@ -1,5 +1,5 @@
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/router/route_path.dart';
+import 'package:goms/app/router/route_path.dart';
 
 class CameraLaunchDestinationResolver {
   const CameraLaunchDestinationResolver._();
@@ -13,6 +13,10 @@ class CameraLaunchDestinationResolver {
       return null;
     }
 
-    return role == RoleEnum.admin ? RoutePath.qrIssue : RoutePath.qr;
+    if (role == RoleEnum.admin) {
+      return null;
+    }
+
+    return RoutePath.qr;
   }
 }

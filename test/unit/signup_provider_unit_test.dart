@@ -2,15 +2,15 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
-import 'package:goms/features/auth/email_verification/data/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
 import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
-import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
+import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
+import 'package:goms/features/auth/signup/ui/providers/signup_provider.dart';
 
 void main() {
   group('SignupNotifier validation', () {
@@ -36,12 +36,30 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
-      notifier.validateGrade('3');
+      notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
 
       expect(notifier.isFormValid, isTrue);
       expect(container.read(signupProvider).status, SignupStatus.initial);
+    });
+
+    test('grade validation only accepts the supported cohorts', () {
+      final container = ProviderContainer();
+      addTearDown(container.dispose);
+
+      final notifier = container.read(signupProvider.notifier);
+
+      expect(SignupNotifier.availableGrades, const <int>[8, 9, 10]);
+
+      notifier.validateGrade('9');
+      expect(container.read(signupProvider).gradeError, isNull);
+
+      notifier.validateGrade('7');
+      expect(
+        container.read(signupProvider).gradeError,
+        '기수는 8기, 9기, 10기만 선택할 수 있습니다',
+      );
     });
 
     test('password confirmation mismatch is detected and recovered', () {
@@ -89,7 +107,7 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
-      notifier.validateGrade('3');
+      notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
       notifier.validatePassword('Abc123!');
@@ -136,7 +154,7 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
-      notifier.validateGrade('3');
+      notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
       authFlow.startSignup('s1001@gsm.hs.kr');
@@ -166,7 +184,7 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
-      notifier.validateGrade('3');
+      notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
       authFlow.startSignup('s1001@gsm.hs.kr');
@@ -208,7 +226,7 @@ void main() {
 
       notifier.setName('Hong');
       notifier.validateEmail('s1001');
-      notifier.validateGrade('3');
+      notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
 

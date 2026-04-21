@@ -1,10 +1,10 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/report/data/datasources/report_remote_datasource.dart';
 import 'package:goms/features/report/data/request/report_resolve_request.dart';
-import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
-import 'package:goms/features/report/domain/entities/report_resolve_result_entity.dart';
-import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
-import 'package:goms/features/report/domain/repositories/report_repository.dart';
+import 'package:goms/features/report/data/repositories/report_repository.dart';
+import 'package:goms/features/report/ui/models/report_detail_model.dart';
+import 'package:goms/features/report/ui/models/report_resolve_result_model.dart';
+import 'package:goms/features/report/ui/models/report_summary_model.dart';
 
 class ReportRepositoryImpl implements ReportRepository {
   const ReportRepositoryImpl(this._remoteDataSource);
@@ -12,25 +12,25 @@ class ReportRepositoryImpl implements ReportRepository {
   final ReportRemoteDataSource _remoteDataSource;
 
   @override
-  Future<List<ReportSummaryEntity>> getPendingReports() async {
+  Future<List<ReportSummaryModel>> getPendingReports() async {
     final response = await _remoteDataSource.getPendingReports();
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<List<ReportSummaryEntity>> getResolvedReports() async {
+  Future<List<ReportSummaryModel>> getResolvedReports() async {
     final response = await _remoteDataSource.getResolvedReports();
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<ReportDetailEntity> getReportDetail(int reportId) async {
+  Future<ReportDetailModel> getReportDetail(int reportId) async {
     final response = await _remoteDataSource.getReportDetail(reportId);
-    return response.toEntity();
+    return response.toModel();
   }
 
   @override
-  Future<ReportResolveResultEntity> resolveReport({
+  Future<ReportResolveResultModel> resolveReport({
     required int reportId,
     required ReportStatus reportStatus,
   }) async {
@@ -38,6 +38,6 @@ class ReportRepositoryImpl implements ReportRepository {
       reportId: reportId,
       request: ReportResolveRequest(reportStatus: reportStatus),
     );
-    return response.toEntity();
+    return response.toModel();
   }
 }

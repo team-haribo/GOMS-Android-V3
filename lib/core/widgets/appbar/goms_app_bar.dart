@@ -14,23 +14,27 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBackPressed,
     this.actions,
     this.role = RoleEnum.user,
-  }) : _showLogo = false;
+  })  : _showLogo = false,
+        showAdminReportAction = false;
 
   const GomsAppBar._logo({
     super.key,
     this.actions,
     this.role = RoleEnum.user,
+    this.showAdminReportAction = false,
   })  : _showLogo = true,
         onBackPressed = null;
   factory GomsAppBar.logo({
     Key? key,
     List<Widget>? actions,
     RoleEnum role = RoleEnum.user,
+    bool showAdminReportAction = false,
   }) =>
       GomsAppBar._logo(
         key: key,
         actions: actions,
         role: role,
+        showAdminReportAction: showAdminReportAction,
       );
 
   factory GomsAppBar.back({
@@ -50,6 +54,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackPressed;
   final List<Widget>? actions;
   final RoleEnum role;
+  final bool showAdminReportAction;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -116,7 +121,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const Spacer(),
-                if (role == RoleEnum.admin)
+                if (role == RoleEnum.admin && showAdminReportAction)
                   IconButton(
                     onPressed: () =>
                         context.push(RoutePath.studentCouncilReports),

@@ -43,7 +43,7 @@ class KakaoMapBackground extends StatefulWidget {
 
 class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   static const _mapLoadTimeout = Duration(seconds: 10);
-  static const _defaultZoomLevel = 16;
+  static const _defaultZoomLevel = 17;
   static const _selectedPlaceZoomLevel = 18;
   static const _instantCameraAnimation = kakao.CameraAnimation(0);
 
@@ -371,7 +371,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
                 initialCoordinate.latitude,
                 initialCoordinate.longitude,
               ),
-              zoomLevel: 16,
+              zoomLevel: _defaultZoomLevel,
             ),
             onMapReady: (controller) {
               if (!mounted) {

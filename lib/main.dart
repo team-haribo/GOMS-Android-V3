@@ -46,8 +46,6 @@ Future<void> _bootstrapPlatformServices() async {
     debugPrintStack(stackTrace: stackTrace);
   }
 
-  final skipFirebaseOnDebugX86 = await _shouldSkipFirebaseOnDebugX86Android();
-
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,

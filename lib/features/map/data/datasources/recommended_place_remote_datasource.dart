@@ -1,85 +1,96 @@
 import 'package:dio/dio.dart';
+import 'package:goms/features/map/data/response/my_review_count_response.dart';
+import 'package:goms/features/map/data/response/my_review_list_response.dart';
 import 'package:goms/features/map/data/response/place_review_list_response.dart';
+import 'package:goms/features/map/data/response/place_recommend_response.dart';
+import 'package:goms/features/map/data/response/recommended_place_count_response.dart';
 import 'package:goms/features/map/data/response/recommended_place_response.dart';
 import 'package:goms/features/map/data/response/recommended_places_response.dart';
+import 'package:retrofit/retrofit.dart';
 
-class RecommendedPlaceRemoteDataSource {
-  const RecommendedPlaceRemoteDataSource(this._dio);
+part 'recommended_place_remote_datasource.g.dart';
 
-  final Dio _dio;
+@RestApi()
+abstract class RecommendedPlaceRemoteDataSource {
+  factory RecommendedPlaceRemoteDataSource(Dio dio, {String? baseUrl}) =
+      _RecommendedPlaceRemoteDataSource;
 
-  Future<RecommendedPlacesResponse> getPlaces() async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place',
-    );
-    return RecommendedPlacesResponse.fromJson(response.data ?? const {});
-  }
+  @GET('/api/v3/place')
+  Future<RecommendedPlacesResponse> getPlaces();
 
-  Future<RecommendedPlacesResponse> getHotPlaces({int? days}) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/hot-place',
-      queryParameters: days == null ? null : {'days': days},
-    );
-    return RecommendedPlacesResponse.fromJson(response.data ?? const {});
-  }
+  @GET('/api/v3/place/hot-place')
+  Future<RecommendedPlacesResponse> getHotPlaces({
+    @Query('days') int? days,
+  });
 
-  Future<RecommendedPlacesResponse> getRecommendedPlaces() async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/recommended',
-    );
-    return RecommendedPlacesResponse.fromJson(response.data ?? const {});
-  }
+  @GET('/api/v3/place/recommended')
+  Future<RecommendedPlacesResponse> getRecommendedPlaces();
 
+  @GET('/api/v3/place/recommended/count')
+  Future<RecommendedPlaceCountResponse> getRecommendedPlacesCountRaw();
+
+  @GET('/api/v3/place/search')
+  Future<RecommendedPlacesResponse> searchPlaces(
+      @Query('keyword') String keyword);
+
+  @GET('/api/v3/place/{placeId}')
+  Future<RecommendedPlaceResponse> getPlaceDetail(@Path('placeId') int placeId);
+
+  @GET('/api/v3/place/review/{placeId}')
+  Future<PlaceReviewListResponse> getPlaceReviews(@Path('placeId') int placeId);
+
+  @POST('/api/v3/place/recommend/{placeId}')
+  Future<PlaceRecommendResponse> recommendPlaceRaw(@Path('placeId') int placeId);
+
+  @DELETE('/api/v3/place/recommend/{placeId}')
+  Future<PlaceRecommendResponse> unRecommendPlaceRaw(
+    @Path('placeId') int placeId,
+  );
+
+  @POST('/api/v3/review/{placeId}')
+  Future<void> createReviewRaw(
+    @Path('placeId') int placeId,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @GET('/api/v3/review/me')
+  Future<MyReviewListResponse> getMyReviews();
+
+  @GET('/api/v3/review/count')
+  Future<MyReviewCountResponse> getMyReviewCountRaw();
+
+  @DELETE('/api/v3/review/{reviewId}')
+  Future<void> deleteReview(@Path('reviewId') int reviewId);
+}
+
+extension RecommendedPlaceRemoteDataSourceX on RecommendedPlaceRemoteDataSource {
   Future<int> getRecommendedPlacesCount() async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/recommended/count',
-    );
-    return (response.data?['recommendCount'] as num?)?.toInt() ?? 0;
-  }
-
-  Future<RecommendedPlacesResponse> searchPlaces(String keyword) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/search',
-      queryParameters: {'keyword': keyword},
-    );
-    return RecommendedPlacesResponse.fromJson(response.data ?? const {});
-  }
-
-  Future<RecommendedPlaceResponse> getPlaceDetail(int placeId) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/$placeId',
-    );
-    return RecommendedPlaceResponse.fromJson(response.data ?? const {});
-  }
-
-  Future<PlaceReviewListResponse> getPlaceReviews(int placeId) async {
-    final response = await _dio.get<Map<String, dynamic>>(
-      '/api/v3/place/review/$placeId',
-    );
-    return PlaceReviewListResponse.fromJson(response.data ?? const {});
+    final response = await getRecommendedPlacesCountRaw();
+    return response.recommendCount;
   }
 
   Future<bool> recommendPlace(int placeId) async {
-    final response = await _dio.post<Map<String, dynamic>>(
-      '/api/v3/place/recommend/$placeId',
-    );
-    return response.data?['recommended'] as bool? ?? true;
+    final response = await recommendPlaceRaw(placeId);
+    return response.recommended;
   }
 
   Future<bool> unRecommendPlace(int placeId) async {
-    final response = await _dio.delete<Map<String, dynamic>>(
-      '/api/v3/place/recommend/$placeId',
-    );
-    return response.data?['recommended'] as bool? ?? false;
+    final response = await unRecommendPlaceRaw(placeId);
+    return response.recommended;
   }
 
   Future<void> createReview({
     required int placeId,
     required String content,
-  }) async {
-    await _dio.post<Map<String, dynamic>>(
-      '/api/v3/review/$placeId',
-      data: {'content': content},
+  }) {
+    return createReviewRaw(
+      placeId,
+      <String, dynamic>{'content': content},
     );
+  }
+
+  Future<int> getMyReviewCount() async {
+    final response = await getMyReviewCountRaw();
+    return response.count;
   }
 }

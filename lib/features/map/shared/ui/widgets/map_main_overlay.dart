@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
@@ -193,16 +194,16 @@ class _PopularPlacesSection extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  isSearching ? '검색 결과' : '인기 장소',
+                  isSearching ? '검색 결과' : '최근 인기 장소',
                   style: AppTextStyles.title3.copyWith(
                     color: _mainTextColor(isLight),
                   ),
                 ),
-                AppGap.h4,
+                AppGap.h2,
                 if (!isSearching)
-                  const Icon(
-                    Icons.local_fire_department_rounded,
-                    size: 18,
+                  AppIcons.fire(
+                    width: 24,
+                    height: 24,
                     color: AppColors.negative,
                   ),
               ],
@@ -221,7 +222,7 @@ class _PopularPlacesSection extends StatelessWidget {
               ...popularPlaces.map(
                 (place) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: PlaceContainer(
+                  child: PlaceContainer.popular(
                     placeName: place.name,
                     category: place.category,
                     address: place.address,
@@ -358,6 +359,51 @@ class _MyActivitySection extends StatelessWidget {
     this.onPlaceTap,
   });
 
+  Future<void> _showDeleteReviewDialog({
+    required BuildContext context,
+    required WidgetRef ref,
+    required MapScreenReviewModel review,
+  }) {
+    return GomsDialog.confirm(
+      title: '후기 삭제',
+      content: '정말 후기를 삭제하시겠습니까?',
+      cancelText: '취소',
+      confirmText: '삭제',
+      isDestructive: true,
+      onConfirm: () => _deleteReview(
+        context: context,
+        ref: ref,
+        review: review,
+      ),
+    ).show(context);
+  }
+
+  void _deleteReview({
+    required BuildContext context,
+    required WidgetRef ref,
+    required MapScreenReviewModel review,
+  }) async {
+    try {
+      await ref
+          .read(mapScreenProvider.notifier)
+          .deleteMyReview(review.reviewId);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('후기를 삭제했습니다.'),
+        ),
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('후기 삭제에 실패했습니다.'),
+          backgroundColor: AppColors.negative,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer(
@@ -401,7 +447,7 @@ class _MyActivitySection extends StatelessWidget {
               ...recommendedPlaces.take(2).map(
                     (place) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: PlaceContainer(
+                      child: PlaceContainer.popular(
                         placeName: place.name,
                         category: place.category,
                         address: place.address,
@@ -454,9 +500,17 @@ class _MyActivitySection extends StatelessWidget {
               ...reviewModels.map(
                 (review) => Padding(
                   padding: const EdgeInsets.only(bottom: 12),
-                  child: _ReviewCard(
-                    review: review,
-                    isLight: isLight,
+                  child: PlaceContainer.review(
+                    placeName: review.placeName,
+                    category: review.category,
+                    address: review.address,
+                    reviewContent: review.reviewDetailContent,
+                    reviewCreatedAt: review.createdAt,
+                    onActionPressed: () => _showDeleteReviewDialog(
+                      context: context,
+                      ref: ref,
+                      review: review,
+                    ),
                   ),
                 ),
               ),
@@ -473,75 +527,6 @@ PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {
     place,
     fallbackCoordinate: gomsFallbackSchoolCoordinate,
   );
-}
-
-class _ReviewCard extends StatelessWidget {
-  final MapScreenReviewModel review;
-  final bool isLight;
-
-  const _ReviewCard({
-    required this.review,
-    required this.isLight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.s16),
-      decoration: BoxDecoration(
-        color:
-            isLight ? AppColors.bgMapContainer : AppColors.bgMapContainerDark,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Flexible(
-                child: Text(
-                  review.placeName,
-                  style: AppTextStyles.text1.copyWith(
-                    color: _mainTextColor(isLight),
-                  ),
-                ),
-              ),
-              AppGap.h4,
-              Text(
-                review.category,
-                style: AppTextStyles.caption2.copyWith(
-                  color: _subTextColor(isLight),
-                ),
-              ),
-            ],
-          ),
-          AppGap.v4,
-          Text(
-            review.address,
-            style: AppTextStyles.caption1.copyWith(
-              color: _subTextColor(isLight),
-            ),
-          ),
-          AppGap.v12,
-          Text(
-            review.reviewDetailContent,
-            style: AppTextStyles.text3.copyWith(
-              color: _mainTextColor(isLight),
-            ),
-          ),
-          AppGap.v12,
-          Text(
-            DateFormat('yy.MM.dd').format(review.createdAt),
-            style: AppTextStyles.caption2.copyWith(
-              color: _subTextColor(isLight),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class _ActivityCountRow extends StatelessWidget {

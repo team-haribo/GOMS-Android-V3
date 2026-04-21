@@ -10,6 +10,8 @@ class ReportSummaryModel {
     required this.reviewerName,
     required this.reviewerGrade,
     required this.reviewerDepartment,
+    this.placeName,
+    this.placeAddress,
     this.reviewerProfileImageUrl = '',
     required this.reportCreatedAt,
     required this.reportStatus,
@@ -23,6 +25,8 @@ class ReportSummaryModel {
   final String reviewerName;
   final int reviewerGrade;
   final String reviewerDepartment;
+  final String? placeName;
+  final String? placeAddress;
   final String reviewerProfileImageUrl;
   final DateTime? reportCreatedAt;
   final ReportStatus reportStatus;

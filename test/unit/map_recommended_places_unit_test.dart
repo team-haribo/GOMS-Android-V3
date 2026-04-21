@@ -6,6 +6,7 @@ import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
+import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
@@ -139,6 +140,93 @@ void main() {
       expect(state.recommendedCount, 0);
       expect(state.popularPlaces, isEmpty);
     });
+
+    test('deletes my review and updates local activity state', () async {
+      final repository = _ReviewDeletingRepository(
+        reviews: [
+          const MyReviewEntity(
+            reviewId: 11,
+            placeId: 101,
+            placeName: '학생식당',
+            categoryName: '한식',
+            address: '광주광역시 테스트로 11',
+            content: '리뷰 1',
+            reviewedAt: null,
+          ),
+          const MyReviewEntity(
+            reviewId: 12,
+            placeId: 102,
+            placeName: '도서관 카페',
+            categoryName: '카페',
+            address: '광주광역시 테스트로 12',
+            content: '리뷰 2',
+            reviewedAt: null,
+          ),
+        ],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+      await container.read(mapScreenProvider.notifier).deleteMyReview(11);
+
+      final state = container.read(mapScreenProvider);
+      expect(repository.deletedReviewIds, [11]);
+      expect(state.reviewCount, 1);
+      expect(state.reviewModels, hasLength(1));
+      expect(state.reviewModels.single.reviewId, 12);
+    });
+
+    test('restores my review state when delete API fails', () async {
+      final repository = _ReviewDeletingRepository(
+        shouldThrowOnDelete: true,
+        reviews: [
+          const MyReviewEntity(
+            reviewId: 21,
+            placeId: 201,
+            placeName: '기숙사 앞 카페',
+            categoryName: '카페',
+            address: '광주광역시 테스트로 21',
+            content: '리뷰 A',
+            reviewedAt: null,
+          ),
+          const MyReviewEntity(
+            reviewId: 22,
+            placeId: 202,
+            placeName: '분식집',
+            categoryName: '분식',
+            address: '광주광역시 테스트로 22',
+            content: '리뷰 B',
+            reviewedAt: null,
+          ),
+        ],
+      );
+
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      await expectLater(
+        container.read(mapScreenProvider.notifier).deleteMyReview(21),
+        throwsA(isA<DioException>()),
+      );
+
+      final state = container.read(mapScreenProvider);
+      expect(repository.deletedReviewIds, isEmpty);
+      expect(state.reviewCount, 2);
+      expect(state.reviewModels, hasLength(2));
+      expect(state.reviewModels.first.reviewId, 21);
+    });
   });
 }
 
@@ -183,6 +271,15 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
 
   @override
   Future<bool> unRecommendPlace(int placeId) async => false;
+
+  @override
+  Future<void> deleteReview(int reviewId) async {}
+
+  @override
+  Future<int> getMyReviewCount() async => 0;
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async => const [];
 }
 
 class _TrackingRecommendedPlaceRepository
@@ -253,6 +350,46 @@ class _ThrowingRecommendedPlaceRepository
 
   @override
   Future<bool> unRecommendPlace(int placeId) async => false;
+
+  @override
+  Future<void> deleteReview(int reviewId) async {}
+
+  @override
+  Future<int> getMyReviewCount() async => 0;
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async => const [];
+}
+
+class _ReviewDeletingRepository extends _FakeRecommendedPlaceRepository {
+  _ReviewDeletingRepository({
+    required List<MyReviewEntity> reviews,
+    this.shouldThrowOnDelete = false,
+  })  : _reviews = List<MyReviewEntity>.of(reviews),
+        super(const []);
+
+  final List<MyReviewEntity> _reviews;
+  final bool shouldThrowOnDelete;
+  final List<int> deletedReviewIds = <int>[];
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async =>
+      List<MyReviewEntity>.of(_reviews);
+
+  @override
+  Future<int> getMyReviewCount() async => _reviews.length;
+
+  @override
+  Future<void> deleteReview(int reviewId) async {
+    if (shouldThrowOnDelete) {
+      throw DioException(
+        requestOptions: RequestOptions(path: '/api/v3/review/$reviewId'),
+      );
+    }
+
+    deletedReviewIds.add(reviewId);
+    _reviews.removeWhere((review) => review.reviewId == reviewId);
+  }
 }
 
 class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {

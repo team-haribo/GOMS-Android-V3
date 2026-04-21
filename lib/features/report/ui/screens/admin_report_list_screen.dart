@@ -212,6 +212,8 @@ class _ReportListBody extends ConsumerWidget {
             report.reportId.toString(),
             report.reviewId.toString(),
             _reportHeadline(report),
+            report.placeName ?? '',
+            report.placeAddress ?? '',
           ].join(' ').toLowerCase().contains(normalizedQuery);
 
       return matchesStatus && matchesQuery;
@@ -361,6 +363,20 @@ String _reportHeadline(ReportSummaryModel report) {
 }
 
 String _reportPlaceName(ReportSummaryModel report) {
+  final placeName = report.placeName?.trim();
+  final placeAddress = report.placeAddress?.trim();
+
+  if (placeName != null && placeName.isNotEmpty) {
+    if (placeAddress != null && placeAddress.isNotEmpty) {
+      return '$placeName · $placeAddress';
+    }
+    return placeName;
+  }
+
+  if (placeAddress != null && placeAddress.isNotEmpty) {
+    return placeAddress;
+  }
+
   return '장소 정보 없음';
 }
 

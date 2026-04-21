@@ -416,7 +416,8 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                                             DateTime.now(),
                                                     isMine:
                                                         myReviewIds.contains(
-                                                            review.reviewId),
+                                                      review.reviewId,
+                                                    ),
                                                     onDelete: _deleteReview,
                                                   ),
                                                 )

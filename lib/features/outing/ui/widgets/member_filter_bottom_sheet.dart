@@ -151,6 +151,7 @@ class _MemberFilterBottomSheetState
               ),
             ],
           ),
+          AppGap.v24,
           Text(
             '역할',
             style: AppTextStyles.title3.copyWith(

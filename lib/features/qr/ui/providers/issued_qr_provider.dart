@@ -5,7 +5,7 @@ import 'package:goms/features/qr/data/providers/qr_data_providers.dart';
 import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
 
 final issuedQrProvider =
-    AsyncNotifierProvider<IssuedQrNotifier, IssuedQrModel>(
+    AsyncNotifierProvider.autoDispose<IssuedQrNotifier, IssuedQrModel>(
   IssuedQrNotifier.new,
 );
 

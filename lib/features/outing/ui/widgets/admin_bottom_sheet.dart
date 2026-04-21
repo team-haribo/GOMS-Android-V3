@@ -7,19 +7,25 @@ class AdminBottomSheet extends StatelessWidget {
     super.key,
     required this.memberId,
     required this.studentRole,
+    required this.status,
     required this.onRoleChanged,
+    required this.onStatusChanged,
   });
 
   final int memberId;
   final StudentRole studentRole;
+  final String status;
   final ValueChanged<StudentRole> onRoleChanged;
+  final ValueChanged<String> onStatusChanged;
 
   @override
   Widget build(BuildContext context) {
     return UserRoleBottomSheet(
       memberId: memberId,
       studentRole: studentRole,
+      status: status,
       onRoleChanged: onRoleChanged,
+      onStatusChanged: onStatusChanged,
       maxHeightRatio: 1,
     );
   }

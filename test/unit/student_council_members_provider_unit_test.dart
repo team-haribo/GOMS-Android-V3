@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
+import 'package:goms/features/member/data/repositories/member_repository.dart';
 import 'package:goms/features/member/ui/models/current_member_model.dart';
 import 'package:goms/features/member/ui/models/member_model.dart';
 import 'package:goms/features/member/ui/models/student_council_student_model.dart';
-import 'package:goms/features/member/data/repositories/member_repository.dart';
 import 'package:goms/features/member/ui/providers/student_council_members_provider.dart';
 
 void main() {
@@ -23,6 +23,7 @@ void main() {
                   grade: 8,
                   department: 'AI',
                   studentRole: StudentRole.student,
+                  status: 'COMING',
                 ),
                 StudentCouncilStudentModel(
                   memberId: 2,
@@ -30,6 +31,7 @@ void main() {
                   grade: 9,
                   department: 'SW',
                   studentRole: StudentRole.council,
+                  status: 'COMING',
                 ),
               ],
             ),
@@ -50,6 +52,41 @@ void main() {
 
       expect(members.first.studentRole, StudentRole.outingBanned);
       expect(members.last.studentRole, StudentRole.council);
+    });
+
+    test('updateMemberStatus updates cached member status immediately',
+        () async {
+      final container = ProviderContainer(
+        overrides: [
+          memberRepositoryProvider.overrideWithValue(
+            const _FakeMemberRepository(
+              members: [
+                StudentCouncilStudentModel(
+                  memberId: 1,
+                  name: '김민솔',
+                  grade: 8,
+                  department: 'AI',
+                  studentRole: StudentRole.student,
+                  status: 'COMING',
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(studentCouncilMembersProvider.future);
+
+      container.read(studentCouncilMembersProvider.notifier).updateMemberStatus(
+            memberId: 1,
+            status: 'OUTING',
+          );
+
+      final members =
+          container.read(studentCouncilMembersProvider).requireValue;
+
+      expect(members.single.status, 'OUTING');
     });
   });
 }

@@ -25,11 +25,14 @@ class _UserRoleBottomSheetStateModel {
     required this.isSubmitting,
   });
 
-  factory _UserRoleBottomSheetStateModel.fromRole(StudentRole role) {
+  factory _UserRoleBottomSheetStateModel.fromRole(
+    StudentRole role,
+    String status,
+  ) {
     return _UserRoleBottomSheetStateModel(
       isOutingBanned: role == StudentRole.outingBanned,
       isCouncil: role == StudentRole.council,
-      isOuting: false,
+      isOuting: status == 'OUTING',
       isSubmitting: false,
     );
   }
@@ -63,7 +66,7 @@ class _UserRoleBottomSheetStateModel {
 final _userRoleBottomSheetStateProvider = NotifierProvider.autoDispose.family<
     _UserRoleBottomSheetStateNotifier,
     _UserRoleBottomSheetStateModel,
-    (Object, StudentRole)>(
+    (Object, StudentRole, String)>(
   _UserRoleBottomSheetStateNotifier.new,
 );
 
@@ -71,11 +74,11 @@ class _UserRoleBottomSheetStateNotifier
     extends Notifier<_UserRoleBottomSheetStateModel> {
   _UserRoleBottomSheetStateNotifier(this.args);
 
-  final (Object, StudentRole) args;
+  final (Object, StudentRole, String) args;
 
   @override
   _UserRoleBottomSheetStateModel build() =>
-      _UserRoleBottomSheetStateModel.fromRole(args.$2);
+      _UserRoleBottomSheetStateModel.fromRole(args.$2, args.$3);
 
   void update(
     _UserRoleBottomSheetStateModel Function(
@@ -91,13 +94,17 @@ class UserRoleBottomSheet extends ConsumerStatefulWidget {
     super.key,
     required this.memberId,
     required this.studentRole,
+    required this.status,
     required this.onRoleChanged,
+    required this.onStatusChanged,
     this.maxHeightRatio = 0.8,
   });
 
   final int memberId;
   final StudentRole studentRole;
+  final String status;
   final Function(StudentRole) onRoleChanged;
+  final ValueChanged<String> onStatusChanged;
   final double maxHeightRatio;
 
   @override
@@ -108,8 +115,8 @@ class UserRoleBottomSheet extends ConsumerStatefulWidget {
 class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
   late final Object _providerIdentity;
 
-  (Object, StudentRole) get _providerKey =>
-      (_providerIdentity, widget.studentRole);
+  (Object, StudentRole, String) get _providerKey =>
+      (_providerIdentity, widget.studentRole, widget.status);
 
   @override
   void initState() {
@@ -130,10 +137,8 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
         children: [
           if (uiState.currentRole == StudentRole.student)
             _UserRoleBottomSheetItem(
-              title: '외출 토글',
-              description: uiState.isOuting
-                  ? '현재 외출 중이에요. 복귀 처리할 수 있어요'
-                  : '현재 교내에 있어요. 외출 처리할 수 있어요',
+              title: '외출',
+              description: '학생들 외출/복귀 시켜요.',
               trailing: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 child: ToggleButton(
@@ -274,7 +279,12 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
           ),
       onSuccess: () {
         if (!mounted) return;
+        ref.read(studentCouncilMembersProvider.notifier).updateMemberStatus(
+              memberId: widget.memberId,
+              status: 'OUTING',
+            );
         _updateUiState((state) => state.copyWith(isOuting: true));
+        widget.onStatusChanged('OUTING');
       },
     );
   }
@@ -286,7 +296,12 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
           ),
       onSuccess: () {
         if (!mounted) return;
+        ref.read(studentCouncilMembersProvider.notifier).updateMemberStatus(
+              memberId: widget.memberId,
+              status: 'COMING',
+            );
         _updateUiState((state) => state.copyWith(isOuting: false));
+        widget.onStatusChanged('COMING');
       },
     );
   }

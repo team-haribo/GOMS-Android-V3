@@ -179,6 +179,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
                           major: member.department,
                           profileImageUrl: member.profileImageUrl,
                           studentRole: member.studentRole,
+                          status: member.status,
                         );
                       },
                       separatorBuilder: (context, index) {

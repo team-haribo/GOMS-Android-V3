@@ -80,6 +80,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
+      showAdminReportAction: true,
       role: role,
       body: RefreshIndicator(
         onRefresh: _onRefresh,

@@ -34,6 +34,7 @@ class MapDetailOverlay extends ConsumerWidget {
         placeId == null ? null : ref.watch(placeDetailProvider(placeId));
     final placeReviewsAsync =
         placeId == null ? null : ref.watch(placeReviewsProvider(placeId));
+    final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
 
     final detailPlace = placeDetailAsync?.asData?.value;
     final resolvedPlace = detailPlace == null
@@ -56,6 +57,7 @@ class MapDetailOverlay extends ConsumerWidget {
     final reviews =
         placeReviewsAsync?.asData?.value ?? const <PlaceReviewEntity>[];
     final isReviewLoading = placeReviewsAsync?.isLoading == true;
+    final myReviewIds = myReviewIdsAsync.asData?.value ?? const <int>{};
 
     return Stack(
       children: [
@@ -77,6 +79,7 @@ class MapDetailOverlay extends ConsumerWidget {
             minChildSize: initialSheetSize,
             maxChildSize: maxSheetSize,
             snapSizes: <double>[initialSheetSize, 0.56, maxSheetSize],
+            myReviewIds: myReviewIds,
             showTrailingActions: false,
             onArrivalPressed: () =>
                 context.push(RoutePath.direction, extra: place),

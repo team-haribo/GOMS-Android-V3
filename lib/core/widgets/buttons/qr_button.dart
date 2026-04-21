@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/widgets/buttons/gradient_floating_action_button.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/enums/role_enum.dart';
 
@@ -46,23 +47,15 @@ class QRButton extends StatelessWidget {
             color: Colors.white,
           );
 
-    return SizedBox(
-      width: buttonSize,
-      height: buttonSize,
-      child: ElevatedButton(
-        onPressed: () {
-          context
-              .push(type == RoleEnum.admin ? RoutePath.qrIssue : RoutePath.qr);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor,
-          foregroundColor: Colors.white,
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-          elevation: 0,
-        ),
-        child: icon,
-      ),
+    return GradientFloatingActionButton(
+      size: buttonSize,
+      baseColor: backgroundColor,
+      onPressed: () {
+        context.push(
+          type == RoleEnum.admin ? RoutePath.qrIssue : RoutePath.qr,
+        );
+      },
+      child: icon,
     );
   }
 }

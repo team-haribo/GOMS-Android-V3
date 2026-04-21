@@ -92,6 +92,10 @@ class SignupNotifier extends Notifier<SignupState> {
     validateGrade(nextGrade);
   }
 
+  void setPrivacyPolicyAgreed(bool isAgreed) {
+    state = state.copyWith(isPrivacyPolicyAgreed: isAgreed);
+  }
+
   int? get selectedGrade => int.tryParse(state.grade);
 
   // ==================== 유효성 검사 ====================
@@ -146,12 +150,13 @@ class SignupNotifier extends Notifier<SignupState> {
   /// 회원가입 화면 폼 유효성 (이름, 이메일, 성별, 과)
   bool get isFormValid =>
       state.name.isNotEmpty &&
-          state.email.isNotEmpty &&
-          state.emailError == null &&
-          state.grade.isNotEmpty &&
-          state.gradeError == null &&
-          state.gender != null &&
-          state.major != null;
+      state.email.isNotEmpty &&
+      state.emailError == null &&
+      state.grade.isNotEmpty &&
+      state.gradeError == null &&
+      state.gender != null &&
+      state.major != null &&
+      state.isPrivacyPolicyAgreed;
 
   /// 비밀번호 설정 폼 유효성
   bool get isPasswordFormValid =>

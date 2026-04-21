@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
@@ -42,7 +43,7 @@ class KakaoMapBackground extends StatefulWidget {
 
 class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   static const _mapLoadTimeout = Duration(seconds: 10);
-  static const _defaultZoomLevel = 16;
+  static const _defaultZoomLevel = 17;
   static const _selectedPlaceZoomLevel = 18;
   static const _instantCameraAnimation = kakao.CameraAnimation(0);
 
@@ -166,17 +167,25 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
         _pois.add(poi);
       }
 
-      debugPrint(
-        'KakaoMapBackground rendered ${_pois.length} poi(s) and '
-        '0 route(s).',
-      );
+      var renderedRouteCount = 0;
 
       if (widget.showRoutePreview && widget.routePath.length > 1) {
         final routePoints = widget.routePath
             .map((point) => kakao.LatLng(point.latitude, point.longitude))
             .toList(growable: false);
         cameraPoints.addAll(routePoints);
+
+        _route = await controller.routeLayer.addRoute(
+          routePoints,
+          kakao.RouteStyle(AppColors.mainColor, 6.0),
+        );
+        renderedRouteCount = 1;
       }
+
+      debugPrint(
+        'KakaoMapBackground rendered ${_pois.length} poi(s) and '
+        '$renderedRouteCount route(s).',
+      );
 
       if (!mounted || token != _renderToken) {
         return;
@@ -362,7 +371,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
                 initialCoordinate.latitude,
                 initialCoordinate.longitude,
               ),
-              zoomLevel: 16,
+              zoomLevel: _defaultZoomLevel,
             ),
             onMapReady: (controller) {
               if (!mounted) {

@@ -4,7 +4,7 @@ class MapScreenReviewModel {
   final String category;
   final String address;
   final String reviewDetailContent;
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   const MapScreenReviewModel({
     required this.reviewId,

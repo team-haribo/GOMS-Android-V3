@@ -14,7 +14,7 @@ class ReviewListContainer extends StatelessWidget {
   final int grade;
   final String major;
   final String reviewDetailContent;
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final bool isMine;
   final Future<void> Function(int reviewId)? onDelete;
 
@@ -82,7 +82,7 @@ class ReviewListContainer extends StatelessWidget {
               ),
               AppGap.v4,
               Text(
-                DateFormat('yy.MM.dd').format(createdAt),
+                _formatCreatedAt(createdAt),
                 style: AppTextStyles.text3.copyWith(
                   color: context.sub2Color,
                 ),
@@ -146,5 +146,13 @@ class ReviewListContainer extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _formatCreatedAt(DateTime? value) {
+    if (value == null) {
+      return '-';
+    }
+
+    return DateFormat('yy.MM.dd').format(value);
   }
 }

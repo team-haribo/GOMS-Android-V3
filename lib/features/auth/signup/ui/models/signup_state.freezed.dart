@@ -20,6 +20,7 @@ mixin _$SignupState {
   String get grade;
   String get password;
   String get passwordConfirm;
+  bool get isPrivacyPolicyAgreed;
   GenderType? get gender;
   DepartmentType? get major;
   String? get nameError;
@@ -49,6 +50,8 @@ mixin _$SignupState {
                 other.password == password) &&
             (identical(other.passwordConfirm, passwordConfirm) ||
                 other.passwordConfirm == passwordConfirm) &&
+            (identical(other.isPrivacyPolicyAgreed, isPrivacyPolicyAgreed) ||
+                other.isPrivacyPolicyAgreed == isPrivacyPolicyAgreed) &&
             (identical(other.gender, gender) || other.gender == gender) &&
             (identical(other.major, major) || other.major == major) &&
             (identical(other.nameError, nameError) ||
@@ -74,6 +77,7 @@ mixin _$SignupState {
       grade,
       password,
       passwordConfirm,
+      isPrivacyPolicyAgreed,
       gender,
       major,
       nameError,
@@ -85,7 +89,7 @@ mixin _$SignupState {
 
   @override
   String toString() {
-    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
+    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, isPrivacyPolicyAgreed: $isPrivacyPolicyAgreed, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
   }
 }
 
@@ -102,6 +106,7 @@ abstract mixin class $SignupStateCopyWith<$Res> {
       String grade,
       String password,
       String passwordConfirm,
+      bool isPrivacyPolicyAgreed,
       GenderType? gender,
       DepartmentType? major,
       String? nameError,
@@ -130,6 +135,7 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
     Object? grade = null,
     Object? password = null,
     Object? passwordConfirm = null,
+    Object? isPrivacyPolicyAgreed = null,
     Object? gender = freezed,
     Object? major = freezed,
     Object? nameError = freezed,
@@ -164,6 +170,10 @@ class _$SignupStateCopyWithImpl<$Res> implements $SignupStateCopyWith<$Res> {
           ? _self.passwordConfirm
           : passwordConfirm // ignore: cast_nullable_to_non_nullable
               as String,
+      isPrivacyPolicyAgreed: null == isPrivacyPolicyAgreed
+          ? _self.isPrivacyPolicyAgreed
+          : isPrivacyPolicyAgreed // ignore: cast_nullable_to_non_nullable
+              as bool,
       gender: freezed == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable
@@ -300,6 +310,7 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
+            bool isPrivacyPolicyAgreed,
             GenderType? gender,
             DepartmentType? major,
             String? nameError,
@@ -321,6 +332,7 @@ extension SignupStatePatterns on SignupState {
             _that.grade,
             _that.password,
             _that.passwordConfirm,
+            _that.isPrivacyPolicyAgreed,
             _that.gender,
             _that.major,
             _that.nameError,
@@ -356,6 +368,7 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
+            bool isPrivacyPolicyAgreed,
             GenderType? gender,
             DepartmentType? major,
             String? nameError,
@@ -376,6 +389,7 @@ extension SignupStatePatterns on SignupState {
             _that.grade,
             _that.password,
             _that.passwordConfirm,
+            _that.isPrivacyPolicyAgreed,
             _that.gender,
             _that.major,
             _that.nameError,
@@ -410,6 +424,7 @@ extension SignupStatePatterns on SignupState {
             String grade,
             String password,
             String passwordConfirm,
+            bool isPrivacyPolicyAgreed,
             GenderType? gender,
             DepartmentType? major,
             String? nameError,
@@ -430,6 +445,7 @@ extension SignupStatePatterns on SignupState {
             _that.grade,
             _that.password,
             _that.passwordConfirm,
+            _that.isPrivacyPolicyAgreed,
             _that.gender,
             _that.major,
             _that.nameError,
@@ -454,6 +470,7 @@ class _SignupState implements SignupState {
       this.grade = '',
       this.password = '',
       this.passwordConfirm = '',
+      this.isPrivacyPolicyAgreed = false,
       this.gender,
       this.major,
       this.nameError,
@@ -481,6 +498,9 @@ class _SignupState implements SignupState {
   @override
   @JsonKey()
   final String passwordConfirm;
+  @override
+  @JsonKey()
+  final bool isPrivacyPolicyAgreed;
   @override
   final GenderType? gender;
   @override
@@ -519,6 +539,8 @@ class _SignupState implements SignupState {
                 other.password == password) &&
             (identical(other.passwordConfirm, passwordConfirm) ||
                 other.passwordConfirm == passwordConfirm) &&
+            (identical(other.isPrivacyPolicyAgreed, isPrivacyPolicyAgreed) ||
+                other.isPrivacyPolicyAgreed == isPrivacyPolicyAgreed) &&
             (identical(other.gender, gender) || other.gender == gender) &&
             (identical(other.major, major) || other.major == major) &&
             (identical(other.nameError, nameError) ||
@@ -544,6 +566,7 @@ class _SignupState implements SignupState {
       grade,
       password,
       passwordConfirm,
+      isPrivacyPolicyAgreed,
       gender,
       major,
       nameError,
@@ -555,7 +578,7 @@ class _SignupState implements SignupState {
 
   @override
   String toString() {
-    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
+    return 'SignupState(status: $status, name: $name, email: $email, grade: $grade, password: $password, passwordConfirm: $passwordConfirm, isPrivacyPolicyAgreed: $isPrivacyPolicyAgreed, gender: $gender, major: $major, nameError: $nameError, emailError: $emailError, gradeError: $gradeError, passwordError: $passwordError, passwordConfirmError: $passwordConfirmError, errorMessage: $errorMessage)';
   }
 }
 
@@ -574,6 +597,7 @@ abstract mixin class _$SignupStateCopyWith<$Res>
       String grade,
       String password,
       String passwordConfirm,
+      bool isPrivacyPolicyAgreed,
       GenderType? gender,
       DepartmentType? major,
       String? nameError,
@@ -602,6 +626,7 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
     Object? grade = null,
     Object? password = null,
     Object? passwordConfirm = null,
+    Object? isPrivacyPolicyAgreed = null,
     Object? gender = freezed,
     Object? major = freezed,
     Object? nameError = freezed,
@@ -636,6 +661,10 @@ class __$SignupStateCopyWithImpl<$Res> implements _$SignupStateCopyWith<$Res> {
           ? _self.passwordConfirm
           : passwordConfirm // ignore: cast_nullable_to_non_nullable
               as String,
+      isPrivacyPolicyAgreed: null == isPrivacyPolicyAgreed
+          ? _self.isPrivacyPolicyAgreed
+          : isPrivacyPolicyAgreed // ignore: cast_nullable_to_non_nullable
+              as bool,
       gender: freezed == gender
           ? _self.gender
           : gender // ignore: cast_nullable_to_non_nullable

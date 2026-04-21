@@ -62,6 +62,11 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
         false;
   }
 
+  Color _routeSheetBarrierColor(bool dark) {
+    final baseColor = dark ? AppColors.backgroundDark : AppColors.background;
+    return baseColor.withValues(alpha: 0.56);
+  }
+
   @override
   Widget build(BuildContext context) {
     final selectedIndex =
@@ -83,6 +88,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,
     };
+    final dark = _isDark(themeMode, context);
 
     return Stack(
       children: [
@@ -93,7 +99,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
           child: DirectionTopPanel(
             departureName: departureName,
             destinationName: destinationName,
-            dark: _isDark(themeMode, context),
+            dark: dark,
             onSwap: widget.onSwap,
             onDepartureSelect: widget.onDepartureSelect,
           ),
@@ -104,9 +110,7 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
               onTap: _closeRouteSheet,
               behavior: HitTestBehavior.opaque,
               child: Container(
-                color: (_isDark(themeMode, context)
-                    ? AppColors.backgroundDark
-                    : AppColors.background),
+                color: _routeSheetBarrierColor(dark),
               ),
             ),
           ),
@@ -114,25 +118,31 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
           left: 0,
           right: 0,
           bottom: 0,
-          child: _buildStateContent(
-            state: widget.state,
-            routeCarousel: DirectionRouteCarousel(
-              scrollController: _routeScrollController,
-              routeOptions: widget.state.routeOptions,
-              selectedIndex: selectedIndex,
-              dark: _isDark(themeMode, context),
-              onTap: _handleRouteTap,
+          child: SafeArea(
+            top: false,
+            left: false,
+            right: false,
+            minimum: const EdgeInsets.only(bottom: 8),
+            child: _buildStateContent(
+              state: widget.state,
+              routeCarousel: DirectionRouteCarousel(
+                scrollController: _routeScrollController,
+                routeOptions: widget.state.routeOptions,
+                selectedIndex: selectedIndex,
+                dark: dark,
+                onTap: _handleRouteTap,
+              ),
+              routeSheet: selectedOption == null
+                  ? const SizedBox.shrink()
+                  : DirectionDetailSheet(
+                      option: selectedOption,
+                      departureName: departureName,
+                      destinationName: destinationName,
+                      dark: dark,
+                      onClose: _closeRouteSheet,
+                    ),
+              isRouteSheetVisible: isRouteSheetVisible,
             ),
-            routeSheet: selectedOption == null
-                ? const SizedBox.shrink()
-                : DirectionDetailSheet(
-                    option: selectedOption,
-                    departureName: departureName,
-                    destinationName: destinationName,
-                    dark: _isDark(themeMode, context),
-                    onClose: _closeRouteSheet,
-                  ),
-            isRouteSheetVisible: isRouteSheetVisible,
           ),
         ),
       ],

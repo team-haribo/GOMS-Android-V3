@@ -30,6 +30,18 @@ class BaseScaffold extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const defaultPadding = EdgeInsets.fromLTRB(
+      AppSpacing.s24,
+      AppSpacing.s16,
+      AppSpacing.s24,
+      AppSpacing.s24,
+    );
+    final basePadding = contentPadding ?? defaultPadding;
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final effectivePadding = basePadding.copyWith(
+      bottom: basePadding.bottom + bottomInset,
+    );
+
     final effectiveAppBar = showAppBar
         ? (showAppBarLogo
             ? GomsAppBar.logo(
@@ -46,13 +58,7 @@ class BaseScaffold extends ConsumerWidget {
     return Scaffold(
       appBar: effectiveAppBar,
       body: Padding(
-        padding: contentPadding ??
-            const EdgeInsets.fromLTRB(
-              AppSpacing.s24,
-              AppSpacing.s16,
-              AppSpacing.s24,
-              AppSpacing.s24,
-            ),
+        padding: effectivePadding,
         child: body,
       ),
       bottomNavigationBar: bottomNavigationBar,

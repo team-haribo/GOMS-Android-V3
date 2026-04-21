@@ -39,6 +39,7 @@ void main() {
       notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
+      notifier.setPrivacyPolicyAgreed(true);
 
       expect(notifier.isFormValid, isTrue);
       expect(container.read(signupProvider).status, SignupStatus.initial);
@@ -110,6 +111,7 @@ void main() {
       notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
+      notifier.setPrivacyPolicyAgreed(true);
       notifier.validatePassword('Abc123!');
       notifier.validatePasswordConfirm('Abc123!');
       authFlow.startSignup('s1001@gsm.hs.kr');
@@ -157,6 +159,7 @@ void main() {
       notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
+      notifier.setPrivacyPolicyAgreed(true);
       authFlow.startSignup('s1001@gsm.hs.kr');
 
       await notifier.submitSignup();
@@ -187,6 +190,7 @@ void main() {
       notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
+      notifier.setPrivacyPolicyAgreed(true);
       authFlow.startSignup('s1001@gsm.hs.kr');
       authFlow.setVerifiedToken('verified-token');
 
@@ -229,6 +233,7 @@ void main() {
       notifier.validateGrade('8');
       notifier.setGender(GenderType.male);
       notifier.setMajor(DepartmentType.sw);
+      notifier.setPrivacyPolicyAgreed(true);
 
       await notifier.submitSignup();
 

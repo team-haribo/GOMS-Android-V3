@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/widgets/buttons/gradient_floating_action_button.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 
 class UserManageButton extends StatelessWidget {
@@ -16,23 +17,14 @@ class UserManageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final buttonSize = size ?? 64.0;
 
-    return SizedBox(
-      width: buttonSize,
-      height: buttonSize,
-      child: ElevatedButton(
-        onPressed: () => context.push(RoutePath.studentCouncilMembers),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.admin,
-          foregroundColor: Colors.white,
-          shape: const CircleBorder(),
-          padding: EdgeInsets.zero,
-          elevation: 0,
-        ),
-        child: AppIcons.userManageButton(
-          width: 24,
-          height: 24,
-          color: Colors.white,
-        ),
+    return GradientFloatingActionButton(
+      size: buttonSize,
+      baseColor: AppColors.admin,
+      onPressed: () => context.push(RoutePath.studentCouncilMembers),
+      child: AppIcons.userManageButton(
+        width: 24,
+        height: 24,
+        color: Colors.white,
       ),
     );
   }

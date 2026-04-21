@@ -29,6 +29,7 @@ abstract class SignupState with _$SignupState {
     @Default('') String grade,
     @Default('') String password,
     @Default('') String passwordConfirm,
+    @Default(false) bool isPrivacyPolicyAgreed,
     GenderType? gender,
     DepartmentType? major,
     String? nameError,

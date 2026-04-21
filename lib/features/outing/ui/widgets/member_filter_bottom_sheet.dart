@@ -103,6 +103,55 @@ class _MemberFilterBottomSheetState
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
+            '학년',
+            style: AppTextStyles.title3.copyWith(
+              color: context.isLightMode ? Colors.black : Colors.white,
+            ),
+          ),
+          AppGap.v12,
+          Row(
+            children: [
+              Expanded(
+                child: CategoryChip(
+                  category: '1학년',
+                  selected: selection.grade == 1,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 1 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
+                ),
+              ),
+              AppGap.h8,
+              Expanded(
+                child: CategoryChip(
+                  category: '2학년',
+                  selected: selection.grade == 2,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 2 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
+                ),
+              ),
+              AppGap.h8,
+              Expanded(
+                child: CategoryChip(
+                  category: '3학년',
+                  selected: selection.grade == 3,
+                  onChanged: (selected) => _updateSelection(
+                    selection.copyWith(
+                      grade: selected ? 3 : null,
+                      clearGrade: !selected,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Text(
             '역할',
             style: AppTextStyles.title3.copyWith(
               color: context.isLightMode ? Colors.black : Colors.white,
@@ -155,56 +204,6 @@ class _MemberFilterBottomSheetState
                             role: 'ROLE_STUDENT',
                           )
                         : selection.copyWith(clearStatus: true),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          AppGap.v24,
-          Text(
-            '학년',
-            style: AppTextStyles.title3.copyWith(
-              color: context.isLightMode ? Colors.black : Colors.white,
-            ),
-          ),
-          AppGap.v12,
-          Row(
-            children: [
-              Expanded(
-                child: CategoryChip(
-                  category: '1학년',
-                  selected: selection.grade == 1,
-                  onChanged: (selected) => _updateSelection(
-                    selection.copyWith(
-                      grade: selected ? 1 : null,
-                      clearGrade: !selected,
-                    ),
-                  ),
-                ),
-              ),
-              AppGap.h8,
-              Expanded(
-                child: CategoryChip(
-                  category: '2학년',
-                  selected: selection.grade == 2,
-                  onChanged: (selected) => _updateSelection(
-                    selection.copyWith(
-                      grade: selected ? 2 : null,
-                      clearGrade: !selected,
-                    ),
-                  ),
-                ),
-              ),
-              AppGap.h8,
-              Expanded(
-                child: CategoryChip(
-                  category: '3학년',
-                  selected: selection.grade == 3,
-                  onChanged: (selected) => _updateSelection(
-                    selection.copyWith(
-                      grade: selected ? 3 : null,
-                      clearGrade: !selected,
-                    ),
                   ),
                 ),
               ),

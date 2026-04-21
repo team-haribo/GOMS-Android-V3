@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
@@ -143,12 +144,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 notifier.setPrivacyPolicyAgreed(true);
               }
             },
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.s4,
-                vertical: AppSpacing.s4,
-              ),
               child: Row(
                 children: [
                   Expanded(
@@ -157,17 +154,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       style: AppTextStyles.text1.withColor(AppColors.mainColor),
                     ),
                   ),
-                  Icon(
-                    signupState.isPrivacyPolicyAgreed
-                        ? Icons.check_box_rounded
-                        : Icons.check_box_outline_blank_rounded,
-                    color: signupState.isPrivacyPolicyAgreed
-                        ? AppColors.mainColor
-                        : context.isDarkMode
-                            ? Colors.white70
-                            : context.mainTextColor,
-                    size: 28,
-                  ),
+                  signupState.isPrivacyPolicyAgreed
+                      ? AppIcons.check(color: AppColors.mainColor)
+                      : AppIcons.non_check(color: context.sub2Color),
                 ],
               ),
             ),

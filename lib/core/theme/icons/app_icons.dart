@@ -292,8 +292,11 @@ class AppIcons {
       );
 
   /// 유저 관리 버튼 아이콘
-  static Widget userManageButton(
-          {double? width, double? height, Color? color,}) =>
+  static Widget userManageButton({
+    double? width,
+    double? height,
+    Color? color,
+  }) =>
       _loadPng(
         'assets/icons/user_manage_button.png',
         width: width,
@@ -339,6 +342,20 @@ class AppIcons {
   static Widget logout({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/logout.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+  static Widget non_check({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/non_check.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+  static Widget check({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/check.svg',
         width: width,
         height: height,
         color: color,

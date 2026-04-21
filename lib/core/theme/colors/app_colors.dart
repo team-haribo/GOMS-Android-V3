@@ -60,4 +60,6 @@ class AppColors {
 
   /// g-3
   static const Color gray3 = Color(0xFFA1A1A1);
+
+  static const Color blue = Color(0xFF007AFF);
 }

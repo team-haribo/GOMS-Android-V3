@@ -68,6 +68,7 @@ class AuthBaseScreen extends ConsumerWidget {
                       onPressed:
                           isConfirmEnabled && !isLoading ? onConfirm : null,
                     ),
+                    AppGap.v24,
                   ],
                 ),
               ),

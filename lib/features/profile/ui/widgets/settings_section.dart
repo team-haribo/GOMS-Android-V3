@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/theme/enums/app_theme_option.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
@@ -40,7 +41,7 @@ class SettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('앱 테마 설정', style: AppTextStyles.caption1.withColor(textColor)),
+        Text('앱 테마 설정', style: AppTextStyles.text1.withColor(context.mainTextColor)),
         AppGap.v12,
         GestureDetector(
           behavior: HitTestBehavior.opaque,

@@ -281,7 +281,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                   _startPasswordResetFlow(currentMember?.email),
               onTapLogout: () => GomsDialog.confirm(
                 title: '로그아웃',
-                content: '로그아웃 하시겠습니까?',
+                content: '\n 로그아웃 하시겠습니까?',
                 confirmText: '로그아웃',
                 onConfirm: () async {
                   await ref.read(authProvider.notifier).logout();

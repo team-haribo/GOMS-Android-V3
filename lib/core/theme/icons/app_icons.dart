@@ -256,6 +256,14 @@ class AppIcons {
         color: color,
       );
 
+  static Widget arrow({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/arrow.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
   /// 취소 아이콘
   static Widget cancel({double? width, double? height, Color? color}) =>
       _loadPng(
@@ -315,6 +323,22 @@ class AppIcons {
   static Widget adminEdit({double? width, double? height, Color? color}) =>
       _loadPng(
         'assets/icons/admin_edit.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  static Widget setting({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/setting.png',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  static Widget logout({double? width, double? height, Color? color}) =>
+      _loadPng(
+        'assets/icons/logout.png',
         width: width,
         height: height,
         color: color,

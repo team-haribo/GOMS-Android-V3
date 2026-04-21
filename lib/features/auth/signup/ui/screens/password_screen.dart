@@ -82,7 +82,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           enabled: !isLoading,
           onChanged: notifier.validatePassword,
         ),
-        AppGap.h16,
+        AppGap.v16,
         PasswordTextField(
           controller: notifier.passwordConfirmController,
           hintText: '비밀번호를 다시 입력해주세요',

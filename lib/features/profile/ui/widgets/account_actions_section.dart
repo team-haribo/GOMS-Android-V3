@@ -23,20 +23,20 @@ class AccountActionsSection extends StatelessWidget {
     return Column(
       children: [
         _AccountActionRow(
-          icon: AppIcons.setting(),
+          icon: AppIcons.setting(color: textColor),
           title: '비밀번호 재설정',
           textColor: textColor,
           onTap: onTapResetPassword,
         ),
         _AccountActionRow(
-          icon: AppIcons.forcedOuting(),
+          icon: AppIcons.forcedOuting(color: AppColors.negative),
           title: '로그아웃',
           textColor: AppColors.negative,
           chevronColor: textColor,
           onTap: onTapLogout,
         ),
         _AccountActionRow(
-          icon: AppIcons.logout(),
+          icon: AppIcons.logout(color: AppColors.negative),
           title: '회원탈퇴',
           textColor: AppColors.negative,
           chevronColor: textColor,
@@ -86,7 +86,7 @@ class _AccountActionRow extends StatelessWidget {
               child:
                   Text(title, style: AppTextStyles.text2.withColor(textColor)),
             ),
-            AppIcons.arrow(),
+            AppIcons.arrow(color: chevronColor ?? textColor),
           ],
         ),
       ),

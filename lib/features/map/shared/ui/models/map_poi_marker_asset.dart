@@ -3,6 +3,7 @@ class MapPoiMarkerAsset {
 
   static const String cafe = 'assets/icons/cafe_marker.png';
   static const String culture = 'assets/icons/culture_marker.png';
+  static const String currentLocation = 'assets/icons/my_poi.png';
   static const String drugstore = 'assets/icons/drugstore_marker.png';
   static const String flag = 'assets/icons/flag_marker.png';
   static const String food = 'assets/icons/food_marker.png';
@@ -11,6 +12,8 @@ class MapPoiMarkerAsset {
 
   static const int iconWidth = 64;
   static const int iconHeight = 64;
+  static const int currentLocationIconWidth = 36;
+  static const int currentLocationIconHeight = 36;
 
   static String fromCategory(String category) {
     final normalized = category.trim().toLowerCase();

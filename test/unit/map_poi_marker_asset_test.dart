@@ -2,6 +2,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/map/shared/ui/models/map_poi_marker_asset.dart';
 
 void main() {
+  test('exposes current location marker asset', () {
+    expect(
+      MapPoiMarkerAsset.currentLocation,
+      'assets/icons/my_poi.png',
+    );
+  });
+
   group('MapPoiMarkerAsset.fromCategory', () {
     test('maps cafe categories to cafe marker', () {
       expect(

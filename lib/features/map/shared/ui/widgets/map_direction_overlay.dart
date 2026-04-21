@@ -118,25 +118,31 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
           left: 0,
           right: 0,
           bottom: 0,
-          child: _buildStateContent(
-            state: widget.state,
-            routeCarousel: DirectionRouteCarousel(
-              scrollController: _routeScrollController,
-              routeOptions: widget.state.routeOptions,
-              selectedIndex: selectedIndex,
-              dark: dark,
-              onTap: _handleRouteTap,
+          child: SafeArea(
+            top: false,
+            left: false,
+            right: false,
+            minimum: const EdgeInsets.only(bottom: 8),
+            child: _buildStateContent(
+              state: widget.state,
+              routeCarousel: DirectionRouteCarousel(
+                scrollController: _routeScrollController,
+                routeOptions: widget.state.routeOptions,
+                selectedIndex: selectedIndex,
+                dark: dark,
+                onTap: _handleRouteTap,
+              ),
+              routeSheet: selectedOption == null
+                  ? const SizedBox.shrink()
+                  : DirectionDetailSheet(
+                      option: selectedOption,
+                      departureName: departureName,
+                      destinationName: destinationName,
+                      dark: dark,
+                      onClose: _closeRouteSheet,
+                    ),
+              isRouteSheetVisible: isRouteSheetVisible,
             ),
-            routeSheet: selectedOption == null
-                ? const SizedBox.shrink()
-                : DirectionDetailSheet(
-                    option: selectedOption,
-                    departureName: departureName,
-                    destinationName: destinationName,
-                    dark: dark,
-                    onClose: _closeRouteSheet,
-                  ),
-            isRouteSheetVisible: isRouteSheetVisible,
           ),
         ),
       ],

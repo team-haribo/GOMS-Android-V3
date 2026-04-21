@@ -91,4 +91,62 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('상세 화면 리뷰 작성일이 없으면 대시를 노출한다', (tester) async {
+    const place = PopularPlace(
+      placeId: 7,
+      name: '학생식당',
+      category: '한식',
+      address: '광주광역시 테스트로 7',
+      review: 1,
+      recommended: 3,
+      coordinate: MapCoordinate(latitude: 35.1, longitude: 126.9),
+    );
+    final reviews = [
+      const PlaceReviewEntity(
+        reviewId: 1,
+        name: '홍길동',
+        grade: 2,
+        department: 'SW',
+        profileImageUrl: '',
+        content: '작성일 없는 후기',
+        reviewedAt: null,
+      ),
+    ];
+
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => ResponsiveBreakpoints.builder(
+          child: child!,
+          breakpoints: const [
+            Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+            Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+            Breakpoint(start: 451, end: 800, name: 'TABLET'),
+            Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+          ],
+        ),
+        home: Scaffold(
+          body: PlaceDetailSheet(
+            place: place,
+            reviews: reviews,
+            myReviewIds: const {},
+            isLight: true,
+            isReviewLoading: false,
+            initialChildSize: 0.4,
+            minChildSize: 0.4,
+            maxChildSize: 0.8,
+            snapSizes: const [0.4, 0.8],
+            onArrivalPressed: () {},
+            onDeparturePressed: () {},
+            onWriteReviewPressed: () {},
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('작성일 없는 후기'), findsOneWidget);
+    expect(find.text('-'), findsOneWidget);
+  });
 }

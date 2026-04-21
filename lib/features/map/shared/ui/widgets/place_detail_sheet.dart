@@ -96,7 +96,7 @@ class PlaceDetailSheet extends StatelessWidget {
                         grade: review.grade,
                         major: review.department,
                         reviewDetailContent: review.content,
-                        createdAt: review.reviewedAt ?? DateTime.now(),
+                        createdAt: review.reviewedAt,
                         isMine: myReviewIds.contains(review.reviewId),
                       ),
                     ),

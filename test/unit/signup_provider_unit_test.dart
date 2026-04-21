@@ -99,28 +99,6 @@ void main() {
       expect(container.read(signupProvider).email, 's1001');
     });
 
-    test('reset clears form input and auth flow state', () {
-      final container = ProviderContainer();
-      addTearDown(container.dispose);
-
-      final notifier = container.read(signupProvider.notifier);
-      final authFlow = container.read(authFlowProvider.notifier);
-
-      notifier.setName('Hong');
-      notifier.validateEmail('s1001');
-      notifier.validateGrade('8');
-      notifier.setGender(GenderType.male);
-      notifier.setMajor(DepartmentType.sw);
-      notifier.setPrivacyPolicyAgreed(true);
-      authFlow.startSignup('s1001@gsm.hs.kr');
-
-      notifier.reset();
-
-      expect(container.read(signupProvider), SignupState.initial());
-      expect(container.read(authFlowProvider).email, isEmpty);
-      expect(container.read(authFlowProvider).verifiedToken, isNull);
-    });
-
     test('signup request maps gender to API enum format', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);

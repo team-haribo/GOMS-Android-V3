@@ -238,7 +238,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
       category: review.categoryName,
       address: review.address,
       reviewDetailContent: review.content,
-      createdAt: review.reviewedAt ?? DateTime.now(),
+      createdAt: review.reviewedAt,
     );
   }
 

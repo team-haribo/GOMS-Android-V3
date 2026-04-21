@@ -412,8 +412,7 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                                     reviewDetailContent:
                                                         review.content,
                                                     createdAt:
-                                                        review.reviewedAt ??
-                                                            DateTime.now(),
+                                                        review.reviewedAt,
                                                     isMine:
                                                         myReviewIds.contains(
                                                       review.reviewId,

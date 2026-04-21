@@ -71,7 +71,7 @@ class PlaceContainer extends StatelessWidget {
     required String category,
     required String address,
     required String reviewContent,
-    required DateTime reviewCreatedAt,
+    DateTime? reviewCreatedAt,
     VoidCallback? onTap,
     VoidCallback? onActionPressed,
   }) {

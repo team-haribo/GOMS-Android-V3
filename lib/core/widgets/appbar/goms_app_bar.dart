@@ -56,29 +56,45 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backAction = onBackPressed ?? () => context.pop();
+
     return AppBar(
       automaticallyImplyLeading: false,
+      leadingWidth: _showLogo ? null : 120,
       leading: _showLogo
           ? null
           : Padding(
               padding: const EdgeInsets.only(left: AppSpacing.s24),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: role == RoleEnum.admin
-                    ? AppIcons.back(
-                        width: 24,
-                        height: 24,
-                        color: AppColors.admin,
-                      )
-                    : AppIcons.back(width: 24, height: 24),
-                onPressed: onBackPressed ?? () => context.pop(),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
+              child: TextButton(
+                onPressed: backAction,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  alignment: Alignment.centerLeft,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    role == RoleEnum.admin
+                        ? AppIcons.back(
+                            width: 24,
+                            height: 24,
+                            color: AppColors.admin,
+                          )
+                        : AppIcons.back(width: 24, height: 24),
+                    AppGap.h4,
+                    Text(
+                      '돌아가기',
+                      style: AppTextStyles.text2.copyWith(
+                        color: role == RoleEnum.admin
+                            ? AppColors.admin
+                            : AppColors.mainColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-      titleSpacing: _showLogo ? 24 : 4,
+      titleSpacing: _showLogo ? 24 : 0,
       title: _showLogo
           ? Row(
               mainAxisSize: MainAxisSize.min,
@@ -112,14 +128,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
               ],
             )
-          : Text(
-              '돌아가기',
-              style: AppTextStyles.text2.copyWith(
-                color: role == RoleEnum.admin
-                    ? AppColors.admin
-                    : AppColors.mainColor,
-              ),
-            ),
+          : null,
       actions: actions,
     );
   }

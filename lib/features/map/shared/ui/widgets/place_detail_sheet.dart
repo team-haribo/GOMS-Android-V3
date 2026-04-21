@@ -7,6 +7,7 @@ import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/arrival_departure_button.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_bottom_sheet.dart';
+import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
 
 class PlaceDetailSheet extends StatelessWidget {
   final PopularPlace place;
@@ -23,6 +24,7 @@ class PlaceDetailSheet extends StatelessWidget {
   final VoidCallback onDeparturePressed;
   final VoidCallback onWriteReviewPressed;
   final bool showTrailingActions;
+  final Set<int> myReviewIds;
 
   const PlaceDetailSheet({
     super.key,
@@ -40,6 +42,7 @@ class PlaceDetailSheet extends StatelessWidget {
     this.onFavoritePressed,
     this.onDismiss,
     this.showTrailingActions = true,
+    this.myReviewIds = const <int>{},
   });
 
   @override
@@ -87,12 +90,14 @@ class PlaceDetailSheet extends StatelessWidget {
                   ...reviews.map(
                     (review) => Padding(
                       padding: const EdgeInsets.only(bottom: 12),
-                      child: _ReviewTile(
-                        title:
-                            '${review.name} · ${review.grade}학년 ${review.department}',
-                        content: review.content,
-                        createdAt: review.reviewedAt,
-                        isLight: isLight,
+                      child: ReviewListContainer(
+                        reviewId: review.reviewId,
+                        name: review.name,
+                        grade: review.grade,
+                        major: review.department,
+                        reviewDetailContent: review.content,
+                        createdAt: review.reviewedAt ?? DateTime.now(),
+                        isMine: myReviewIds.contains(review.reviewId),
                       ),
                     ),
                   ),
@@ -355,59 +360,6 @@ class _ReviewSectionHeader extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _ReviewTile extends StatelessWidget {
-  final String title;
-  final String content;
-  final DateTime? createdAt;
-  final bool isLight;
-
-  const _ReviewTile({
-    required this.title,
-    required this.content,
-    required this.createdAt,
-    required this.isLight,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cardColor =
-        isLight ? AppColors.bgMapContainer : AppColors.bgMapContainerDark;
-    final subColor = isLight ? AppColors.sub1 : AppColors.sub1Dark;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(AppSpacing.s16),
-      decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: AppTextStyles.text1.copyWith(
-              color: isLight ? AppColors.mainText : AppColors.mainTextDark,
-            ),
-          ),
-          AppGap.v8,
-          Text(
-            content,
-            style: AppTextStyles.text3.copyWith(color: subColor),
-          ),
-          AppGap.v8,
-          Text(
-            createdAt == null
-                ? '-'
-                : '${createdAt!.year}.${createdAt!.month.toString().padLeft(2, '0')}.${createdAt!.day.toString().padLeft(2, '0')}',
-            style: AppTextStyles.caption2.copyWith(color: subColor),
-          ),
-        ],
-      ),
     );
   }
 }

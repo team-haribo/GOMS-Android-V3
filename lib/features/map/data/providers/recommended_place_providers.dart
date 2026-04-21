@@ -54,6 +54,12 @@ final placeReviewsProvider =
   return ref.read(recommendedPlaceRepositoryProvider).getPlaceReviews(placeId);
 });
 
+final myReviewIdsProvider = FutureProvider<Set<int>>((ref) async {
+  final reviews =
+      await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
+  return reviews.map((review) => review.reviewId).toSet();
+});
+
 final placeSearchKeywordProvider = StateProvider<String>((ref) => '');
 
 final placeSearchResultsProvider =

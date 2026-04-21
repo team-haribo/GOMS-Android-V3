@@ -285,6 +285,7 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
         placeId == null ? null : ref.watch(placeDetailProvider(placeId));
     final placeReviewsAsync =
         placeId == null ? null : ref.watch(placeReviewsProvider(placeId));
+    final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
     final detailPlace = placeDetailAsync?.asData?.value;
     final resolvedPlace = detailPlace == null
         ? place
@@ -306,10 +307,12 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
     final reviews =
         placeReviewsAsync?.asData?.value ?? const <PlaceReviewEntity>[];
     final isReviewLoading = placeReviewsAsync?.isLoading == true;
+    final myReviewIds = myReviewIdsAsync.asData?.value ?? const <int>{};
 
     return PlaceDetailSheet(
       place: resolvedPlace,
       reviews: reviews,
+      myReviewIds: myReviewIds,
       isLight: isLight,
       isReviewLoading: isReviewLoading,
       initialChildSize: initialSheetSize,

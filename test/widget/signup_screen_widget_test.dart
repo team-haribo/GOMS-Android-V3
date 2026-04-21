@@ -6,6 +6,10 @@ import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/app_theme.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/features/auth/signup/ui/screens/signup_screen.dart';
+import 'package:goms/features/auth/signup/ui/providers/signup_provider.dart';
+import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/profile/ui/screens/privacy_policy_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
@@ -53,6 +57,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('개인정보 수집 및 처리방침'), findsOneWidget);
+    expect(
+      find.byIcon(Icons.check_box_outline_blank_rounded),
+      findsOneWidget,
+    );
 
     await tester.ensureVisible(find.text('개인정보 수집 및 처리방침'));
     await tester.tap(find.text('개인정보 수집 및 처리방침'));
@@ -61,6 +69,88 @@ void main() {
     expect(find.text('개인정보 수집 및 처리방침'), findsOneWidget);
     expect(find.text('1. 개인정보 수집 항목 및 방법'), findsOneWidget);
     expect(find.text('개인정보 수집 동의'), findsOneWidget);
+
+    await tester.tap(find.text('개인정보 수집 동의'));
+    await tester.pumpAndSettle();
+
+    expect(find.byIcon(Icons.check_box_rounded), findsOneWidget);
+  });
+
+  testWidgets('SignupScreen back navigation clears signup state',
+      (tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
+    final router = GoRouter(
+      initialLocation: '/',
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => Builder(
+            builder: (context) => Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () => context.push(RoutePath.signUp),
+                  child: const Text('open signup'),
+                ),
+              ),
+            ),
+          ),
+        ),
+        GoRoute(
+          path: RoutePath.signUp,
+          builder: (context, state) => const SignUpScreen(),
+        ),
+        GoRoute(
+          path: RoutePath.privacyPolicy,
+          builder: (context, state) => const PrivacyPolicyScreen(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp.router(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          routerConfig: router,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('open signup'));
+    await tester.pumpAndSettle();
+
+    final notifier = container.read(signupProvider.notifier);
+    notifier.setName('Hong');
+    notifier.validateEmail('s1001');
+    notifier.validateGrade('8');
+    notifier.setGender(GenderType.male);
+    notifier.setMajor(DepartmentType.sw);
+    notifier.setPrivacyPolicyAgreed(true);
+
+    await tester.pump();
+    await tester.tap(find.byType(IconButton).first);
+    await tester.pumpAndSettle();
+
+    expect(find.text('open signup'), findsOneWidget);
+    expect(container.read(signupProvider), SignupState.initial());
   });
 
   testWidgets('SignupScreen shows grade dropdown options', (tester) async {

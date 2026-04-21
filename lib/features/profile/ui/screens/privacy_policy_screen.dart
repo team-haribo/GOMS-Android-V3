@@ -185,7 +185,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           AppGap.v24,
           ConfirmButton(
             text: '개인정보 수집 동의',
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () => Navigator.of(context).pop(true),
             height: 60,
           ),
         ],

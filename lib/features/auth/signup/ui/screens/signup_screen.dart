@@ -26,6 +26,15 @@ class SignUpScreen extends ConsumerStatefulWidget {
 class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   late final ProviderSubscription<SignupState> _signupSubscription;
 
+  void _clearSignupState() {
+    ref.read(signupProvider.notifier).reset();
+  }
+
+  void _handleBack() {
+    _clearSignupState();
+    context.pop();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,88 +74,106 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     final notifier = ref.read(signupProvider.notifier);
     final isLoading = signupState.status == SignupStatus.loading;
 
-    return AuthBaseScreen(
-      title: '회원가입',
-      confirmText: '인증번호 받기',
-      isConfirmEnabled: notifier.isFormValid,
-      onConfirm:
-          notifier.isFormValid && !isLoading ? notifier.submitSignup : null,
-      showAppBar: true,
-      showAppBarLogo: false,
-      isLoading: isLoading,
-      children: [
-        BaseTextField(
-          controller: notifier.nameController,
-          hintText: '이름을 입력해주세요',
-          textInputAction: TextInputAction.next,
-          enabled: !isLoading,
-          onChanged: notifier.setName,
-        ),
-        AppGap.v16,
-        EmailTextField(
-          controller: notifier.emailController,
-          hintText: '이메일을 입력해주세요',
-          errorText: signupState.emailError,
-          enabled: !isLoading,
-          onChanged: notifier.validateEmail,
-        ),
-        AppGap.v16,
-        SelectField<int>(
-          hintText: '기수를 선택해주세요',
-          value: notifier.selectedGrade,
-          items: SignupNotifier.availableGrades,
-          itemLabel: (grade) => '$grade기',
-          enabled: !isLoading,
-          onChanged: notifier.setGrade,
-        ),
-        AppGap.v16,
-        SelectField<GenderType>(
-          hintText: '성별을 선택해주세요',
-          value: signupState.gender,
-          items: GenderType.values,
-          itemLabel: (g) => g.label,
-          enabled: !isLoading,
-          onChanged: notifier.setGender,
-        ),
-        AppGap.v16,
-        SelectField<DepartmentType>(
-          hintText: '과를 선택해주세요',
-          value: signupState.major,
-          items: DepartmentType.values,
-          itemLabel: (m) => m.label,
-          enabled: !isLoading,
-          onChanged: notifier.setMajor,
-        ),
-        AppGap.v16,
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => context.push(RoutePath.privacyPolicy),
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.s4,
-              vertical: AppSpacing.s4,
-            ),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '개인정보 수집 및 처리방침',
-                    style: AppTextStyles.text1.withColor(AppColors.mainColor),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          _clearSignupState();
+        }
+      },
+      child: AuthBaseScreen(
+        title: '회원가입',
+        confirmText: '인증번호 받기',
+        isConfirmEnabled: notifier.isFormValid,
+        onConfirm:
+            notifier.isFormValid && !isLoading ? notifier.submitSignup : null,
+        onBackPressed: _handleBack,
+        showAppBar: true,
+        showAppBarLogo: false,
+        isLoading: isLoading,
+        children: [
+          BaseTextField(
+            controller: notifier.nameController,
+            hintText: '이름을 입력해주세요',
+            textInputAction: TextInputAction.next,
+            enabled: !isLoading,
+            onChanged: notifier.setName,
+          ),
+          AppGap.v16,
+          EmailTextField(
+            controller: notifier.emailController,
+            hintText: '이메일을 입력해주세요',
+            errorText: signupState.emailError,
+            enabled: !isLoading,
+            onChanged: notifier.validateEmail,
+          ),
+          AppGap.v16,
+          SelectField<int>(
+            hintText: '기수를 선택해주세요',
+            value: notifier.selectedGrade,
+            items: SignupNotifier.availableGrades,
+            itemLabel: (grade) => '$grade기',
+            enabled: !isLoading,
+            onChanged: notifier.setGrade,
+          ),
+          AppGap.v16,
+          SelectField<GenderType>(
+            hintText: '성별을 선택해주세요',
+            value: signupState.gender,
+            items: GenderType.values,
+            itemLabel: (g) => g.label,
+            enabled: !isLoading,
+            onChanged: notifier.setGender,
+          ),
+          AppGap.v16,
+          SelectField<DepartmentType>(
+            hintText: '과를 선택해주세요',
+            value: signupState.major,
+            items: DepartmentType.values,
+            itemLabel: (m) => m.label,
+            enabled: !isLoading,
+            onChanged: notifier.setMajor,
+          ),
+          AppGap.v16,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () async {
+              final isAgreed =
+                  await context.push<bool>(RoutePath.privacyPolicy);
+              if (isAgreed == true && mounted) {
+                notifier.setPrivacyPolicyAgreed(true);
+              }
+            },
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.s4,
+                vertical: AppSpacing.s4,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      '개인정보 수집 및 처리방침',
+                      style: AppTextStyles.text1.withColor(AppColors.mainColor),
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.check_box_outline_blank_rounded,
-                  color: context.isDarkMode
-                      ? Colors.white70
-                      : context.mainTextColor,
-                  size: 28,
-                ),
-              ],
+                  Icon(
+                    signupState.isPrivacyPolicyAgreed
+                        ? Icons.check_box_rounded
+                        : Icons.check_box_outline_blank_rounded,
+                    color: signupState.isPrivacyPolicyAgreed
+                        ? AppColors.mainColor
+                        : context.isDarkMode
+                            ? Colors.white70
+                            : context.mainTextColor,
+                    size: 28,
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

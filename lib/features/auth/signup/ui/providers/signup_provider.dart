@@ -92,6 +92,10 @@ class SignupNotifier extends Notifier<SignupState> {
     validateGrade(nextGrade);
   }
 
+  void setPrivacyPolicyAgreed(bool isAgreed) {
+    state = state.copyWith(isPrivacyPolicyAgreed: isAgreed);
+  }
+
   int? get selectedGrade => int.tryParse(state.grade);
 
   // ==================== 유효성 검사 ====================
@@ -151,7 +155,8 @@ class SignupNotifier extends Notifier<SignupState> {
       state.grade.isNotEmpty &&
       state.gradeError == null &&
       state.gender != null &&
-      state.major != null;
+      state.major != null &&
+      state.isPrivacyPolicyAgreed;
 
   /// 비밀번호 설정 폼 유효성
   bool get isPasswordFormValid =>

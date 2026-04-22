@@ -68,6 +68,7 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
       );
     }
 
+    final collapsedSheetSize = context.isTabletLayout ? 0.12 : 0.1;
     final initialSheetSize = context.isTabletLayout
         ? 0.44
         : (context.screenHeight < 780 ? 0.42 : 0.38);
@@ -106,9 +107,10 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                 child: MapBottomSheet(
                   isLight: isLight,
                   initialChildSize: initialSheetSize,
-                  minChildSize: initialSheetSize,
+                  minChildSize: collapsedSheetSize,
                   maxChildSize: maxSheetSize,
                   snapSizes: <double>[
+                    collapsedSheetSize,
                     initialSheetSize,
                     context.isTabletLayout ? 0.62 : 0.62,
                     maxSheetSize,
@@ -276,6 +278,7 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLight = context.isLightMode;
+    final collapsedSheetSize = context.isTabletLayout ? 0.12 : 0.1;
     final initialSheetSize = context.isTabletLayout
         ? 0.44
         : (context.screenHeight < 780 ? 0.40 : 0.34);
@@ -316,9 +319,14 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
       isLight: isLight,
       isReviewLoading: isReviewLoading,
       initialChildSize: initialSheetSize,
-      minChildSize: initialSheetSize,
+      minChildSize: collapsedSheetSize,
       maxChildSize: maxSheetSize,
-      snapSizes: <double>[initialSheetSize, 0.58, maxSheetSize],
+      snapSizes: <double>[
+        collapsedSheetSize,
+        initialSheetSize,
+        0.58,
+        maxSheetSize,
+      ],
       onDismiss: onDismiss,
       onFavoritePressed: place.placeId == null
           ? null
@@ -388,8 +396,11 @@ class _MyActivitySection extends StatelessWidget {
   }) async {
     try {
       await ref
-          .read(mapScreenProvider.notifier)
-          .deleteMyReview(review.reviewId);
+          .read(recommendedPlaceRepositoryProvider)
+          .deleteReview(review.reviewId);
+      ref.invalidate(recommendedPlacesProvider);
+      ref.invalidate(recommendedPlacesCountProvider);
+      ref.invalidate(myReviewIdsProvider);
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -508,7 +519,7 @@ class _MyActivitySection extends StatelessWidget {
                     category: review.category,
                     address: review.address,
                     reviewContent: review.reviewDetailContent,
-                    reviewCreatedAt: review.createdAt,
+                    reviewCreatedAt: review.createdAt ?? DateTime.now(),
                     onActionPressed: () => _showDeleteReviewDialog(
                       context: context,
                       ref: ref,

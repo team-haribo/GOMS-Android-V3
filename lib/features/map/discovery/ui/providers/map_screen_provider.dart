@@ -33,14 +33,11 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     );
 
     try {
-      final results = await Future.wait<Object?>([
-        _loadMarkerPlaces(),
-        _loadMyReviewModels(),
-        _loadMyReviewCountOrNull(),
-      ]);
-      final popularPlaces = results[0]! as List<PopularPlace>;
-      final myReviewModels = results[1]! as List<MapScreenReviewModel>;
-      final myReviewCount = (results[2] as int?) ?? myReviewModels.length;
+      final popularPlaces = await _loadMarkerPlaces();
+      final myReviewModels = await _loadMyReviewModels();
+      final myReviewCount = await _loadMyReviewCount(
+        fallbackCount: myReviewModels.length,
+      );
       final normalizedMyReviewModels = _normalizeMyReviewModels(
         myReviewModels,
         myReviewCount,
@@ -128,42 +125,6 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     }
   }
 
-  Future<void> deleteMyReview(int reviewId) async {
-    final currentReviews = state.reviewModels;
-    final previousReviewCount = state.reviewCount;
-    final nextReviews = currentReviews
-        .where((review) => review.reviewId != reviewId)
-        .toList(growable: false);
-    final removedCount = currentReviews.length - nextReviews.length;
-
-    if (removedCount == 0) {
-      return;
-    }
-
-    state = state.copyWith(
-      reviewModels: nextReviews,
-      reviewCount: max(0, state.reviewCount - removedCount),
-    );
-
-    try {
-      await ref.read(recommendedPlaceRepositoryProvider).deleteReview(reviewId);
-    } catch (error, stackTrace) {
-      if (ref.mounted) {
-        Logger.e(
-          'Delete my review request failed.',
-          tag: 'MAP',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        state = state.copyWith(
-          reviewModels: currentReviews,
-          reviewCount: previousReviewCount,
-        );
-      }
-      rethrow;
-    }
-  }
-
   Future<List<PopularPlace>> _loadMarkerPlaces() async {
     try {
       final hotPlaces = await _loadHotPlaceEntities();
@@ -213,7 +174,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     }
   }
 
-  Future<int?> _loadMyReviewCountOrNull() async {
+  Future<int> _loadMyReviewCount({required int fallbackCount}) async {
     try {
       return await ref
           .read(recommendedPlaceRepositoryProvider)
@@ -221,24 +182,24 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     } catch (error, stackTrace) {
       if (ref.mounted) {
         Logger.e(
-          'My review count request failed. Falling back to loaded review list length.',
+          'My review count request failed. Falling back to list length.',
           tag: 'MAP',
           error: error,
           stackTrace: stackTrace,
         );
       }
-      return null;
+      return fallbackCount;
     }
   }
 
   MapScreenReviewModel _toMapScreenReviewModel(MyReviewEntity review) {
     return MapScreenReviewModel(
-      reviewId: review.reviewId,
       placeName: review.placeName,
       category: review.categoryName,
       address: review.address,
       reviewDetailContent: review.content,
-      createdAt: review.reviewedAt,
+      createdAt: review.reviewedAt ?? DateTime.now(),
+      reviewId: review.reviewId,
     );
   }
 

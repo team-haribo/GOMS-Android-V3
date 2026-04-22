@@ -6,39 +6,10 @@ import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:intl/intl.dart';
 
-class PlaceContainer extends StatelessWidget {
-  final _PlaceContainerVariant _variant;
-  final String placeName;
-  final String category;
-  final String address;
-  final int review;
-  final int recommended;
-  final bool isLiked;
-  final int? distanceMeters;
-  final String? reviewContent;
-  final DateTime? reviewCreatedAt;
-  final VoidCallback? onTap;
-  final VoidCallback? onLikePressed;
-  final VoidCallback? onActionPressed;
+abstract class PlaceContainer extends StatelessWidget {
+  const PlaceContainer({super.key});
 
-  const PlaceContainer._({
-    super.key,
-    required _PlaceContainerVariant variant,
-    required this.placeName,
-    required this.category,
-    required this.address,
-    required this.review,
-    required this.recommended,
-    required this.isLiked,
-    this.distanceMeters,
-    this.reviewContent,
-    this.reviewCreatedAt,
-    this.onTap,
-    this.onLikePressed,
-    this.onActionPressed,
-  }) : _variant = variant;
-
-  factory PlaceContainer.popular({
+  const factory PlaceContainer.popular({
     Key? key,
     required String placeName,
     required String category,
@@ -49,52 +20,123 @@ class PlaceContainer extends StatelessWidget {
     int? distanceMeters,
     VoidCallback? onTap,
     VoidCallback? onLikePressed,
-  }) {
-    return PlaceContainer._(
-      key: key,
-      variant: _PlaceContainerVariant.popular,
-      placeName: placeName,
-      category: category,
-      address: address,
-      review: review,
-      recommended: recommended,
-      isLiked: isLiked,
-      distanceMeters: distanceMeters,
-      onTap: onTap,
-      onLikePressed: onLikePressed,
-    );
-  }
+  }) = _PopularPlaceContainer;
 
-  factory PlaceContainer.review({
+  const factory PlaceContainer.review({
     Key? key,
     required String placeName,
     required String category,
     required String address,
     required String reviewContent,
-    DateTime? reviewCreatedAt,
+    required DateTime reviewCreatedAt,
     VoidCallback? onTap,
     VoidCallback? onActionPressed,
-  }) {
-    return PlaceContainer._(
-      key: key,
-      variant: _PlaceContainerVariant.review,
-      placeName: placeName,
-      category: category,
-      address: address,
-      review: 0,
-      recommended: 0,
-      isLiked: false,
-      reviewContent: reviewContent,
-      reviewCreatedAt: reviewCreatedAt,
-      onTap: onTap,
-      onActionPressed: onActionPressed,
-    );
-  }
+  }) = _ReviewPlaceContainer;
+}
+
+class _PopularPlaceContainer extends PlaceContainer {
+  final String placeName;
+  final String category;
+  final String address;
+  final int review;
+  final int recommended;
+  final bool isLiked;
+  final int? distanceMeters;
+  final VoidCallback? onTap;
+  final VoidCallback? onLikePressed;
+
+  const _PopularPlaceContainer({
+    super.key,
+    required this.placeName,
+    required this.category,
+    required this.address,
+    required this.review,
+    required this.recommended,
+    required this.isLiked,
+    this.distanceMeters,
+    this.onTap,
+    this.onLikePressed,
+  });
 
   @override
   Widget build(BuildContext context) {
     final colors = _PlaceContainerColors.fromTheme(context);
 
+    return _BasePlaceContainer(
+      colors: colors,
+      onTap: onTap,
+      content: _PlaceContent(
+        placeName: placeName,
+        category: category,
+        address: address,
+        review: review,
+        recommended: recommended,
+        distanceMeters: distanceMeters,
+        colors: colors,
+      ),
+      trailing: _PlaceActionButton.popular(
+        isLiked: isLiked,
+        onPressed: onLikePressed,
+      ),
+    );
+  }
+}
+
+class _ReviewPlaceContainer extends PlaceContainer {
+  final String placeName;
+  final String category;
+  final String address;
+  final String reviewContent;
+  final DateTime reviewCreatedAt;
+  final VoidCallback? onTap;
+  final VoidCallback? onActionPressed;
+
+  const _ReviewPlaceContainer({
+    super.key,
+    required this.placeName,
+    required this.category,
+    required this.address,
+    required this.reviewContent,
+    required this.reviewCreatedAt,
+    this.onTap,
+    this.onActionPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = _PlaceContainerColors.fromTheme(context);
+
+    return _BasePlaceContainer(
+      colors: colors,
+      onTap: onTap,
+      content: _ReviewContent(
+        placeName: placeName,
+        category: category,
+        address: address,
+        reviewContent: reviewContent,
+        reviewCreatedAt: reviewCreatedAt,
+        onActionPressed: onActionPressed,
+        colors: colors,
+      ),
+    );
+  }
+}
+
+class _BasePlaceContainer extends StatelessWidget {
+  final _PlaceContainerColors colors;
+  final VoidCallback? onTap;
+  final Widget content;
+  final Widget? trailing;
+
+  const _BasePlaceContainer({
+    required this.colors,
+    required this.onTap,
+    required this.content,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -110,33 +152,10 @@ class PlaceContainer extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: _variant == _PlaceContainerVariant.popular
-                    ? _PlaceContent(
-                        placeName: placeName,
-                        category: category,
-                        address: address,
-                        review: review,
-                        recommended: recommended,
-                        distanceMeters: distanceMeters,
-                        isLiked: isLiked,
-                        onLikePressed: onLikePressed,
-                        colors: colors,
-                      )
-                    : _ReviewContent(
-                        placeName: placeName,
-                        category: category,
-                        address: address,
-                        reviewContent: reviewContent ?? '',
-                        reviewCreatedAt: reviewCreatedAt,
-                        colors: colors,
-                      ),
-              ),
-              if (_variant == _PlaceContainerVariant.review) ...[
+              Expanded(child: content),
+              if (trailing != null) ...[
                 AppGap.h8,
-                Center(
-                  child: _ReviewActionButton(onPressed: onActionPressed),
-                ),
+                trailing!,
               ],
             ],
           ),
@@ -146,11 +165,6 @@ class PlaceContainer extends StatelessWidget {
   }
 }
 
-enum _PlaceContainerVariant {
-  popular,
-  review,
-}
-
 class _PlaceContent extends StatelessWidget {
   final String placeName;
   final String category;
@@ -158,8 +172,6 @@ class _PlaceContent extends StatelessWidget {
   final int review;
   final int recommended;
   final int? distanceMeters;
-  final bool isLiked;
-  final VoidCallback? onLikePressed;
   final _PlaceContainerColors colors;
 
   const _PlaceContent({
@@ -169,82 +181,63 @@ class _PlaceContent extends StatelessWidget {
     required this.review,
     required this.recommended,
     required this.distanceMeters,
-    required this.isLiked,
-    required this.onLikePressed,
     required this.colors,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _PlaceTitleRow(
-                placeName: placeName,
-                category: category,
-                colors: colors,
-              ),
-              AppGap.v4,
-              Text(
-                address,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption1.copyWith(color: colors.subColor),
-              ),
-              if (distanceMeters != null) ...[
-                AppGap.v4,
-                Text(
-                  '학교 기준 ${distanceMeters}m',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style:
-                      AppTextStyles.caption2.copyWith(color: colors.subColor),
-                ),
-              ],
-              AppGap.v4,
-              Wrap(
-                spacing: AppSpacing.s4,
-                runSpacing: AppSpacing.s2,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
-                    '학생 후기',
-                    style:
-                        AppTextStyles.caption1.copyWith(color: colors.subColor),
-                  ),
-                  Text(
-                    _formatCount(review),
-                    style:
-                        AppTextStyles.caption1.copyWith(color: colors.subColor),
-                  ),
-                  Text(
-                    '|',
-                    style:
-                        AppTextStyles.caption1.copyWith(color: colors.subColor),
-                  ),
-                  Text(
-                    '추천',
-                    style:
-                        AppTextStyles.caption1.copyWith(color: colors.subColor),
-                  ),
-                  Text(
-                    _formatCount(recommended),
-                    style:
-                        AppTextStyles.caption1.copyWith(color: colors.subColor),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        _PlaceTitleRow(
+          placeName: placeName,
+          category: category,
+          colors: colors,
         ),
-        AppGap.h8,
-        _LikeButton(
-          isLiked: isLiked,
-          onPressed: onLikePressed,
+        AppGap.v4,
+        Text(
+          address,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+        ),
+        if (distanceMeters != null) ...[
+          AppGap.v4,
+          Text(
+            '학교 기준 ${distanceMeters}m',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyles.caption2.copyWith(color: colors.subColor),
+          ),
+        ],
+        AppGap.v8,
+        Wrap(
+          spacing: AppSpacing.s4,
+          runSpacing: AppSpacing.s2,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text(
+              '학생 후기',
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+            ),
+            Text(
+              _formatCount(review),
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+            ),
+            Text(
+              '|',
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+            ),
+            Text(
+              '추천',
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+            ),
+            Text(
+              _formatCount(recommended),
+              style: AppTextStyles.caption1.copyWith(color: colors.subColor),
+            ),
+          ],
         ),
       ],
     );
@@ -261,6 +254,7 @@ class _ReviewContent extends StatelessWidget {
   final String address;
   final String reviewContent;
   final DateTime? reviewCreatedAt;
+  final VoidCallback? onActionPressed;
   final _PlaceContainerColors colors;
 
   const _ReviewContent({
@@ -269,6 +263,7 @@ class _ReviewContent extends StatelessWidget {
     required this.address,
     required this.reviewContent,
     required this.reviewCreatedAt,
+    required this.onActionPressed,
     required this.colors,
   });
 
@@ -307,6 +302,8 @@ class _ReviewContent extends StatelessWidget {
               '작성일: ${_formatDate(reviewCreatedAt)}',
               style: AppTextStyles.caption1.copyWith(color: colors.subColor),
             ),
+            AppGap.h8,
+            _PlaceActionButton.review(onPressed: onActionPressed),
           ],
         ),
       ],
@@ -353,7 +350,7 @@ class _PlaceTitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
           placeName,
@@ -376,42 +373,57 @@ class _PlaceTitleRow extends StatelessWidget {
   }
 }
 
-class _LikeButton extends StatelessWidget {
+enum _PlaceActionButtonType {
+  popular,
+  review,
+}
+
+class _PlaceActionButton extends StatelessWidget {
+  final _PlaceActionButtonType _type;
   final bool isLiked;
   final VoidCallback? onPressed;
 
-  const _LikeButton({
+  const _PlaceActionButton.popular({
     required this.isLiked,
     required this.onPressed,
-  });
+  }) : _type = _PlaceActionButtonType.popular;
 
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: isLiked
-          ? AppIcons.heartFilled(width: 24, height: 24)
-          : AppIcons.heart(width: 24, height: 24),
-    );
-  }
-}
-
-class _ReviewActionButton extends StatelessWidget {
-  final VoidCallback? onPressed;
-
-  const _ReviewActionButton({
+  const _PlaceActionButton.review({
     required this.onPressed,
-  });
+  })  : _type = _PlaceActionButtonType.review,
+        isLiked = false;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      behavior: HitTestBehavior.opaque,
-      child: AppIcons.bin(
-        width: 24,
-        height: 24,
-        color: AppColors.negative,
+    if (_type == _PlaceActionButtonType.popular) {
+      return SizedBox(
+        width: 40,
+        height: 40,
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+          splashRadius: 20,
+          onPressed: onPressed,
+          icon: isLiked
+              ? AppIcons.heartFilled(width: 24, height: 24)
+              : AppIcons.heart(width: 24, height: 24),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: 40,
+      height: 40,
+      child: Center(
+        child: GestureDetector(
+          onTap: onPressed,
+          behavior: HitTestBehavior.opaque,
+          child: AppIcons.bin(
+            width: 24,
+            height: 24,
+            color: AppColors.negative,
+          ),
+        ),
       ),
     );
   }

@@ -31,7 +31,8 @@ abstract class RecommendedPlaceRemoteDataSource {
 
   @GET('/api/v3/place/search')
   Future<RecommendedPlacesResponse> searchPlaces(
-      @Query('keyword') String keyword);
+    @Query('keyword') String keyword,
+  );
 
   @GET('/api/v3/place/{placeId}')
   Future<RecommendedPlaceResponse> getPlaceDetail(@Path('placeId') int placeId);
@@ -40,7 +41,9 @@ abstract class RecommendedPlaceRemoteDataSource {
   Future<PlaceReviewListResponse> getPlaceReviews(@Path('placeId') int placeId);
 
   @POST('/api/v3/place/recommend/{placeId}')
-  Future<PlaceRecommendResponse> recommendPlaceRaw(@Path('placeId') int placeId);
+  Future<PlaceRecommendResponse> recommendPlaceRaw(
+    @Path('placeId') int placeId,
+  );
 
   @DELETE('/api/v3/place/recommend/{placeId}')
   Future<PlaceRecommendResponse> unRecommendPlaceRaw(
@@ -63,7 +66,8 @@ abstract class RecommendedPlaceRemoteDataSource {
   Future<void> deleteReview(@Path('reviewId') int reviewId);
 }
 
-extension RecommendedPlaceRemoteDataSourceX on RecommendedPlaceRemoteDataSource {
+extension RecommendedPlaceRemoteDataSourceX
+    on RecommendedPlaceRemoteDataSource {
   Future<int> getRecommendedPlacesCount() async {
     final response = await getRecommendedPlacesCountRaw();
     return response.recommendCount;

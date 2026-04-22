@@ -11,6 +11,7 @@ class MapBottomSheet extends StatelessWidget {
     required this.minChildSize,
     required this.maxChildSize,
     required this.snapSizes,
+    this.onExtentChanged,
   });
 
   final bool isLight;
@@ -19,32 +20,40 @@ class MapBottomSheet extends StatelessWidget {
   final double minChildSize;
   final double maxChildSize;
   final List<double> snapSizes;
+  final ValueChanged<double>? onExtentChanged;
 
   @override
   Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      initialChildSize: initialChildSize,
-      minChildSize: minChildSize,
-      maxChildSize: maxChildSize,
-      snap: true,
-      snapSizes: snapSizes,
-      builder: (context, controller) {
-        return CommonBottomSheet(
-          showDefaultHeader: false,
-          header: const _MapBottomSheetHandle(),
-          headerBottomSpacing: 0,
-          maxHeightRatio: 1,
-          padding: EdgeInsets.zero,
-          clipBehavior: Clip.antiAlias,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          backgroundColor:
-              isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
-          child: CustomScrollView(
-            controller: controller,
-            slivers: slivers,
-          ),
-        );
+    return NotificationListener<DraggableScrollableNotification>(
+      onNotification: (notification) {
+        onExtentChanged?.call(notification.extent);
+        return false;
       },
+      child: DraggableScrollableSheet(
+        initialChildSize: initialChildSize,
+        minChildSize: minChildSize,
+        maxChildSize: maxChildSize,
+        snap: true,
+        snapSizes: snapSizes,
+        builder: (context, controller) {
+          return CommonBottomSheet(
+            showDefaultHeader: false,
+            maxHeightRatio: 1,
+            padding: EdgeInsets.zero,
+            clipBehavior: Clip.antiAlias,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+            backgroundColor:
+                isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
+            child: CustomScrollView(
+              controller: controller,
+              slivers: [
+                const SliverToBoxAdapter(child: _MapBottomSheetHandle()),
+                ...slivers,
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -54,18 +63,15 @@ class _MapBottomSheetHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: Colors.transparent,
-      child: SizedBox(
-        height: 36,
-        child: Center(
-          child: Container(
-            width: 32,
-            height: 4,
-            decoration: BoxDecoration(
-              color: AppColors.sub2,
-              borderRadius: BorderRadius.circular(12),
-            ),
+    return Padding(
+      padding: const EdgeInsets.only(top: 10, bottom: 8),
+      child: Center(
+        child: Container(
+          width: 32,
+          height: 4,
+          decoration: BoxDecoration(
+            color: AppColors.sub2,
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),

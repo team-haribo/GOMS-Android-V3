@@ -10,6 +10,7 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
+import 'package:goms/features/map/review/ui/providers/write_review_provider.dart';
 
 void main() {
   group('MapScreenNotifier', () {
@@ -173,7 +174,8 @@ void main() {
       addTearDown(container.dispose);
 
       await container.read(mapScreenProvider.notifier).fetchData();
-      await container.read(mapScreenProvider.notifier).deleteMyReview(11);
+      await repository.deleteReview(11);
+      await container.read(mapScreenProvider.notifier).fetchData();
 
       final state = container.read(mapScreenProvider);
       expect(repository.deletedReviewIds, [11]);
@@ -217,7 +219,7 @@ void main() {
       await container.read(mapScreenProvider.notifier).fetchData();
 
       await expectLater(
-        container.read(mapScreenProvider.notifier).deleteMyReview(21),
+        repository.deleteReview(21),
         throwsA(isA<DioException>()),
       );
 
@@ -226,6 +228,34 @@ void main() {
       expect(state.reviewCount, 2);
       expect(state.reviewModels, hasLength(2));
       expect(state.reviewModels.first.reviewId, 21);
+    });
+
+    test('refreshes my review ids after creating a review', () async {
+      final repository = _ReviewCreatingRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(await container.read(myReviewIdsProvider.future), {1});
+
+      final notifier = container.read(writeReviewProvider.notifier);
+      notifier.onTextChanged('새 후기');
+
+      await notifier.submitReview(
+        placeId: 100,
+        placeName: '학생식당',
+        category: '한식',
+        address: '광주광역시 테스트로 100',
+        review: 1,
+        recommended: 1,
+      );
+
+      expect(repository.createdPlaceId, 100);
+      expect(repository.createdContent, '새 후기');
+      expect(await container.read(myReviewIdsProvider.future), {1, 2});
     });
   });
 }
@@ -390,6 +420,64 @@ class _ReviewDeletingRepository extends _FakeRecommendedPlaceRepository {
     deletedReviewIds.add(reviewId);
     _reviews.removeWhere((review) => review.reviewId == reviewId);
   }
+}
+
+class _ReviewCreatingRepository extends _FakeRecommendedPlaceRepository {
+  _ReviewCreatingRepository()
+      : _myReviews = <MyReviewEntity>[
+          const MyReviewEntity(
+            reviewId: 1,
+            placeId: 10,
+            placeName: '기존 장소',
+            categoryName: '카페',
+            address: '광주광역시 테스트로 10',
+            content: '기존 후기',
+            reviewedAt: null,
+          ),
+        ],
+        super(const [
+          RecommendedPlaceEntity(
+            placeId: 100,
+            placeName: '학생식당',
+            category: '한식',
+            address: '광주광역시 테스트로 100',
+            coordinate: MapCoordinate(latitude: 35.124, longitude: 126.901),
+            reviewCount: 1,
+            recommendCount: 1,
+            recommended: false,
+          ),
+        ]);
+
+  final List<MyReviewEntity> _myReviews;
+  int? createdPlaceId;
+  String? createdContent;
+
+  @override
+  Future<void> createReview({
+    required int placeId,
+    required String content,
+  }) async {
+    createdPlaceId = placeId;
+    createdContent = content;
+    _myReviews.add(
+      MyReviewEntity(
+        reviewId: 2,
+        placeId: placeId,
+        placeName: '학생식당',
+        categoryName: '한식',
+        address: '광주광역시 테스트로 100',
+        content: content,
+        reviewedAt: null,
+      ),
+    );
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async =>
+      List<MyReviewEntity>.of(_myReviews);
+
+  @override
+  Future<int> getMyReviewCount() async => _myReviews.length;
 }
 
 class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {

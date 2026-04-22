@@ -14,12 +14,6 @@ import 'package:goms/features/map/data/providers/recommended_place_providers.dar
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 
-final myReviewIdsProvider = FutureProvider<Set<int>>((ref) async {
-  final myReviews =
-      await ref.read(recommendedPlaceRepositoryProvider).getMyReviews();
-  return myReviews.map((review) => review.reviewId).toSet();
-});
-
 class ReviewListScreen extends ConsumerStatefulWidget {
   final int placeId;
   final String placeName;

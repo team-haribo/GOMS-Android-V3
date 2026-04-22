@@ -61,6 +61,7 @@ class WriteReviewNotifier extends Notifier<WriteReviewState> {
       ref.invalidate(mapScreenProvider);
       ref.invalidate(placeDetailProvider(placeId));
       ref.invalidate(placeReviewsProvider(placeId));
+      ref.invalidate(myReviewIdsProvider);
 
       state = state.copyWith(status: WriteReviewStatus.success);
     } catch (e) {

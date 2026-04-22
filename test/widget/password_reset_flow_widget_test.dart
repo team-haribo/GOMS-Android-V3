@@ -20,6 +20,7 @@ import 'package:goms/features/auth/login/ui/screens/login_screen.dart';
 import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
 import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
 import 'package:goms/features/member/ui/models/current_member_model.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
@@ -99,6 +100,93 @@ void main() {
       );
       expect(container.read(authFlowProvider).email, 's24068@gsm.hs.kr');
       expect(find.text('verify-screen'), findsOneWidget);
+    });
+
+    testWidgets('MyPageScreen verify back returns to my page', (tester) async {
+      final repository = _FakePasswordResetRepository();
+      final container = ProviderContainer(
+        overrides: [
+          roleProvider.overrideWith((ref) => RoleEnum.user),
+          themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+          settingsProvider.overrideWith(_FakeSettingsNotifier.new),
+          myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+          currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
+          passwordResetRepositoryProvider.overrideWithValue(repository),
+          authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: RoutePath.myPage,
+        routes: [
+          GoRoute(
+            path: RoutePath.myPage,
+            builder: (context, state) => const MyPageScreen(),
+          ),
+          GoRoute(
+            path: RoutePath.verify,
+            builder: (context, state) {
+              final extra = state.extra;
+              final routeExtra = switch (extra) {
+                VerifyRouteExtra() => extra,
+                String() => VerifyRouteExtra(redirectPath: extra),
+                _ => const VerifyRouteExtra(),
+              };
+
+              return VerifyScreen(
+                redirectPath: routeExtra.redirectPath,
+                backPath: routeExtra.backPath,
+              );
+            },
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.ensureVisible(find.text('비밀번호 재설정'));
+      await tester.tap(find.text('비밀번호 재설정'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('인증번호'), findsOneWidget);
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(TextButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('비밀번호 재설정'), findsOneWidget);
+      expect(find.text('인증번호'), findsNothing);
     });
 
     testWidgets(
@@ -425,6 +513,87 @@ void main() {
 
       await tester.pump(const Duration(seconds: 1));
       expect(find.text('04:59'), findsOneWidget);
+
+      await tester.tap(
+        find
+            .descendant(
+              of: find.byType(AppBar),
+              matching: find.byType(TextButton),
+            )
+            .first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('find-password-screen'), findsOneWidget);
+    });
+
+    testWidgets(
+        'VerifyScreen back in reset flow always routes to find password',
+        (tester) async {
+      final container = ProviderContainer(
+        overrides: [
+          authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      final router = GoRouter(
+        initialLocation: RoutePath.resetPassword,
+        routes: [
+          GoRoute(
+            path: RoutePath.resetPassword,
+            builder: (context, state) => Scaffold(
+              body: Center(
+                child: ElevatedButton(
+                  onPressed: () => context.push(
+                    RoutePath.verify,
+                    extra: RoutePath.resetPassword,
+                  ),
+                  child: const Text('open-verify'),
+                ),
+              ),
+            ),
+          ),
+          GoRoute(
+            path: RoutePath.verify,
+            builder: (context, state) => VerifyScreen(
+              redirectPath: state.extra as String?,
+            ),
+          ),
+          GoRoute(
+            path: RoutePath.findPassword,
+            builder: (context, state) =>
+                const Scaffold(body: Text('find-password-screen')),
+          ),
+        ],
+      );
+
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: MaterialApp.router(
+            routerConfig: router,
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('open-verify'));
+      await tester.pumpAndSettle();
 
       await tester.tap(
         find

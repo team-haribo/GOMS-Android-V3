@@ -16,6 +16,7 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
 import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
@@ -132,7 +133,13 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         return;
       }
 
-      context.go(RoutePath.verify, extra: RoutePath.resetPassword);
+      context.go(
+        RoutePath.verify,
+        extra: const VerifyRouteExtra(
+          redirectPath: RoutePath.resetPassword,
+          backPath: RoutePath.myPage,
+        ),
+      );
     } on DioException catch (error) {
       _showDioError(error);
     } catch (error) {

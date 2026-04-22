@@ -15,8 +15,9 @@ import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String? redirectPath;
+  final String? backPath;
 
-  const VerifyScreen({super.key, this.redirectPath});
+  const VerifyScreen({super.key, this.redirectPath, this.backPath});
 
   @override
   ConsumerState<VerifyScreen> createState() => _VerifyScreenState();
@@ -37,12 +38,23 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
   }
 
   String get _fallbackBackRoute =>
-      widget.redirectPath == RoutePath.resetPassword
+      widget.backPath ??
+      (widget.redirectPath == RoutePath.resetPassword
           ? RoutePath.findPassword
-          : RoutePath.signUp;
+          : RoutePath.signUp);
 
   void _handleBack() {
     _clearVerificationState();
+
+    if (widget.backPath != null) {
+      context.go(widget.backPath!);
+      return;
+    }
+
+    if (widget.redirectPath == RoutePath.resetPassword) {
+      context.go(RoutePath.findPassword);
+      return;
+    }
 
     if (context.canPop()) {
       context.pop();

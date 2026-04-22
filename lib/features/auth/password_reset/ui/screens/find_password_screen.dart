@@ -6,6 +6,7 @@ import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/password_reset/ui/models/find_password_state.dart';
 import 'package:goms/features/auth/password_reset/ui/providers/find_password_provider.dart';
+import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
 import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 
 class FindPasswordScreen extends ConsumerStatefulWidget {
@@ -33,7 +34,13 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
     ref.listen<FindPasswordState>(findPasswordProvider, (previous, next) {
       if (next.status == FindPasswordStatus.success) {
         notifier.clearError();
-        context.go(RoutePath.verify, extra: RoutePath.resetPassword);
+        context.go(
+          RoutePath.verify,
+          extra: const VerifyRouteExtra(
+            redirectPath: RoutePath.resetPassword,
+            backPath: RoutePath.findPassword,
+          ),
+        );
       } else if (next.status == FindPasswordStatus.failure &&
           next.errorMessage != null) {
         notifier.clearError();

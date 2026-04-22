@@ -67,6 +67,51 @@ void main() {
     expect(find.text('도윤'), findsOneWidget);
     expect(find.text('하은'), findsNothing);
   });
+
+  testWidgets(
+      'OutingWaitingScreen does not auto-open QR when camera launch is enabled',
+      (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          roleProvider.overrideWith((ref) => RoleEnum.user),
+          themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+          settingsProvider.overrideWith(_FakeCameraLaunchEnabledNotifier.new),
+          myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+          currentOutingStudentsProvider.overrideWith(
+            _FakeCurrentOutingStudentsNotifier.new,
+          ),
+          lateRankStudentsProvider.overrideWith(
+            _FakeLateRankStudentsNotifier.new,
+          ),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+          home: const OutingWaitingScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('지각자 TOP 3'), findsOneWidget);
+    expect(find.text('외출 현황'), findsOneWidget);
+  });
 }
 
 class _FakeThemeModeNotifier extends ThemeModeNotifier {
@@ -80,6 +125,15 @@ class _FakeSettingsNotifier extends SettingsNotifier {
         showClock: false,
         outingPushAlarm: true,
         cameraLaunch: false,
+      );
+}
+
+class _FakeCameraLaunchEnabledNotifier extends SettingsNotifier {
+  @override
+  Future<SettingsState> build() async => const SettingsState(
+        showClock: false,
+        outingPushAlarm: true,
+        cameraLaunch: true,
       );
 }
 

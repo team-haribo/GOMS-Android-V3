@@ -102,16 +102,21 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     final state = ref.watch(writeReviewProvider);
     final notifier = ref.read(writeReviewProvider.notifier);
     final isLoading = state.status == WriteReviewStatus.loading;
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final isKeyboardVisible = MediaQuery.viewInsetsOf(context).bottom > 0;
 
     return BaseScaffold(
       showAppBar: true,
       onBackPressed: () => context.pop(),
+      contentPadding: EdgeInsets.fromLTRB(
+        AppSpacing.s24,
+        AppSpacing.s16,
+        AppSpacing.s24,
+        isKeyboardVisible ? AppSpacing.s8 : AppSpacing.s24,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(bottom: bottomInset),
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: IntrinsicHeight(

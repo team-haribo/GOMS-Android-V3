@@ -73,7 +73,7 @@ class _ReviewReportDialogState extends State<_ReviewReportDialog> {
           CupertinoTextField(
             controller: _reasonController,
             placeholder: '신고 사유 작성',
-            maxLines: 3,
+            maxLines: 1,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             inputFormatters: [
               LengthLimitingTextInputFormatter(widget.maxReasonLength),

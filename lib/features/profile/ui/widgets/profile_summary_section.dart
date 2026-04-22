@@ -21,6 +21,7 @@ class ProfileSummarySection extends StatelessWidget {
     required this.textColor,
     required this.subColor,
     required this.surfaceColor,
+    this.isCompact = false,
   });
 
   final RoleEnum role;
@@ -34,9 +35,13 @@ class ProfileSummarySection extends StatelessWidget {
   final Color textColor;
   final Color subColor;
   final Color surfaceColor;
+  final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
+    final avatarRadius = isCompact ? 30.0 : 36.0;
+    final infoSpacing = isCompact ? AppGap.h12 : AppGap.h16;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -48,7 +53,7 @@ class ProfileSummarySection extends StatelessWidget {
               child: Stack(
                 children: [
                   ProfileAvatar(
-                    radius: 36,
+                    radius: avatarRadius,
                     imageUrl: profileImageUrl,
                     backgroundColor: surfaceColor,
                   ),
@@ -79,7 +84,7 @@ class ProfileSummarySection extends StatelessWidget {
             ),
           ],
         ),
-        AppGap.h16,
+        infoSpacing,
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,11 +104,21 @@ class ProfileSummarySection extends StatelessWidget {
           children: [
             Text('지각 횟수', style: AppTextStyles.text2.withColor(subColor)),
             AppGap.v4,
-            Row(children: [Text(
-              lateCount == null ? '-' : '$lateCount',
-              style: AppTextStyles.title3.withColor(AppColors.negative),
-            ), AppGap.h2,
-              Text('번', style: AppTextStyles.title3.withColor(context.mainTextColor,),),],)
+            Row(
+              children: [
+                Text(
+                  lateCount == null ? '-' : '$lateCount',
+                  style: AppTextStyles.title3.withColor(AppColors.negative),
+                ),
+                AppGap.h2,
+                Text(
+                  '번',
+                  style: AppTextStyles.title3.withColor(
+                    context.mainTextColor,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ],

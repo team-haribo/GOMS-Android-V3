@@ -8,12 +8,14 @@ class AccountActionsSection extends StatelessWidget {
   const AccountActionsSection({
     super.key,
     required this.textColor,
+    required this.rowVerticalPadding,
     required this.onTapResetPassword,
     required this.onTapLogout,
     required this.onTapDeleteAccount,
   });
 
   final Color textColor;
+  final double rowVerticalPadding;
   final VoidCallback onTapResetPassword;
   final VoidCallback onTapLogout;
   final VoidCallback onTapDeleteAccount;
@@ -26,6 +28,7 @@ class AccountActionsSection extends StatelessWidget {
           icon: AppIcons.setting(color: textColor),
           title: '비밀번호 재설정',
           textColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapResetPassword,
         ),
         _AccountActionRow(
@@ -33,6 +36,7 @@ class AccountActionsSection extends StatelessWidget {
           title: '로그아웃',
           textColor: AppColors.negative,
           chevronColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapLogout,
         ),
         _AccountActionRow(
@@ -40,6 +44,7 @@ class AccountActionsSection extends StatelessWidget {
           title: '회원탈퇴',
           textColor: AppColors.negative,
           chevronColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapDeleteAccount,
         ),
       ],
@@ -52,6 +57,7 @@ class _AccountActionRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.textColor,
+    required this.verticalPadding,
     required this.onTap,
     this.chevronColor,
   });
@@ -59,6 +65,7 @@ class _AccountActionRow extends StatelessWidget {
   final Widget icon;
   final String title;
   final Color textColor;
+  final double verticalPadding;
   final VoidCallback onTap;
   final Color? chevronColor;
 
@@ -71,7 +78,7 @@ class _AccountActionRow extends StatelessWidget {
       highlightColor: Colors.transparent,
       overlayColor: WidgetStateProperty.all(Colors.transparent),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
         child: Row(
           children: [
             icon is Icon

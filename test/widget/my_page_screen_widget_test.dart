@@ -64,6 +64,10 @@ void main() {
   testWidgets(
       'MyPageScreen logout confirm closes dialog and routes to onboarding',
       (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final authNotifier = _FakeAuthNotifier();
     final container = ProviderContainer(
       overrides: [
@@ -118,7 +122,9 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('로그아웃'));
+
+    expect(find.byType(SingleChildScrollView), findsNothing);
+
     await tester.tap(find.text('로그아웃'));
     await tester.pumpAndSettle();
 
@@ -184,6 +190,11 @@ void main() {
 
     expect(find.text('외출제 푸시 알림'), findsNothing);
     expect(find.text('QR 생성 바로 켜기'), findsOneWidget);
+
+    final lastSettingBottom = tester.getBottomLeft(find.text('QR 생성 바로 켜기')).dy;
+    final firstActionTop = tester.getTopLeft(find.text('비밀번호 재설정')).dy;
+
+    expect(firstActionTop - lastSettingBottom, lessThan(120));
   });
 }
 

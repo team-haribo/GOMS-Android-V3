@@ -17,6 +17,8 @@ class SettingsSection extends StatelessWidget {
     required this.subColor,
     required this.surfaceColor,
     required this.role,
+    required this.sectionSpacing,
+    required this.themeTileVerticalPadding,
     required this.onTapTheme,
     required this.onToggleShowClock,
     required this.onToggleOutingPushAlarm,
@@ -31,6 +33,8 @@ class SettingsSection extends StatelessWidget {
   final Color subColor;
   final Color surfaceColor;
   final RoleEnum role;
+  final double sectionSpacing;
+  final double themeTileVerticalPadding;
   final VoidCallback onTapTheme;
   final ValueChanged<bool> onToggleShowClock;
   final ValueChanged<bool> onToggleOutingPushAlarm;
@@ -41,17 +45,19 @@ class SettingsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('앱 테마 설정',
-            style: AppTextStyles.text1.withColor(context.mainTextColor)),
+        Text(
+          '앱 테마 설정',
+          style: AppTextStyles.text1.withColor(context.mainTextColor),
+        ),
         AppGap.v12,
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onTapTheme,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(
+            padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.s12,
-              vertical: AppSpacing.s12,
+              vertical: themeTileVerticalPadding,
             ),
             decoration: BoxDecoration(
               color: surfaceColor,
@@ -70,7 +76,7 @@ class SettingsSection extends StatelessWidget {
             ),
           ),
         ),
-        AppGap.v24,
+        SizedBox(height: sectionSpacing),
         _SettingsToggleItem(
           title: '시계 나타내기',
           description: '프로필 카드에 초 단위의 시간을 나타내요',
@@ -81,7 +87,7 @@ class SettingsSection extends StatelessWidget {
           role: role,
         ),
         if (role != RoleEnum.admin) ...[
-          AppGap.v36,
+          SizedBox(height: sectionSpacing),
           _SettingsToggleItem(
             title: '외출제 푸시 알림',
             description: '외출할 시간이 될 때마다 알려드려요',
@@ -92,7 +98,7 @@ class SettingsSection extends StatelessWidget {
             role: role,
           ),
         ],
-        AppGap.v36,
+        SizedBox(height: sectionSpacing),
         _SettingsToggleItem(
           title: role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
           description: role == RoleEnum.admin

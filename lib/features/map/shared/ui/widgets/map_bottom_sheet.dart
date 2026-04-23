@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/widgets/bottom_sheets/common_bottom_sheet.dart';
 
 class MapBottomSheet extends StatelessWidget {
@@ -12,6 +13,7 @@ class MapBottomSheet extends StatelessWidget {
     required this.maxChildSize,
     required this.snapSizes,
     this.onExtentChanged,
+    this.controller,
   });
 
   final bool isLight;
@@ -21,6 +23,10 @@ class MapBottomSheet extends StatelessWidget {
   final double maxChildSize;
   final List<double> snapSizes;
   final ValueChanged<double>? onExtentChanged;
+  final DraggableScrollableController? controller;
+
+  static double handleOnlyMinSize(BuildContext context) =>
+      MediaQuery.sizeOf(context).height < 780 ? 0.06 : 0.055;
 
   @override
   Widget build(BuildContext context) {
@@ -30,12 +36,13 @@ class MapBottomSheet extends StatelessWidget {
         return false;
       },
       child: DraggableScrollableSheet(
+        controller: controller,
         initialChildSize: initialChildSize,
         minChildSize: minChildSize,
         maxChildSize: maxChildSize,
         snap: true,
         snapSizes: snapSizes,
-        builder: (context, controller) {
+        builder: (context, scrollController) {
           return CommonBottomSheet(
             showDefaultHeader: false,
             maxHeightRatio: 1,
@@ -45,9 +52,12 @@ class MapBottomSheet extends StatelessWidget {
             backgroundColor:
                 isLight ? AppColors.bgSurface : AppColors.bgSurfaceDark,
             child: CustomScrollView(
-              controller: controller,
+              controller: scrollController,
               slivers: [
-                const SliverToBoxAdapter(child: _MapBottomSheetHandle()),
+                const SliverPersistentHeader(
+                  pinned: true,
+                  delegate: _MapBottomSheetHandleHeader(),
+                ),
                 ...slivers,
               ],
             ),
@@ -56,6 +66,32 @@ class MapBottomSheet extends StatelessWidget {
       ),
     );
   }
+}
+
+class _MapBottomSheetHandleHeader extends SliverPersistentHeaderDelegate {
+  const _MapBottomSheetHandleHeader();
+
+  @override
+  double get minExtent => 22;
+
+  @override
+  double get maxExtent => 22;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return ColoredBox(
+      color: context.surfaceColor,
+      child: const _MapBottomSheetHandle(),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _MapBottomSheetHandleHeader oldDelegate) =>
+      false;
 }
 
 class _MapBottomSheetHandle extends StatelessWidget {

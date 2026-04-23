@@ -17,6 +17,7 @@ class ReviewListContainer extends StatelessWidget {
   final DateTime? createdAt;
   final bool isMine;
   final Future<void> Function(int reviewId)? onDelete;
+  final Future<void> Function(int reviewId, String reason)? onReport;
 
   const ReviewListContainer({
     super.key,
@@ -28,6 +29,7 @@ class ReviewListContainer extends StatelessWidget {
     required this.createdAt,
     required this.isMine,
     this.onDelete,
+    this.onReport,
   });
 
   @override
@@ -136,6 +138,13 @@ class ReviewListContainer extends StatelessWidget {
                         context: context,
                         title: '후기 신고',
                         content: '이 후기를 신고하시겠습니까?\n신고 내용은 운영팀의 검토 후 처리됩니다.',
+                        onConfirm: (reason) async {
+                          if (reviewId == null || onReport == null) {
+                            return;
+                          }
+
+                          await onReport!(reviewId!, reason);
+                        },
                       );
                     },
                     icon: AppIcons.report(

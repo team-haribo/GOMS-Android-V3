@@ -13,6 +13,7 @@ import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_text_field.dart';
+import 'package:goms/features/report/data/providers/report_data_providers.dart';
 
 class ReviewListScreen extends ConsumerStatefulWidget {
   final int placeId;
@@ -412,6 +413,19 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                                       review.reviewId,
                                                     ),
                                                     onDelete: _deleteReview,
+                                                    onReport: (
+                                                      reviewId,
+                                                      reason,
+                                                    ) =>
+                                                        ref
+                                                            .read(
+                                                              reportRepositoryProvider,
+                                                            )
+                                                            .createReviewReport(
+                                                              reviewId:
+                                                                  reviewId,
+                                                              reason: reason,
+                                                            ),
                                                   ),
                                                 )
                                                 .toList(growable: false),

@@ -77,10 +77,6 @@ class _RouteOptionCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: dark ? AppColors.bgSurfaceDark : AppColors.bgSurface,
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? AppColors.mainColor : Colors.transparent,
-            width: 1.5,
-          ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

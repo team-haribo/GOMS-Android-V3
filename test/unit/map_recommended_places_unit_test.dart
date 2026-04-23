@@ -14,7 +14,7 @@ import 'package:goms/features/map/review/ui/providers/write_review_provider.dart
 
 void main() {
   group('MapScreenNotifier', () {
-    test('loads hot place markers first', () async {
+    test('requests hot place markers before falling back', () async {
       final repository = _TrackingRecommendedPlaceRepository();
       final container = ProviderContainer(
         overrides: [
@@ -26,7 +26,7 @@ void main() {
       await container.read(mapScreenProvider.notifier).fetchData();
 
       expect(repository.hotPlacesRequested, isTrue);
-      expect(repository.allPlacesRequested, isFalse);
+      expect(repository.allPlacesRequested, isTrue);
     });
 
     test('hydrates hot places from server fields only', () async {
@@ -121,6 +121,25 @@ void main() {
       expect(state.popularPlaces.first.name, '대체 장소');
       expect(repository.allPlacesRequested, isTrue);
       expect(state.recommendedCount, 0);
+    });
+
+    test('falls back to all places when hot place API returns empty', () async {
+      final repository = _EmptyHotPlaceRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      final state = container.read(mapScreenProvider);
+
+      expect(state.status, MapScreenStatus.success);
+      expect(state.popularPlaces, hasLength(1));
+      expect(state.popularPlaces.first.name, '대체 인기 장소');
+      expect(repository.allPlacesRequested, isTrue);
     });
 
     test('returns failure state when every place API fails', () async {
@@ -256,6 +275,25 @@ void main() {
       expect(repository.createdPlaceId, 100);
       expect(repository.createdContent, '새 후기');
       expect(await container.read(myReviewIdsProvider.future), {1, 2});
+    });
+
+    test('keeps written reviews visible when count endpoint under-reports',
+        () async {
+      final repository = _ReviewCountMismatchRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      final state = container.read(mapScreenProvider);
+
+      expect(state.reviewCount, 1);
+      expect(state.reviewModels, hasLength(1));
+      expect(state.reviewModels.single.placeName, '학생식당');
     });
   });
 }
@@ -509,4 +547,53 @@ class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {
       requestOptions: RequestOptions(path: '/api/v3/place/hot-place'),
     );
   }
+}
+
+class _EmptyHotPlaceRepository extends _FakeRecommendedPlaceRepository {
+  _EmptyHotPlaceRepository()
+      : super(const [
+          RecommendedPlaceEntity(
+            placeId: 88,
+            placeName: '대체 인기 장소',
+            category: '카페',
+            address: '광주광역시 테스트로 88',
+            coordinate: MapCoordinate(latitude: 35.13, longitude: 126.89),
+            reviewCount: 2,
+            recommendCount: 7,
+            recommended: false,
+          ),
+        ]);
+
+  bool allPlacesRequested = false;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
+    allPlacesRequested = true;
+    return super.getPlaces();
+  }
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async {
+    return const [];
+  }
+}
+
+class _ReviewCountMismatchRepository extends _FakeRecommendedPlaceRepository {
+  _ReviewCountMismatchRepository() : super(const []);
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async => const [
+        MyReviewEntity(
+          reviewId: 41,
+          placeId: 401,
+          placeName: '학생식당',
+          categoryName: '한식',
+          address: '광주광역시 테스트로 41',
+          content: '리뷰 있음',
+          reviewedAt: null,
+        ),
+      ];
+
+  @override
+  Future<int> getMyReviewCount() async => 0;
 }

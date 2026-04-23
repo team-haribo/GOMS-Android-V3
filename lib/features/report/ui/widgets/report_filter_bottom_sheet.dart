@@ -96,6 +96,7 @@ class _ReportFilterBottomSheetState
                 child: CategoryChip(
                   category: '처리전',
                   selected: selection.reportStatus == ReportStatus.pending,
+                  textColor: context.mainTextColor,
                   onChanged: (selected) => _updateSelection(
                     selection.copyWith(
                       reportStatus: selected ? ReportStatus.pending : null,
@@ -109,6 +110,7 @@ class _ReportFilterBottomSheetState
                 child: CategoryChip(
                   category: '처리완료',
                   selected: selection.reportStatus == ReportStatus.approved,
+                  textColor: context.mainTextColor,
                   onChanged: (selected) => _updateSelection(
                     selection.copyWith(
                       reportStatus: selected ? ReportStatus.approved : null,

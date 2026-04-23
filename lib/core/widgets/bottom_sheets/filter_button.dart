@@ -7,9 +7,11 @@ class FilterButton extends StatelessWidget {
   const FilterButton({
     super.key,
     required this.bottomSheetBuilder,
+    this.textColor,
   });
 
   final WidgetBuilder bottomSheetBuilder;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class FilterButton extends StatelessWidget {
       child: Text(
         '필터',
         style: AppTextStyles.caption2.copyWith(
-          color: AppColors.admin,
+          color: textColor ?? AppColors.admin,
         ),
       ),
     );

@@ -4,6 +4,11 @@ import 'package:goms/features/report/ui/models/report_resolve_result_model.dart'
 import 'package:goms/features/report/ui/models/report_summary_model.dart';
 
 abstract class ReportRepository {
+  Future<void> createReviewReport({
+    required int reviewId,
+    required String reason,
+  });
+
   Future<List<ReportSummaryModel>> getPendingReports();
 
   Future<List<ReportSummaryModel>> getResolvedReports();

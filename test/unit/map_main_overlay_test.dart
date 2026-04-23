@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
@@ -12,7 +13,6 @@ import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_main_overlay.dart';
-import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
 
 void main() {
   testWidgets('tapping a place card forwards the selected place callback', (
@@ -120,6 +120,9 @@ void main() {
   testWidgets('my review bin action opens delete confirmation dialog', (
     tester,
   ) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1000));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -158,14 +161,15 @@ void main() {
         ),
       ),
     );
-
     await tester.pumpAndSettle();
 
-    final reviewContainer = tester.widget<PlaceContainer>(
-      find.byType(PlaceContainer).last,
+    final deleteIcon = find.byWidgetPredicate(
+      (widget) =>
+          widget is SvgPicture &&
+          widget.bytesLoader.toString().contains('assets/icons/bin.svg'),
     );
-    reviewContainer.onActionPressed?.call();
-
+    await tester.ensureVisible(deleteIcon);
+    await tester.tap(deleteIcon);
     await tester.pumpAndSettle();
 
     expect(find.text('후기 삭제'), findsOneWidget);

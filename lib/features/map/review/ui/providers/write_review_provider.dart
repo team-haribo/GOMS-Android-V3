@@ -58,10 +58,15 @@ class WriteReviewNotifier extends Notifier<WriteReviewState> {
             placeId: placeId,
             content: state.reviewText.trim(),
           );
-      ref.invalidate(mapScreenProvider);
+
       ref.invalidate(placeDetailProvider(placeId));
       ref.invalidate(placeReviewsProvider(placeId));
       ref.invalidate(myReviewIdsProvider);
+      ref.invalidate(allPlacesProvider);
+      ref.invalidate(recommendedPlacesProvider);
+      ref.invalidate(recommendedPlacesCountProvider);
+
+      await ref.read(mapScreenProvider.notifier).fetchData();
 
       state = state.copyWith(status: WriteReviewStatus.success);
     } catch (e) {

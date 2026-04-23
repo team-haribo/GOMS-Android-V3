@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/features/qr/ui/screens/qr_base_screen.dart';
 
@@ -20,7 +22,7 @@ class OutingFailedScreen extends StatelessWidget {
       title: '외출에 실패했어요..',
       subtitle: '예기치 못한 오류가 발생했어요.\n다시 시도해 주세요!',
       buttonText: '카메라로 돌아가기',
-      onPressed: onRetryWithCamera,
+      onPressed: onRetryWithCamera ?? () => context.go(RoutePath.qr),
     );
   }
 }

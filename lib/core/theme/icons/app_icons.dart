@@ -49,7 +49,7 @@ class AppIcons {
     Color? color,
   }) =>
       _loadPng(
-        'assets/icons/come_back_success.png',
+        'assets/icons/comeback_success.png',
         width: width,
         height: height,
         color: color,

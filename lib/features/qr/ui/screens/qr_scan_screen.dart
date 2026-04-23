@@ -37,33 +37,12 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
       if (!mounted) return;
 
       if (next.status == QrScanStatus.failure && next.errorMessage != null) {
-        _showResultScreen(
-          OutingFailedScreen(
-            onRetryWithCamera: () {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const QrScanScreen()),
-              );
-            },
-          ),
-        );
+        context.go(RoutePath.qrResultLocation('failure'));
         return;
       }
 
       if (next.status == QrScanStatus.success && next.resultType != null) {
-        switch (next.resultType!) {
-          case QrScanResultType.outingStarted:
-            _showResultScreen(OutingStartScreen(onConfirm: _goHome));
-            return;
-          case QrScanResultType.returnSuccess:
-            _showResultScreen(ReturnSuccessScreen(onConfirm: _goHome));
-            return;
-          case QrScanResultType.lateReturn:
-            _showResultScreen(LateScreen(onConfirm: _goHome));
-            return;
-          case QrScanResultType.cannotGoOut:
-            _showResultScreen(CannotGoOutScreen(onGoHome: _goHome));
-            return;
-        }
+        context.go(RoutePath.qrResultLocation(next.resultType!.name));
       }
     });
   }
@@ -196,15 +175,43 @@ class _OverlayPainter extends CustomPainter {
       oldDelegate.scanRect != scanRect;
 }
 
-extension on _QrScanScreenState {
-  void _goHome() {
-    if (!mounted) return;
-    context.go(RoutePath.home);
-  }
+Widget buildQrScanResultScreen(
+  QrScanResultType resultType, {
+  required BuildContext context,
+}) {
+  void goHome() => context.go(RoutePath.home);
 
-  void _showResultScreen(Widget screen) {
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => screen),
+  switch (resultType) {
+    case QrScanResultType.outingStarted:
+      return OutingStartScreen(onConfirm: goHome);
+    case QrScanResultType.returnSuccess:
+      return ReturnSuccessScreen(onConfirm: goHome);
+    case QrScanResultType.lateReturn:
+      return LateScreen(onConfirm: goHome);
+    case QrScanResultType.cannotGoOut:
+      return CannotGoOutScreen(onGoHome: goHome);
+  }
+}
+
+Widget buildQrScanResultRouteScreen(
+  String? resultTypeName, {
+  required BuildContext context,
+}) {
+  if (resultTypeName == 'failure') {
+    return OutingFailedScreen(
+      onRetryWithCamera: () => context.go(RoutePath.qr),
     );
   }
+
+  final resultType = QrScanResultType.values
+      .where((type) => type.name == resultTypeName)
+      .firstOrNull;
+
+  if (resultType == null) {
+    return OutingFailedScreen(
+      onRetryWithCamera: () => context.go(RoutePath.qr),
+    );
+  }
+
+  return buildQrScanResultScreen(resultType, context: context);
 }

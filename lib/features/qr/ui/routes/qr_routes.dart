@@ -14,4 +14,12 @@ List<RouteBase> buildQrRoutes() => [
         name: 'qrIssue',
         builder: (context, state) => const QrIssueScreen(),
       ),
+      GoRoute(
+        path: RoutePath.qrResult,
+        name: 'qrResult',
+        builder: (context, state) => buildQrScanResultRouteScreen(
+          state.pathParameters['resultType'],
+          context: context,
+        ),
+      ),
     ];

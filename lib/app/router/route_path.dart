@@ -11,6 +11,7 @@ class RoutePath {
   static const String resetPassword = '/reset-password';
   static const String qr = '/qr';
   static const String qrIssue = '/qr/issue';
+  static const String qrResult = '/qr/result/:resultType';
   static const String deleteAccount = '/delete-account';
   static const String privacyPolicy = '/privacy-policy';
   static const String map = '/map';
@@ -26,4 +27,6 @@ class RoutePath {
       '/student-council/reports/detail';
   static const String myPage = '/mypage';
   static const String members = '/members';
+
+  static String qrResultLocation(String resultType) => '/qr/result/$resultType';
 }

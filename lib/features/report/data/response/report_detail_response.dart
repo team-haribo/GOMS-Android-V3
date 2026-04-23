@@ -16,6 +16,7 @@ class ReportDetailResponse {
     required this.reviewerGrade,
     required this.reviewerDepartment,
     required this.reviewerProfileImageUrl,
+    required this.placeName,
     required this.reviewContent,
     required this.reportContent,
     required this.reportCreatedAt,
@@ -43,6 +44,8 @@ class ReportDetailResponse {
   final String reviewerDepartment;
   @JsonKey(readValue: _readReviewerProfileImageUrl, fromJson: parseReportString)
   final String reviewerProfileImageUrl;
+  @JsonKey(readValue: _readPlaceName, fromJson: parseNullableReportString)
+  final String? placeName;
   @JsonKey(fromJson: parseReportString)
   final String reviewContent;
   @JsonKey(fromJson: parseReportString)
@@ -66,6 +69,7 @@ class ReportDetailResponse {
       reviewerGrade: reviewerGrade,
       reviewerDepartment: reviewerDepartment,
       reviewerProfileImageUrl: reviewerProfileImageUrl,
+      placeName: placeName,
       reviewContent: reviewContent,
       reportContent: reportContent,
       reportCreatedAt: reportCreatedAt,
@@ -81,3 +85,17 @@ Object? _readReviewerProfileImageUrl(Map<dynamic, dynamic> json, String key) =>
     json['reviewerProfileUrl'] ??
     json['profileImageUrl'] ??
     json['profileUrl'];
+
+Object? _readPlaceName(Map<dynamic, dynamic> json, String key) =>
+    json[key] ??
+    json['name'] ??
+    _readNestedPlaceField(json, 'placeName') ??
+    _readNestedPlaceField(json, 'name');
+
+Object? _readNestedPlaceField(Map<dynamic, dynamic> json, String key) {
+  final place = json['place'];
+  if (place is Map<dynamic, dynamic>) {
+    return place[key];
+  }
+  return null;
+}

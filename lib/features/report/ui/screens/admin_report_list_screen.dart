@@ -10,6 +10,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
+import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
@@ -90,6 +91,7 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
     return BaseScaffold(
       showAppBar: true,
       role: RoleEnum.admin,
+      floatingActionButton: const QRButton(type: RoleEnum.admin),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,7 +117,7 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
               ),
               const Spacer(),
               FilterButton(
-                textColor: context.mainTextColor,
+                textColor: AppColors.admin,
                 bottomSheetBuilder: (_) => ReportFilterBottomSheet(
                   initialSelection: ReportFilterSelection(
                     reportStatus: reportStatusFilter,
@@ -129,11 +131,6 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
                 ),
               ),
             ],
-          ),
-          AppGap.v8,
-          Divider(
-            color: context.buttonColor,
-            height: 1,
           ),
           AppGap.v16,
           Expanded(
@@ -221,8 +218,10 @@ class _ReportListBody extends ConsumerWidget {
 
     final normalizedQuery = query.trim().toLowerCase();
     final List<ReportSummaryModel> filteredReports = reports.where((report) {
-      final matchesStatus = reportStatusFilter == null ||
-          report.reportStatus == reportStatusFilter;
+      final matchesStatus = matchesReportStatusFilter(
+        filter: reportStatusFilter,
+        status: report.reportStatus,
+      );
 
       final matchesQuery = normalizedQuery.isEmpty ||
           [
@@ -274,6 +273,21 @@ class _ReportListBody extends ConsumerWidget {
       },
     );
   }
+}
+
+bool matchesReportStatusFilter({
+  required ReportStatus? filter,
+  required ReportStatus status,
+}) {
+  if (filter == null) {
+    return true;
+  }
+
+  if (filter == ReportStatus.approved) {
+    return status == ReportStatus.approved || status == ReportStatus.rejected;
+  }
+
+  return status == filter;
 }
 
 class _ReportTile extends StatelessWidget {

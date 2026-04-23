@@ -18,6 +18,7 @@ ReportDetailResponse _$ReportDetailResponseFromJson(
       reviewerDepartment: parseReportString(json['reviewerDepartment']),
       reviewerProfileImageUrl: parseReportString(
           _readReviewerProfileImageUrl(json, 'reviewerProfileImageUrl')),
+      placeName: parseNullableReportString(_readPlaceName(json, 'placeName')),
       reviewContent: parseReportString(json['reviewContent']),
       reportContent: parseReportString(json['reportContent']),
       reportCreatedAt: parseReportDateTime(json['reportCreatedAt']),

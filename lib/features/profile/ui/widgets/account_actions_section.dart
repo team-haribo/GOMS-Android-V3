@@ -8,12 +8,14 @@ class AccountActionsSection extends StatelessWidget {
   const AccountActionsSection({
     super.key,
     required this.textColor,
+    required this.rowVerticalPadding,
     required this.onTapResetPassword,
     required this.onTapLogout,
     required this.onTapDeleteAccount,
   });
 
   final Color textColor;
+  final double rowVerticalPadding;
   final VoidCallback onTapResetPassword;
   final VoidCallback onTapLogout;
   final VoidCallback onTapDeleteAccount;
@@ -23,23 +25,26 @@ class AccountActionsSection extends StatelessWidget {
     return Column(
       children: [
         _AccountActionRow(
-          icon: AppIcons.setting(),
+          icon: AppIcons.setting(color: textColor),
           title: '비밀번호 재설정',
           textColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapResetPassword,
         ),
         _AccountActionRow(
-          icon: AppIcons.forcedOuting(),
+          icon: AppIcons.forcedOuting(color: AppColors.negative),
           title: '로그아웃',
           textColor: AppColors.negative,
           chevronColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapLogout,
         ),
         _AccountActionRow(
-          icon: AppIcons.logout(),
+          icon: AppIcons.logout(color: AppColors.negative),
           title: '회원탈퇴',
           textColor: AppColors.negative,
           chevronColor: textColor,
+          verticalPadding: rowVerticalPadding,
           onTap: onTapDeleteAccount,
         ),
       ],
@@ -52,6 +57,7 @@ class _AccountActionRow extends StatelessWidget {
     required this.icon,
     required this.title,
     required this.textColor,
+    required this.verticalPadding,
     required this.onTap,
     this.chevronColor,
   });
@@ -59,6 +65,7 @@ class _AccountActionRow extends StatelessWidget {
   final Widget icon;
   final String title;
   final Color textColor;
+  final double verticalPadding;
   final VoidCallback onTap;
   final Color? chevronColor;
 
@@ -71,7 +78,7 @@ class _AccountActionRow extends StatelessWidget {
       highlightColor: Colors.transparent,
       overlayColor: WidgetStateProperty.all(Colors.transparent),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppSpacing.s12),
+        padding: EdgeInsets.symmetric(vertical: verticalPadding),
         child: Row(
           children: [
             icon is Icon
@@ -86,7 +93,7 @@ class _AccountActionRow extends StatelessWidget {
               child:
                   Text(title, style: AppTextStyles.text2.withColor(textColor)),
             ),
-            AppIcons.arrow(),
+            AppIcons.arrow(color: chevronColor ?? textColor),
           ],
         ),
       ),

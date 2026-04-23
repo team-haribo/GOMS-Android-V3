@@ -23,6 +23,8 @@ class PlaceDetailSheet extends StatelessWidget {
   final VoidCallback onArrivalPressed;
   final VoidCallback onDeparturePressed;
   final VoidCallback onWriteReviewPressed;
+  final Future<void> Function(int reviewId)? onDeleteReview;
+  final Future<void> Function(int reviewId, String reason)? onReportReview;
   final bool showTrailingActions;
   final Set<int> myReviewIds;
 
@@ -39,6 +41,8 @@ class PlaceDetailSheet extends StatelessWidget {
     required this.onArrivalPressed,
     required this.onDeparturePressed,
     required this.onWriteReviewPressed,
+    this.onDeleteReview,
+    this.onReportReview,
     this.onFavoritePressed,
     this.onDismiss,
     this.showTrailingActions = true,
@@ -98,6 +102,8 @@ class PlaceDetailSheet extends StatelessWidget {
                         reviewDetailContent: review.content,
                         createdAt: review.reviewedAt,
                         isMine: myReviewIds.contains(review.reviewId),
+                        onDelete: onDeleteReview,
+                        onReport: onReportReview,
                       ),
                     ),
                   ),
@@ -288,7 +294,7 @@ class _DirectionButtons extends StatelessWidget {
           width: 89,
           height: 33,
           textStyle: AppTextStyles.text2,
-          textColor: isLight ? AppColors.sub2 : AppColors.sub1Dark,
+          textColor: isLight ? AppColors.mainText : AppColors.mainTextDark,
           backgroundColor: isLight ? AppColors.button : AppColors.buttonDark,
           onPressed: onDeparturePressed,
         ),

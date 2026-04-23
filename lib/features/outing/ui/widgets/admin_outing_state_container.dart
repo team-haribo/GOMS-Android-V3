@@ -5,24 +5,52 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/ui/widgets/admin_bottom_sheet.dart';
 
+class _AdminOutingStudentState {
+  const _AdminOutingStudentState({
+    required this.role,
+    required this.status,
+  });
+
+  final StudentRole role;
+  final String status;
+
+  _AdminOutingStudentState copyWith({
+    StudentRole? role,
+    String? status,
+  }) {
+    return _AdminOutingStudentState(
+      role: role ?? this.role,
+      status: status ?? this.status,
+    );
+  }
+}
+
 final _adminOutingStudentRoleProvider = NotifierProvider.autoDispose.family<
     _AdminOutingStudentRoleNotifier,
-    StudentRole,
-    (Object, StudentRole)>(_AdminOutingStudentRoleNotifier.new);
+    _AdminOutingStudentState,
+    (Object, StudentRole, String)>(_AdminOutingStudentRoleNotifier.new);
 
-class _AdminOutingStudentRoleNotifier extends Notifier<StudentRole> {
+class _AdminOutingStudentRoleNotifier
+    extends Notifier<_AdminOutingStudentState> {
   _AdminOutingStudentRoleNotifier(this.args);
 
-  final (Object, StudentRole) args;
+  final (Object, StudentRole, String) args;
 
   @override
-  StudentRole build() => args.$2;
+  _AdminOutingStudentState build() =>
+      _AdminOutingStudentState(role: args.$2, status: args.$3);
 
-  void setRole(StudentRole role) => state = role;
+  void update({
+    StudentRole? role,
+    String? status,
+  }) {
+    state = state.copyWith(role: role, status: status);
+  }
 }
 
 class AdminOutingStateContainer extends ConsumerStatefulWidget {
@@ -32,6 +60,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
   final String major;
   final StudentRole studentRole;
   final String profileImageUrl;
+  final String status;
 
   const AdminOutingStateContainer({
     super.key,
@@ -41,6 +70,7 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
     required this.major,
     required this.studentRole,
     required this.profileImageUrl,
+    required this.status,
   });
 
   @override
@@ -52,8 +82,8 @@ class _AdminOutingStateContainerState
     extends ConsumerState<AdminOutingStateContainer> {
   late final Object _providerIdentity;
 
-  (Object, StudentRole) get _providerKey =>
-      (_providerIdentity, widget.studentRole);
+  (Object, StudentRole, String) get _providerKey =>
+      (_providerIdentity, widget.studentRole, widget.status);
 
   @override
   void initState() {
@@ -63,8 +93,9 @@ class _AdminOutingStateContainerState
 
   @override
   Widget build(BuildContext context) {
-    final studentRole =
+    final studentState =
         ref.watch(_adminOutingStudentRoleProvider(_providerKey));
+    final studentRole = studentState.role;
 
     return Container(
       color: context.backgroundColor,
@@ -113,7 +144,10 @@ class _AdminOutingStateContainerState
               ),
               AppGap.h4,
               Text(
-                '${widget.grade}학년 | ${widget.major}',
+                StudentInfoFormatter.formatCohortDepartment(
+                  grade: widget.grade,
+                  department: widget.major,
+                ),
                 style: AppTextStyles.caption2.copyWith(
                   color: context.sub2Color,
                 ),
@@ -138,6 +172,7 @@ class _AdminOutingStateContainerState
                   builder: (context) => AdminBottomSheet(
                     memberId: widget.memberId,
                     studentRole: studentRole,
+                    status: studentState.status,
                     onRoleChanged: (newRole) {
                       ref
                           .read(
@@ -145,7 +180,16 @@ class _AdminOutingStateContainerState
                               _providerKey,
                             ).notifier,
                           )
-                          .setRole(newRole);
+                          .update(role: newRole);
+                    },
+                    onStatusChanged: (newStatus) {
+                      ref
+                          .read(
+                            _adminOutingStudentRoleProvider(
+                              _providerKey,
+                            ).notifier,
+                          )
+                          .update(status: newStatus);
                     },
                   ),
                 );

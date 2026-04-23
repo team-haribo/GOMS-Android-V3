@@ -18,6 +18,7 @@ class AuthBaseScreen extends ConsumerWidget {
   final bool showAppBarLogo;
   final List<Widget>? appBarActions;
   final VoidCallback? onBackPressed;
+  final double confirmBottomSpacing;
 
   const AuthBaseScreen({
     super.key,
@@ -31,22 +32,29 @@ class AuthBaseScreen extends ConsumerWidget {
     this.showAppBarLogo = false,
     this.appBarActions,
     this.onBackPressed,
+    this.confirmBottomSpacing = 0,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final isKeyboardVisible = bottomInset > 0;
 
     return BaseScaffold(
       showAppBar: showAppBar,
       showAppBarLogo: showAppBarLogo,
       onBackPressed: onBackPressed ?? () => Navigator.of(context).maybePop(),
       appBarActions: appBarActions,
+      contentPadding: EdgeInsets.fromLTRB(
+        AppSpacing.s24,
+        AppSpacing.s16,
+        AppSpacing.s24,
+        isKeyboardVisible ? 0 : AppSpacing.s24,
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           return SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.only(bottom: bottomInset),
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: IntrinsicHeight(
@@ -68,7 +76,8 @@ class AuthBaseScreen extends ConsumerWidget {
                       onPressed:
                           isConfirmEnabled && !isLoading ? onConfirm : null,
                     ),
-                    AppGap.v24,
+                    if (confirmBottomSpacing > 0)
+                      SizedBox(height: confirmBottomSpacing),
                   ],
                 ),
               ),

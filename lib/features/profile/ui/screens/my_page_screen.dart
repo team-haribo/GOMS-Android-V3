@@ -16,6 +16,7 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
 import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
@@ -132,7 +133,13 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         return;
       }
 
-      context.go(RoutePath.verify, extra: RoutePath.resetPassword);
+      context.go(
+        RoutePath.verify,
+        extra: const VerifyRouteExtra(
+          redirectPath: RoutePath.resetPassword,
+          backPath: RoutePath.myPage,
+        ),
+      );
     } on DioException catch (error) {
       _showDioError(error);
     } catch (error) {
@@ -222,78 +229,114 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     return BaseScaffold(
       showAppBarLogo: true,
       role: role,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProfileSummarySection(
-              role: role,
-              name: currentMember?.name ?? '정보 없음',
-              profileImageUrl: currentMember?.profileImageUrl ?? '',
-              onTapProfileImage: _pickAndUploadProfileImage,
-              isUploadingProfileImage: isUploadingProfileImage,
-              grade: currentMember?.grade,
-              major: currentMember?.department.name.toUpperCase(),
-              lateCount: myOutingStatus?.lateCount,
-              textColor: textColor,
-              subColor: sub2Color,
-              surfaceColor: surfaceColor,
-            ),
-            AppGap.v24,
-            const Divider(),
-            AppGap.v24,
-            SettingsSection(
-              selectedThemeOption: selectedThemeOption,
-              showClock: showClock,
-              outingPushAlarm: outingPushAlarm,
-              cameraLaunch: role == RoleEnum.admin ? false : cameraLaunch,
-              textColor: textColor,
-              subColor: subColor,
-              surfaceColor: surfaceColor,
-              role: role,
-              onTapTheme: () => _showThemePicker(context, selectedThemeOption),
-              onToggleShowClock: (value) {
-                ref.read(settingsProvider.notifier).setShowClock(value);
-              },
-              onToggleOutingPushAlarm: (value) async {
-                final granted = await ref
-                    .read(settingsProvider.notifier)
-                    .setOutingPushAlarm(value);
-                if (!granted && mounted) {
-                  _showPermissionDeniedSnackBar('외출제 푸시 알림');
-                }
-              },
-              onToggleCameraLaunch: (value) async {
-                final granted = await ref
-                    .read(settingsProvider.notifier)
-                    .setCameraLaunch(value);
-                if (!granted && mounted) {
-                  _showPermissionDeniedSnackBar('카메라 바로 켜기');
-                }
-              },
-            ),
-            AppGap.v24,
-            const Divider(),
-            AppGap.v24,
-            AccountActionsSection(
-              textColor: textColor,
-              onTapResetPassword: () =>
-                  _startPasswordResetFlow(currentMember?.email),
-              onTapLogout: () => GomsDialog.confirm(
-                title: '로그아웃',
-                content: '\n 로그아웃 하시겠습니까?',
-                confirmText: '로그아웃',
-                onConfirm: () async {
-                  await ref.read(authProvider.notifier).logout();
-                  if (context.mounted) {
-                    context.go(RoutePath.onboarding);
+      contentPadding: EdgeInsets.fromLTRB(
+        context.horizontalPadding,
+        context.isSmallPhoneLayout ? 12 : 16,
+        context.horizontalPadding,
+        context.isSmallPhoneLayout ? 16 : 24,
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final shouldScroll = constraints.maxHeight < 640;
+          final isDenseLayout = constraints.maxHeight < 560;
+          final dividerSpacing = isDenseLayout
+              ? context.responsive(compact: 6, normal: 8)
+              : context.responsive(compact: 12, normal: 24);
+          final sectionInnerSpacing = isDenseLayout
+              ? context.responsive(compact: 10, normal: 12)
+              : context.responsive(compact: 20, normal: 36);
+
+          final content = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ProfileSummarySection(
+                role: role,
+                name: currentMember?.name ?? '정보 없음',
+                profileImageUrl: currentMember?.profileImageUrl ?? '',
+                onTapProfileImage: _pickAndUploadProfileImage,
+                isUploadingProfileImage: isUploadingProfileImage,
+                grade: currentMember?.grade,
+                major: currentMember?.department.name.toUpperCase(),
+                lateCount: myOutingStatus?.lateCount,
+                textColor: textColor,
+                subColor: sub2Color,
+                surfaceColor: surfaceColor,
+                isCompact: isDenseLayout,
+              ),
+              SizedBox(height: dividerSpacing),
+              const Divider(height: 1),
+              SizedBox(height: dividerSpacing),
+              SettingsSection(
+                selectedThemeOption: selectedThemeOption,
+                showClock: showClock,
+                outingPushAlarm: outingPushAlarm,
+                cameraLaunch: cameraLaunch,
+                textColor: textColor,
+                subColor: subColor,
+                surfaceColor: surfaceColor,
+                role: role,
+                sectionSpacing: sectionInnerSpacing,
+                themeTileVerticalPadding: isDenseLayout ? 8 : AppSpacing.s12,
+                onTapTheme: () =>
+                    _showThemePicker(context, selectedThemeOption),
+                onToggleShowClock: (value) {
+                  ref.read(settingsProvider.notifier).setShowClock(value);
+                },
+                onToggleOutingPushAlarm: (value) async {
+                  final granted = await ref
+                      .read(settingsProvider.notifier)
+                      .setOutingPushAlarm(value);
+                  if (!granted && mounted) {
+                    _showPermissionDeniedSnackBar('외출제 푸시 알림');
                   }
                 },
-              ).show(context),
-              onTapDeleteAccount: () => context.push(RoutePath.deleteAccount),
-            ),
-          ],
-        ),
+                onToggleCameraLaunch: (value) async {
+                  final granted = await ref
+                      .read(settingsProvider.notifier)
+                      .setCameraLaunch(value);
+                  if (!granted && mounted) {
+                    _showPermissionDeniedSnackBar(
+                      role == RoleEnum.admin
+                          ? 'QR 생성 바로 켜기'
+                          : '카메라 바로 켜기',
+                    );
+                  }
+                },
+              ),
+              const SizedBox(height: AppSpacing.s24),
+              const Divider(height: 1),
+              const SizedBox(height: AppSpacing.s24),
+              AccountActionsSection(
+                textColor: textColor,
+                rowVerticalPadding: AppSpacing.s16,
+                onTapResetPassword: () =>
+                    _startPasswordResetFlow(currentMember?.email),
+                onTapLogout: () => GomsDialog.confirm(
+                  title: '로그아웃',
+                  content: '\n 로그아웃 하시겠습니까?',
+                  confirmText: '로그아웃',
+                  onConfirm: () async {
+                    await ref.read(authProvider.notifier).logout();
+                    if (context.mounted) {
+                      context.go(RoutePath.onboarding);
+                    }
+                  },
+                ).show(context),
+                onTapDeleteAccount: () =>
+                    context.push(RoutePath.deleteAccount),
+              ),
+            ],
+          );
+
+          if (shouldScroll) {
+            return SingleChildScrollView(child: content);
+          }
+
+          return SizedBox(
+            height: constraints.maxHeight,
+            child: content,
+          );
+        },
       ),
     );
   }

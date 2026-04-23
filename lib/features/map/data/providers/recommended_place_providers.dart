@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:goms/core/utils/logger.dart';
 import 'package:goms/core/network/dio_providers.dart';
 import 'package:goms/features/map/data/datasources/recommended_place_remote_datasource.dart';
 import 'package:goms/features/map/data/repositories/recommended_place_repository_impl.dart';
@@ -37,6 +39,86 @@ final recommendedPlacesProvider =
     FutureProvider<List<RecommendedPlaceEntity>>((ref) async {
   return ref.read(recommendedPlaceRepositoryProvider).getRecommendedPlaces();
 });
+
+final recommendedPlacesCacheProvider = NotifierProvider<
+    RecommendedPlacesCacheNotifier, RecommendedPlacesCacheState>(
+  RecommendedPlacesCacheNotifier.new,
+);
+
+@immutable
+class RecommendedPlacesCacheState {
+  const RecommendedPlacesCacheState({
+    this.places = const <RecommendedPlaceEntity>[],
+    this.count = 0,
+    this.isLoading = false,
+  });
+
+  final List<RecommendedPlaceEntity> places;
+  final int count;
+  final bool isLoading;
+
+  RecommendedPlacesCacheState copyWith({
+    List<RecommendedPlaceEntity>? places,
+    int? count,
+    bool? isLoading,
+  }) {
+    return RecommendedPlacesCacheState(
+      places: places ?? this.places,
+      count: count ?? this.count,
+      isLoading: isLoading ?? this.isLoading,
+    );
+  }
+}
+
+class RecommendedPlacesCacheNotifier
+    extends Notifier<RecommendedPlacesCacheState> {
+  @override
+  RecommendedPlacesCacheState build() => const RecommendedPlacesCacheState();
+
+  Future<void> refresh() async {
+    if (!ref.mounted) {
+      return;
+    }
+
+    if (state.places.isEmpty && !state.isLoading) {
+      state = state.copyWith(isLoading: true);
+    }
+
+    try {
+      final repository = ref.read(recommendedPlaceRepositoryProvider);
+      final places = await repository.getRecommendedPlaces();
+      final count = await repository.getRecommendedPlacesCount();
+
+      if (!ref.mounted) {
+        return;
+      }
+
+      if (!listEquals(state.places, places) ||
+          state.count != count ||
+          state.isLoading) {
+        state = RecommendedPlacesCacheState(
+          places: places,
+          count: count,
+        );
+      }
+    } catch (error, stackTrace) {
+      if (!ref.mounted) {
+        return;
+      }
+
+      Logger.e(
+        'Recommended places refresh failed.',
+        tag: 'MAP',
+        error: error,
+        stackTrace: stackTrace,
+      );
+
+      if (state.isLoading) {
+        state = state.copyWith(isLoading: false);
+      }
+    }
+  }
+}
 
 final allPlacesProvider = FutureProvider<List<RecommendedPlaceEntity>>(
   (ref) async {

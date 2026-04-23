@@ -10,10 +10,11 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
+import 'package:goms/features/map/review/ui/providers/write_review_provider.dart';
 
 void main() {
   group('MapScreenNotifier', () {
-    test('loads hot place markers first', () async {
+    test('requests hot place markers before falling back', () async {
       final repository = _TrackingRecommendedPlaceRepository();
       final container = ProviderContainer(
         overrides: [
@@ -25,7 +26,7 @@ void main() {
       await container.read(mapScreenProvider.notifier).fetchData();
 
       expect(repository.hotPlacesRequested, isTrue);
-      expect(repository.allPlacesRequested, isFalse);
+      expect(repository.allPlacesRequested, isTrue);
     });
 
     test('hydrates hot places from server fields only', () async {
@@ -122,6 +123,25 @@ void main() {
       expect(state.recommendedCount, 0);
     });
 
+    test('falls back to all places when hot place API returns empty', () async {
+      final repository = _EmptyHotPlaceRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      final state = container.read(mapScreenProvider);
+
+      expect(state.status, MapScreenStatus.success);
+      expect(state.popularPlaces, hasLength(1));
+      expect(state.popularPlaces.first.name, '대체 인기 장소');
+      expect(repository.allPlacesRequested, isTrue);
+    });
+
     test('returns failure state when every place API fails', () async {
       final repository = _ThrowingRecommendedPlaceRepository();
       final container = ProviderContainer(
@@ -173,7 +193,8 @@ void main() {
       addTearDown(container.dispose);
 
       await container.read(mapScreenProvider.notifier).fetchData();
-      await container.read(mapScreenProvider.notifier).deleteMyReview(11);
+      await repository.deleteReview(11);
+      await container.read(mapScreenProvider.notifier).fetchData();
 
       final state = container.read(mapScreenProvider);
       expect(repository.deletedReviewIds, [11]);
@@ -217,7 +238,7 @@ void main() {
       await container.read(mapScreenProvider.notifier).fetchData();
 
       await expectLater(
-        container.read(mapScreenProvider.notifier).deleteMyReview(21),
+        repository.deleteReview(21),
         throwsA(isA<DioException>()),
       );
 
@@ -226,6 +247,53 @@ void main() {
       expect(state.reviewCount, 2);
       expect(state.reviewModels, hasLength(2));
       expect(state.reviewModels.first.reviewId, 21);
+    });
+
+    test('refreshes my review ids after creating a review', () async {
+      final repository = _ReviewCreatingRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      expect(await container.read(myReviewIdsProvider.future), {1});
+
+      final notifier = container.read(writeReviewProvider.notifier);
+      notifier.onTextChanged('새 후기');
+
+      await notifier.submitReview(
+        placeId: 100,
+        placeName: '학생식당',
+        category: '한식',
+        address: '광주광역시 테스트로 100',
+        review: 1,
+        recommended: 1,
+      );
+
+      expect(repository.createdPlaceId, 100);
+      expect(repository.createdContent, '새 후기');
+      expect(await container.read(myReviewIdsProvider.future), {1, 2});
+    });
+
+    test('keeps written reviews visible when count endpoint under-reports',
+        () async {
+      final repository = _ReviewCountMismatchRepository();
+      final container = ProviderContainer(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      await container.read(mapScreenProvider.notifier).fetchData();
+
+      final state = container.read(mapScreenProvider);
+
+      expect(state.reviewCount, 1);
+      expect(state.reviewModels, hasLength(1));
+      expect(state.reviewModels.single.placeName, '학생식당');
     });
   });
 }
@@ -392,6 +460,64 @@ class _ReviewDeletingRepository extends _FakeRecommendedPlaceRepository {
   }
 }
 
+class _ReviewCreatingRepository extends _FakeRecommendedPlaceRepository {
+  _ReviewCreatingRepository()
+      : _myReviews = <MyReviewEntity>[
+          const MyReviewEntity(
+            reviewId: 1,
+            placeId: 10,
+            placeName: '기존 장소',
+            categoryName: '카페',
+            address: '광주광역시 테스트로 10',
+            content: '기존 후기',
+            reviewedAt: null,
+          ),
+        ],
+        super(const [
+          RecommendedPlaceEntity(
+            placeId: 100,
+            placeName: '학생식당',
+            category: '한식',
+            address: '광주광역시 테스트로 100',
+            coordinate: MapCoordinate(latitude: 35.124, longitude: 126.901),
+            reviewCount: 1,
+            recommendCount: 1,
+            recommended: false,
+          ),
+        ]);
+
+  final List<MyReviewEntity> _myReviews;
+  int? createdPlaceId;
+  String? createdContent;
+
+  @override
+  Future<void> createReview({
+    required int placeId,
+    required String content,
+  }) async {
+    createdPlaceId = placeId;
+    createdContent = content;
+    _myReviews.add(
+      MyReviewEntity(
+        reviewId: 2,
+        placeId: placeId,
+        placeName: '학생식당',
+        categoryName: '한식',
+        address: '광주광역시 테스트로 100',
+        content: content,
+        reviewedAt: null,
+      ),
+    );
+  }
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async =>
+      List<MyReviewEntity>.of(_myReviews);
+
+  @override
+  Future<int> getMyReviewCount() async => _myReviews.length;
+}
+
 class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {
   _HotPlaceFailingRepository()
       : super(const [
@@ -421,4 +547,53 @@ class _HotPlaceFailingRepository extends _FakeRecommendedPlaceRepository {
       requestOptions: RequestOptions(path: '/api/v3/place/hot-place'),
     );
   }
+}
+
+class _EmptyHotPlaceRepository extends _FakeRecommendedPlaceRepository {
+  _EmptyHotPlaceRepository()
+      : super(const [
+          RecommendedPlaceEntity(
+            placeId: 88,
+            placeName: '대체 인기 장소',
+            category: '카페',
+            address: '광주광역시 테스트로 88',
+            coordinate: MapCoordinate(latitude: 35.13, longitude: 126.89),
+            reviewCount: 2,
+            recommendCount: 7,
+            recommended: false,
+          ),
+        ]);
+
+  bool allPlacesRequested = false;
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
+    allPlacesRequested = true;
+    return super.getPlaces();
+  }
+
+  @override
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async {
+    return const [];
+  }
+}
+
+class _ReviewCountMismatchRepository extends _FakeRecommendedPlaceRepository {
+  _ReviewCountMismatchRepository() : super(const []);
+
+  @override
+  Future<List<MyReviewEntity>> getMyReviews() async => const [
+        MyReviewEntity(
+          reviewId: 41,
+          placeId: 401,
+          placeName: '학생식당',
+          categoryName: '한식',
+          address: '광주광역시 테스트로 41',
+          content: '리뷰 있음',
+          reviewedAt: null,
+        ),
+      ];
+
+  @override
+  Future<int> getMyReviewCount() async => 0;
 }

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/theme_provider.dart';
-import 'package:goms/features/map/direction/ui/providers/map_direction_ui_provider.dart';
 import 'package:goms/features/map/direction/ui/models/direction_state.dart';
+import 'package:goms/features/map/direction/ui/providers/map_direction_ui_provider.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
 import 'package:goms/features/map/shared/ui/widgets/direction_detail_sheet_widget.dart';
 import 'package:goms/features/map/shared/ui/widgets/direction_route_carousel_widget.dart';
@@ -90,8 +90,54 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
     };
     final dark = _isDark(themeMode, context);
 
+    if (isRouteSheetVisible && selectedOption == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          _closeRouteSheet();
+        }
+      });
+    }
+
     return Stack(
       children: [
+        if (!isRouteSheetVisible)
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: SafeArea(
+              top: false,
+              left: false,
+              right: false,
+              minimum: const EdgeInsets.only(bottom: 8),
+              child: _buildRouteCarousel(widget.state, selectedIndex, dark),
+            ),
+          ),
+        if (isRouteSheetVisible && selectedOption != null) ...[
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _closeRouteSheet,
+              behavior: HitTestBehavior.opaque,
+              child: ColoredBox(
+                color: _routeSheetBarrierColor(dark),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: SafeArea(
+              top: false,
+              left: false,
+              right: false,
+              child: DirectionDetailSheet(
+                option: selectedOption,
+                departureName: departureName,
+                destinationName: destinationName,
+                dark: dark,
+                onClose: _closeRouteSheet,
+              ),
+            ),
+          ),
+        ],
         Positioned(
           top: 0,
           left: 0,
@@ -104,57 +150,15 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
             onDepartureSelect: widget.onDepartureSelect,
           ),
         ),
-        if (isRouteSheetVisible && selectedOption != null)
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: _closeRouteSheet,
-              behavior: HitTestBehavior.opaque,
-              child: Container(
-                color: _routeSheetBarrierColor(dark),
-              ),
-            ),
-          ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: SafeArea(
-            top: false,
-            left: false,
-            right: false,
-            minimum: const EdgeInsets.only(bottom: 8),
-            child: _buildStateContent(
-              state: widget.state,
-              routeCarousel: DirectionRouteCarousel(
-                scrollController: _routeScrollController,
-                routeOptions: widget.state.routeOptions,
-                selectedIndex: selectedIndex,
-                dark: dark,
-                onTap: _handleRouteTap,
-              ),
-              routeSheet: selectedOption == null
-                  ? const SizedBox.shrink()
-                  : DirectionDetailSheet(
-                      option: selectedOption,
-                      departureName: departureName,
-                      destinationName: destinationName,
-                      dark: dark,
-                      onClose: _closeRouteSheet,
-                    ),
-              isRouteSheetVisible: isRouteSheetVisible,
-            ),
-          ),
-        ),
       ],
     );
   }
 
-  Widget _buildStateContent({
-    required DirectionState state,
-    required Widget routeCarousel,
-    required Widget routeSheet,
-    required bool isRouteSheetVisible,
-  }) {
+  Widget _buildRouteCarousel(
+    DirectionState state,
+    int selectedIndex,
+    bool dark,
+  ) {
     if (state.status == DirectionStatus.loading) {
       return const Padding(
         padding: EdgeInsets.only(bottom: 32),
@@ -168,6 +172,12 @@ class _MapDirectionOverlayState extends ConsumerState<MapDirectionOverlay> {
       return const SizedBox.shrink();
     }
 
-    return isRouteSheetVisible ? routeSheet : routeCarousel;
+    return DirectionRouteCarousel(
+      scrollController: _routeScrollController,
+      routeOptions: state.routeOptions,
+      selectedIndex: selectedIndex,
+      dark: dark,
+      onTap: _handleRouteTap,
+    );
   }
 }

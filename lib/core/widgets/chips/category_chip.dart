@@ -24,12 +24,14 @@ class CategoryChip extends ConsumerStatefulWidget {
   final String category;
   final bool? selected;
   final ValueChanged<bool>? onChanged;
+  final Color? textColor;
 
   const CategoryChip({
     super.key,
     required this.category,
     this.selected,
     this.onChanged,
+    this.textColor,
   });
 
   @override
@@ -77,7 +79,9 @@ class _CategoryChipState extends ConsumerState<CategoryChip> {
         child: Text(
           widget.category,
           style: AppTextStyles.text2.copyWith(
-            color: selected ? AppColors.admin : (context.sub2Color),
+            color: selected
+                ? AppColors.admin
+                : (widget.textColor ?? context.sub2Color),
           ),
         ),
       ),

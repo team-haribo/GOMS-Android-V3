@@ -9,11 +9,15 @@ class CameraLaunchDestinationResolver {
     required bool isCameraPermissionGranted,
     required RoleEnum role,
   }) {
-    if (!enabled || !isCameraPermissionGranted) {
+    if (!enabled) {
       return null;
     }
 
     if (role == RoleEnum.admin) {
+      return RoutePath.qrIssue;
+    }
+
+    if (!isCameraPermissionGranted) {
       return null;
     }
 

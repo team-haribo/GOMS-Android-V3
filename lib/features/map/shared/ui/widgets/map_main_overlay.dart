@@ -20,6 +20,7 @@ import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dar
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/place_detail_sheet.dart';
 import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
+import 'package:goms/features/report/data/providers/report_data_providers.dart';
 
 class MapMainOverlay extends ConsumerStatefulWidget {
   final MapScreenState state;
@@ -60,6 +61,7 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
     final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
+    final recommendedPlacesCache = ref.watch(recommendedPlacesCacheProvider);
 
     if (widget.selectedPlace != null) {
       return _SelectedPlaceOverlay(
@@ -68,10 +70,11 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
       );
     }
 
+    final collapsedSheetSize = MapBottomSheet.handleOnlyMinSize(context);
     final initialSheetSize = context.isTabletLayout
         ? 0.44
         : (context.screenHeight < 780 ? 0.42 : 0.38);
-    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.88;
+    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.86;
 
     return Column(
       children: [
@@ -106,9 +109,10 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                 child: MapBottomSheet(
                   isLight: isLight,
                   initialChildSize: initialSheetSize,
-                  minChildSize: initialSheetSize,
+                  minChildSize: collapsedSheetSize,
                   maxChildSize: maxSheetSize,
                   snapSizes: <double>[
+                    collapsedSheetSize,
                     initialSheetSize,
                     context.isTabletLayout ? 0.62 : 0.62,
                     maxSheetSize,
@@ -132,6 +136,12 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                               isLight: isLight,
                               reviewModels: state.reviewModels,
                               reviewCount: state.reviewCount,
+                              recommendedPlaces: recommendedPlacesCache.places
+                                  .map(_toPopularPlace)
+                                  .toList(growable: false),
+                              recommendedCount: recommendedPlacesCache.count,
+                              isRecommendedPlacesLoading:
+                                  recommendedPlacesCache.isLoading,
                               onPlaceTap: widget.onPlaceTap,
                             ),
                             AppGap.v24,
@@ -276,10 +286,11 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLight = context.isLightMode;
+    final collapsedSheetSize = MapBottomSheet.handleOnlyMinSize(context);
     final initialSheetSize = context.isTabletLayout
         ? 0.44
         : (context.screenHeight < 780 ? 0.40 : 0.34);
-    final maxSheetSize = context.isTabletLayout ? 0.78 : 0.86;
+    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.86;
     final placeId = place.placeId;
     final placeDetailAsync =
         placeId == null ? null : ref.watch(placeDetailProvider(placeId));
@@ -316,9 +327,14 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
       isLight: isLight,
       isReviewLoading: isReviewLoading,
       initialChildSize: initialSheetSize,
-      minChildSize: initialSheetSize,
+      minChildSize: collapsedSheetSize,
       maxChildSize: maxSheetSize,
-      snapSizes: <double>[initialSheetSize, 0.58, maxSheetSize],
+      snapSizes: <double>[
+        collapsedSheetSize,
+        initialSheetSize,
+        0.58,
+        maxSheetSize,
+      ],
       onDismiss: onDismiss,
       onFavoritePressed: place.placeId == null
           ? null
@@ -345,6 +361,16 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
       ),
       onWriteReviewPressed: () =>
           context.push(RoutePath.writeReview, extra: resolvedPlace),
+      onDeleteReview: (reviewId) async {
+        await ref.read(mapScreenProvider.notifier).deleteMyReview(reviewId);
+        if (placeId != null) {
+          ref.invalidate(placeDetailProvider(placeId));
+          ref.invalidate(placeReviewsProvider(placeId));
+        }
+      },
+      onReportReview: (reviewId, reason) => ref
+          .read(reportRepositoryProvider)
+          .createReviewReport(reviewId: reviewId, reason: reason),
     );
   }
 }
@@ -353,12 +379,18 @@ class _MyActivitySection extends StatelessWidget {
   final bool isLight;
   final List<MapScreenReviewModel> reviewModels;
   final int reviewCount;
+  final List<PopularPlace> recommendedPlaces;
+  final int recommendedCount;
+  final bool isRecommendedPlacesLoading;
   final ValueChanged<PopularPlace>? onPlaceTap;
 
   const _MyActivitySection({
     required this.isLight,
     required this.reviewModels,
     required this.reviewCount,
+    required this.recommendedPlaces,
+    required this.recommendedCount,
+    required this.isRecommendedPlacesLoading,
     this.onPlaceTap,
   });
 
@@ -411,13 +443,6 @@ class _MyActivitySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final recommendedCountAsync = ref.watch(recommendedPlacesCountProvider);
-        final recommendedPlacesAsync = ref.watch(recommendedPlacesProvider);
-        final recommendedPlaces = recommendedPlacesAsync.asData?.value
-                .map(_toPopularPlace)
-                .toList(growable: false) ??
-            const <PopularPlace>[];
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -431,13 +456,13 @@ class _MyActivitySection extends StatelessWidget {
             _ActivityCountRow(
               isLight: isLight,
               label: '추천한 가게',
-              count: recommendedCountAsync.asData?.value ?? 0,
+              count: recommendedCount,
               unit: '곳',
               labelStyle: AppTextStyles.text1,
               countStyle: AppTextStyles.text3,
             ),
             AppGap.v12,
-            if (recommendedPlacesAsync.isLoading && recommendedPlaces.isEmpty)
+            if (isRecommendedPlacesLoading && recommendedPlaces.isEmpty)
               const Center(child: CircularProgressIndicator())
             else if (recommendedPlaces.isEmpty)
               Text(
@@ -447,48 +472,49 @@ class _MyActivitySection extends StatelessWidget {
                 ),
               )
             else
-              ...recommendedPlaces.take(2).map(
-                    (place) => Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
-                      child: PlaceContainer.popular(
-                        placeName: place.name,
-                        category: place.category,
-                        address: place.address,
-                        review: place.review,
-                        recommended: place.recommended,
-                        isLiked: place.isRecommended,
-                        distanceMeters: place.distanceMeters,
-                        onTap: () {
-                          if (onPlaceTap != null) {
-                            onPlaceTap!(place);
-                            return;
-                          }
-                          context.push(RoutePath.mapDetail, extra: place);
-                        },
-                        onLikePressed: place.placeId == null
-                            ? null
-                            : () async {
-                                try {
-                                  await ref
-                                      .read(mapScreenProvider.notifier)
-                                      .toggleRecommendation(place);
-                                  ref.invalidate(recommendedPlacesProvider);
-                                  ref.invalidate(
-                                    recommendedPlacesCountProvider,
-                                  );
-                                } catch (_) {
-                                  if (!context.mounted) return;
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('추천 상태를 변경하지 못했습니다.'),
-                                      backgroundColor: AppColors.negative,
-                                    ),
-                                  );
-                                }
-                              },
-                      ),
-                    ),
+              ...recommendedPlaces.map(
+                (place) => Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: PlaceContainer.popular(
+                    placeName: place.name,
+                    category: place.category,
+                    address: place.address,
+                    review: place.review,
+                    recommended: place.recommended,
+                    isLiked: place.isRecommended,
+                    distanceMeters: place.distanceMeters,
+                    onTap: () {
+                      if (onPlaceTap != null) {
+                        onPlaceTap!(place);
+                        return;
+                      }
+                      context.push(RoutePath.mapDetail, extra: place);
+                    },
+                    onLikePressed: place.placeId == null
+                        ? null
+                        : () async {
+                            try {
+                              await ref
+                                  .read(mapScreenProvider.notifier)
+                                  .toggleRecommendation(place);
+                              await ref
+                                  .read(
+                                    recommendedPlacesCacheProvider.notifier,
+                                  )
+                                  .refresh();
+                            } catch (_) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('추천 상태를 변경하지 못했습니다.'),
+                                  backgroundColor: AppColors.negative,
+                                ),
+                              );
+                            }
+                          },
                   ),
+                ),
+              ),
             AppGap.v12,
             _ActivityCountRow(
               isLight: isLight,
@@ -508,7 +534,7 @@ class _MyActivitySection extends StatelessWidget {
                     category: review.category,
                     address: review.address,
                     reviewContent: review.reviewDetailContent,
-                    reviewCreatedAt: review.createdAt,
+                    reviewCreatedAt: review.createdAt ?? DateTime.now(),
                     onActionPressed: () => _showDeleteReviewDialog(
                       context: context,
                       ref: ref,

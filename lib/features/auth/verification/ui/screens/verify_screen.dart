@@ -15,8 +15,9 @@ import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String? redirectPath;
+  final String? backPath;
 
-  const VerifyScreen({super.key, this.redirectPath});
+  const VerifyScreen({super.key, this.redirectPath, this.backPath});
 
   @override
   ConsumerState<VerifyScreen> createState() => _VerifyScreenState();
@@ -25,14 +26,42 @@ class VerifyScreen extends ConsumerStatefulWidget {
 class _VerifyScreenState extends ConsumerState<VerifyScreen> {
   late final ProviderSubscription<VerifyState> _verifySubscription;
 
+  String _formatRemainingTime(int remainingSeconds) {
+    final minutes = (remainingSeconds ~/ 60).toString().padLeft(2, '0');
+    final seconds = (remainingSeconds % 60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   void _clearVerificationState() {
     ref.read(authFlowProvider.notifier).clearVerifiedToken();
     ref.read(verifyProvider.notifier).clear();
   }
 
+  String get _fallbackBackRoute =>
+      widget.backPath ??
+      (widget.redirectPath == RoutePath.resetPassword
+          ? RoutePath.findPassword
+          : RoutePath.signUp);
+
   void _handleBack() {
     _clearVerificationState();
-    context.pop();
+
+    if (widget.backPath != null) {
+      context.go(widget.backPath!);
+      return;
+    }
+
+    if (widget.redirectPath == RoutePath.resetPassword) {
+      context.go(RoutePath.findPassword);
+      return;
+    }
+
+    if (context.canPop()) {
+      context.pop();
+      return;
+    }
+
+    context.go(_fallbackBackRoute);
   }
 
   @override
@@ -93,11 +122,16 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
     final verifyState = ref.watch(verifyProvider);
     final notifier = ref.read(verifyProvider.notifier);
     final isLoading = verifyState.status == VerifyStatus.loading;
+    final formattedTime = _formatRemainingTime(verifyState.remainingSeconds);
+    final canResend = verifyState.resendCooldownSeconds <= 0;
+    final resendButtonText =
+        canResend ? '재발송' : '재발송 (${verifyState.resendCooldownSeconds}s)';
 
     return PopScope(
+      canPop: false,
       onPopInvokedWithResult: (didPop, result) {
-        if (didPop) {
-          _clearVerificationState();
+        if (!didPop) {
+          _handleBack();
         }
       },
       child: AuthBaseScreen(
@@ -133,16 +167,15 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                notifier.formattedTime,
+                formattedTime,
                 style: AppTextStyles.text3.withColor(context.sub2Color),
               ),
               GestureDetector(
-                onTap:
-                    isLoading || !notifier.canResend ? null : notifier.resend,
+                onTap: isLoading || !canResend ? null : notifier.resend,
                 child: Text(
-                  notifier.resendButtonText,
+                  resendButtonText,
                   style: AppTextStyles.text3.withColor(
-                    notifier.canResend && !isLoading
+                    canResend && !isLoading
                         ? AppColors.mainColor
                         : context.sub2Color,
                   ),

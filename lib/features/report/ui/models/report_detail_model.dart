@@ -11,6 +11,7 @@ class ReportDetailModel {
     required this.reviewerGrade,
     required this.reviewerDepartment,
     this.reviewerProfileImageUrl = '',
+    this.placeName,
     required this.reviewContent,
     required this.reportContent,
     required this.reportStatus,
@@ -27,6 +28,7 @@ class ReportDetailModel {
   final int reviewerGrade;
   final String reviewerDepartment;
   final String reviewerProfileImageUrl;
+  final String? placeName;
   final String reviewContent;
   final String reportContent;
   final ReportStatus reportStatus;

@@ -40,12 +40,14 @@ class MapBaseScreen extends ConsumerStatefulWidget {
 
 class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
   static const double _mapTapMatchRadiusMeters = 20;
+  static const _mapRefreshDebounceDuration = Duration(milliseconds: 350);
   static const _instantCameraAnimation = kakao.CameraAnimation(0);
 
   final ValueNotifier<PopularPlace?> _selectedPlaceNotifier =
       ValueNotifier<PopularPlace?>(null);
   kakao.KakaoMapController? _mapController;
   bool _didRequestInitialMapFetch = false;
+  Timer? _mapRefreshDebounce;
 
   @override
   void initState() {
@@ -56,6 +58,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
   @override
   void dispose() {
+    _mapRefreshDebounce?.cancel();
     _selectedPlaceNotifier.dispose();
     super.dispose();
   }
@@ -86,7 +89,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
       if (!mounted) {
         return;
       }
-      ref.read(mapScreenProvider.notifier).fetchData();
+      _refreshPlaceContent(showLoading: true);
     });
   }
 
@@ -168,6 +171,42 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
     _selectPlace(matchedPlace);
   }
 
+  void _scheduleMapDataRefresh() {
+    if (widget.type != MapScreenType.main) {
+      return;
+    }
+
+    _mapRefreshDebounce?.cancel();
+    _mapRefreshDebounce = Timer(_mapRefreshDebounceDuration, () {
+      if (!mounted) {
+        return;
+      }
+
+      ref.invalidate(allPlacesProvider);
+      ref.invalidate(placeSearchResultsProvider);
+      _refreshPlaceContent(showLoading: false);
+    });
+  }
+
+  void _refreshPlaceContent({required bool showLoading}) {
+    if (widget.type != MapScreenType.main &&
+        widget.type != MapScreenType.detail) {
+      return;
+    }
+
+    unawaited(
+      ref.read(mapScreenProvider.notifier).fetchData(showLoading: showLoading),
+    );
+    unawaited(ref.read(recommendedPlacesCacheProvider.notifier).refresh());
+
+    final selectedPlaceId = _selectedPlaceNotifier.value?.placeId;
+    if (selectedPlaceId != null) {
+      ref.invalidate(placeDetailProvider(selectedPlaceId));
+      ref.invalidate(placeReviewsProvider(selectedPlaceId));
+      ref.invalidate(myReviewIdsProvider);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final place = widget.place;
@@ -186,6 +225,13 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
 
     if (widget.type == MapScreenType.main ||
         widget.type == MapScreenType.detail) {
+      ref.listen<int>(mapReentryRefreshSignalProvider, (previous, next) {
+        if (!mounted || previous == null || previous == next) {
+          return;
+        }
+        _refreshPlaceContent(showLoading: false);
+      });
+
       ref.listen<MapScreenState>(mapScreenProvider, (previous, next) {
         if (!mounted) {
           return;
@@ -276,6 +322,7 @@ class _MapBaseScreenState extends ConsumerState<MapBaseScreen> {
                     coordinate,
                     candidatePlaces,
                   ),
+                  onMapInteraction: _scheduleMapDataRefresh,
                 ),
               ),
               Positioned.fill(

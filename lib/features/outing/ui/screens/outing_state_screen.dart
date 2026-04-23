@@ -98,6 +98,8 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             AppGap.v8,
             Expanded(
               child: RefreshIndicator(
+                color:
+                    role == RoleEnum.admin ? AppColors.admin : AppColors.mainColor,
                 onRefresh: () {
                   return ref
                       .read(currentOutingStudentsProvider.notifier)

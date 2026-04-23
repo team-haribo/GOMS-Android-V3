@@ -6,6 +6,7 @@ import 'package:goms/features/map/data/providers/recommended_place_providers.dar
 import 'package:goms/features/map/direction/ui/models/direction_state.dart';
 import 'package:goms/features/map/direction/ui/providers/direction_provider.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
 import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
@@ -143,8 +144,8 @@ void main() {
       ProviderScope(
         overrides: [
           recommendedPlaceRepositoryProvider.overrideWithValue(
-            const _FakeRecommendedPlaceRepository(
-              hotPlaces: [
+            _FakeRecommendedPlaceRepository(
+              hotPlaces: const [
                 RecommendedPlaceEntity(
                   placeId: 7,
                   placeName: '학생식당',
@@ -194,14 +195,197 @@ void main() {
       const [place],
     );
   });
+
+  testWidgets('메인 화면에서 지도 이벤트가 발생하면 장소/활동 정보를 다시 불러온다', (tester) async {
+    final repository = _FakeRecommendedPlaceRepository(
+      hotPlaces: const [
+        RecommendedPlaceEntity(
+          placeId: 7,
+          placeName: '학생식당',
+          category: '한식',
+          address: '광주광역시 테스트로 7',
+          reviewCount: 2,
+          recommendCount: 3,
+          recommended: false,
+          coordinate: MapCoordinate(
+            latitude: 35.1,
+            longitude: 126.9,
+          ),
+        ),
+      ],
+      recommendedPlaces: const [
+        RecommendedPlaceEntity(
+          placeId: 8,
+          placeName: '추천 장소',
+          category: '카페',
+          address: '광주광역시 테스트로 8',
+          reviewCount: 4,
+          recommendCount: 9,
+          recommended: true,
+          coordinate: MapCoordinate(
+            latitude: 35.2,
+            longitude: 126.8,
+          ),
+        ),
+      ],
+      recommendedPlacesCount: 1,
+    );
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+          directionProvider.overrideWith(_FakeDirectionNotifier.new),
+        ],
+        child: MaterialApp(
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+              Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+              Breakpoint(start: 451, end: 800, name: 'TABLET'),
+              Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+            ],
+          ),
+          home: const MapBaseScreen(type: MapScreenType.main),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump();
+
+    final initialHotPlaceCalls = repository.getHotPlacesCallCount;
+    final initialRecommendedCalls = repository.getRecommendedPlacesCallCount;
+    final initialRecommendedCountCalls =
+        repository.getRecommendedPlacesCountCallCount;
+    final initialAllPlacesCalls = repository.getPlacesCallCount;
+
+    tester
+        .widget<KakaoMapBackground>(
+          find.byType(KakaoMapBackground),
+        )
+        .onMapInteraction!
+        .call();
+
+    await tester.pump(const Duration(milliseconds: 400));
+    await tester.pump();
+
+    expect(repository.getHotPlacesCallCount, greaterThan(initialHotPlaceCalls));
+    expect(
+      repository.getRecommendedPlacesCallCount,
+      greaterThan(initialRecommendedCalls),
+    );
+    expect(
+      repository.getRecommendedPlacesCountCallCount,
+      greaterThan(initialRecommendedCountCalls),
+    );
+    expect(repository.getPlacesCallCount, greaterThan(initialAllPlacesCalls));
+  });
+
+  testWidgets('메인 화면 재진입 시 장소/활동 정보만 다시 불러온다', (tester) async {
+    final repository = _FakeRecommendedPlaceRepository(
+      hotPlaces: const [
+        RecommendedPlaceEntity(
+          placeId: 7,
+          placeName: '학생식당',
+          category: '한식',
+          address: '광주광역시 테스트로 7',
+          reviewCount: 2,
+          recommendCount: 3,
+          recommended: false,
+          coordinate: MapCoordinate(
+            latitude: 35.1,
+            longitude: 126.9,
+          ),
+        ),
+      ],
+      recommendedPlaces: const [
+        RecommendedPlaceEntity(
+          placeId: 8,
+          placeName: '추천 장소',
+          category: '카페',
+          address: '광주광역시 테스트로 8',
+          reviewCount: 4,
+          recommendCount: 9,
+          recommended: true,
+          coordinate: MapCoordinate(
+            latitude: 35.2,
+            longitude: 126.8,
+          ),
+        ),
+      ],
+      recommendedPlacesCount: 1,
+    );
+    final container = ProviderContainer(
+      overrides: [
+        recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        directionProvider.overrideWith(_FakeDirectionNotifier.new),
+      ],
+    );
+    addTearDown(container.dispose);
+
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: MaterialApp(
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+              Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+              Breakpoint(start: 451, end: 800, name: 'TABLET'),
+              Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+            ],
+          ),
+          home: const MapBaseScreen(type: MapScreenType.main),
+        ),
+      ),
+    );
+
+    await tester.pump();
+    await tester.pump();
+
+    final initialHotPlaceCalls = repository.getHotPlacesCallCount;
+    final initialRecommendedCalls = repository.getRecommendedPlacesCallCount;
+    final initialRecommendedCountCalls =
+        repository.getRecommendedPlacesCountCallCount;
+    final initialMyReviewCalls = repository.getMyReviewsCallCount;
+    final initialAllPlacesCalls = repository.getPlacesCallCount;
+
+    container.read(mapReentryRefreshSignalProvider.notifier).state++;
+    await tester.pump();
+    await tester.pump();
+
+    expect(repository.getHotPlacesCallCount, greaterThan(initialHotPlaceCalls));
+    expect(
+      repository.getRecommendedPlacesCallCount,
+      greaterThan(initialRecommendedCalls),
+    );
+    expect(
+      repository.getRecommendedPlacesCountCallCount,
+      greaterThan(initialRecommendedCountCalls),
+    );
+    expect(repository.getMyReviewsCallCount, greaterThan(initialMyReviewCalls));
+    expect(repository.getPlacesCallCount, initialAllPlacesCalls);
+  });
 }
 
 class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
-  const _FakeRecommendedPlaceRepository({
+  _FakeRecommendedPlaceRepository({
     this.hotPlaces = const [],
+    this.recommendedPlaces = const [],
+    this.recommendedPlacesCount = 0,
   });
 
   final List<RecommendedPlaceEntity> hotPlaces;
+  final List<RecommendedPlaceEntity> recommendedPlaces;
+  final int recommendedPlacesCount;
+  int getPlacesCallCount = 0;
+  int getHotPlacesCallCount = 0;
+  int getRecommendedPlacesCallCount = 0;
+  int getRecommendedPlacesCountCallCount = 0;
+  int getMyReviewsCallCount = 0;
 
   @override
   Future<void> createReview({
@@ -216,7 +400,10 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
   Future<int> getMyReviewCount() async => 0;
 
   @override
-  Future<List<MyReviewEntity>> getMyReviews() async => const [];
+  Future<List<MyReviewEntity>> getMyReviews() async {
+    getMyReviewsCallCount += 1;
+    return const [];
+  }
 
   @override
   Future<RecommendedPlaceEntity> getPlaceDetail(int placeId) async =>
@@ -235,17 +422,28 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
       throw UnimplementedError();
 
   @override
-  Future<List<RecommendedPlaceEntity>> getPlaces() async => hotPlaces;
+  Future<List<RecommendedPlaceEntity>> getPlaces() async {
+    getPlacesCallCount += 1;
+    return hotPlaces;
+  }
 
   @override
-  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async =>
-      hotPlaces;
+  Future<List<RecommendedPlaceEntity>> getHotPlaces({int? days}) async {
+    getHotPlacesCallCount += 1;
+    return hotPlaces;
+  }
 
   @override
-  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async => const [];
+  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async {
+    getRecommendedPlacesCallCount += 1;
+    return recommendedPlaces;
+  }
 
   @override
-  Future<int> getRecommendedPlacesCount() async => 0;
+  Future<int> getRecommendedPlacesCount() async {
+    getRecommendedPlacesCountCallCount += 1;
+    return recommendedPlacesCount;
+  }
 
   @override
   Future<bool> recommendPlace(int placeId) async => false;

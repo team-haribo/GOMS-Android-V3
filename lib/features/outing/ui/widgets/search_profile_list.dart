@@ -6,6 +6,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 import 'package:goms/core/widgets/dialogs/forced_return_dialog.dart';
 import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
@@ -61,7 +62,10 @@ class SearchProfileList extends ConsumerWidget {
               Row(
                 children: [
                   Text(
-                    '$grade학년 | $major',
+                    StudentInfoFormatter.formatCohortDepartment(
+                      grade: grade,
+                      department: major,
+                    ),
                     style: AppTextStyles.text3.copyWith(
                       color: context.sub2Color,
                     ),

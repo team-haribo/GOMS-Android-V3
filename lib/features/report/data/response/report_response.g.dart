@@ -14,6 +14,8 @@ ReportResponse _$ReportResponseFromJson(Map<String, dynamic> json) =>
       reviewerName: parseReportString(json['reviewerName']),
       reviewerGrade: parseReportInt(json['reviewerGrade']),
       reviewerDepartment: parseReportString(json['reviewerDepartment']),
+      reportContent:
+          parseNullableReportString(_readReportContent(json, 'reportContent')),
       placeName: parseNullableReportString(_readPlaceName(json, 'placeName')),
       placeAddress:
           parseNullableReportString(_readPlaceAddress(json, 'placeAddress')),

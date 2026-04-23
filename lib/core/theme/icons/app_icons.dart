@@ -49,7 +49,7 @@ class AppIcons {
     Color? color,
   }) =>
       _loadPng(
-        'assets/icons/comeback_success_circle.png',
+        'assets/icons/come_back_success.png',
         width: width,
         height: height,
         color: color,
@@ -173,40 +173,40 @@ class AppIcons {
 
   /// 지도 즐겨찾기 하트 아이콘
   static Widget heart({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/heart.png',
+      _loadSvg(
+        'assets/icons/heart.svg',
         width: width,
         height: height,
         color: color,
       );
 
   static Widget heartFilled({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/heart_filled.png',
+      _loadSvg(
+        'assets/icons/heart_filled.svg',
         width: width,
         height: height,
         color: color,
       );
 
   /// 지도 댓글 삭제 아이콘
-  static Widget bin({double? width, double? height, Color? color}) => _loadPng(
-        'assets/icons/bin.png',
+  static Widget bin({double? width, double? height, Color? color}) => _loadSvg(
+        'assets/icons/bin.svg',
         width: width,
         height: height,
         color: color,
       );
 
   /// 지각자 없을 때 아이콘
-  static Widget fire({double? width, double? height, Color? color}) => _loadPng(
-        'assets/icons/fire.png',
+  static Widget fire({double? width, double? height, Color? color}) => _loadSvg(
+        'assets/icons/fire.svg',
         width: width,
         height: height,
         color: color,
       );
 
   /// 앱바 돌아가기 아이콘
-  static Widget back({double? width, double? height, Color? color}) => _loadPng(
-        'assets/icons/back.png',
+  static Widget back({double? width, double? height, Color? color}) => _loadSvg(
+        'assets/icons/back.svg',
         width: width,
         height: height,
         color: color,
@@ -275,8 +275,8 @@ class AppIcons {
 
   /// 글쓰기 아이콘
   static Widget tablerEdit({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/tabler_edit.png',
+      _loadSvg(
+        'assets/icons/tabler_edit.svg',
         width: width,
         height: height,
         color: color,
@@ -292,10 +292,13 @@ class AppIcons {
       );
 
   /// 유저 관리 버튼 아이콘
-  static Widget userManageButton(
-          {double? width, double? height, Color? color,}) =>
-      _loadPng(
-        'assets/icons/user_manage_button.png',
+  static Widget userManageButton({
+    double? width,
+    double? height,
+    Color? color,
+  }) =>
+      _loadSvg(
+        'assets/icons/user_manage.svg',
         width: width,
         height: height,
         color: color,
@@ -303,8 +306,8 @@ class AppIcons {
 
   /// 강제 외출 아이콘
   static Widget forcedOuting({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/forced_outing.png',
+      _loadSvg(
+        'assets/icons/forced_outing.svg',
         width: width,
         height: height,
         color: color,
@@ -312,33 +315,51 @@ class AppIcons {
 
   /// 강제 외출 복귀 아이콘
   static Widget forceReturn({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/forced_return.png',
-        width: width,
-        height: height,
-        color: color,
+      Transform(
+        alignment: Alignment.center,
+        transform: Matrix4.diagonal3Values(-1, 1, 1),
+        child: _loadSvg(
+          'assets/icons/forced_outing.svg',
+          width: width,
+          height: height,
+          color: color,
+        ),
       );
 
   /// 어드민 수정 아이콘
   static Widget adminEdit({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/admin_edit.png',
+      _loadSvg(
+        'assets/icons/admin_edit.svg',
         width: width,
         height: height,
         color: color,
       );
 
   static Widget setting({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/setting.png',
+      _loadSvg(
+        'assets/icons/setting.svg',
         width: width,
         height: height,
         color: color,
       );
 
   static Widget logout({double? width, double? height, Color? color}) =>
-      _loadPng(
-        'assets/icons/logout.png',
+      _loadSvg(
+        'assets/icons/with_draw.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+  static Widget nonCheck({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/non_check.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+  static Widget check({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/check.svg',
         width: width,
         height: height,
         color: color,

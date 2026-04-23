@@ -10,6 +10,7 @@ import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
+import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
@@ -90,17 +91,12 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
     return BaseScaffold(
       showAppBar: true,
       role: RoleEnum.admin,
+      floatingActionButton: const QRButton(type: RoleEnum.admin),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _ReportTile(
-            reportStatusFilter: reportStatusFilter,
-            onResetFilter: () => ref
-                .read(_reportStatusFilterProvider(_providerKey).notifier)
-                .setStatus(null),
-            onApplyFilter: (selection) => ref
-                .read(_reportStatusFilterProvider(_providerKey).notifier)
-                .setStatus(selection.reportStatus),
+          const _ReportTile(
+            title: '신고 목록',
           ),
           AppGap.v24,
           SearchStudentField(
@@ -111,15 +107,35 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
                 .setQuery(value),
           ),
           AppGap.v16,
-          Text(
-            '검색 결과',
-            style: AppTextStyles.title3.copyWith(
-              color: context.mainTextColor,
-            ),
+          Row(
+            children: [
+              Text(
+                '검색 결과',
+                style: AppTextStyles.title3.copyWith(
+                  color: context.mainTextColor,
+                ),
+              ),
+              const Spacer(),
+              FilterButton(
+                textColor: AppColors.admin,
+                bottomSheetBuilder: (_) => ReportFilterBottomSheet(
+                  initialSelection: ReportFilterSelection(
+                    reportStatus: reportStatusFilter,
+                  ),
+                  onApply: (selection) => ref
+                      .read(_reportStatusFilterProvider(_providerKey).notifier)
+                      .setStatus(selection.reportStatus),
+                  onReset: () => ref
+                      .read(_reportStatusFilterProvider(_providerKey).notifier)
+                      .setStatus(null),
+                ),
+              ),
+            ],
           ),
-          AppGap.v24,
+          AppGap.v16,
           Expanded(
             child: RefreshIndicator(
+              color: AppColors.admin,
               onRefresh: () async {
                 await Future.wait([
                   ref.read(pendingReportsProvider.notifier).reload(),
@@ -202,8 +218,10 @@ class _ReportListBody extends ConsumerWidget {
 
     final normalizedQuery = query.trim().toLowerCase();
     final List<ReportSummaryModel> filteredReports = reports.where((report) {
-      final matchesStatus = reportStatusFilter == null ||
-          report.reportStatus == reportStatusFilter;
+      final matchesStatus = matchesReportStatusFilter(
+        filter: reportStatusFilter,
+        status: report.reportStatus,
+      );
 
       final matchesQuery = normalizedQuery.isEmpty ||
           [
@@ -257,35 +275,36 @@ class _ReportListBody extends ConsumerWidget {
   }
 }
 
+bool matchesReportStatusFilter({
+  required ReportStatus? filter,
+  required ReportStatus status,
+}) {
+  if (filter == null) {
+    return true;
+  }
+
+  if (filter == ReportStatus.approved) {
+    return status == ReportStatus.approved || status == ReportStatus.rejected;
+  }
+
+  return status == filter;
+}
+
 class _ReportTile extends StatelessWidget {
   const _ReportTile({
-    required this.reportStatusFilter,
-    required this.onApplyFilter,
-    required this.onResetFilter,
+    required this.title,
   });
 
-  final ReportStatus? reportStatusFilter;
-  final ValueChanged<ReportFilterSelection> onApplyFilter;
-  final VoidCallback onResetFilter;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         Text(
-          '신고 목록',
+          title,
           style: AppTextStyles.title1.copyWith(
             color: context.mainTextColor,
-          ),
-        ),
-        const Spacer(),
-        FilterButton(
-          bottomSheetBuilder: (_) => ReportFilterBottomSheet(
-            initialSelection: ReportFilterSelection(
-              reportStatus: reportStatusFilter,
-            ),
-            onApply: onApplyFilter,
-            onReset: onResetFilter,
           ),
         ),
       ],
@@ -359,7 +378,11 @@ class _ReportListTile extends StatelessWidget {
 }
 
 String _reportHeadline(ReportSummaryModel report) {
-  return '후기 신고 #${report.reportId}';
+  final reportContent = report.reportContent?.trim();
+  if (reportContent != null && reportContent.isNotEmpty) {
+    return reportContent;
+  }
+  return '신고 내용 없음';
 }
 
 String _reportPlaceName(ReportSummaryModel report) {

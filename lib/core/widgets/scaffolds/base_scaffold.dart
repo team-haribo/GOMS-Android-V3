@@ -8,6 +8,7 @@ class BaseScaffold extends ConsumerWidget {
   final Widget body;
   final bool showAppBar;
   final bool showAppBarLogo;
+  final bool showAdminReportAction;
   final RoleEnum role;
   final VoidCallback? onBackPressed;
   final List<Widget>? appBarActions;
@@ -20,6 +21,7 @@ class BaseScaffold extends ConsumerWidget {
     required this.body,
     this.showAppBar = true,
     this.showAppBarLogo = false,
+    this.showAdminReportAction = false,
     this.role = RoleEnum.user,
     this.onBackPressed,
     this.appBarActions,
@@ -37,7 +39,7 @@ class BaseScaffold extends ConsumerWidget {
       AppSpacing.s24,
     );
     final basePadding = contentPadding ?? defaultPadding;
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
     final effectivePadding = basePadding.copyWith(
       bottom: basePadding.bottom + bottomInset,
     );
@@ -47,6 +49,7 @@ class BaseScaffold extends ConsumerWidget {
             ? GomsAppBar.logo(
                 actions: appBarActions,
                 role: role,
+                showAdminReportAction: showAdminReportAction,
               )
             : GomsAppBar.back(
                 onBackPressed: onBackPressed,

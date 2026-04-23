@@ -21,6 +21,7 @@ class KakaoMapBackground extends StatefulWidget {
   final ValueChanged<kakao.KakaoMapController>? onControllerReady;
   final ValueChanged<PopularPlace>? onPlaceTap;
   final ValueChanged<MapCoordinate>? onMapTap;
+  final VoidCallback? onMapInteraction;
 
   const KakaoMapBackground({
     super.key,
@@ -35,6 +36,7 @@ class KakaoMapBackground extends StatefulWidget {
     this.onControllerReady,
     this.onPlaceTap,
     this.onMapTap,
+    this.onMapInteraction,
   });
 
   @override
@@ -50,6 +52,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   kakao.KakaoMapController? _controller;
   final List<kakao.Poi> _pois = <kakao.Poi>[];
   kakao.Route? _route;
+  kakao.KImage? _currentLocationPoiIcon;
   int _renderToken = 0;
   String? _lastCameraSignature;
   String? _errorMessage;
@@ -127,9 +130,16 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
           cameraPoints.add(currentLatLng);
         }
 
+        final currentLocationIcon = await _resolveCurrentLocationPoiIcon();
+        if (!mounted || token != _renderToken) {
+          return;
+        }
+
         final poi = await controller.labelLayer.addPoi(
           currentLatLng,
-          style: kakao.PoiStyle(),
+          style: kakao.PoiStyle(
+            icon: currentLocationIcon,
+          ),
           text: widget.showCurrentLocationLabel ? '내 위치' : '',
         );
 
@@ -289,6 +299,60 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
     return unique.values.toList(growable: false);
   }
 
+  Future<kakao.KImage> _resolveCurrentLocationPoiIcon() async {
+    final cachedIcon = _currentLocationPoiIcon;
+    if (cachedIcon != null) {
+      return cachedIcon;
+    }
+
+    try {
+      final iconSize = Size(
+        MapPoiMarkerAsset.currentLocationIconWidth.toDouble(),
+        MapPoiMarkerAsset.currentLocationIconHeight.toDouble(),
+      );
+      final diameter = iconSize.shortestSide;
+
+      final generated = await kakao.KImage.fromWidget(
+        SizedBox(
+          width: iconSize.width,
+          height: iconSize.height,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Container(
+                width: diameter,
+                height: diameter,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.mainColor.withValues(alpha: 0.35),
+                ),
+              ),
+              Container(
+                width: diameter * 0.58,
+                height: diameter * 0.58,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.mainColor,
+                ),
+              ),
+            ],
+          ),
+        ),
+        iconSize,
+        context: context,
+      );
+
+      _currentLocationPoiIcon = generated;
+      return generated;
+    } catch (_) {
+      return kakao.KImage.fromAsset(
+        MapPoiMarkerAsset.currentLocation,
+        MapPoiMarkerAsset.currentLocationIconWidth,
+        MapPoiMarkerAsset.currentLocationIconHeight,
+      );
+    }
+  }
+
   Future<void> _clearOverlays(kakao.KakaoMapController controller) async {
     if (_route != null) {
       try {
@@ -388,6 +452,12 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
             },
             onMapClick: (point, position) {
               widget.onMapTap?.call(MapCoordinate.fromKakaoLatLng(position));
+              widget.onMapInteraction?.call();
+            },
+            onCameraMoveEnd: (position, gestureType) {
+              if (gestureType != kakao.GestureType.unknown) {
+                widget.onMapInteraction?.call();
+              }
             },
             onMapError: (error) {
               debugPrint('KakaoMapBackground onMapError: $error');

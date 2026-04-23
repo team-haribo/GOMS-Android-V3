@@ -128,6 +128,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       isLoading: isLoading,
       onConfirm: _handleLogin,
       onBackPressed: _handleBack,
+      confirmBottomSpacing: AppSpacing.s24,
       children: [
         EmailTextField(
           controller: _emailController,

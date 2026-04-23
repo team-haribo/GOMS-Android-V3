@@ -1,4 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/notification/notification_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,8 +29,7 @@ class SettingsState {
   }
 }
 
-final settingsProvider =
-AsyncNotifierProvider<SettingsNotifier, SettingsState>(
+final settingsProvider = AsyncNotifierProvider<SettingsNotifier, SettingsState>(
   SettingsNotifier.new,
 );
 
@@ -72,7 +73,9 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   }
 
   Future<bool> setCameraLaunch(bool value) async {
-    if (value) {
+    final role = ref.read(roleProvider);
+
+    if (value && role != RoleEnum.admin) {
       var status = await Permission.camera.status;
       if (status.isDenied) {
         status = await Permission.camera.request();

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:goms/features/report/data/request/create_review_report_request.dart';
 import 'package:goms/features/report/data/request/report_resolve_request.dart';
 import 'package:goms/features/report/data/response/report_detail_response.dart';
 import 'package:goms/features/report/data/response/report_list_response.dart';
@@ -28,6 +29,16 @@ class ReportRemoteDataSource {
       '/api/v3/report/$reportId',
     );
     return ReportDetailResponse.fromJson(response.data ?? const {});
+  }
+
+  Future<void> createReviewReport({
+    required int reviewId,
+    required CreateReviewReportRequest request,
+  }) async {
+    await _dio.post<void>(
+      '/api/v3/report/$reviewId',
+      data: request.toJson(),
+    );
   }
 
   Future<ReportResolveResponse> resolveReport({

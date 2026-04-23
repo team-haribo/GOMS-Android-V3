@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
@@ -14,6 +16,8 @@ final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
   MapScreenNotifier.new,
 );
 
+final mapReentryRefreshSignalProvider = StateProvider<int>((ref) => 0);
+
 class MapScreenNotifier extends Notifier<MapScreenState> {
   static const _hotPlaceDays = 7;
 
@@ -22,28 +26,27 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     return MapScreenState.initial();
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData({bool showLoading = true}) async {
     if (!ref.mounted) {
       return;
     }
 
-    state = state.copyWith(
-      status: MapScreenStatus.loading,
-      errorMessage: null,
-    );
+    if (showLoading) {
+      state = state.copyWith(
+        status: MapScreenStatus.loading,
+        errorMessage: null,
+      );
+    }
 
     try {
-      final results = await Future.wait<Object?>([
-        _loadMarkerPlaces(),
-        _loadMyReviewModels(),
-        _loadMyReviewCountOrNull(),
-      ]);
-      final popularPlaces = results[0]! as List<PopularPlace>;
-      final myReviewModels = results[1]! as List<MapScreenReviewModel>;
-      final myReviewCount = (results[2] as int?) ?? myReviewModels.length;
-      final normalizedMyReviewModels = _normalizeMyReviewModels(
-        myReviewModels,
-        myReviewCount,
+      final popularPlaces = await _loadMarkerPlaces();
+      final myReviewModels = await _loadMyReviewModels();
+      final myReviewCount = await _loadMyReviewCount(
+        fallbackCount: myReviewModels.length,
+      );
+      final effectiveMyReviewCount = _resolveMyReviewCount(
+        reviews: myReviewModels,
+        reviewCount: myReviewCount,
       );
       if (!ref.mounted) {
         return;
@@ -52,8 +55,9 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
       state = state.copyWith(
         status: MapScreenStatus.success,
         popularPlaces: popularPlaces,
-        reviewModels: normalizedMyReviewModels,
-        reviewCount: myReviewCount,
+        reviewModels: myReviewModels,
+        reviewCount: effectiveMyReviewCount,
+        errorMessage: null,
       );
     } catch (error, stackTrace) {
       if (!ref.mounted) {
@@ -122,6 +126,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
       ref.invalidate(recommendedPlacesProvider);
       ref.invalidate(recommendedPlacesCountProvider);
       ref.invalidate(placeDetailProvider(placeId));
+      unawaited(ref.read(recommendedPlacesCacheProvider.notifier).refresh());
     } catch (_) {
       state = state.copyWith(popularPlaces: previousPlaces);
       rethrow;
@@ -129,37 +134,34 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
   }
 
   Future<void> deleteMyReview(int reviewId) async {
-    final currentReviews = state.reviewModels;
+    final previousReviewModels = state.reviewModels;
     final previousReviewCount = state.reviewCount;
-    final nextReviews = currentReviews
+
+    final nextReviewModels = previousReviewModels
         .where((review) => review.reviewId != reviewId)
         .toList(growable: false);
-    final removedCount = currentReviews.length - nextReviews.length;
 
-    if (removedCount == 0) {
-      return;
-    }
+    final isActuallyRemoved =
+        nextReviewModels.length != previousReviewModels.length;
+    final nextReviewCount = isActuallyRemoved
+        ? max(0, previousReviewCount - 1)
+        : previousReviewCount;
 
     state = state.copyWith(
-      reviewModels: nextReviews,
-      reviewCount: max(0, state.reviewCount - removedCount),
+      reviewModels: nextReviewModels,
+      reviewCount: nextReviewCount,
     );
 
     try {
       await ref.read(recommendedPlaceRepositoryProvider).deleteReview(reviewId);
-    } catch (error, stackTrace) {
-      if (ref.mounted) {
-        Logger.e(
-          'Delete my review request failed.',
-          tag: 'MAP',
-          error: error,
-          stackTrace: stackTrace,
-        );
-        state = state.copyWith(
-          reviewModels: currentReviews,
-          reviewCount: previousReviewCount,
-        );
-      }
+      ref.invalidate(recommendedPlacesProvider);
+      ref.invalidate(recommendedPlacesCountProvider);
+      ref.invalidate(myReviewIdsProvider);
+    } catch (_) {
+      state = state.copyWith(
+        reviewModels: previousReviewModels,
+        reviewCount: previousReviewCount,
+      );
       rethrow;
     }
   }
@@ -167,6 +169,13 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
   Future<List<PopularPlace>> _loadMarkerPlaces() async {
     try {
       final hotPlaces = await _loadHotPlaceEntities();
+      if (hotPlaces.isEmpty) {
+        final places =
+            await ref.read(recommendedPlaceRepositoryProvider).getPlaces();
+        return places
+            .map((place) => _toPopularPlace(place))
+            .toList(growable: false);
+      }
       return hotPlaces
           .map((place) => _toPopularPlace(place))
           .toList(growable: false);
@@ -213,7 +222,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     }
   }
 
-  Future<int?> _loadMyReviewCountOrNull() async {
+  Future<int> _loadMyReviewCount({required int fallbackCount}) async {
     try {
       return await ref
           .read(recommendedPlaceRepositoryProvider)
@@ -221,46 +230,45 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     } catch (error, stackTrace) {
       if (ref.mounted) {
         Logger.e(
-          'My review count request failed. Falling back to loaded review list length.',
+          'My review count request failed. Falling back to list length.',
           tag: 'MAP',
           error: error,
           stackTrace: stackTrace,
         );
       }
-      return null;
+      return fallbackCount;
     }
   }
 
   MapScreenReviewModel _toMapScreenReviewModel(MyReviewEntity review) {
     return MapScreenReviewModel(
-      reviewId: review.reviewId,
       placeName: review.placeName,
       category: review.categoryName,
       address: review.address,
       reviewDetailContent: review.content,
       createdAt: review.reviewedAt,
+      reviewId: review.reviewId,
     );
   }
 
-  List<MapScreenReviewModel> _normalizeMyReviewModels(
-    List<MapScreenReviewModel> reviews,
-    int reviewCount,
-  ) {
+  int _resolveMyReviewCount({
+    required List<MapScreenReviewModel> reviews,
+    required int reviewCount,
+  }) {
     if (reviewCount < 0) {
-      return const <MapScreenReviewModel>[];
+      return reviews.length;
     }
 
-    if (reviews.length <= reviewCount) {
-      return reviews;
+    if (reviews.length > reviewCount) {
+      Logger.e(
+        'My review list size (${reviews.length}) exceeded my review count ($reviewCount). '
+        'Using list size to keep the written reviews visible.',
+        tag: 'MAP',
+      );
+      return reviews.length;
     }
 
-    Logger.e(
-      'My review list size (${reviews.length}) exceeded my review count ($reviewCount). '
-      'Trimming list for safety.',
-      tag: 'MAP',
-    );
-
-    return reviews.take(reviewCount).toList(growable: false);
+    return reviewCount;
   }
 
   PopularPlace _toPopularPlace(RecommendedPlaceEntity place) {

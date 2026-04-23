@@ -9,6 +9,7 @@ import 'package:goms/features/map/data/providers/recommended_place_providers.dar
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
 import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/shared/ui/widgets/map_bottom_sheet.dart';
 import 'package:goms/features/map/shared/ui/widgets/place_detail_sheet.dart';
 
 class MapDetailOverlay extends ConsumerWidget {
@@ -25,10 +26,11 @@ class MapDetailOverlay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
+    final collapsedSheetSize = MapBottomSheet.handleOnlyMinSize(context);
     final initialSheetSize = context.isTabletLayout
         ? 0.4
         : (context.screenHeight < 780 ? 0.4 : 0.34);
-    final maxSheetSize = context.isTabletLayout ? 0.76 : 0.82;
+    final maxSheetSize = context.isTabletLayout ? 0.8 : 0.86;
     final placeId = place.placeId;
     final placeDetailAsync =
         placeId == null ? null : ref.watch(placeDetailProvider(placeId));
@@ -76,9 +78,14 @@ class MapDetailOverlay extends ConsumerWidget {
             isLight: isLight,
             isReviewLoading: isReviewLoading,
             initialChildSize: initialSheetSize,
-            minChildSize: initialSheetSize,
+            minChildSize: collapsedSheetSize,
             maxChildSize: maxSheetSize,
-            snapSizes: <double>[initialSheetSize, 0.56, maxSheetSize],
+            snapSizes: <double>[
+              collapsedSheetSize,
+              initialSheetSize,
+              0.56,
+              maxSheetSize,
+            ],
             myReviewIds: myReviewIds,
             showTrailingActions: false,
             onArrivalPressed: () =>

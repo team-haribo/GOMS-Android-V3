@@ -1,4 +1,5 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
+import 'package:goms/features/report/data/request/create_review_report_request.dart';
 import 'package:goms/features/report/data/datasources/report_remote_datasource.dart';
 import 'package:goms/features/report/data/request/report_resolve_request.dart';
 import 'package:goms/features/report/data/repositories/report_repository.dart';
@@ -10,6 +11,17 @@ class ReportRepositoryImpl implements ReportRepository {
   const ReportRepositoryImpl(this._remoteDataSource);
 
   final ReportRemoteDataSource _remoteDataSource;
+
+  @override
+  Future<void> createReviewReport({
+    required int reviewId,
+    required String reason,
+  }) {
+    return _remoteDataSource.createReviewReport(
+      reviewId: reviewId,
+      request: CreateReviewReportRequest(reason: reason),
+    );
+  }
 
   @override
   Future<List<ReportSummaryModel>> getPendingReports() async {

@@ -58,12 +58,67 @@ void main() {
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('8기 | AI과'), findsOneWidget);
     expect(find.text('지각 횟수'), findsOneWidget);
-    expect(find.text('3'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is RichText &&
+            widget.text.toPlainText().contains('3') &&
+            widget.text.toPlainText().contains('번'),
+      ),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('MyPageScreen scrolls before profile content overflows',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          roleProvider.overrideWith((ref) => RoleEnum.user),
+          themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+          settingsProvider.overrideWith(_FakeSettingsNotifier.new),
+          myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+          currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+          home: const MyPageScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets(
       'MyPageScreen logout confirm closes dialog and routes to onboarding',
       (tester) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
     final authNotifier = _FakeAuthNotifier();
     final container = ProviderContainer(
       overrides: [
@@ -118,7 +173,9 @@ void main() {
     );
 
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('로그아웃'));
+
+    expect(find.byType(SingleChildScrollView), findsNothing);
+
     await tester.tap(find.text('로그아웃'));
     await tester.pumpAndSettle();
 
@@ -132,7 +189,8 @@ void main() {
     expect(find.text('onboarding-screen'), findsOneWidget);
   });
 
-  testWidgets('MyPageScreen hides admin camera launch', (tester) async {
+  testWidgets('MyPageScreen shows admin QR auto open setting only',
+      (tester) async {
     final container = ProviderContainer(
       overrides: [
         roleProvider.overrideWith((ref) => RoleEnum.admin),
@@ -181,7 +239,38 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.text('카메라 바로 켜기'), findsNothing);
+    expect(find.text('외출제 푸시 알림'), findsNothing);
+    expect(find.text('QR 생성 바로 켜기'), findsOneWidget);
+
+    final lastSettingBottom = tester.getBottomLeft(find.text('QR 생성 바로 켜기')).dy;
+    final firstActionTop = tester.getTopLeft(find.text('비밀번호 재설정')).dy;
+
+    expect(firstActionTop - lastSettingBottom, lessThan(120));
+    expect(
+      find.ancestor(
+        of: find.text('비밀번호 재설정'),
+        matching: find.byWidgetPredicate(
+          (widget) =>
+              widget is Padding &&
+              widget.padding ==
+                  const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+        ),
+      ),
+      findsOneWidget,
+    );
+
+    final accountDivider = find.byType(Divider).last;
+    final firstActionRow = find
+        .ancestor(
+          of: find.text('비밀번호 재설정'),
+          matching: find.byType(InkWell),
+        )
+        .first;
+    expect(
+      tester.getTopLeft(firstActionRow).dy -
+          tester.getBottomLeft(accountDivider).dy,
+      AppSpacing.s24,
+    );
   });
 }
 

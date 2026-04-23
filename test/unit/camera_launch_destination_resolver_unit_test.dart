@@ -15,11 +15,11 @@ void main() {
       expect(destination, isNull);
     });
 
-    test('카메라 권한이 없으면 자동 실행하지 않는다', () {
+    test('학생 계정은 카메라 권한이 없으면 자동 실행하지 않는다', () {
       final destination = CameraLaunchDestinationResolver.resolve(
         enabled: true,
         isCameraPermissionGranted: false,
-        role: RoleEnum.admin,
+        role: RoleEnum.user,
       );
 
       expect(destination, isNull);
@@ -35,14 +35,14 @@ void main() {
       expect(destination, RoutePath.qr);
     });
 
-    test('학생회 계정은 QR 발급 화면을 자동으로 열지 않는다', () {
+    test('학생회 계정은 QR 발급 화면으로 이동한다', () {
       final destination = CameraLaunchDestinationResolver.resolve(
         enabled: true,
-        isCameraPermissionGranted: true,
+        isCameraPermissionGranted: false,
         role: RoleEnum.admin,
       );
 
-      expect(destination, isNull);
+      expect(destination, RoutePath.qrIssue);
     });
   });
 }

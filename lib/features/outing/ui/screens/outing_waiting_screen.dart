@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/app/router/route_path.dart';
@@ -9,7 +8,6 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/features/outing/ui/widgets/late_profile_container.dart';
@@ -21,7 +19,6 @@ import 'package:goms/features/late/ui/providers/late_rank_students_provider.dart
 import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
 import 'package:goms/features/outing/ui/widgets/my_outing_status_card.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class OutingWaitingScreen extends ConsumerStatefulWidget {
   const OutingWaitingScreen({
@@ -34,35 +31,11 @@ class OutingWaitingScreen extends ConsumerStatefulWidget {
 }
 
 class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkCameraLaunch();
-    });
-  }
-
   Future<void> _onRefresh() async {
     await Future.wait([
       ref.read(currentOutingStudentsProvider.notifier).reload(),
       ref.read(lateRankStudentsProvider.notifier).reload(),
     ]);
-  }
-
-  Future<void> _checkCameraLaunch() async {
-    if (!mounted || ref.read(roleProvider) == RoleEnum.admin) {
-      return;
-    }
-
-    final cameraLaunch = await SettingsStorage.getCameraLaunch();
-    if (!cameraLaunch) {
-      return;
-    }
-
-    final cameraStatus = await Permission.camera.status;
-    if (cameraStatus.isGranted && mounted) {
-      context.push(RoutePath.qr);
-    }
   }
 
   @override
@@ -78,8 +51,10 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     return BaseScaffold(
       showAppBar: true,
       showAppBarLogo: true,
+      showAdminReportAction: true,
       role: role,
       body: RefreshIndicator(
+        color: role == RoleEnum.admin ? AppColors.admin : AppColors.mainColor,
         onRefresh: _onRefresh,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

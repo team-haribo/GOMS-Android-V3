@@ -14,23 +14,27 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.onBackPressed,
     this.actions,
     this.role = RoleEnum.user,
-  }) : _showLogo = false;
+  })  : _showLogo = false,
+        showAdminReportAction = false;
 
   const GomsAppBar._logo({
     super.key,
     this.actions,
     this.role = RoleEnum.user,
+    this.showAdminReportAction = false,
   })  : _showLogo = true,
         onBackPressed = null;
   factory GomsAppBar.logo({
     Key? key,
     List<Widget>? actions,
     RoleEnum role = RoleEnum.user,
+    bool showAdminReportAction = false,
   }) =>
       GomsAppBar._logo(
         key: key,
         actions: actions,
         role: role,
+        showAdminReportAction: showAdminReportAction,
       );
 
   factory GomsAppBar.back({
@@ -50,35 +54,52 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final VoidCallback? onBackPressed;
   final List<Widget>? actions;
   final RoleEnum role;
+  final bool showAdminReportAction;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
+    final backAction = onBackPressed ?? () => context.pop();
+
     return AppBar(
       automaticallyImplyLeading: false,
+      leadingWidth: _showLogo ? null : 120,
       leading: _showLogo
           ? null
           : Padding(
               padding: const EdgeInsets.only(left: AppSpacing.s24),
-              child: IconButton(
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),
-                icon: role == RoleEnum.admin
-                    ? AppIcons.back(
-                        width: 24,
-                        height: 24,
-                        color: AppColors.admin,
-                      )
-                    : AppIcons.back(width: 24, height: 24),
-                onPressed: onBackPressed ?? () => context.pop(),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
+              child: TextButton(
+                onPressed: backAction,
+                style: TextButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  alignment: Alignment.centerLeft,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    role == RoleEnum.admin
+                        ? AppIcons.back(
+                            width: 24,
+                            height: 24,
+                            color: AppColors.admin,
+                          )
+                        : AppIcons.back(width: 24, height: 24),
+                    AppGap.h4,
+                    Text(
+                      '돌아가기',
+                      style: AppTextStyles.text2.copyWith(
+                        color: role == RoleEnum.admin
+                            ? AppColors.admin
+                            : AppColors.mainColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-      titleSpacing: _showLogo ? 24 : 4,
+      titleSpacing: _showLogo ? 24 : 0,
       title: _showLogo
           ? Row(
               mainAxisSize: MainAxisSize.min,
@@ -100,7 +121,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 ),
                 const Spacer(),
-                if (role == RoleEnum.admin)
+                if (role == RoleEnum.admin && showAdminReportAction)
                   IconButton(
                     onPressed: () =>
                         context.push(RoutePath.studentCouncilReports),
@@ -112,14 +133,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
               ],
             )
-          : Text(
-              '돌아가기',
-              style: AppTextStyles.text2.copyWith(
-                color: role == RoleEnum.admin
-                    ? AppColors.admin
-                    : AppColors.mainColor,
-              ),
-            ),
+          : null,
       actions: actions,
     );
   }

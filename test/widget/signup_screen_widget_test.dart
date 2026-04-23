@@ -16,6 +16,9 @@ import 'package:responsive_framework/responsive_framework.dart';
 void main() {
   testWidgets('SignupScreen shows privacy policy row and consent button flow',
       (tester) async {
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+
     final router = GoRouter(
       initialLocation: RoutePath.signUp,
       routes: [
@@ -31,7 +34,8 @@ void main() {
     );
 
     await tester.pumpWidget(
-      ProviderScope(
+      UncontrolledProviderScope(
+        container: container,
         child: MaterialApp.router(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
@@ -57,10 +61,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('개인정보 수집 및 처리방침'), findsOneWidget);
-    expect(
-      find.byIcon(Icons.check_box_outline_blank_rounded),
-      findsOneWidget,
-    );
+    expect(container.read(signupProvider).isPrivacyPolicyAgreed, isFalse);
 
     await tester.ensureVisible(find.text('개인정보 수집 및 처리방침'));
     await tester.tap(find.text('개인정보 수집 및 처리방침'));
@@ -72,8 +73,10 @@ void main() {
 
     await tester.tap(find.text('개인정보 수집 동의'));
     await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 50));
 
-    expect(find.byIcon(Icons.check_box_rounded), findsOneWidget);
+    expect(find.text('기수를 선택해주세요'), findsOneWidget);
+    expect(container.read(signupProvider).isPrivacyPolicyAgreed, isTrue);
   });
 
   testWidgets('SignupScreen back navigation clears signup state',
@@ -146,7 +149,9 @@ void main() {
     notifier.setPrivacyPolicyAgreed(true);
 
     await tester.pump();
-    await tester.tap(find.byType(IconButton).first);
+    final backButton = find.widgetWithText(TextButton, '돌아가기');
+    expect(backButton, findsOneWidget);
+    await tester.tap(backButton);
     await tester.pumpAndSettle();
 
     expect(find.text('open signup'), findsOneWidget);

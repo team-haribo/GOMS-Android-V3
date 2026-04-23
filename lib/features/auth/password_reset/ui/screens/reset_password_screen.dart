@@ -12,6 +12,7 @@ import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/password_reset/ui/models/reset_password_state.dart';
 import 'package:goms/features/auth/password_reset/ui/providers/reset_password_provider.dart';
+import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
@@ -37,7 +38,13 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
 
       if (authFlow.email.isNotEmpty &&
           authFlow.purpose == EmailVerificationPurpose.passwordChange) {
-        context.go(RoutePath.verify, extra: RoutePath.resetPassword);
+        context.go(
+          RoutePath.verify,
+          extra: const VerifyRouteExtra(
+            redirectPath: RoutePath.resetPassword,
+            backPath: RoutePath.findPassword,
+          ),
+        );
         return;
       }
 

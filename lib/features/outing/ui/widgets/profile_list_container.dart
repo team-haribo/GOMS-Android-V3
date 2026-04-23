@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 
 class ProfileListContainer extends StatelessWidget {
@@ -45,7 +46,10 @@ class ProfileListContainer extends StatelessWidget {
             ],
           ),
           Text(
-            '$grade기 | $major',
+            StudentInfoFormatter.formatCohortDepartment(
+              grade: grade,
+              department: major,
+            ),
             style: AppTextStyles.caption2.copyWith(
               color: context.sub2Color,
             ),

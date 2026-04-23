@@ -42,6 +42,24 @@ class StudentCouncilMembersNotifier
         const StudentCouncilFilterRequest();
   }
 
+  void updateMemberStatus({
+    required int memberId,
+    required String status,
+  }) {
+    final currentState = state;
+    if (currentState is! AsyncData<List<StudentCouncilStudentModel>>) return;
+
+    state = AsyncData(
+      currentState.value
+          .map(
+            (member) => member.memberId == memberId
+                ? member.copyWith(status: status)
+                : member,
+          )
+          .toList(),
+    );
+  }
+
   void updateMemberRole({
     required int memberId,
     required StudentRole studentRole,

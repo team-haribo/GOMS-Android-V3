@@ -88,6 +88,7 @@ class _AdminReportDetailScreenState
   ) {
     final reportCreatedAt = _formatDateTime(detail.reportCreatedAt);
     final reviewCreatedAt = _formatDateTime(detail.reviewCreatedAt);
+    final reviewMeta = _buildReviewMeta(detail, reviewCreatedAt);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,11 +128,7 @@ class _AdminReportDetailScreenState
                 AppGap.v12,
                 _ContentBox(content: detail.reviewContent),
                 AppGap.v4,
-                _MetaText(
-                  text: reviewCreatedAt == '-'
-                      ? '리뷰 #${detail.reviewId}'
-                      : '리뷰 #${detail.reviewId} $reviewCreatedAt',
-                ),
+                _MetaText(text: reviewMeta),
               ],
             ),
           ),
@@ -170,6 +167,20 @@ class _AdminReportDetailScreenState
   String _formatDateTime(DateTime? value) {
     if (value == null) return '-';
     return DateFormat('yy.MM.dd HH:mm:ss').format(value.toLocal());
+  }
+
+  String _buildReviewMeta(ReportDetailModel detail, String reviewCreatedAt) {
+    final placeName = detail.placeName?.trim();
+    final segments = <String>[
+      if (placeName != null && placeName.isNotEmpty) placeName,
+      if (reviewCreatedAt != '-') reviewCreatedAt,
+    ];
+
+    if (segments.isEmpty) {
+      return '리뷰 #${detail.reviewId}';
+    }
+
+    return segments.join(' ');
   }
 
   Future<void> _resolve(ReportStatus status) async {
@@ -288,7 +299,7 @@ class _ReportedUserTile extends StatelessWidget {
               ),
               AppGap.v2,
               Text(
-                '${detail.reviewerGrade}학년 ${detail.reviewerDepartment}',
+                '${detail.reviewerGrade}기 ${detail.reviewerDepartment}',
                 style: AppTextStyles.caption1.copyWith(
                   color: context.sub2Color,
                 ),
@@ -352,8 +363,8 @@ class _StatusText extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, color) = switch (status) {
       ReportStatus.pending => ('처리전', AppColors.admin),
-      ReportStatus.approved => ('삭제됨', AppColors.negative),
-      ReportStatus.rejected => ('기각됨', context.sub2Color),
+      ReportStatus.approved => ('처리 완료', context.sub2Color),
+      ReportStatus.rejected => ('기각', context.sub2Color),
     };
 
     return Padding(

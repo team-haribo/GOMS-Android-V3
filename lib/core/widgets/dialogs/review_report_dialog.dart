@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 
 /// 후기 신고 다이얼로그
 Future<void> reviewReport({
@@ -73,7 +75,7 @@ class _ReviewReportDialogState extends State<_ReviewReportDialog> {
           CupertinoTextField(
             controller: _reasonController,
             placeholder: '신고 사유 작성',
-            maxLines: 3,
+            maxLines: 1,
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
             inputFormatters: [
               LengthLimitingTextInputFormatter(widget.maxReasonLength),
@@ -150,6 +152,12 @@ class _ReviewReportDialogState extends State<_ReviewReportDialog> {
       setState(() {
         _isSubmitting = false;
       });
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        const SnackBar(
+          content: Text('후기 신고에 실패했습니다.'),
+          backgroundColor: AppColors.negative,
+        ),
+      );
     }
   }
 }

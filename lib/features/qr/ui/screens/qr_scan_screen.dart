@@ -52,16 +52,16 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
       if (next.status == QrScanStatus.success && next.resultType != null) {
         switch (next.resultType!) {
           case QrScanResultType.outingStarted:
-            _showResultScreen(const OutingStartScreen());
+            _showResultScreen(OutingStartScreen(onConfirm: _goHome));
             return;
           case QrScanResultType.returnSuccess:
-            _showResultScreen(const ReturnSuccessScreen());
+            _showResultScreen(ReturnSuccessScreen(onConfirm: _goHome));
             return;
           case QrScanResultType.lateReturn:
-            _showResultScreen(const LateScreen());
+            _showResultScreen(LateScreen(onConfirm: _goHome));
             return;
           case QrScanResultType.cannotGoOut:
-            _showResultScreen(const CannotGoOutScreen());
+            _showResultScreen(CannotGoOutScreen(onGoHome: _goHome));
             return;
         }
       }
@@ -197,6 +197,11 @@ class _OverlayPainter extends CustomPainter {
 }
 
 extension on _QrScanScreenState {
+  void _goHome() {
+    if (!mounted) return;
+    context.go(RoutePath.home);
+  }
+
   void _showResultScreen(Widget screen) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (_) => screen),

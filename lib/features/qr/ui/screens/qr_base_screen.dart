@@ -66,12 +66,9 @@ class QrBaseScreen extends StatelessWidget {
             extraContent!,
           ],
           const Spacer(),
-          SafeArea(
-            top: false,
-            child: ConfirmButton(
-              text: buttonText,
-              onPressed: onPressed ?? () => context.go(RoutePath.home),
-            ),
+          ConfirmButton(
+            text: buttonText,
+            onPressed: onPressed ?? () => context.go(RoutePath.home),
           ),
         ],
       ),

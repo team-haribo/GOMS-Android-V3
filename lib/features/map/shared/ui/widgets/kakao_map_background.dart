@@ -21,6 +21,7 @@ class KakaoMapBackground extends StatefulWidget {
   final ValueChanged<kakao.KakaoMapController>? onControllerReady;
   final ValueChanged<PopularPlace>? onPlaceTap;
   final ValueChanged<MapCoordinate>? onMapTap;
+  final VoidCallback? onMapInteraction;
 
   const KakaoMapBackground({
     super.key,
@@ -35,6 +36,7 @@ class KakaoMapBackground extends StatefulWidget {
     this.onControllerReady,
     this.onPlaceTap,
     this.onMapTap,
+    this.onMapInteraction,
   });
 
   @override
@@ -450,6 +452,12 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
             },
             onMapClick: (point, position) {
               widget.onMapTap?.call(MapCoordinate.fromKakaoLatLng(position));
+              widget.onMapInteraction?.call();
+            },
+            onCameraMoveEnd: (position, gestureType) {
+              if (gestureType != kakao.GestureType.unknown) {
+                widget.onMapInteraction?.call();
+              }
             },
             onMapError: (error) {
               debugPrint('KakaoMapBackground onMapError: $error');

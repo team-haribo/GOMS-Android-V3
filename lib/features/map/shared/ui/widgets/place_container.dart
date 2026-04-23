@@ -115,9 +115,9 @@ class _ReviewPlaceContainer extends PlaceContainer {
         address: address,
         reviewContent: reviewContent,
         reviewCreatedAt: reviewCreatedAt,
-        onActionPressed: onActionPressed,
         colors: colors,
       ),
+      trailing: _PlaceActionButton.review(onPressed: onActionPressed),
     );
   }
 }
@@ -254,7 +254,6 @@ class _ReviewContent extends StatelessWidget {
   final String address;
   final String reviewContent;
   final DateTime? reviewCreatedAt;
-  final VoidCallback? onActionPressed;
   final _PlaceContainerColors colors;
 
   const _ReviewContent({
@@ -263,7 +262,6 @@ class _ReviewContent extends StatelessWidget {
     required this.address,
     required this.reviewContent,
     required this.reviewCreatedAt,
-    required this.onActionPressed,
     required this.colors,
   });
 
@@ -302,8 +300,6 @@ class _ReviewContent extends StatelessWidget {
               '작성일: ${_formatDate(reviewCreatedAt)}',
               style: AppTextStyles.caption1.copyWith(color: colors.subColor),
             ),
-            AppGap.h8,
-            _PlaceActionButton.review(onPressed: onActionPressed),
           ],
         ),
       ],

@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
@@ -14,6 +16,8 @@ final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
   MapScreenNotifier.new,
 );
 
+final mapReentryRefreshSignalProvider = StateProvider<int>((ref) => 0);
+
 class MapScreenNotifier extends Notifier<MapScreenState> {
   static const _hotPlaceDays = 7;
 
@@ -22,15 +26,17 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
     return MapScreenState.initial();
   }
 
-  Future<void> fetchData() async {
+  Future<void> fetchData({bool showLoading = true}) async {
     if (!ref.mounted) {
       return;
     }
 
-    state = state.copyWith(
-      status: MapScreenStatus.loading,
-      errorMessage: null,
-    );
+    if (showLoading) {
+      state = state.copyWith(
+        status: MapScreenStatus.loading,
+        errorMessage: null,
+      );
+    }
 
     try {
       final popularPlaces = await _loadMarkerPlaces();
@@ -51,6 +57,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
         popularPlaces: popularPlaces,
         reviewModels: myReviewModels,
         reviewCount: effectiveMyReviewCount,
+        errorMessage: null,
       );
     } catch (error, stackTrace) {
       if (!ref.mounted) {
@@ -119,6 +126,7 @@ class MapScreenNotifier extends Notifier<MapScreenState> {
       ref.invalidate(recommendedPlacesProvider);
       ref.invalidate(recommendedPlacesCountProvider);
       ref.invalidate(placeDetailProvider(placeId));
+      unawaited(ref.read(recommendedPlacesCacheProvider.notifier).refresh());
     } catch (_) {
       state = state.copyWith(popularPlaces: previousPlaces);
       rethrow;

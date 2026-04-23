@@ -6,6 +6,8 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
 import 'package:goms/features/map/review/ui/models/write_review_state.dart';
 import 'package:goms/features/map/review/ui/providers/write_review_provider.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
@@ -19,6 +21,7 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
   final String address;
   final int review;
   final int recommended;
+  final bool isRecommended;
 
   const WriteReviewScreen({
     super.key,
@@ -28,6 +31,7 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
     required this.address,
     required this.review,
     required this.recommended,
+    required this.isRecommended,
   });
 
   @override
@@ -36,10 +40,15 @@ class WriteReviewScreen extends ConsumerStatefulWidget {
 
 class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
   late final ProviderSubscription<WriteReviewState> _writeReviewSubscription;
+  late bool _isRecommended;
+  late int _recommendedCount;
+  bool _isRecommendationUpdating = false;
 
   @override
   void initState() {
     super.initState();
+    _isRecommended = widget.isRecommended;
+    _recommendedCount = widget.recommended;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(writeReviewProvider.notifier).reset();
     });
@@ -80,6 +89,64 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     super.dispose();
   }
 
+  Future<void> _onRecommendationPressed() async {
+    final placeId = widget.placeId;
+    if (_isRecommendationUpdating) return;
+
+    if (placeId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('장소 정보가 올바르지 않습니다.'),
+          backgroundColor: AppColors.negative,
+        ),
+      );
+      return;
+    }
+
+    final previousRecommended = _isRecommended;
+    final previousCount = _recommendedCount;
+    final nextRecommended = !previousRecommended;
+
+    setState(() {
+      _isRecommendationUpdating = true;
+      _isRecommended = nextRecommended;
+      final nextCount = previousCount + (nextRecommended ? 1 : -1);
+      _recommendedCount = nextCount < 0 ? 0 : nextCount;
+    });
+
+    try {
+      if (nextRecommended) {
+        await ref.read(recommendedPlaceRepositoryProvider).recommendPlace(
+              placeId,
+            );
+      } else {
+        await ref.read(recommendedPlaceRepositoryProvider).unRecommendPlace(
+              placeId,
+            );
+      }
+      ref.invalidate(mapScreenProvider);
+      ref.invalidate(placeDetailProvider(placeId));
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isRecommended = previousRecommended;
+        _recommendedCount = previousCount;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('추천 상태 변경에 실패했습니다. 다시 시도해주세요.'),
+          backgroundColor: AppColors.negative,
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isRecommendationUpdating = false;
+        });
+      }
+    }
+  }
+
   void _onNextPressed(WriteReviewNotifier notifier) {
     GomsDialog.confirm(
       title: '후기 등록',
@@ -92,7 +159,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
         category: widget.category,
         address: widget.address,
         review: widget.review,
-        recommended: widget.recommended,
+        recommended: _recommendedCount,
       ),
     ).show(context);
   }
@@ -164,7 +231,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                               ),
                               AppGap.v4,
                               Text(
-                                '학생 후기 ${widget.review} | 추천 ${widget.recommended}',
+                                '학생 후기 ${widget.review} | 추천 $_recommendedCount',
                                 style: AppTextStyles.text2.copyWith(
                                   color: context.sub2Color,
                                 ),
@@ -172,8 +239,27 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                             ],
                           ),
                         ),
-                        AppIcons.heart(
-                          color: context.sub2Color,
+                        SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints.tightFor(
+                              width: 40,
+                              height: 40,
+                            ),
+                            splashRadius: 20,
+                            onPressed: _isRecommendationUpdating
+                                ? null
+                                : _onRecommendationPressed,
+                            icon: _isRecommended
+                                ? AppIcons.heartFilled(width: 24, height: 24)
+                                : AppIcons.heart(
+                                    width: 24,
+                                    height: 24,
+                                    color: context.sub2Color,
+                                  ),
+                          ),
                         ),
                       ],
                     ),

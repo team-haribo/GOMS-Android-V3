@@ -22,6 +22,7 @@ List<RouteBase> buildMapRoutes() => [
             address: place.address,
             review: place.review,
             recommended: place.recommended,
+            isRecommended: place.isRecommended,
           ),
         ),
       ),

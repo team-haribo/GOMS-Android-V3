@@ -61,6 +61,7 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
     final isLight = context.isLightMode;
     final horizontalPadding = context.horizontalPadding;
     final topPadding = context.responsive(compact: 12, normal: 16, tablet: 20);
+    final recommendedPlacesCache = ref.watch(recommendedPlacesCacheProvider);
 
     if (widget.selectedPlace != null) {
       return _SelectedPlaceOverlay(
@@ -135,6 +136,12 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
                               isLight: isLight,
                               reviewModels: state.reviewModels,
                               reviewCount: state.reviewCount,
+                              recommendedPlaces: recommendedPlacesCache.places
+                                  .map(_toPopularPlace)
+                                  .toList(growable: false),
+                              recommendedCount: recommendedPlacesCache.count,
+                              isRecommendedPlacesLoading:
+                                  recommendedPlacesCache.isLoading,
                               onPlaceTap: widget.onPlaceTap,
                             ),
                             AppGap.v24,
@@ -372,12 +379,18 @@ class _MyActivitySection extends StatelessWidget {
   final bool isLight;
   final List<MapScreenReviewModel> reviewModels;
   final int reviewCount;
+  final List<PopularPlace> recommendedPlaces;
+  final int recommendedCount;
+  final bool isRecommendedPlacesLoading;
   final ValueChanged<PopularPlace>? onPlaceTap;
 
   const _MyActivitySection({
     required this.isLight,
     required this.reviewModels,
     required this.reviewCount,
+    required this.recommendedPlaces,
+    required this.recommendedCount,
+    required this.isRecommendedPlacesLoading,
     this.onPlaceTap,
   });
 
@@ -430,13 +443,6 @@ class _MyActivitySection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
-        final recommendedCountAsync = ref.watch(recommendedPlacesCountProvider);
-        final recommendedPlacesAsync = ref.watch(recommendedPlacesProvider);
-        final recommendedPlaces = recommendedPlacesAsync.asData?.value
-                .map(_toPopularPlace)
-                .toList(growable: false) ??
-            const <PopularPlace>[];
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -450,13 +456,13 @@ class _MyActivitySection extends StatelessWidget {
             _ActivityCountRow(
               isLight: isLight,
               label: '추천한 가게',
-              count: recommendedCountAsync.asData?.value ?? 0,
+              count: recommendedCount,
               unit: '곳',
               labelStyle: AppTextStyles.text1,
               countStyle: AppTextStyles.text3,
             ),
             AppGap.v12,
-            if (recommendedPlacesAsync.isLoading && recommendedPlaces.isEmpty)
+            if (isRecommendedPlacesLoading && recommendedPlaces.isEmpty)
               const Center(child: CircularProgressIndicator())
             else if (recommendedPlaces.isEmpty)
               Text(
@@ -491,10 +497,11 @@ class _MyActivitySection extends StatelessWidget {
                               await ref
                                   .read(mapScreenProvider.notifier)
                                   .toggleRecommendation(place);
-                              ref.invalidate(recommendedPlacesProvider);
-                              ref.invalidate(
-                                recommendedPlacesCountProvider,
-                              );
+                              await ref
+                                  .read(
+                                    recommendedPlacesCacheProvider.notifier,
+                                  )
+                                  .refresh();
                             } catch (_) {
                               if (!context.mounted) return;
                               ScaffoldMessenger.of(context).showSnackBar(

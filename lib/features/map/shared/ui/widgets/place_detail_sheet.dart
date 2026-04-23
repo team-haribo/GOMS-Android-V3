@@ -294,7 +294,7 @@ class _DirectionButtons extends StatelessWidget {
           width: 89,
           height: 33,
           textStyle: AppTextStyles.text2,
-          textColor: isLight ? AppColors.sub2 : AppColors.sub1Dark,
+          textColor: isLight ? AppColors.mainText : AppColors.mainTextDark,
           backgroundColor: isLight ? AppColors.button : AppColors.buttonDark,
           onPressed: onDeparturePressed,
         ),

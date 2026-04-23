@@ -350,7 +350,7 @@ class AppIcons {
         height: height,
         color: color,
       );
-  static Widget non_check({double? width, double? height, Color? color}) =>
+  static Widget nonCheck({double? width, double? height, Color? color}) =>
       _loadSvg(
         'assets/icons/non_check.svg',
         width: width,

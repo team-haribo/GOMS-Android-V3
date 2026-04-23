@@ -156,7 +156,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                   signupState.isPrivacyPolicyAgreed
                       ? AppIcons.check(color: AppColors.mainColor)
-                      : AppIcons.non_check(color: context.sub2Color),
+                      : AppIcons.nonCheck(color: context.sub2Color),
                 ],
               ),
             ),

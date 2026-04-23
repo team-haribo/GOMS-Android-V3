@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/core/theme/colors/app_colors.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
@@ -77,6 +78,7 @@ class _AdminLatecomerListScreenState
           AppGap.v4,
           Expanded(
             child: RefreshIndicator(
+              color: AppColors.admin,
               onRefresh: () {
                 return ref
                     .read(studentCouncilLateStudentsProvider.notifier)

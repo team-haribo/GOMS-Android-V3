@@ -31,7 +31,7 @@ class OnboardingScreen extends StatelessWidget {
               ),
               children: [
                 TextSpan(
-                  text: '월수 외출체',
+                  text: '외출제',
                   style: AppTextStyles.title2.withColor(AppColors.mainColor),
                 ),
                 const TextSpan(text: ' 관리 서비스'),
@@ -50,7 +50,7 @@ class OnboardingScreen extends StatelessWidget {
                 ),
               ),
               Text(
-                '월수 외출체를 이용해 보세요!',
+                '외출제를 이용해 보세요!',
                 textAlign: TextAlign.center,
                 style: AppTextStyles.text2.withColor(
                   context.sub1Color,

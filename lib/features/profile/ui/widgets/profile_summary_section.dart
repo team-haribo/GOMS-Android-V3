@@ -104,20 +104,23 @@ class ProfileSummarySection extends StatelessWidget {
           children: [
             Text('지각 횟수', style: AppTextStyles.text2.withColor(subColor)),
             AppGap.v4,
-            Row(
-              children: [
-                Text(
-                  lateCount == null ? '-' : '$lateCount',
-                  style: AppTextStyles.title3.withColor(AppColors.negative),
-                ),
-                AppGap.h2,
-                Text(
-                  '번',
-                  style: AppTextStyles.title3.withColor(
-                    context.mainTextColor,
+            RichText(
+              text: TextSpan(
+                style: AppTextStyles.title3,
+                children: [
+                  TextSpan(
+                    text: lateCount == null ? '-' : '$lateCount',
+                    style: AppTextStyles.title3.withColor(AppColors.negative),
                   ),
-                ),
-              ],
+                  const TextSpan(text: ' '),
+                  TextSpan(
+                    text: '번',
+                    style: AppTextStyles.title3.withColor(
+                      context.mainTextColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

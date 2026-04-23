@@ -47,7 +47,7 @@ class AuthBaseScreen extends ConsumerWidget {
         AppSpacing.s24,
         AppSpacing.s16,
         AppSpacing.s24,
-        isKeyboardVisible ? AppSpacing.s8 : AppSpacing.s24,
+        isKeyboardVisible ? 0 : AppSpacing.s24,
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {

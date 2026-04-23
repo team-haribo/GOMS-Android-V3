@@ -54,6 +54,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
       showAdminReportAction: true,
       role: role,
       body: RefreshIndicator(
+        color: role == RoleEnum.admin ? AppColors.admin : AppColors.mainColor,
         onRefresh: _onRefresh,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

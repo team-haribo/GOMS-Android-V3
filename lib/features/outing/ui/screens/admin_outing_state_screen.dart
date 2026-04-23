@@ -43,7 +43,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             children: [
               Expanded(
                 child: Text(
-                  '학생관리',
+                  '외출제 관리',
                   style: AppTextStyles.title1.copyWith(
                     color: context.mainTextColor,
                   ),
@@ -129,6 +129,7 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             AppGap.v8,
             Expanded(
               child: RefreshIndicator(
+                color: AppColors.admin,
                 onRefresh: () {
                   return ref
                       .read(studentCouncilMembersProvider.notifier)

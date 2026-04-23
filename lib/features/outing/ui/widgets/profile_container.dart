@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
 import 'package:goms/features/outing/ui/widgets/time_display.dart';
 import 'package:goms/features/profile/ui/providers/settings_provider.dart';
@@ -157,7 +158,10 @@ class ProfileContainer extends ConsumerWidget {
 
   Widget _buildInfoText(BuildContext context) {
     return Text(
-      '$grade기 | $major과',
+      StudentInfoFormatter.formatCohortDepartment(
+        grade: grade,
+        department: major,
+      ),
       style: AppTextStyles.text3.copyWith(
         color: context.sub2Color,
       ),

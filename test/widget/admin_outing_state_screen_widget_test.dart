@@ -72,6 +72,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('유저 권한 변경'), findsOneWidget);
+    expect(find.text('8기 | AI과'), findsOneWidget);
+    expect(find.text('8학년 | AI'), findsNothing);
 
     await tester.tap(find.byType(Switch).last);
     await tester.pump();

@@ -30,6 +30,9 @@ void main() {
 
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('김민솔'), findsOneWidget);
+    expect(find.text('8기 | AI과'), findsOneWidget);
+    expect(find.text('9기 | SW과'), findsOneWidget);
+    expect(find.text('9학년 | SW'), findsNothing);
   });
 
   testWidgets('OutingStateScreen filters students by search text',

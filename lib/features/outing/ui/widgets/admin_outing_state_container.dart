@@ -5,6 +5,7 @@ import 'package:goms/core/theme/icons/app_icons.dart';
 import 'package:goms/core/theme/layout/app_layout.dart';
 import 'package:goms/core/theme/theme_context.dart';
 import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/outing/ui/widgets/admin_bottom_sheet.dart';
@@ -143,7 +144,10 @@ class _AdminOutingStateContainerState
               ),
               AppGap.h4,
               Text(
-                '${widget.grade}학년 | ${widget.major}',
+                StudentInfoFormatter.formatCohortDepartment(
+                  grade: widget.grade,
+                  department: widget.major,
+                ),
                 style: AppTextStyles.caption2.copyWith(
                   color: context.sub2Color,
                 ),

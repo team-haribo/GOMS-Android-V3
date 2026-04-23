@@ -58,7 +58,15 @@ void main() {
     expect(find.text('이주언'), findsOneWidget);
     expect(find.text('8기 | AI과'), findsOneWidget);
     expect(find.text('지각 횟수'), findsOneWidget);
-    expect(find.text('3'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is RichText &&
+            widget.text.toPlainText().contains('3') &&
+            widget.text.toPlainText().contains('번'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets(

@@ -39,7 +39,7 @@ class BaseScaffold extends ConsumerWidget {
       AppSpacing.s24,
     );
     final basePadding = contentPadding ?? defaultPadding;
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomInset = MediaQuery.paddingOf(context).bottom;
     final effectivePadding = basePadding.copyWith(
       bottom: basePadding.bottom + bottomInset,
     );

@@ -41,6 +41,7 @@ class ProfileSummarySection extends StatelessWidget {
   Widget build(BuildContext context) {
     final avatarRadius = isCompact ? 30.0 : 36.0;
     final infoSpacing = isCompact ? AppGap.h12 : AppGap.h16;
+    final lateCountSpacing = isCompact ? AppGap.h8 : AppGap.h12;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -89,16 +90,23 @@ class ProfileSummarySection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(name, style: AppTextStyles.title3.withColor(textColor)),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.title3.withColor(textColor),
+              ),
               AppGap.v4,
               Text(
                 _buildStudentInfoText(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: AppTextStyles.caption1.withColor(subColor),
               ),
             ],
           ),
         ),
-        const Spacer(),
+        lateCountSpacing,
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

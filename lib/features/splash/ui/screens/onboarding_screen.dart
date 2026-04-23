@@ -82,7 +82,7 @@ class OnboardingScreen extends StatelessWidget {
                 child: Text(
                   'GOMS가 처음이라면?',
                   style: AppTextStyles.caption3.withColor(
-                    context.isDarkMode ? context.sub2Color : AppColors.button,
+                    context.sub1Color,
                   ),
                 ),
               ),

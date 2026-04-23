@@ -18,6 +18,7 @@ class AuthBaseScreen extends ConsumerWidget {
   final bool showAppBarLogo;
   final List<Widget>? appBarActions;
   final VoidCallback? onBackPressed;
+  final double confirmBottomSpacing;
 
   const AuthBaseScreen({
     super.key,
@@ -31,6 +32,7 @@ class AuthBaseScreen extends ConsumerWidget {
     this.showAppBarLogo = false,
     this.appBarActions,
     this.onBackPressed,
+    this.confirmBottomSpacing = 0,
   });
 
   @override
@@ -74,6 +76,8 @@ class AuthBaseScreen extends ConsumerWidget {
                       onPressed:
                           isConfirmEnabled && !isLoading ? onConfirm : null,
                     ),
+                    if (confirmBottomSpacing > 0)
+                      SizedBox(height: confirmBottomSpacing),
                   ],
                 ),
               ),

@@ -69,6 +69,49 @@ void main() {
     );
   });
 
+  testWidgets('MyPageScreen scrolls before profile content overflows',
+      (tester) async {
+    tester.view.physicalSize = const Size(390, 700);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.reset);
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          roleProvider.overrideWith((ref) => RoleEnum.user),
+          themeModeProvider.overrideWith(_FakeThemeModeNotifier.new),
+          settingsProvider.overrideWith(_FakeSettingsNotifier.new),
+          myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
+          currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+              Breakpoint(
+                start: 1921,
+                end: double.infinity,
+                name: AppBreakpoints.largeDesktop,
+              ),
+            ],
+          ),
+          home: const MyPageScreen(),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets(
       'MyPageScreen logout confirm closes dialog and routes to onboarding',
       (tester) async {
@@ -203,6 +246,31 @@ void main() {
     final firstActionTop = tester.getTopLeft(find.text('비밀번호 재설정')).dy;
 
     expect(firstActionTop - lastSettingBottom, lessThan(120));
+    expect(
+      find.ancestor(
+        of: find.text('비밀번호 재설정'),
+        matching: find.byWidgetPredicate(
+          (widget) =>
+              widget is Padding &&
+              widget.padding ==
+                  const EdgeInsets.symmetric(vertical: AppSpacing.s16),
+        ),
+      ),
+      findsOneWidget,
+    );
+
+    final accountDivider = find.byType(Divider).last;
+    final firstActionRow = find
+        .ancestor(
+          of: find.text('비밀번호 재설정'),
+          matching: find.byType(InkWell),
+        )
+        .first;
+    expect(
+      tester.getTopLeft(firstActionRow).dy -
+          tester.getBottomLeft(accountDivider).dy,
+      AppSpacing.s24,
+    );
   });
 }
 

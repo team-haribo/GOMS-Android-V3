@@ -174,19 +174,25 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     return BaseScaffold(
       showAppBar: true,
       onBackPressed: () => context.pop(),
+      resizeToAvoidBottomInset: false,
       contentPadding: EdgeInsets.fromLTRB(
         AppSpacing.s24,
         AppSpacing.s16,
         AppSpacing.s24,
         isKeyboardVisible ? AppSpacing.s8 : AppSpacing.s24,
       ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: IntrinsicHeight(
+      body: AnimatedPadding(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -304,19 +310,18 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                         ],
                       ),
                     ),
-                    const Spacer(),
-                    ConfirmButton(
-                      text: '다음',
-                      onPressed: notifier.isFormValid && !isLoading
-                          ? () => _onNextPressed(notifier)
-                          : null,
-                    ),
                   ],
                 ),
               ),
             ),
-          );
-        },
+            ConfirmButton(
+              text: '다음',
+              onPressed: notifier.isFormValid && !isLoading
+                  ? () => _onNextPressed(notifier)
+                  : null,
+            ),
+          ],
+        ),
       ),
     );
   }

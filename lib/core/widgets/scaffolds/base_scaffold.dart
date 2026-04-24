@@ -15,6 +15,7 @@ class BaseScaffold extends ConsumerWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final EdgeInsets? contentPadding;
+  final bool resizeToAvoidBottomInset;
 
   const BaseScaffold({
     super.key,
@@ -28,6 +29,7 @@ class BaseScaffold extends ConsumerWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.contentPadding,
+    this.resizeToAvoidBottomInset = true,
   });
 
   @override
@@ -60,6 +62,7 @@ class BaseScaffold extends ConsumerWidget {
 
     return Scaffold(
       appBar: effectiveAppBar,
+      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
       body: Padding(
         padding: effectivePadding,
         child: body,

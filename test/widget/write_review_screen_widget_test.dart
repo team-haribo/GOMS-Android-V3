@@ -102,12 +102,66 @@ void main() {
     expect(find.text('학생 후기 2 | 추천 4'), findsOneWidget);
     expect(_findSvgAsset('assets/icons/heart_filled.svg'), findsOneWidget);
   });
+
+  testWidgets('후기 입력 시 버튼은 키보드 위로 올라오고 화면은 리사이즈되지 않는다', (
+    tester,
+  ) async {
+    final repository = _FakeRecommendedPlaceRepository();
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          recommendedPlaceRepositoryProvider.overrideWithValue(repository),
+        ],
+        child: MaterialApp(
+          theme: AppTheme.light,
+          builder: (context, child) => ResponsiveBreakpoints.builder(
+            child: child!,
+            breakpoints: const [
+              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+            ],
+          ),
+          home: const MediaQuery(
+            data: MediaQueryData(
+              viewInsets: EdgeInsets.only(bottom: 300),
+            ),
+            child: WriteReviewScreen(
+              placeId: 10,
+              placeName: '학생식당',
+              category: '한식',
+              address: '광주광역시 테스트로 10',
+              review: 2,
+              recommended: 3,
+              isRecommended: false,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+    final keyboardPadding = tester.widget<AnimatedPadding>(
+      find.byType(AnimatedPadding),
+    );
+    final scaffoldBottom = tester.getBottomLeft(find.byType(Scaffold)).dy;
+    final nextButtonBottom = tester.getBottomLeft(find.text('다음')).dy;
+
+    expect(scaffold.resizeToAvoidBottomInset, isFalse);
+    expect(keyboardPadding.padding, const EdgeInsets.only(bottom: 300));
+    expect(nextButtonBottom, lessThan(scaffoldBottom - 300));
+  });
 }
 
 Finder _findSvgAsset(String assetPath) {
   return find.byWidgetPredicate(
     (widget) =>
-        widget is SvgPicture && widget.bytesLoader.toString().contains(assetPath),
+        widget is SvgPicture &&
+        widget.bytesLoader.toString().contains(assetPath),
   );
 }
 
@@ -155,8 +209,7 @@ class _FakeRecommendedPlaceRepository implements RecommendedPlaceRepository {
   Future<List<RecommendedPlaceEntity>> getPlaces() async => const [];
 
   @override
-  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async =>
-      const [];
+  Future<List<RecommendedPlaceEntity>> getRecommendedPlaces() async => const [];
 
   @override
   Future<int> getRecommendedPlacesCount() async => 0;

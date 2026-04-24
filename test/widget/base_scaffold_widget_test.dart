@@ -39,7 +39,8 @@ void main() {
     );
   });
 
-  testWidgets('BaseScaffold does not keep bottom safe-area gap above keyboard', (
+  testWidgets('BaseScaffold does not keep bottom safe-area gap above keyboard',
+      (
     tester,
   ) async {
     await tester.pumpWidget(
@@ -72,5 +73,25 @@ void main() {
       padding.padding,
       const EdgeInsets.fromLTRB(24, 16, 24, 24),
     );
+  });
+
+  testWidgets('BaseScaffold can opt out of keyboard-driven resizing', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const ProviderScope(
+        child: MaterialApp(
+          home: BaseScaffold(
+            showAppBar: false,
+            resizeToAvoidBottomInset: false,
+            body: SizedBox.shrink(),
+          ),
+        ),
+      ),
+    );
+
+    final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+
+    expect(scaffold.resizeToAvoidBottomInset, isFalse);
   });
 }

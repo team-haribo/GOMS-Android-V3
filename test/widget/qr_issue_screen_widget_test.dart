@@ -39,12 +39,16 @@ void main() {
     final repository = _FakeQrRepository();
 
     await _pumpScreen(tester, repository: repository);
-    expect(RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
-        isTrue);
+    expect(
+      RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
+      isTrue,
+    );
 
     await tester.pump(const Duration(seconds: 2));
-    expect(RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
-        isTrue);
+    expect(
+      RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
+      isTrue,
+    );
 
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump();
@@ -52,49 +56,55 @@ void main() {
     await _pumpScreen(tester, repository: repository);
 
     expect(repository.issueCount, 2);
-    expect(RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
-        isTrue);
-  });
-
-  testWidgets('QrIssueScreen shows access message for non-admin',
-      (tester) async {
-    await tester.binding.setSurfaceSize(const Size(430, 932));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          roleProvider.overrideWith((ref) => RoleEnum.user),
-        ],
-        child: MaterialApp(
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
-              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
-              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
-              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
-              Breakpoint(
-                start: 1921,
-                end: double.infinity,
-                name: AppBreakpoints.largeDesktop,
-              ),
-            ],
-          ),
-          home: const QrIssueScreen(),
-        ),
-      ),
+    expect(
+      RegExp(r'0[45]분 [0-5][0-9]초').hasMatch(_findCountdownText(tester)),
+      isTrue,
     );
-
-    await tester.pumpAndSettle();
-
-    expect(find.text('학생회만 QR을 발급할 수 있어요.'), findsOneWidget);
-    expect(find.byType(QrImageView), findsNothing);
   });
+
+  testWidgets(
+    'QrIssueScreen shows access message for non-admin',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(430, 932));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            roleProvider.overrideWith((ref) => RoleEnum.user),
+          ],
+          child: MaterialApp(
+            builder: (context, child) => ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
+            home: const QrIssueScreen(),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('학생회만 QR을 발급할 수 있어요.'), findsOneWidget);
+      expect(find.byType(QrImageView), findsNothing);
+    },
+  );
 }
 
-Future<void> _pumpScreen(WidgetTester tester,
-    {QrRepository? repository}) async {
+Future<void> _pumpScreen(
+  WidgetTester tester, {
+  QrRepository? repository,
+}) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [

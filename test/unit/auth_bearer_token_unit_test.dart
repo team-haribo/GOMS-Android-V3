@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -260,7 +259,8 @@ class _QueueHttpClientAdapter implements HttpClientAdapter {
     requests.add(options);
     if (_responses.isEmpty) {
       throw StateError(
-          'No queued response for ${options.method} ${options.path}');
+        'No queued response for ${options.method} ${options.path}',
+      );
     }
 
     final response = _responses.removeAt(0);

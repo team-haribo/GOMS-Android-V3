@@ -51,6 +51,11 @@ app.*.map.json
 .env.*
 assets/env/*.env
 
+# Android signing secrets
+android/key.properties
+android/app/*.jks
+android/app/*.keystore
+
 # Firebase
 google-services.json
 

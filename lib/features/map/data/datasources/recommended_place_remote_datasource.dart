@@ -31,7 +31,8 @@ abstract class RecommendedPlaceRemoteDataSource {
 
   @GET('/api/v3/place/search')
   Future<RecommendedPlacesResponse> searchPlaces(
-      @Query('keyword') String keyword);
+    @Query('keyword') String keyword,
+  );
 
   @GET('/api/v3/place/{placeId}')
   Future<RecommendedPlaceResponse> getPlaceDetail(@Path('placeId') int placeId);

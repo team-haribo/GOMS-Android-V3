@@ -1,21 +1,21 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 
-typedef _IsLocationServiceEnabled = Future<bool> Function();
-typedef _CheckPermission = Future<LocationPermission> Function();
-typedef _RequestPermission = Future<LocationPermission> Function();
-typedef _GetLastKnownPosition = Future<Position?> Function();
-typedef _GetCurrentPosition = Future<Position> Function({
+typedef IsLocationServiceEnabled = Future<bool> Function();
+typedef CheckPermission = Future<LocationPermission> Function();
+typedef RequestPermission = Future<LocationPermission> Function();
+typedef GetLastKnownPosition = Future<Position?> Function();
+typedef GetCurrentPosition = Future<Position> Function({
   LocationSettings? locationSettings,
 });
 
 class CurrentLocationService {
   CurrentLocationService({
-    _IsLocationServiceEnabled? isLocationServiceEnabled,
-    _CheckPermission? checkPermission,
-    _RequestPermission? requestPermission,
-    _GetLastKnownPosition? getLastKnownPosition,
-    _GetCurrentPosition? getCurrentPosition,
+    IsLocationServiceEnabled? isLocationServiceEnabled,
+    CheckPermission? checkPermission,
+    RequestPermission? requestPermission,
+    GetLastKnownPosition? getLastKnownPosition,
+    GetCurrentPosition? getCurrentPosition,
   })  : _isLocationServiceEnabled =
             isLocationServiceEnabled ?? Geolocator.isLocationServiceEnabled,
         _checkPermission = checkPermission ?? Geolocator.checkPermission,
@@ -25,11 +25,11 @@ class CurrentLocationService {
         _getCurrentPosition =
             getCurrentPosition ?? Geolocator.getCurrentPosition;
 
-  final _IsLocationServiceEnabled _isLocationServiceEnabled;
-  final _CheckPermission _checkPermission;
-  final _RequestPermission _requestPermission;
-  final _GetLastKnownPosition _getLastKnownPosition;
-  final _GetCurrentPosition _getCurrentPosition;
+  final IsLocationServiceEnabled _isLocationServiceEnabled;
+  final CheckPermission _checkPermission;
+  final RequestPermission _requestPermission;
+  final GetLastKnownPosition _getLastKnownPosition;
+  final GetCurrentPosition _getCurrentPosition;
 
   Future<MapCoordinate> getCurrentLocation() async {
     await _ensureLocationPermission();

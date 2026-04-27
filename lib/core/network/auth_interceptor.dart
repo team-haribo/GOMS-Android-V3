@@ -40,7 +40,9 @@ class AuthInterceptor extends Interceptor {
     ErrorInterceptorHandler handler,
   ) async {
     if (!_shouldHandleUnauthorized(
-        err.requestOptions, err.response?.statusCode)) {
+      err.requestOptions,
+      err.response?.statusCode,
+    )) {
       handler.next(err);
       return;
     }

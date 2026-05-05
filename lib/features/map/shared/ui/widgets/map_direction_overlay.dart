@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/features/map/direction/ui/models/direction_state.dart';
 import 'package:goms/features/map/direction/ui/providers/map_direction_ui_provider.dart';

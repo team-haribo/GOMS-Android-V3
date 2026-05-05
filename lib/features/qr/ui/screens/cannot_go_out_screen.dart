@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/qr/ui/screens/qr_base_screen.dart';
 
 /// 외출하실 수 없어요 화면

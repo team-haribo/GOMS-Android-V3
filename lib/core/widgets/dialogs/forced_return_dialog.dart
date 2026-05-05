@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 
 ///  후기 삭제 다이얼로그
 Future<void> forcedReturn({

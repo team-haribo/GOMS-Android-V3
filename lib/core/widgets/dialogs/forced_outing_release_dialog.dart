@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 
 /// 강제외출 복귀
 Future<void> forcedOutingRelease({

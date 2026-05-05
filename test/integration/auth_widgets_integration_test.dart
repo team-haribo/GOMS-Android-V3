@@ -3,14 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
-import 'package:goms/core/widgets/text_fields/email_text_field.dart';
-import 'package:goms/core/widgets/text_fields/password_text_field.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import '../test_app.dart';
 
 final _authHarnessToggleProvider =
     NotifierProvider.autoDispose<_AuthHarnessToggleNotifier, bool>(
-      _AuthHarnessToggleNotifier.new,
-    );
+  _AuthHarnessToggleNotifier.new,
+);
 
 class _AuthHarnessToggleNotifier extends Notifier<bool> {
   @override

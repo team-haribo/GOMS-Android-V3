@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
 import 'package:goms/features/map/review/ui/models/write_review_state.dart';
 import 'package:goms/features/map/review/ui/providers/write_review_provider.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
-import 'package:goms/core/widgets/buttons/confirm_button.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 
 class WriteReviewScreen extends ConsumerStatefulWidget {

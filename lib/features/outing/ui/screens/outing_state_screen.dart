@@ -3,16 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
-import 'package:goms/core/widgets/text_fields/search_student.dart';
 import 'package:goms/features/outing/ui/widgets/search_profile_list.dart';
 import 'package:goms/features/outing/ui/widgets/user_manage_button.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/outing/ui/models/outing_student_model.dart';
 import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
 
@@ -98,8 +93,9 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
             AppGap.v8,
             Expanded(
               child: RefreshIndicator(
-                color:
-                    role == RoleEnum.admin ? AppColors.admin : AppColors.mainColor,
+                color: role == RoleEnum.admin
+                    ? AppColors.admin
+                    : AppColors.mainColor,
                 onRefresh: () {
                   return ref
                       .read(currentOutingStudentsProvider.notifier)

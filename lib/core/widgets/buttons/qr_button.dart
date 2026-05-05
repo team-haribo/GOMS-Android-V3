@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/widgets/buttons/gradient_floating_action_button.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/enums/role_enum.dart';
 
 class QRButton extends StatelessWidget {

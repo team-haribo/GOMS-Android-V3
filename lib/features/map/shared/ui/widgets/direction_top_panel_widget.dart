@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 
 class DirectionTopPanel extends StatelessWidget {
   final String departureName;
@@ -130,9 +127,8 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
     final containerBox =
         _containerKey.currentContext!.findRenderObject() as RenderBox;
     final containerHeight = containerBox.size.height;
-    final bgColor = widget.dark
-        ? AppColors.bgMapContainerDark
-        : AppColors.bgMapContainer;
+    final bgColor =
+        widget.dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
     final textColor = widget.dark ? AppColors.mainTextDark : AppColors.mainText;
 
     _overlayEntry = OverlayEntry(
@@ -224,9 +220,8 @@ class _DirectionFieldBlockState extends State<_DirectionFieldBlock> {
   Widget build(BuildContext context) {
     final hasValue = widget.value.trim().isNotEmpty;
     final textColor = widget.dark ? AppColors.sub1Dark : AppColors.sub1;
-    final bgColor = widget.dark
-        ? AppColors.bgMapContainerDark
-        : AppColors.bgMapContainer;
+    final bgColor =
+        widget.dark ? AppColors.bgMapContainerDark : AppColors.bgMapContainer;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

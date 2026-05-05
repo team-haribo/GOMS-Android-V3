@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goms/features/map/direction/ui/models/direction_state.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_bottom_sheet.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 
 class DirectionDetailSheet extends StatelessWidget {
   final RouteOption option;

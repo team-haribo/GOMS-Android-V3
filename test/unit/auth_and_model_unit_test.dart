@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/theme/enums/app_theme_option.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/member/data/response/current_member_dto.dart';
 import 'package:goms/features/member/data/response/student_council_students_response.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';

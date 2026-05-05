@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
@@ -14,8 +10,6 @@ import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
 import 'package:goms/features/auth/signup/ui/providers/signup_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
 import 'package:goms/core/widgets/selects/select_field.dart';
-import 'package:goms/core/widgets/text_fields/base_text_field.dart';
-import 'package:goms/core/widgets/text_fields/email_text_field.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({super.key});

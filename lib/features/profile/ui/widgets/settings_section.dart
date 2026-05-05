@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
-import 'package:goms/core/theme/enums/app_theme_option.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
 
 class SettingsSection extends StatelessWidget {

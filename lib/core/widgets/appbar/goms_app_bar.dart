@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/enums/role_enum.dart';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {

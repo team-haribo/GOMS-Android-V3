@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
-import 'package:goms/core/widgets/buttons/confirm_button.dart';
 
 /// Auth 스크린 공통 베이스
 class AuthBaseScreen extends ConsumerWidget {

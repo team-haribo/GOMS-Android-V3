@@ -3,9 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
@@ -13,8 +11,6 @@ import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/login/ui/models/login_state.dart';
 import 'package:goms/features/auth/login/ui/providers/login_provider.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/core/widgets/text_fields/email_text_field.dart';
-import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {

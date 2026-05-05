@@ -5,7 +5,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';

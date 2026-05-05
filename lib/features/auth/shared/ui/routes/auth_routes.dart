@@ -6,7 +6,7 @@ import 'package:goms/features/auth/password_reset/ui/screens/find_password_scree
 import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
 import 'package:goms/features/auth/signup/ui/screens/password_screen.dart';
 import 'package:goms/features/auth/signup/ui/screens/signup_screen.dart';
-import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
+import 'package:goms/features/auth/shared/ui/routes/verify_route_extra.dart';
 import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
 
 List<RouteBase> buildAuthRoutes() => [

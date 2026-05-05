@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/delete_account/ui/models/delete_account_state.dart';
 import 'package:goms/features/auth/delete_account/ui/providers/delete_account_provider.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
 class DeleteAccountScreen extends ConsumerStatefulWidget {
   const DeleteAccountScreen({super.key});

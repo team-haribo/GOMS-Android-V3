@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/app_theme.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 Widget buildTestApp(Widget child) {

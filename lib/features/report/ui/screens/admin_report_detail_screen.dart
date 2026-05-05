@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
-import 'package:goms/core/widgets/avatars/profile_avatar.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/report/ui/models/report_detail_model.dart';
 import 'package:goms/features/report/ui/providers/admin_report_providers.dart';

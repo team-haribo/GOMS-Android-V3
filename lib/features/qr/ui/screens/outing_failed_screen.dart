@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/qr/ui/screens/qr_base_screen.dart';
 
 /// 외출에 실패했어요.. 화면

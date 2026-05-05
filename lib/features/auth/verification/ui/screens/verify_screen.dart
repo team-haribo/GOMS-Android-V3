@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
-import 'package:goms/features/auth/verification/ui/models/verify_state.dart';
+import 'package:goms/features/auth/verification/ui/states/verify_state.dart';
 import 'package:goms/features/auth/verification/ui/providers/verify_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/text_fields/base_text_field.dart';
 
 class VerifyScreen extends ConsumerStatefulWidget {
   final String? redirectPath;

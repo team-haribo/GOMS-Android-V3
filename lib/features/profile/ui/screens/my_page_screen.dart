@@ -7,16 +7,13 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/enums/app_theme_option.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
+import 'package:goms/features/auth/shared/ui/routes/verify_route_extra.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/ui/providers/current_member_provider.dart';
 import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
@@ -296,9 +293,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                       .setCameraLaunch(value);
                   if (!granted && mounted) {
                     _showPermissionDeniedSnackBar(
-                      role == RoleEnum.admin
-                          ? 'QR 생성 바로 켜기'
-                          : '카메라 바로 켜기',
+                      role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
                     );
                   }
                 },
@@ -322,8 +317,7 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                     }
                   },
                 ).show(context),
-                onTapDeleteAccount: () =>
-                    context.push(RoutePath.deleteAccount),
+                onTapDeleteAccount: () => context.push(RoutePath.deleteAccount),
               ),
             ],
           );

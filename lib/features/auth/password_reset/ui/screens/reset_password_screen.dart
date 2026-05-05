@@ -2,19 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
 import 'package:goms/features/auth/shared/ui/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/password_reset/ui/models/reset_password_state.dart';
 import 'package:goms/features/auth/password_reset/ui/providers/reset_password_provider.dart';
-import 'package:goms/features/auth/verification/ui/models/verify_route_extra.dart';
+import 'package:goms/features/auth/shared/ui/routes/verify_route_extra.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
-import 'package:goms/core/widgets/text_fields/password_text_field.dart';
 
 class ResetPasswordScreen extends ConsumerStatefulWidget {
   const ResetPasswordScreen({super.key});

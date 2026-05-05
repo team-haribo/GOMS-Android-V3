@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/widgets/appbar/goms_app_bar.dart';
 

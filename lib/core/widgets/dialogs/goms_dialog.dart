@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/theme_context.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 
 /// 공통 확인 다이얼로그 (Cupertino 스타일)
 class GomsDialog {
@@ -87,13 +86,21 @@ class GomsDialog {
                   CupertinoDialogAction(
                     isDestructiveAction: isDestructive,
                     onPressed: onConfirmPressed,
-                    child: Text(confirmText, style: const TextStyle(color: AppColors.blue),),
+                    child: Text(
+                      confirmText,
+                      style: const TextStyle(color: AppColors.blue),
+                    ),
                   ),
                 ]
               : [
                   CupertinoDialogAction(
                     onPressed: onConfirmPressed,
-                    child: Text(confirmText, style: const TextStyle(color: AppColors.blue,),),
+                    child: Text(
+                      confirmText,
+                      style: const TextStyle(
+                        color: AppColors.blue,
+                      ),
+                    ),
                   ),
                 ],
         );

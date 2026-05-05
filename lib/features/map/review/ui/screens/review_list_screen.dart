@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/icons/app_icons.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
-import 'package:goms/core/theme/theme_context.dart';
-import 'package:goms/core/theme/typography/app_text_styles.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/shared/ui/widgets/arrival_departure_button.dart';
@@ -12,7 +8,6 @@ import 'package:goms/features/map/shared/ui/widgets/drag_handle_header.dart';
 import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
-import 'package:goms/core/widgets/text_fields/search_text_field.dart';
 import 'package:goms/features/report/data/providers/report_data_providers.dart';
 
 class ReviewListScreen extends ConsumerStatefulWidget {

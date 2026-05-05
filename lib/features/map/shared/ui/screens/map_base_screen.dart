@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/theme/colors/app_colors.dart';
-import 'package:goms/core/theme/layout/app_layout.dart';
+import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/map/shared/ui/models/map_screen_type.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_detail_overlay.dart';
 import 'package:goms/features/map/shared/ui/widgets/map_direction_overlay.dart';

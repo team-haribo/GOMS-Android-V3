@@ -3,16 +3,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 
 final myOutingStatusProvider =
-    AsyncNotifierProvider<MyOutingStatusNotifier, MyOutingStatusModel>(
+    AsyncNotifierProvider<MyOutingStatusNotifier, MyOutingStatusEntity>(
   MyOutingStatusNotifier.new,
 );
 
-class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusModel> {
+class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusEntity> {
   @override
-  Future<MyOutingStatusModel> build() async {
+  Future<MyOutingStatusEntity> build() async {
     return _fetch();
   }
 
@@ -24,7 +24,7 @@ class MyOutingStatusNotifier extends AsyncNotifier<MyOutingStatusModel> {
     state = await AsyncValue.guard(_fetch);
   }
 
-  Future<MyOutingStatusModel> _fetch() async {
+  Future<MyOutingStatusEntity> _fetch() async {
     final accessToken = await TokenStorage.getAccessToken();
     if (accessToken == null || accessToken.trim().isEmpty) {
       throw const MyOutingStatusException('로그인이 필요합니다.');

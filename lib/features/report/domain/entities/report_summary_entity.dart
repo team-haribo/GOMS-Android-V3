@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 
 @immutable
-class ReportSummaryModel {
-  const ReportSummaryModel({
+class ReportSummaryEntity {
+  const ReportSummaryEntity({
     required this.reportId,
     required this.reviewId,
     required this.reviewerMemberId,

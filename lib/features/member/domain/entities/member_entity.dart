@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
 @immutable
-class MemberModel {
-  const MemberModel({
+class MemberEntity {
+  const MemberEntity({
     required this.id,
     required this.name,
     required this.studentNumber,
@@ -19,7 +19,7 @@ class MemberModel {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is MemberModel &&
+        other is MemberEntity &&
             runtimeType == other.runtimeType &&
             id == other.id &&
             name == other.name &&
@@ -29,11 +29,5 @@ class MemberModel {
   }
 
   @override
-  int get hashCode => Object.hash(
-    id,
-    name,
-    studentNumber,
-    role,
-    profileImageUrl,
-  );
+  int get hashCode => Object.hash(id, name, studentNumber, role, profileImageUrl);
 }

@@ -4,7 +4,7 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
-import 'package:goms/features/report/presentation/models/report_detail_model.dart';
+import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
 import 'package:goms/features/report/presentation/providers/admin_report_providers.dart';
 import 'package:intl/intl.dart';
 
@@ -79,7 +79,7 @@ class _AdminReportDetailScreenState
 
   Widget _buildContent(
     BuildContext context,
-    ReportDetailModel detail,
+    ReportDetailEntity detail,
     bool isSubmitting,
   ) {
     final reportCreatedAt = _formatDateTime(detail.reportCreatedAt);
@@ -165,7 +165,7 @@ class _AdminReportDetailScreenState
     return DateFormat('yy.MM.dd HH:mm:ss').format(value.toLocal());
   }
 
-  String _buildReviewMeta(ReportDetailModel detail, String reviewCreatedAt) {
+  String _buildReviewMeta(ReportDetailEntity detail, String reviewCreatedAt) {
     final placeName = detail.placeName?.trim();
     final segments = <String>[
       if (placeName != null && placeName.isNotEmpty) placeName,
@@ -271,7 +271,7 @@ class _MetaText extends StatelessWidget {
 class _ReportedUserTile extends StatelessWidget {
   const _ReportedUserTile({required this.detail});
 
-  final ReportDetailModel detail;
+  final ReportDetailEntity detail;
 
   @override
   Widget build(BuildContext context) {

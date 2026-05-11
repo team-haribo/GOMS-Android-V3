@@ -3,21 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
 import 'package:goms/features/report/data/providers/report_data_providers.dart';
-import 'package:goms/features/report/presentation/models/report_detail_model.dart';
-import 'package:goms/features/report/presentation/models/report_summary_model.dart';
+import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
+import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
 
 final pendingReportsProvider =
-    AsyncNotifierProvider<PendingReportsNotifier, List<ReportSummaryModel>>(
+    AsyncNotifierProvider<PendingReportsNotifier, List<ReportSummaryEntity>>(
   PendingReportsNotifier.new,
 );
 
 final resolvedReportsProvider =
-    AsyncNotifierProvider<ResolvedReportsNotifier, List<ReportSummaryModel>>(
+    AsyncNotifierProvider<ResolvedReportsNotifier, List<ReportSummaryEntity>>(
   ResolvedReportsNotifier.new,
 );
 
 final reportDetailProvider =
-    FutureProvider.family<ReportDetailModel, int>((ref, reportId) async {
+    FutureProvider.family<ReportDetailEntity, int>((ref, reportId) async {
   try {
     return await ref.read(reportRepositoryProvider).getReportDetail(reportId);
   } on DioException catch (error) {
@@ -29,9 +29,9 @@ final reportDetailProvider =
   }
 });
 
-class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
+class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
   @override
-  Future<List<ReportSummaryModel>> build() async {
+  Future<List<ReportSummaryEntity>> build() async {
     return _fetch();
   }
 
@@ -40,7 +40,7 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
     state = await AsyncValue.guard(_fetch);
   }
 
-  Future<ReportDetailModel> resolve({
+  Future<ReportDetailEntity> resolve({
     required int reportId,
     required ReportStatus reportStatus,
   }) async {
@@ -62,7 +62,7 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
     }
   }
 
-  Future<List<ReportSummaryModel>> _fetch() async {
+  Future<List<ReportSummaryEntity>> _fetch() async {
     try {
       return await ref.read(reportRepositoryProvider).getPendingReports();
     } on DioException catch (error) {
@@ -75,9 +75,9 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
   }
 }
 
-class ResolvedReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
+class ResolvedReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
   @override
-  Future<List<ReportSummaryModel>> build() async {
+  Future<List<ReportSummaryEntity>> build() async {
     return _fetch();
   }
 
@@ -86,7 +86,7 @@ class ResolvedReportsNotifier extends AsyncNotifier<List<ReportSummaryModel>> {
     state = await AsyncValue.guard(_fetch);
   }
 
-  Future<List<ReportSummaryModel>> _fetch() async {
+  Future<List<ReportSummaryEntity>> _fetch() async {
     try {
       return await ref.read(reportRepositoryProvider).getResolvedReports();
     } on DioException catch (error) {

@@ -5,8 +5,8 @@ import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
 @immutable
-class CurrentMemberModel {
-  const CurrentMemberModel({
+class CurrentMemberEntity {
+  const CurrentMemberEntity({
     required this.memberId,
     required this.email,
     required this.name,
@@ -28,7 +28,7 @@ class CurrentMemberModel {
   final OutingStatusType status;
   final String profileImageUrl;
 
-  CurrentMemberModel copyWith({
+  CurrentMemberEntity copyWith({
     int? memberId,
     String? email,
     String? name,
@@ -39,7 +39,7 @@ class CurrentMemberModel {
     OutingStatusType? status,
     String? profileImageUrl,
   }) {
-    return CurrentMemberModel(
+    return CurrentMemberEntity(
       memberId: memberId ?? this.memberId,
       email: email ?? this.email,
       name: name ?? this.name,
@@ -55,7 +55,7 @@ class CurrentMemberModel {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is CurrentMemberModel &&
+        other is CurrentMemberEntity &&
             runtimeType == other.runtimeType &&
             memberId == other.memberId &&
             email == other.email &&
@@ -70,14 +70,14 @@ class CurrentMemberModel {
 
   @override
   int get hashCode => Object.hash(
-    memberId,
-    email,
-    name,
-    role,
-    grade,
-    department,
-    gender,
-    status,
-    profileImageUrl,
-  );
+        memberId,
+        email,
+        name,
+        role,
+        grade,
+        department,
+        gender,
+        status,
+        profileImageUrl,
+      );
 }

@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 
 @immutable
-class StudentCouncilStudentModel {
-  const StudentCouncilStudentModel({
+class StudentCouncilStudentEntity {
+  const StudentCouncilStudentEntity({
     required this.memberId,
     required this.name,
     required this.grade,
@@ -23,7 +23,7 @@ class StudentCouncilStudentModel {
   final String role;
   final String status;
 
-  StudentCouncilStudentModel copyWith({
+  StudentCouncilStudentEntity copyWith({
     int? memberId,
     String? name,
     int? grade,
@@ -33,7 +33,7 @@ class StudentCouncilStudentModel {
     String? role,
     String? status,
   }) {
-    return StudentCouncilStudentModel(
+    return StudentCouncilStudentEntity(
       memberId: memberId ?? this.memberId,
       name: name ?? this.name,
       grade: grade ?? this.grade,
@@ -48,7 +48,7 @@ class StudentCouncilStudentModel {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is StudentCouncilStudentModel &&
+        other is StudentCouncilStudentEntity &&
             runtimeType == other.runtimeType &&
             memberId == other.memberId &&
             name == other.name &&
@@ -62,13 +62,13 @@ class StudentCouncilStudentModel {
 
   @override
   int get hashCode => Object.hash(
-    memberId,
-    name,
-    grade,
-    department,
-    studentRole,
-    profileImageUrl,
-    role,
-    status,
-  );
+        memberId,
+        name,
+        grade,
+        department,
+        studentRole,
+        profileImageUrl,
+        role,
+        status,
+      );
 }

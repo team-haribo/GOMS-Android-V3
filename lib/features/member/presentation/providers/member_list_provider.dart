@@ -2,16 +2,16 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
-import 'package:goms/features/member/presentation/models/member_model.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
 
 final memberListProvider =
-    AsyncNotifierProvider<MemberListNotifier, List<MemberModel>>(
+    AsyncNotifierProvider<MemberListNotifier, List<MemberEntity>>(
   MemberListNotifier.new,
 );
 
-class MemberListNotifier extends AsyncNotifier<List<MemberModel>> {
+class MemberListNotifier extends AsyncNotifier<List<MemberEntity>> {
   @override
-  Future<List<MemberModel>> build() async {
+  Future<List<MemberEntity>> build() async {
     return _fetchMembers();
   }
 
@@ -20,7 +20,7 @@ class MemberListNotifier extends AsyncNotifier<List<MemberModel>> {
     state = await AsyncValue.guard(_fetchMembers);
   }
 
-  Future<List<MemberModel>> _fetchMembers() async {
+  Future<List<MemberEntity>> _fetchMembers() async {
     try {
       return await ref.read(memberRepositoryProvider).getMembers();
     } on DioException catch (error) {

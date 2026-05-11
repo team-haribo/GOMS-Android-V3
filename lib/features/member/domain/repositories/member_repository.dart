@@ -1,18 +1,18 @@
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/presentation/models/current_member_model.dart';
-import 'package:goms/features/member/presentation/models/member_model.dart';
-import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
 
 abstract class MemberRepository {
-  Future<List<MemberModel>> getMembers();
+  Future<List<MemberEntity>> getMembers();
 
-  Future<CurrentMemberModel> getMyProfile();
+  Future<CurrentMemberEntity> getMyProfile();
 
-  Future<List<StudentCouncilStudentModel>> getStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   });
 
-  Future<List<StudentCouncilStudentModel>> getFilteredStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getFilteredStudentCouncilMembers({
     required StudentCouncilFilterRequest filter,
   });
 

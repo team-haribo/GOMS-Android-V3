@@ -1,11 +1,11 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
-import 'package:goms/features/report/data/request/create_review_report_request.dart';
 import 'package:goms/features/report/data/datasources/report_remote_datasource.dart';
+import 'package:goms/features/report/data/request/create_review_report_request.dart';
 import 'package:goms/features/report/data/request/report_resolve_request.dart';
-import 'package:goms/features/report/data/repositories/report_repository.dart';
-import 'package:goms/features/report/presentation/models/report_detail_model.dart';
-import 'package:goms/features/report/presentation/models/report_resolve_result_model.dart';
-import 'package:goms/features/report/presentation/models/report_summary_model.dart';
+import 'package:goms/features/report/domain/entities/report_detail_entity.dart';
+import 'package:goms/features/report/domain/entities/report_resolve_result_entity.dart';
+import 'package:goms/features/report/domain/entities/report_summary_entity.dart';
+import 'package:goms/features/report/domain/repositories/report_repository.dart';
 
 class ReportRepositoryImpl implements ReportRepository {
   const ReportRepositoryImpl(this._remoteDataSource);
@@ -24,25 +24,25 @@ class ReportRepositoryImpl implements ReportRepository {
   }
 
   @override
-  Future<List<ReportSummaryModel>> getPendingReports() async {
+  Future<List<ReportSummaryEntity>> getPendingReports() async {
     final response = await _remoteDataSource.getPendingReports();
-    return response.toModel();
+    return response.toEntity();
   }
 
   @override
-  Future<List<ReportSummaryModel>> getResolvedReports() async {
+  Future<List<ReportSummaryEntity>> getResolvedReports() async {
     final response = await _remoteDataSource.getResolvedReports();
-    return response.toModel();
+    return response.toEntity();
   }
 
   @override
-  Future<ReportDetailModel> getReportDetail(int reportId) async {
+  Future<ReportDetailEntity> getReportDetail(int reportId) async {
     final response = await _remoteDataSource.getReportDetail(reportId);
-    return response.toModel();
+    return response.toEntity();
   }
 
   @override
-  Future<ReportResolveResultModel> resolveReport({
+  Future<ReportResolveResultEntity> resolveReport({
     required int reportId,
     required ReportStatus reportStatus,
   }) async {
@@ -50,6 +50,6 @@ class ReportRepositoryImpl implements ReportRepository {
       reportId: reportId,
       request: ReportResolveRequest(reportStatus: reportStatus),
     );
-    return response.toModel();
+    return response.toEntity();
   }
 }

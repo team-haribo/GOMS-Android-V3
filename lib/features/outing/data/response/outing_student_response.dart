@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
+import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 
 part 'outing_student_response.freezed.dart';
 part 'outing_student_response.g.dart';
@@ -24,10 +24,10 @@ abstract class OutingStudentResponse with _$OutingStudentResponse {
 }
 
 extension OutingStudentResponseX on OutingStudentResponse {
-  OutingStudentModel toModel() {
+  OutingStudentEntity toEntity() {
     final resolvedProfile = profileUrl.isNotEmpty ? profileUrl : profileImageUrl;
 
-    return OutingStudentModel(
+    return OutingStudentEntity(
       memberId: memberId,
       name: name,
       grade: grade,

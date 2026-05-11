@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
 part 'my_outing_status_response.freezed.dart';
@@ -26,10 +26,10 @@ abstract class MyOutingStatusResponse with _$MyOutingStatusResponse {
 }
 
 extension MyOutingStatusResponseX on MyOutingStatusResponse {
-  MyOutingStatusModel toModel() {
+  MyOutingStatusEntity toEntity() {
     final resolvedProfile = profileUrl.isNotEmpty ? profileUrl : profileImageUrl;
 
-    return MyOutingStatusModel(
+    return MyOutingStatusEntity(
       memberId: memberId,
       status: status,
       name: name,

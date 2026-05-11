@@ -2,18 +2,18 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
-import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 
 final currentMemberProvider =
-    AsyncNotifierProvider<CurrentMemberNotifier, CurrentMemberModel?>(
+    AsyncNotifierProvider<CurrentMemberNotifier, CurrentMemberEntity?>(
   CurrentMemberNotifier.new,
 );
 
-class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberModel?> {
+class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
   @override
-  Future<CurrentMemberModel?> build() async => null;
+  Future<CurrentMemberEntity?> build() async => null;
 
-  Future<CurrentMemberModel> fetch() async {
+  Future<CurrentMemberEntity> fetch() async {
     if (!state.hasValue) {
       state = const AsyncLoading();
     }

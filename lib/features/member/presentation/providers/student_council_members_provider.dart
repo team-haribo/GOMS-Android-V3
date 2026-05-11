@@ -5,7 +5,7 @@ import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
 
 final studentCouncilMemberSearchProvider = StateProvider<String>((ref) => '');
 final studentCouncilMemberFilterProvider =
@@ -15,12 +15,12 @@ final studentCouncilMemberFilterProvider =
 
 final studentCouncilMembersProvider = AsyncNotifierProvider<
     StudentCouncilMembersNotifier,
-    List<StudentCouncilStudentModel>>(StudentCouncilMembersNotifier.new);
+    List<StudentCouncilStudentEntity>>(StudentCouncilMembersNotifier.new);
 
 class StudentCouncilMembersNotifier
-    extends AsyncNotifier<List<StudentCouncilStudentModel>> {
+    extends AsyncNotifier<List<StudentCouncilStudentEntity>> {
   @override
-  Future<List<StudentCouncilStudentModel>> build() async {
+  Future<List<StudentCouncilStudentEntity>> build() async {
     final query = ref.watch(studentCouncilMemberSearchProvider);
     final filter = ref.watch(studentCouncilMemberFilterProvider);
     return _fetch(query: query, filter: filter);
@@ -47,7 +47,7 @@ class StudentCouncilMembersNotifier
     required String status,
   }) {
     final currentState = state;
-    if (currentState is! AsyncData<List<StudentCouncilStudentModel>>) return;
+    if (currentState is! AsyncData<List<StudentCouncilStudentEntity>>) return;
 
     state = AsyncData(
       currentState.value
@@ -65,7 +65,7 @@ class StudentCouncilMembersNotifier
     required StudentRole studentRole,
   }) {
     final currentState = state;
-    if (currentState is! AsyncData<List<StudentCouncilStudentModel>>) return;
+    if (currentState is! AsyncData<List<StudentCouncilStudentEntity>>) return;
 
     state = AsyncData(
       currentState.value
@@ -78,7 +78,7 @@ class StudentCouncilMembersNotifier
     );
   }
 
-  Future<List<StudentCouncilStudentModel>> _fetch({
+  Future<List<StudentCouncilStudentEntity>> _fetch({
     required String query,
     required StudentCouncilFilterRequest filter,
   }) async {

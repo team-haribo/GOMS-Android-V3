@@ -6,13 +6,12 @@ import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/data/repositories/member_repository.dart';
-import 'package:goms/features/member/presentation/models/current_member_model.dart';
-import 'package:goms/features/member/presentation/models/member_model.dart';
-import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
+import 'package:goms/features/member/domain/repositories/member_repository.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 import 'package:goms/features/outing/presentation/screens/admin_outing_state_screen.dart';
-import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 
 void main() {
   testWidgets('AdminOutingStateScreen renders admin members and filters search',
@@ -86,9 +85,9 @@ void main() {
 
 class _FakeStudentCouncilMembersNotifier extends StudentCouncilMembersNotifier {
   @override
-  Future<List<StudentCouncilStudentModel>> build() async {
+  Future<List<StudentCouncilStudentEntity>> build() async {
     return const [
-      StudentCouncilStudentModel(
+      StudentCouncilStudentEntity(
         memberId: 1,
         name: '류수연',
         grade: 9,
@@ -96,7 +95,7 @@ class _FakeStudentCouncilMembersNotifier extends StudentCouncilMembersNotifier {
         studentRole: StudentRole.council,
         status: 'COMING',
       ),
-      StudentCouncilStudentModel(
+      StudentCouncilStudentEntity(
         memberId: 2,
         name: '김민솔',
         grade: 8,
@@ -110,21 +109,21 @@ class _FakeStudentCouncilMembersNotifier extends StudentCouncilMembersNotifier {
 
 class _FakeMemberRepository implements MemberRepository {
   @override
-  Future<List<StudentCouncilStudentModel>> getFilteredStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getFilteredStudentCouncilMembers({
     required StudentCouncilFilterRequest filter,
   }) async {
     return const [];
   }
 
   @override
-  Future<List<MemberModel>> getMembers() async => const [];
+  Future<List<MemberEntity>> getMembers() async => const [];
 
   @override
-  Future<List<StudentCouncilStudentModel>> getStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   }) async {
     return const [
-      StudentCouncilStudentModel(
+      StudentCouncilStudentEntity(
         memberId: 2,
         name: '김민솔',
         grade: 8,
@@ -158,7 +157,7 @@ class _FakeMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<CurrentMemberModel> getMyProfile() {
+  Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();
   }
 }

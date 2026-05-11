@@ -3,10 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/data/repositories/member_repository.dart';
-import 'package:goms/features/member/presentation/models/current_member_model.dart';
-import 'package:goms/features/member/presentation/models/member_model.dart';
-import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
+import 'package:goms/features/member/domain/repositories/member_repository.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 
 void main() {
@@ -17,7 +17,7 @@ void main() {
           memberRepositoryProvider.overrideWithValue(
             const _FakeMemberRepository(
               members: [
-                StudentCouncilStudentModel(
+                StudentCouncilStudentEntity(
                   memberId: 1,
                   name: '김민솔',
                   grade: 8,
@@ -25,7 +25,7 @@ void main() {
                   studentRole: StudentRole.student,
                   status: 'COMING',
                 ),
-                StudentCouncilStudentModel(
+                StudentCouncilStudentEntity(
                   memberId: 2,
                   name: '류수연',
                   grade: 9,
@@ -61,7 +61,7 @@ void main() {
           memberRepositoryProvider.overrideWithValue(
             const _FakeMemberRepository(
               members: [
-                StudentCouncilStudentModel(
+                StudentCouncilStudentEntity(
                   memberId: 1,
                   name: '김민솔',
                   grade: 8,
@@ -94,24 +94,24 @@ void main() {
 class _FakeMemberRepository implements MemberRepository {
   const _FakeMemberRepository({required this.members});
 
-  final List<StudentCouncilStudentModel> members;
+  final List<StudentCouncilStudentEntity> members;
 
   @override
-  Future<List<StudentCouncilStudentModel>> getStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   }) async {
     return members;
   }
 
   @override
-  Future<List<StudentCouncilStudentModel>> getFilteredStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getFilteredStudentCouncilMembers({
     required StudentCouncilFilterRequest filter,
   }) async {
     return members;
   }
 
   @override
-  Future<List<MemberModel>> getMembers() {
+  Future<List<MemberEntity>> getMembers() {
     throw UnimplementedError();
   }
 
@@ -142,7 +142,7 @@ class _FakeMemberRepository implements MemberRepository {
   }
 
   @override
-  Future<CurrentMemberModel> getMyProfile() {
+  Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();
   }
 }

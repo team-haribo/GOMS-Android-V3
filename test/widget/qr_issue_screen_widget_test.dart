@@ -4,9 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/features/qr/presentation/models/issued_qr_model.dart';
+import 'package:goms/features/qr/data/datasources/qr_remote_datasource.dart';
 import 'package:goms/features/qr/data/providers/qr_data_providers.dart';
-import 'package:goms/features/qr/data/repositories/qr_repository.dart';
+import 'package:goms/features/qr/data/response/issued_qr_response.dart';
 import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -35,7 +35,7 @@ void main() {
     await tester.binding.setSurfaceSize(const Size(430, 932));
     addTearDown(() => tester.binding.setSurfaceSize(null));
 
-    final repository = _FakeQrRepository();
+    final repository = _FakeQrRemoteDataSource();
 
     await _pumpScreen(tester, repository: repository);
     expect(
@@ -102,14 +102,14 @@ void main() {
 
 Future<void> _pumpScreen(
   WidgetTester tester, {
-  QrRepository? repository,
+  _FakeQrRemoteDataSource? repository,
 }) async {
   await tester.pumpWidget(
     ProviderScope(
       overrides: [
         roleProvider.overrideWith((ref) => RoleEnum.admin),
-        qrRepositoryProvider
-            .overrideWithValue(repository ?? _FakeQrRepository()),
+        qrRemoteDataSourceProvider
+            .overrideWithValue(repository ?? _FakeQrRemoteDataSource()),
       ],
       child: MaterialApp(
         builder: (context, child) => ResponsiveBreakpoints.builder(
@@ -142,18 +142,17 @@ String _findCountdownText(WidgetTester tester) {
       .firstWhere((text) => RegExp(r'\d{2}분 \d{2}초').hasMatch(text));
 }
 
-class _FakeQrRepository implements QrRepository {
+class _FakeQrRemoteDataSource implements QrRemoteDataSource {
   int issueCount = 0;
 
   @override
-  Future<IssuedQrModel> issueQr() async {
+  Future<IssuedQrResponse> issueQr() async {
     issueCount += 1;
     final issuedAt = DateTime.now().add(Duration(seconds: issueCount));
-    return IssuedQrModel(
+    return IssuedQrResponse(
       uuid: 'test-uuid-$issueCount',
       exp: issuedAt.add(const Duration(minutes: 5)).millisecondsSinceEpoch ~/
           1000,
-      issuedAt: issuedAt,
     );
   }
 }

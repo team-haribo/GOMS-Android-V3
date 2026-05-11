@@ -5,9 +5,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/session/ui/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
-import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -113,7 +113,7 @@ class _DelayedAuthenticatedAuthNotifier extends AuthNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
+  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '이주언',

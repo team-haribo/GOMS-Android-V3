@@ -9,7 +9,7 @@ import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
 import 'package:goms/features/map/review/presentation/models/write_review_state.dart';
-import 'package:goms/features/map/review/presentation/providers/write_review_provider.dart';
+import 'package:goms/features/map/review/presentation/viewmodels/write_review_viewmodel.dart';
 
 void main() {
   test('review submission refreshes main bottom sheet activity immediately',
@@ -35,7 +35,7 @@ void main() {
         await container.read(recommendedPlacesProvider.future);
     expect(initialRecommendedPlaces.single.reviewCount, 0);
 
-    final notifier = container.read(writeReviewProvider.notifier);
+    final notifier = container.read(writeReviewViewModelProvider.notifier);
     notifier.onTextChanged('새 후기입니다');
 
     await notifier.submitReview(
@@ -47,7 +47,7 @@ void main() {
       recommended: 0,
     );
 
-    final writeState = container.read(writeReviewProvider);
+    final writeState = container.read(writeReviewViewModelProvider);
     final mapState = container.read(mapScreenProvider);
 
     expect(writeState.status, WriteReviewStatus.success);

@@ -2,13 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/presentation/models/outing_coming_qr_result_model.dart';
-import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
-import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
+import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
+import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
+import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/data/repositories/outing_repository.dart';
+import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
 void main() {
@@ -77,7 +76,7 @@ class _FakeOutingRepository implements OutingRepository {
 
   // ignore: require_trailing_commas
   @override
-  Future<OutingComingQrResultModel> forceInStudent({
+  Future<OutingComingQrResultEntity> forceInStudent({
     required int memberId,
   }) async {
     if (shouldFailForceIn) {
@@ -87,7 +86,7 @@ class _FakeOutingRepository implements OutingRepository {
       );
     }
 
-    return OutingComingQrResultModel(
+    return OutingComingQrResultEntity(
       action: OutingAction.inAction,
       outingId: 1,
       status: OutingStatusType.coming,
@@ -98,15 +97,15 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<List<OutingStudentModel>> getCurrentOutingStudents() async => [
-        OutingStudentModel(
+  Future<List<OutingStudentEntity>> getCurrentOutingStudents() async => [
+        OutingStudentEntity(
           memberId: 1,
           name: '이주언',
           grade: 8,
           department: 'AI',
           outingAt: DateTime(2026, 4, 2, 10, 30),
         ),
-        OutingStudentModel(
+        OutingStudentEntity(
           memberId: 2,
           name: '김민솔',
           grade: 9,
@@ -116,17 +115,17 @@ class _FakeOutingRepository implements OutingRepository {
       ];
 
   @override
-  Future<OutingQrResultModel> forceOutStudent({required int memberId}) {
+  Future<OutingQrResultEntity> forceOutStudent({required int memberId}) {
     throw UnimplementedError();
   }
 
   @override
-  Future<MyOutingStatusModel> getMyOutingStatus() {
+  Future<MyOutingStatusEntity> getMyOutingStatus() {
     throw UnimplementedError();
   }
 
   @override
-  Future<OutingComingQrResultModel> processComingByQr({
+  Future<OutingComingQrResultEntity> processComingByQr({
     required String uuid,
     required int exp,
   }) {
@@ -134,7 +133,7 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<OutingQrResultModel> processOutingByQr({
+  Future<OutingQrResultEntity> processOutingByQr({
     required String uuid,
     required int exp,
   }) {
@@ -142,7 +141,7 @@ class _FakeOutingRepository implements OutingRepository {
   }
 
   @override
-  Future<List<OutingStudentModel>> searchOutingStudents({
+  Future<List<OutingStudentEntity>> searchOutingStudents({
     required String name,
   }) {
     throw UnimplementedError();
@@ -151,15 +150,15 @@ class _FakeOutingRepository implements OutingRepository {
 
 class _FakeCurrentOutingStudentsNotifier extends CurrentOutingStudentsNotifier {
   @override
-  Future<List<OutingStudentModel>> build() async => [
-        OutingStudentModel(
+  Future<List<OutingStudentEntity>> build() async => [
+        OutingStudentEntity(
           memberId: 1,
           name: '이주언',
           grade: 8,
           department: 'AI',
           outingAt: DateTime(2026, 4, 2, 10, 30),
         ),
-        OutingStudentModel(
+        OutingStudentEntity(
           memberId: 2,
           name: '김민솔',
           grade: 9,

@@ -10,7 +10,7 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/review/presentation/providers/write_review_provider.dart';
+import 'package:goms/features/map/review/presentation/viewmodels/write_review_viewmodel.dart';
 
 void main() {
   group('MapScreenNotifier', () {
@@ -260,7 +260,7 @@ void main() {
 
       expect(await container.read(myReviewIdsProvider.future), {1});
 
-      final notifier = container.read(writeReviewProvider.notifier);
+      final notifier = container.read(writeReviewViewModelProvider.notifier);
       notifier.onTextChanged('새 후기');
 
       await notifier.submitReview(

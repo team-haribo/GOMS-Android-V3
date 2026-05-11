@@ -1,16 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
 import 'package:goms/features/auth/signup/data/datasources/signup_remote_datasource.dart';
 import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
-import 'package:goms/features/auth/signup/data/repositories/signup_repository_impl.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
-import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
-import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
+import 'package:goms/features/auth/signup/presentation/viewmodels/signup_viewmodel.dart';
 
 void main() {
   group('SignupNotifier validation', () {
@@ -144,9 +143,7 @@ void main() {
       final remote = _FakeAuthRemoteDataSource();
       final container = ProviderContainer(
         overrides: [
-          signupRepositoryProvider.overrideWithValue(
-            SignupRepositoryImpl(remoteDataSource: remote),
-          ),
+          signupRemoteDataSourceProvider.overrideWithValue(remote),
         ],
       );
       addTearDown(container.dispose);
@@ -175,9 +172,7 @@ void main() {
       final remote = _FakeAuthRemoteDataSource();
       final container = ProviderContainer(
         overrides: [
-          signupRepositoryProvider.overrideWithValue(
-            SignupRepositoryImpl(remoteDataSource: remote),
-          ),
+          signupRemoteDataSourceProvider.overrideWithValue(remote),
         ],
       );
       addTearDown(container.dispose);
@@ -219,9 +214,7 @@ void main() {
       );
       final container = ProviderContainer(
         overrides: [
-          signupRepositoryProvider.overrideWithValue(
-            SignupRepositoryImpl(remoteDataSource: remote),
-          ),
+          signupRemoteDataSourceProvider.overrideWithValue(remote),
         ],
       );
       addTearDown(container.dispose);

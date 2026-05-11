@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
+import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
@@ -63,16 +63,16 @@ void main() {
 
 class _FakeCurrentOutingStudentsNotifier extends CurrentOutingStudentsNotifier {
   @override
-  Future<List<OutingStudentModel>> build() async {
+  Future<List<OutingStudentEntity>> build() async {
     return [
-      OutingStudentModel(
+      OutingStudentEntity(
         memberId: 1,
         name: '이주언',
         grade: 8,
         department: 'AI',
         outingAt: DateTime(2026, 4, 2, 10, 30),
       ),
-      OutingStudentModel(
+      OutingStudentEntity(
         memberId: 2,
         name: '김민솔',
         grade: 9,

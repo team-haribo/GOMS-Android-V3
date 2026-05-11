@@ -59,17 +59,17 @@ class _MapMainOverlayState extends ConsumerState<MapMainOverlay> {
     final viewModel = ref.read(mapMainOverlayViewModelProvider);
     final recommendedPlacesCache = ref.watch(recommendedPlacesCacheProvider);
 
-    final onToggleRecommendation = (PopularPlace place) async {
+    Future<void> onToggleRecommendation(PopularPlace place) async {
       await viewModel.toggleRecommendation(place);
-    };
+    }
 
-    final onRefreshRecommended = () async {
+    Future<void> onRefreshRecommended() async {
       await viewModel.refreshRecommendedPlaces();
-    };
+    }
 
-    final onDeleteReview = (int reviewId) async {
+    Future<void> onDeleteReview(int reviewId) async {
       await viewModel.deleteMyReview(reviewId);
-    };
+    }
 
     if (widget.selectedPlace != null) {
       return _SelectedPlaceOverlay(
@@ -340,7 +340,7 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
             }
           };
 
-    final onDeletePressed = (int reviewId) async {
+    Future<Null> onDeletePressed(int reviewId) async {
       try {
         await onDeleteReview(reviewId);
         if (placeId != null) {
@@ -356,12 +356,11 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
           ),
         );
       }
-    };
+    }
 
-    final onReportReview =
-        (int reviewId, String reason) => ref
-            .read(reportRepositoryProvider)
-            .createReviewReport(reviewId: reviewId, reason: reason);
+    Future<void> onReportReview(int reviewId, String reason) => ref
+        .read(reportRepositoryProvider)
+        .createReviewReport(reviewId: reviewId, reason: reason);
 
     return PlaceDetailSheet(
       place: resolvedPlace,

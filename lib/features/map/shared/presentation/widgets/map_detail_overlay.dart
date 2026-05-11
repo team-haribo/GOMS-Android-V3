@@ -30,7 +30,7 @@ class MapDetailOverlay extends ConsumerWidget {
         ? 0.4
         : (context.screenHeight < 780 ? 0.4 : 0.34);
     final maxSheetSize = context.isTabletLayout ? 0.8 : 0.86;
-    
+
     final placeId = place.placeId;
     final placeDetailAsync =
         placeId == null ? null : ref.watch(placeDetailProvider(placeId));
@@ -47,13 +47,13 @@ class MapDetailOverlay extends ConsumerWidget {
 
     final viewModel = ref.read(mapDetailOverlayViewModelProvider(place));
 
-    final onArrivalPressed = () =>
+    Future<Object?> onArrivalPressed() =>
         context.push(RoutePath.direction, extra: place);
-    final onDeparturePressed = () => context.push(
-      '${RoutePath.direction}?start=departure',
-      extra: resolvedPlace,
-    );
-    final onWriteReviewPressed = () =>
+    Future<Object?> onDeparturePressed() => context.push(
+          '${RoutePath.direction}?start=departure',
+          extra: resolvedPlace,
+        );
+    Future<Object?> onWriteReviewPressed() =>
         context.push(RoutePath.writeReview, extra: resolvedPlace);
 
     return Stack(

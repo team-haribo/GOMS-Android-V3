@@ -2,8 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-import 'package:goms/features/notification/presentation/notification_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:goms/features/profile/data/providers/profile_data_providers.dart';
 
 class SettingsState {
   final bool showClock;
@@ -49,46 +48,37 @@ class SettingsNotifier extends AsyncNotifier<SettingsState> {
   }
 
   Future<bool> setOutingPushAlarm(bool value) async {
-    final dataSource = ref.read(notificationDataSourceProvider);
-
     if (value) {
-      var status = await Permission.notification.status;
-      if (status.isDenied) {
-        status = await Permission.notification.request();
+      final success =
+          await ref.read(enablePushNotificationUseCaseProvider).call();
+      if (success) {
+        state = AsyncData(state.requireValue.copyWith(outingPushAlarm: true));
       }
-      if (status.isPermanentlyDenied) {
-        await openAppSettings();
-        return false;
-      }
-      if (!status.isGranted) return false;
-
-      await dataSource.registerDeviceToken();
+      return success;
     } else {
-      await dataSource.deleteDeviceToken();
+      final success =
+          await ref.read(disablePushNotificationUseCaseProvider).call();
+      if (success) {
+        state = AsyncData(state.requireValue.copyWith(outingPushAlarm: false));
+      }
+      return success;
     }
-
-    await SettingsStorage.setOutingPushAlarm(value);
-    state = AsyncData(state.requireValue.copyWith(outingPushAlarm: value));
-    return true;
   }
 
   Future<bool> setCameraLaunch(bool value) async {
     final role = ref.read(roleProvider);
 
     if (value && role != RoleEnum.admin) {
-      var status = await Permission.camera.status;
-      if (status.isDenied) {
-        status = await Permission.camera.request();
+      final success =
+          await ref.read(enableCameraLaunchUseCaseProvider).call();
+      if (success) {
+        state = AsyncData(state.requireValue.copyWith(cameraLaunch: true));
       }
-      if (status.isPermanentlyDenied) {
-        await openAppSettings();
-        return false;
-      }
-      if (!status.isGranted) return false;
+      return success;
+    } else {
+      await SettingsStorage.setCameraLaunch(value);
+      state = AsyncData(state.requireValue.copyWith(cameraLaunch: value));
+      return true;
     }
-
-    await SettingsStorage.setCameraLaunch(value);
-    state = AsyncData(state.requireValue.copyWith(cameraLaunch: value));
-    return true;
   }
 }

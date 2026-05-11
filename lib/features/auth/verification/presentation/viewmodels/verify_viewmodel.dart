@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/email_verification/data/providers/email_verification_data_providers.dart';
 import 'package:goms/features/auth/verification/presentation/states/verify_state.dart';
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
@@ -90,13 +92,17 @@ class VerifyNotifier extends Notifier<VerifyState> {
     state = state.copyWith(status: VerifyStatus.loading);
     try {
       final response = await ref
-          .read(emailVerificationRepositoryProvider)
+          .read(emailVerificationRemoteDataSourceProvider)
           .confirmEmailVerification(
-            email: authFlow.email,
-            code: state.code,
-            purpose: authFlow.purpose!,
+            ConfirmEmailVerificationRequestDto(
+              email: authFlow.email,
+              code: state.code,
+              purpose: authFlow.purpose!,
+            ),
           );
-      ref.read(authFlowProvider.notifier).setVerifiedToken(response.verifiedToken);
+      ref
+          .read(authFlowProvider.notifier)
+          .setVerifiedToken(response.verifiedToken);
       state = state.copyWith(status: VerifyStatus.success);
     } on DioException catch (e) {
       state = state.copyWith(
@@ -133,9 +139,13 @@ class VerifyNotifier extends Notifier<VerifyState> {
 
     try {
       ref.read(authFlowProvider.notifier).clearVerifiedToken();
-      await ref.read(emailVerificationRepositoryProvider).sendEmailVerification(
-            email: authFlow.email,
-            purpose: authFlow.purpose!,
+      await ref
+          .read(emailVerificationRemoteDataSourceProvider)
+          .sendEmailVerification(
+            SendEmailVerificationRequestDto(
+              email: authFlow.email,
+              purpose: authFlow.purpose!,
+            ),
           );
     } on DioException catch (e) {
       state = state.copyWith(

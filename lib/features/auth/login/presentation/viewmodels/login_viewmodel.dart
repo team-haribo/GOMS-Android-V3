@@ -8,6 +8,7 @@ import 'package:goms/core/providers/service_providers.dart';
 import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
+import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
 import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
@@ -94,9 +95,8 @@ class LoginNotifier extends Notifier<LoginState> {
 
     try {
       final normalizedEmail = normalizeSchoolEmail(email);
-      final response = await ref.read(sessionRepositoryProvider).signIn(
-            email: normalizedEmail,
-            password: password,
+      final response = await ref.read(sessionRemoteDataSourceProvider).signIn(
+            SignInRequestDto(email: normalizedEmail, password: password),
           );
 
       await TokenStorage.saveAccessToken(response.accessToken);

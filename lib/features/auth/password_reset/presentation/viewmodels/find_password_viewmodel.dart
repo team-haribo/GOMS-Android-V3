@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
@@ -48,9 +49,11 @@ class FindPasswordNotifier extends Notifier<FindPasswordState> {
     state = state.copyWith(status: FindPasswordStatus.loading);
     try {
       final normalizedEmail = normalizeSchoolEmail(state.email);
-      await ref.read(passwordResetRepositoryProvider).sendEmailVerification(
-            email: normalizedEmail,
-            purpose: EmailVerificationPurpose.passwordChange,
+      await ref.read(passwordResetRemoteDataSourceProvider).sendEmailVerification(
+            SendEmailVerificationRequestDto(
+              email: normalizedEmail,
+              purpose: EmailVerificationPurpose.passwordChange,
+            ),
           );
       ref.read(authFlowProvider.notifier).startResetPassword(normalizedEmail);
 

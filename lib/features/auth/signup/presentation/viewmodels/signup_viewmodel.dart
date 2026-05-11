@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/logger.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/signup/data/request/signup/signup_request_dto.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/signup/data/providers/signup_data_providers.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
@@ -157,9 +159,11 @@ class SignupNotifier extends Notifier<SignupState> {
     state = state.copyWith(status: SignupStatus.loading);
 
     try {
-      await ref.read(signupRepositoryProvider).sendEmailVerification(
-        email: normalizedEmail,
-        purpose: EmailVerificationPurpose.signup,
+      await ref.read(signupRemoteDataSourceProvider).sendEmailVerification(
+        SendEmailVerificationRequestDto(
+          email: normalizedEmail,
+          purpose: EmailVerificationPurpose.signup,
+        ),
       );
       ref.read(authFlowProvider.notifier).startSignup(normalizedEmail);
 
@@ -213,14 +217,16 @@ class SignupNotifier extends Notifier<SignupState> {
         'signup request: email=${authFlow.email}, name=${state.name}, grade=${state.grade}, department=${state.major!.name.toUpperCase()}, gender=${state.gender!.name.toUpperCase()}',
         tag: 'AUTH',
       );
-      await ref.read(signupRepositoryProvider).signUp(
-        email: authFlow.email,
-        verifiedToken: authFlow.verifiedToken!,
-        password: state.password,
-        name: state.name,
-        grade: int.parse(state.grade),
-        department: state.major!,
-        gender: state.gender!,
+      await ref.read(signupRemoteDataSourceProvider).signUp(
+        SignUpRequestDto(
+          email: authFlow.email,
+          verifiedToken: authFlow.verifiedToken!,
+          password: state.password,
+          name: state.name,
+          grade: int.parse(state.grade),
+          department: state.major!,
+          gender: state.gender!,
+        ),
       );
       ref.read(authFlowProvider.notifier).clear();
       state = state.copyWith(status: SignupStatus.success);

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
+//ui
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
-import 'package:goms/features/outing/presentation/widgets/date_button.dart';
-import 'package:goms/features/outing/presentation/widgets/late_profile_list_container.dart';
-import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
+import 'package:goms/core/utils/student_info_formatter.dart';
 
 class AdminLatecomerListScreen extends ConsumerStatefulWidget {
   const AdminLatecomerListScreen({
@@ -177,5 +177,105 @@ class _AdminLatecomerListScreenState
 
   String _formatDate(DateTime date) {
     return '${date.year}년 ${date.month}월 ${date.day}일 (${_weekdays[date.weekday - 1]})';
+  }
+}
+
+// ---------------------------------------------------------------------------
+// DateButton (moved from widgets/date_button.dart)
+// ---------------------------------------------------------------------------
+
+class DateButton extends StatelessWidget {
+  const DateButton({
+    super.key,
+    this.label = '날짜',
+    this.onPressed,
+  });
+
+  final String label;
+  final VoidCallback? onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: onPressed,
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: Size.zero,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Text(
+        label,
+        style: AppTextStyles.text2.copyWith(
+          color: AppColors.admin,
+        ),
+      ),
+    );
+  }
+}
+
+// ---------------------------------------------------------------------------
+// LateProfileListContainer (moved from widgets/late_profile_list_container.dart)
+// ---------------------------------------------------------------------------
+
+class LateProfileListContainer extends StatelessWidget {
+  final String name;
+  final int grade;
+  final String major;
+  final String profileImageUrl;
+
+  const LateProfileListContainer({
+    super.key,
+    required this.name,
+    required this.grade,
+    required this.major,
+    required this.profileImageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: context.backgroundColor,
+      width: double.infinity,
+      height: 72,
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: ProfileAvatar(
+              radius: 24,
+              imageUrl: profileImageUrl,
+              backgroundColor: context.surfaceColor,
+            ),
+          ),
+          AppGap.v4,
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: AppTextStyles.text1.copyWith(
+                  color: context.sub1Color,
+                ),
+              ),
+              AppGap.h4,
+              Row(
+                children: [
+                  Text(
+                    StudentInfoFormatter.formatCohortDepartment(
+                      grade: grade,
+                      department: major,
+                    ),
+                    style: AppTextStyles.caption2.copyWith(
+                      color: context.sub2Color,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

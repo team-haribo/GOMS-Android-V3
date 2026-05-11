@@ -1,6 +1,6 @@
 import 'package:goms/features/late/data/datasources/late_remote_datasource.dart';
 import 'package:goms/features/late/data/repositories/late_repository.dart';
-import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
+import 'package:goms/features/late/presentation/models/late_rank_student_model.dart';
 import 'package:intl/intl.dart';
 
 class LateRepositoryImpl implements LateRepository {

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/features/map/shared/ui/models/map_poi_marker_asset.dart';
+import 'package:goms/features/map/shared/presentation/models/map_poi_marker_asset.dart';
 
 void main() {
   test('exposes current location marker asset', () {

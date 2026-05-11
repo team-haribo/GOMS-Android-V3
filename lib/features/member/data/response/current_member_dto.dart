@@ -3,7 +3,7 @@ import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/utils/logger.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
 part 'current_member_dto.g.dart';

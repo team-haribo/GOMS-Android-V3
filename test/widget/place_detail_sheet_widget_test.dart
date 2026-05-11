@@ -3,9 +3,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
-import 'package:goms/features/map/shared/ui/widgets/place_detail_sheet.dart';
+import 'package:goms/features/map/shared/presentation/widgets/place_detail_sheet.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

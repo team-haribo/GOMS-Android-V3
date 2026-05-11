@@ -5,10 +5,10 @@ import 'package:goms/features/outing/data/response/qr/process_coming_by_qr_respo
 import 'package:goms/features/outing/data/response/qr/process_outing_by_qr_response.dart';
 import 'package:goms/features/outing/data/response/search/search_outing_students_response.dart';
 import 'package:goms/features/outing/data/response/status/my_outing_status_response.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 import 'package:goms/features/outing/data/repositories/outing_repository.dart';
 
 class OutingRepositoryImpl implements OutingRepository {

@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:goms/features/member/data/datasources/member_remote_datasource.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/data/repositories/member_repository.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/models/member_model.dart';
+import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
 
 class MemberRepositoryImpl implements MemberRepository {
   const MemberRepositoryImpl(this._remoteDataSource);

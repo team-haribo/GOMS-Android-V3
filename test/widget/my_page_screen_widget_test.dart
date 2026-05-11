@@ -8,14 +8,14 @@ import 'package:goms/app/router/route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
-import 'package:goms/features/profile/ui/providers/settings_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

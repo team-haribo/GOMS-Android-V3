@@ -6,13 +6,13 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
-import 'package:goms/features/map/discovery/ui/models/map_screen_review_model.dart';
-import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
-import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_review_model.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
+import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/shared/ui/widgets/map_main_overlay.dart';
+import 'package:goms/features/map/shared/presentation/widgets/map_main_overlay.dart';
 
 void main() {
   testWidgets('tapping a place card forwards the selected place callback', (

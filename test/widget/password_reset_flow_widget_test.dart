@@ -14,19 +14,19 @@ import 'package:goms/features/auth/email_verification/domain/enums/email_verific
 import 'package:goms/features/auth/email_verification/domain/repositories/email_verification_repository.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
 import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
-import 'package:goms/features/auth/login/ui/screens/login_screen.dart';
-import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
-import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
-import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/shared/ui/routes/verify_route_extra.dart';
-import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
+import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
+import 'package:goms/features/auth/shared/presentation/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/shared/presentation/routes/verify_route_extra.dart';
+import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
-import 'package:goms/features/profile/ui/providers/settings_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
+import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

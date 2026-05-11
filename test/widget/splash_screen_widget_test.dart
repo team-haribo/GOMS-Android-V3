@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/features/splash/ui/screens/splash_screen.dart';
+import 'package:goms/features/auth/session/presentation/providers/session_provider.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/splash/presentation/screens/splash_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

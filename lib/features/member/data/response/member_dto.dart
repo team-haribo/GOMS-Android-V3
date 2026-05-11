@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
+import 'package:goms/features/member/presentation/models/member_model.dart';
 
 part 'member_dto.g.dart';
 

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:goms/features/report/data/response/report_response.dart';
-import 'package:goms/features/report/ui/models/report_summary_model.dart';
+import 'package:goms/features/report/presentation/models/report_summary_model.dart';
 
 part 'report_list_response.g.dart';
 

@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/data/repositories/outing_repository.dart';
-import 'package:goms/features/qr/ui/models/qr_scan_state.dart';
-import 'package:goms/features/qr/ui/providers/qr_scan_provider.dart';
+import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/providers/qr_scan_provider.dart';
 
 void main() {
   group('QrScanNotifier', () {

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
+import 'package:goms/features/qr/presentation/models/issued_qr_model.dart';
 
 part 'issued_qr_response.freezed.dart';
 part 'issued_qr_response.g.dart';

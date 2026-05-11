@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/direction/ui/models/direction_state.dart';
-import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
-import 'package:goms/features/map/shared/ui/widgets/map_direction_overlay.dart';
+import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
+import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/shared/presentation/widgets/map_direction_overlay.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

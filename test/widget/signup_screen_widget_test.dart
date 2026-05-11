@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/features/auth/signup/ui/screens/signup_screen.dart';
-import 'package:goms/features/auth/signup/ui/providers/signup_provider.dart';
-import 'package:goms/features/auth/signup/ui/models/signup_state.dart';
+import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
+import 'package:goms/features/auth/signup/presentation/providers/signup_provider.dart';
+import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/profile/ui/screens/privacy_policy_screen.dart';
+import 'package:goms/features/profile/presentation/screens/privacy_policy_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

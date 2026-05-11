@@ -4,13 +4,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/map/data/map_constants.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
-import 'package:goms/features/map/discovery/ui/models/map_screen_state.dart';
-import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
+import 'package:goms/features/map/discovery/presentation/models/map_screen_state.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
 import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/review/ui/providers/write_review_provider.dart';
+import 'package:goms/features/map/review/presentation/providers/write_review_provider.dart';
 
 void main() {
   group('MapScreenNotifier', () {

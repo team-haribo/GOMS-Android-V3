@@ -1,7 +1,7 @@
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 
 abstract class OutingRepository {
   Future<MyOutingStatusModel> getMyOutingStatus();

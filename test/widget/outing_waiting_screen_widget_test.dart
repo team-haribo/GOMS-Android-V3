@@ -5,15 +5,15 @@ import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
-import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
-import 'package:goms/features/late/ui/providers/late_rank_students_provider.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/late/presentation/models/late_rank_student_model.dart';
+import 'package:goms/features/late/presentation/providers/late_rank_students_provider.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/screens/outing_waiting_screen.dart';
-import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
-import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/ui/providers/settings_provider.dart';
+import 'package:goms/features/outing/presentation/screens/outing_waiting_screen.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/presentation/providers/settings_provider.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

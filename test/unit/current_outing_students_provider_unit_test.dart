@@ -2,14 +2,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
-import 'package:goms/features/outing/ui/models/outing_coming_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_coming_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/data/repositories/outing_repository.dart';
-import 'package:goms/features/outing/ui/providers/current_outing_students_provider.dart';
+import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
 
 void main() {
   group('CurrentOutingStudentsNotifier', () {

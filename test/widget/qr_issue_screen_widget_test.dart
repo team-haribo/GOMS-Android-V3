@@ -4,10 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/features/qr/ui/models/issued_qr_model.dart';
+import 'package:goms/features/qr/presentation/models/issued_qr_model.dart';
 import 'package:goms/features/qr/data/providers/qr_data_providers.dart';
 import 'package:goms/features/qr/data/repositories/qr_repository.dart';
-import 'package:goms/features/qr/ui/screens/qr_issue_screen.dart';
+import 'package:goms/features/qr/presentation/screens/qr_issue_screen.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 

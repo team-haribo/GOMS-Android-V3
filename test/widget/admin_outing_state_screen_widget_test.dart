@@ -7,12 +7,12 @@ import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/data/repositories/member_repository.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
-import 'package:goms/features/member/ui/providers/student_council_members_provider.dart';
-import 'package:goms/features/outing/ui/screens/admin_outing_state_screen.dart';
-import 'package:goms/features/outing/ui/widgets/admin_outing_state_container.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/models/member_model.dart';
+import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
+import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
+import 'package:goms/features/outing/presentation/screens/admin_outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 
 void main() {
   testWidgets('AdminOutingStateScreen renders admin members and filters search',

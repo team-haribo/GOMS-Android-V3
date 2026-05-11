@@ -1,11 +1,11 @@
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_builders.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/features/map/direction/ui/screens/direction_screen.dart';
-import 'package:goms/features/map/discovery/ui/screens/map_screen.dart';
-import 'package:goms/features/map/review/ui/screens/write_review_screen.dart';
-import 'package:goms/features/map/shared/ui/models/map_screen_type.dart';
-import 'package:goms/features/map/shared/ui/screens/map_base_screen.dart';
+import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
+import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
+import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
+import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
+import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
 
 List<RouteBase> buildMapRoutes() => [
       GoRoute(

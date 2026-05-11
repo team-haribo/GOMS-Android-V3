@@ -1,7 +1,7 @@
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
+import 'package:goms/features/member/presentation/models/current_member_model.dart';
+import 'package:goms/features/member/presentation/models/member_model.dart';
+import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
 
 abstract class MemberRepository {
   Future<List<MemberModel>> getMembers();

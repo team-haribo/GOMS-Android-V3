@@ -1,0 +1,448 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms_design_system/goms_design_system.dart';
+import 'package:goms/core/utils/logger.dart';
+import 'package:goms/features/map/domain/entities/place_review_entity.dart';
+import 'package:goms/features/map/shared/presentation/widgets/arrival_departure_button.dart';
+import 'package:goms/features/map/shared/presentation/widgets/drag_handle_header.dart';
+import 'package:goms/features/map/shared/presentation/widgets/review_list_container.dart';
+import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
+import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
+import 'package:goms/features/report/data/providers/report_data_providers.dart';
+
+class ReviewListScreen extends ConsumerStatefulWidget {
+  final int placeId;
+  final String placeName;
+  final String category;
+  final String address;
+  final int distanceMeter;
+  final int durationMinutes;
+  final int review;
+  final int recommended;
+
+  const ReviewListScreen({
+    super.key,
+    required this.placeId,
+    required this.placeName,
+    required this.category,
+    required this.address,
+    required this.distanceMeter,
+    required this.durationMinutes,
+    required this.review,
+    required this.recommended,
+  });
+
+  @override
+  ConsumerState<ReviewListScreen> createState() => _ReviewListScreenState();
+}
+
+class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
+  final Set<int> _deletedReviewIds = <int>{};
+
+  Future<void> _deleteReview(int reviewId) async {
+    if (_deletedReviewIds.contains(reviewId)) {
+      return;
+    }
+
+    setState(() {
+      _deletedReviewIds.add(reviewId);
+    });
+
+    try {
+      await ref.read(recommendedPlaceRepositoryProvider).deleteReview(reviewId);
+    } catch (error, stackTrace) {
+      Logger.e(
+        'Review list delete request failed.',
+        tag: 'MAP',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isLight = context.isLightMode;
+    final horizontalPadding = context.horizontalPadding;
+    final placeReviewsAsync = ref.watch(placeReviewsProvider(widget.placeId));
+    final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
+    final placeReviews =
+        placeReviewsAsync.asData?.value ?? const <PlaceReviewEntity>[];
+    final myReviewIds = myReviewIdsAsync.asData?.value ?? const <int>{};
+    final reviews = placeReviews
+        .where((review) => !_deletedReviewIds.contains(review.reviewId))
+        .toList(growable: false);
+    final reviewCount = reviews.length;
+    final isReviewLoading =
+        placeReviewsAsync.isLoading && placeReviewsAsync.asData == null;
+    final isReviewLoadFailed = placeReviewsAsync.hasError;
+
+    return BaseScaffold(
+      showAppBar: false,
+      contentPadding: EdgeInsets.zero,
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+            child: const SearchTextField(),
+          ),
+          Expanded(
+            child: Stack(
+              children: [
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  top: 0,
+                  child: DraggableScrollableSheet(
+                    initialChildSize: 0.32,
+                    minChildSize: 0.32,
+                    maxChildSize: context.isTabletLayout ? 0.78 : 0.85,
+                    snap: true,
+                    snapSizes: <double>[
+                      0.32,
+                      0.6,
+                      context.isTabletLayout ? 0.78 : 0.85,
+                    ],
+                    builder: (context, scrollController) {
+                      return ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: isLight
+                                ? AppColors.bgSurface
+                                : AppColors.bgSurfaceDark,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(12),
+                            ),
+                          ),
+                          child: CustomScrollView(
+                            controller: scrollController,
+                            slivers: [
+                              SliverPersistentHeader(
+                                pinned: true,
+                                delegate: DragHandleHeader(),
+                              ),
+                              SliverToBoxAdapter(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: horizontalPadding,
+                                  ),
+                                  child: SizedBox(
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  widget.placeName,
+                                                  style: AppTextStyles.title3
+                                                      .copyWith(
+                                                    color: isLight
+                                                        ? AppColors.mainText
+                                                        : AppColors
+                                                            .mainTextDark,
+                                                  ),
+                                                ),
+                                                AppGap.h4,
+                                                Text(
+                                                  widget.category,
+                                                  style: AppTextStyles.text3
+                                                      .copyWith(
+                                                    color: isLight
+                                                        ? AppColors.sub1
+                                                        : AppColors.sub1Dark,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                AppIcons.heart(),
+                                                AppGap.h4,
+                                                AppIcons.cancel(),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        AppGap.v8,
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: Text(
+                                            widget.address,
+                                            style: AppTextStyles.text2.copyWith(
+                                              color: isLight
+                                                  ? AppColors.sub2
+                                                  : AppColors.sub2Dark,
+                                            ),
+                                          ),
+                                        ),
+                                        AppGap.v4,
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${widget.distanceMeter}m',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '|',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '${widget.durationMinutes}분',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        AppGap.v4,
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '학생 후기',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '$reviewCount',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '|',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '추천',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                            AppGap.h4,
+                                            Text(
+                                              '${widget.recommended}',
+                                              style:
+                                                  AppTextStyles.text2.copyWith(
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub2Dark,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        AppGap.v16,
+                                        Row(
+                                          children: [
+                                            ArrivalDepartureButton(
+                                              buttonText: '도착',
+                                              textColor: isLight
+                                                  ? AppColors.background
+                                                  : AppColors.mainTextDark,
+                                              backgroundColor:
+                                                  AppColors.mainColor,
+                                              onPressed: () {},
+                                            ),
+                                            AppGap.h4,
+                                            ArrivalDepartureButton(
+                                              buttonText: '출발',
+                                              textColor: AppColors.sub2,
+                                              backgroundColor:
+                                                  AppColors.buttonDark,
+                                              onPressed: () {},
+                                            ),
+                                          ],
+                                        ),
+                                        AppGap.v16,
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  '학생후기',
+                                                  style: AppTextStyles.title3
+                                                      .copyWith(
+                                                    color: isLight
+                                                        ? AppColors.mainText
+                                                        : AppColors
+                                                            .mainTextDark,
+                                                  ),
+                                                ),
+                                                AppGap.h4,
+                                                RichText(
+                                                  text: TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text: '$reviewCount',
+                                                        style: AppTextStyles
+                                                            .text3
+                                                            .copyWith(
+                                                          color: AppColors
+                                                              .mainColor,
+                                                        ),
+                                                      ),
+                                                      TextSpan(
+                                                        text: '건',
+                                                        style: AppTextStyles
+                                                            .text3
+                                                            .copyWith(
+                                                          color: isLight
+                                                              ? AppColors.sub2
+                                                              : AppColors
+                                                                  .sub2Dark,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            TextButton.icon(
+                                              onPressed: () {},
+                                              label: Text(
+                                                '후기 남기기',
+                                                style: AppTextStyles.text2
+                                                    .copyWith(
+                                                  color: isLight
+                                                      ? AppColors.sub2
+                                                      : AppColors.sub1Dark,
+                                                ),
+                                              ),
+                                              icon: AppIcons.tablerEdit(
+                                                width: 24,
+                                                height: 24,
+                                                color: isLight
+                                                    ? AppColors.sub2
+                                                    : AppColors.sub1Dark,
+                                              ),
+                                              style: TextButton.styleFrom(
+                                                padding: const EdgeInsets.only(
+                                                  right: 4,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        if (isReviewLoading) ...[
+                                          AppGap.v20,
+                                          const Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                          AppGap.v20,
+                                        ] else if (reviews.isEmpty) ...[
+                                          AppGap.v12,
+                                          AppIcons.coffee(),
+                                          AppGap.v12,
+                                          Text(
+                                            isReviewLoadFailed
+                                                ? '후기를 불러오지 못했어요.\n잠시 후 다시 시도해 주세요.'
+                                                : '아직 후기가 없어요!\n첫 후기를 작성해봐요!',
+                                            style:
+                                                AppTextStyles.caption1.copyWith(
+                                              color: AppColors.sub2,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          AppGap.v20,
+                                        ] else ...[
+                                          Column(
+                                            children: reviews
+                                                .map(
+                                                  (review) =>
+                                                      ReviewListContainer(
+                                                    reviewId: review.reviewId,
+                                                    name: review.name,
+                                                    grade: review.grade,
+                                                    major: review.department,
+                                                    reviewDetailContent:
+                                                        review.content,
+                                                    createdAt:
+                                                        review.reviewedAt,
+                                                    isMine:
+                                                        myReviewIds.contains(
+                                                      review.reviewId,
+                                                    ),
+                                                    onDelete: _deleteReview,
+                                                    onReport: (
+                                                      reviewId,
+                                                      reason,
+                                                    ) =>
+                                                        ref
+                                                            .read(
+                                                              reportRepositoryProvider,
+                                                            )
+                                                            .createReviewReport(
+                                                              reviewId:
+                                                                  reviewId,
+                                                              reason: reason,
+                                                            ),
+                                                  ),
+                                                )
+                                                .toList(growable: false),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

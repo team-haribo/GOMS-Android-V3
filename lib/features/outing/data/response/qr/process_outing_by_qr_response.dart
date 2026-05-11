@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/models/outing_qr_result_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_qr_result_model.dart';
 
 part 'process_outing_by_qr_response.freezed.dart';
 part 'process_outing_by_qr_response.g.dart';

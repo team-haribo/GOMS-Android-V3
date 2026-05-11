@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/outing/ui/models/outing_student_model.dart';
+import 'package:goms/features/outing/presentation/models/outing_student_model.dart';
 
 part 'outing_student_response.freezed.dart';
 part 'outing_student_response.g.dart';

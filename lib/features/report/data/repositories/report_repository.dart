@@ -1,7 +1,7 @@
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
-import 'package:goms/features/report/ui/models/report_detail_model.dart';
-import 'package:goms/features/report/ui/models/report_resolve_result_model.dart';
-import 'package:goms/features/report/ui/models/report_summary_model.dart';
+import 'package:goms/features/report/presentation/models/report_detail_model.dart';
+import 'package:goms/features/report/presentation/models/report_resolve_result_model.dart';
+import 'package:goms/features/report/presentation/models/report_summary_model.dart';
 
 abstract class ReportRepository {
   Future<void> createReviewReport({

@@ -3,9 +3,9 @@ import 'package:goms/features/report/data/request/create_review_report_request.d
 import 'package:goms/features/report/data/datasources/report_remote_datasource.dart';
 import 'package:goms/features/report/data/request/report_resolve_request.dart';
 import 'package:goms/features/report/data/repositories/report_repository.dart';
-import 'package:goms/features/report/ui/models/report_detail_model.dart';
-import 'package:goms/features/report/ui/models/report_resolve_result_model.dart';
-import 'package:goms/features/report/ui/models/report_summary_model.dart';
+import 'package:goms/features/report/presentation/models/report_detail_model.dart';
+import 'package:goms/features/report/presentation/models/report_resolve_result_model.dart';
+import 'package:goms/features/report/presentation/models/report_summary_model.dart';
 
 class ReportRepositoryImpl implements ReportRepository {
   const ReportRepositoryImpl(this._remoteDataSource);

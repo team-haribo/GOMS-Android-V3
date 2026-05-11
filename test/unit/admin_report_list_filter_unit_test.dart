@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
-import 'package:goms/features/report/ui/screens/admin_report_list_screen.dart';
+import 'package:goms/features/report/presentation/screens/admin_report_list_screen.dart';
 
 void main() {
   group('matchesReportStatusFilter', () {

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/outing/presentation/models/my_outing_status_model.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 
 part 'my_outing_status_response.freezed.dart';

@@ -1,6 +1,6 @@
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
+import 'package:goms/features/member/presentation/models/student_council_student_model.dart';
 
 part 'student_council_students_response.g.dart';
 

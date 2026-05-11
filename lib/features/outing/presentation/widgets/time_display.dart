@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:goms_design_system/goms_design_system.dart';
+import 'package:goms/features/outing/presentation/providers/time_provider.dart';
+
+class TimeDisplay extends ConsumerWidget {
+  const TimeDisplay({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final now = ref.watch(currentTimeProvider).value ?? DateTime.now();
+    final ampm = DateFormat('a', 'en_US').format(now);
+    final time = DateFormat('h : mm : ss').format(now);
+
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$ampm ',
+            style:
+                AppTextStyles.dateTimeAmPm.copyWith(color: context.sub2Color),
+          ),
+          TextSpan(
+            text: time,
+            style: AppTextStyles.dateTime.copyWith(color: context.sub2Color),
+          ),
+        ],
+      ),
+    );
+  }
+}

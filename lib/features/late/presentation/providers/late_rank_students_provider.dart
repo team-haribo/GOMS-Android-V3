@@ -5,8 +5,9 @@ import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/late/data/providers/late_data_providers.dart';
 import 'package:goms/features/late/presentation/models/late_rank_student_model.dart';
 
-final lateRankStudentsProvider = AsyncNotifierProvider<LateRankStudentsNotifier,
-    List<LateRankStudentModel>>(LateRankStudentsNotifier.new);
+final lateRankStudentsProvider =
+    AsyncNotifierProvider<LateRankStudentsNotifier, List<LateRankStudentModel>>(
+        LateRankStudentsNotifier.new);
 
 class LateRankStudentsNotifier
     extends AsyncNotifier<List<LateRankStudentModel>> {
@@ -30,7 +31,8 @@ class LateRankStudentsNotifier
     }
 
     try {
-      return await ref.read(lateRepositoryProvider).getLateRankStudents();
+      final response = await ref.read(lateRemoteDataSourceProvider).getLateRankStudents();
+      return response.toModel();
     } on DioException catch (error) {
       throw LateRankStudentsException(
         NetworkException.fromDioException(error).message,

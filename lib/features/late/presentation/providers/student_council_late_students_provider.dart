@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/late/data/providers/late_data_providers.dart';
 import 'package:goms/features/late/presentation/models/late_rank_student_model.dart';
+import 'package:intl/intl.dart';
 
 final studentCouncilLateDateProvider = StateProvider<DateTime?>((ref) => null);
 
@@ -27,9 +28,11 @@ class StudentCouncilLateStudentsNotifier
 
   Future<List<LateRankStudentModel>> _fetch(DateTime? date) async {
     try {
-      return await ref
-          .read(lateRepositoryProvider)
-          .getStudentCouncilLateStudents(date: date);
+      final dateStr = date == null ? null : _formatDate(date);
+      final response = await ref
+          .read(lateRemoteDataSourceProvider)
+          .getStudentCouncilLateStudents(date: dateStr);
+      return response.toModel();
     } on DioException catch (error) {
       throw StudentCouncilLateStudentsException(
         NetworkException.fromDioException(error).message,
@@ -47,3 +50,5 @@ class StudentCouncilLateStudentsException implements Exception {
 
   final String message;
 }
+
+String _formatDate(DateTime date) => DateFormat('yyyy-MM-dd').format(date);

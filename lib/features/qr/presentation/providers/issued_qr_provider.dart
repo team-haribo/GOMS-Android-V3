@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/qr/data/providers/qr_data_providers.dart';
+import 'package:goms/features/qr/data/response/issued_qr_response.dart';
 import 'package:goms/features/qr/presentation/models/issued_qr_model.dart';
 
 final issuedQrProvider =
@@ -22,7 +23,8 @@ class IssuedQrNotifier extends AsyncNotifier<IssuedQrModel> {
 
   Future<IssuedQrModel> _issueQr() async {
     try {
-      return await ref.read(qrRepositoryProvider).issueQr();
+      final response = await ref.read(qrRemoteDataSourceProvider).issueQr();
+      return response.toModel();
     } on DioException catch (error) {
       throw IssueQrException(NetworkException.fromDioException(error).message);
     } catch (error) {

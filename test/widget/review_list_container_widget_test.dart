@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/features/map/shared/ui/widgets/review_list_container.dart';
+import 'package:goms/features/map/shared/presentation/widgets/review_list_container.dart';
 
 void main() {
   testWidgets('후기 리스트 신고 아이콘은 컨테이너 중앙에 정렬된다', (tester) async {

@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
-import 'package:goms/features/map/direction/ui/models/direction_state.dart';
-import 'package:goms/features/map/direction/ui/providers/direction_provider.dart';
-import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
-import 'package:goms/features/map/discovery/ui/providers/map_screen_provider.dart';
+import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
+import 'package:goms/features/map/direction/presentation/providers/direction_provider.dart';
+import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/providers/map_screen_provider.dart';
 import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/shared/ui/models/map_screen_type.dart';
-import 'package:goms/features/map/shared/ui/screens/map_base_screen.dart';
-import 'package:goms/features/map/shared/ui/widgets/kakao_map_background.dart';
+import 'package:goms/features/map/shared/presentation/models/map_screen_type.dart';
+import 'package:goms/features/map/shared/presentation/screens/map_base_screen.dart';
+import 'package:goms/features/map/shared/presentation/widgets/kakao_map_background.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/features/qr/ui/routes/qr_routes.dart';
-import 'package:goms/features/qr/ui/models/qr_scan_state.dart';
-import 'package:goms/features/qr/ui/screens/outing_start_screen.dart';
-import 'package:goms/features/qr/ui/screens/return_success_screen.dart';
+import 'package:goms/features/qr/presentation/routes/qr_routes.dart';
+import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/screens/outing_start_screen.dart';
+import 'package:goms/features/qr/presentation/screens/return_success_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

@@ -1,13 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/features/auth/login/presentation/viewmodels/login_viewmodel.dart';
 import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
 import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
 import 'package:goms/features/auth/session/data/response/signin/signin_response_dto.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
-import 'package:goms/features/auth/session/data/repositories/session_repository_impl.dart';
-import 'package:goms/features/auth/login/ui/models/login_state.dart';
-import 'package:goms/features/auth/login/ui/providers/login_provider.dart';
+import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 
 void main() {
   group('LoginNotifier', () {
@@ -25,11 +24,9 @@ void main() {
     test('404 login failure maps to email error', () async {
       final container = ProviderContainer(
         overrides: [
-          sessionRepositoryProvider.overrideWithValue(
-            SessionRepositoryImpl(
-              remoteDataSource: _FakeAuthRemoteDataSource(
-                signInException: _dioException(statusCode: 404),
-              ),
+          sessionRemoteDataSourceProvider.overrideWithValue(
+            _FakeAuthRemoteDataSource(
+              signInException: _dioException(statusCode: 404),
             ),
           ),
         ],
@@ -50,11 +47,9 @@ void main() {
     test('403 login failure maps to password error', () async {
       final container = ProviderContainer(
         overrides: [
-          sessionRepositoryProvider.overrideWithValue(
-            SessionRepositoryImpl(
-              remoteDataSource: _FakeAuthRemoteDataSource(
-                signInException: _dioException(statusCode: 403),
-              ),
+          sessionRemoteDataSourceProvider.overrideWithValue(
+            _FakeAuthRemoteDataSource(
+              signInException: _dioException(statusCode: 403),
             ),
           ),
         ],

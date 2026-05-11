@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:goms/features/member/data/datasources/member_remote_datasource.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
-import 'package:goms/features/member/data/repositories/member_repository.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
+import 'package:goms/features/member/domain/repositories/member_repository.dart';
 
 class MemberRepositoryImpl implements MemberRepository {
   const MemberRepositoryImpl(this._remoteDataSource);
@@ -12,19 +12,19 @@ class MemberRepositoryImpl implements MemberRepository {
   final MemberRemoteDataSource _remoteDataSource;
 
   @override
-  Future<List<MemberModel>> getMembers() async {
+  Future<List<MemberEntity>> getMembers() async {
     final members = await _remoteDataSource.getMembers();
-    return members.map((member) => member.toModel()).toList();
+    return members.map((member) => member.toEntity()).toList();
   }
 
   @override
-  Future<CurrentMemberModel> getMyProfile() async {
+  Future<CurrentMemberEntity> getMyProfile() async {
     final currentMember = await _remoteDataSource.getMyProfile();
-    return currentMember.toModel();
+    return currentMember.toEntity();
   }
 
   @override
-  Future<List<StudentCouncilStudentModel>> getStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   }) async {
     final normalizedQuery = query?.trim() ?? '';
@@ -32,11 +32,11 @@ class MemberRepositoryImpl implements MemberRepository {
         ? await _remoteDataSource.getStudentCouncilMembers()
         : await _remoteDataSource.searchStudentCouncilMembers(normalizedQuery);
 
-    return response.toModel();
+    return response.toEntity();
   }
 
   @override
-  Future<List<StudentCouncilStudentModel>> getFilteredStudentCouncilMembers({
+  Future<List<StudentCouncilStudentEntity>> getFilteredStudentCouncilMembers({
     required StudentCouncilFilterRequest filter,
   }) async {
     final queryParameters = filter.toQueryParameters();
@@ -44,7 +44,7 @@ class MemberRepositoryImpl implements MemberRepository {
         ? await _remoteDataSource.getStudentCouncilMembers()
         : await _remoteDataSource.filterStudentCouncilMembers(queryParameters);
 
-    return response.toModel();
+    return response.toEntity();
   }
 
   @override

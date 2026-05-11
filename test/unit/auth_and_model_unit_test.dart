@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/member/data/response/current_member_dto.dart';
 import 'package:goms/features/member/data/response/student_council_students_response.dart';
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
-import 'package:goms/features/auth/login/ui/models/login_state.dart';
-import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
+import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_status.dart';
-import 'package:goms/features/outing/ui/models/search_profile_container_model.dart';
+import 'package:goms/features/outing/presentation/models/search_profile_container_model.dart';
 
 void main() {
   group('LoginState', () {
@@ -121,7 +121,7 @@ void main() {
           'status': 'COMING',
         },
       ],
-    }).toModel().single;
+    }).toEntity().single;
 
     expect(student.role, 'ROLE_STUDENT');
     expect(student.status, 'COMING');

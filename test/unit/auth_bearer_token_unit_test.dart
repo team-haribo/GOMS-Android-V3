@@ -5,10 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/network/auth_interceptor.dart';
-import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
-import 'package:goms/features/auth/session/data/repositories/session_repository_impl.dart';
-import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
-import 'package:goms/features/auth/session/data/response/signin/signin_response_dto.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -177,29 +173,6 @@ void main() {
     });
   });
 
-  group('SessionRepositoryImpl', () {
-    test('reissue prefixes refresh tokens with Bearer', () async {
-      final remoteDataSource = _FakeSessionRemoteDataSource();
-      final repository = SessionRepositoryImpl(
-        remoteDataSource: remoteDataSource,
-      );
-
-      await repository.reissue(refreshToken: 'refresh-token');
-
-      expect(remoteDataSource.reissueRefreshToken, 'Bearer refresh-token');
-    });
-
-    test('signOut keeps existing Bearer refresh tokens unchanged', () async {
-      final remoteDataSource = _FakeSessionRemoteDataSource();
-      final repository = SessionRepositoryImpl(
-        remoteDataSource: remoteDataSource,
-      );
-
-      await repository.signOut(refreshToken: 'Bearer refresh-token');
-
-      expect(remoteDataSource.signOutRefreshToken, 'Bearer refresh-token');
-    });
-  });
 }
 
 bool _sessionExpiryTriggered = false;
@@ -212,32 +185,6 @@ class _VisibleRequestHandler extends RequestInterceptorHandler {
   Future<RequestOptions> get nextRequest async {
     final state = await future;
     return state.data as RequestOptions;
-  }
-}
-
-class _FakeSessionRemoteDataSource implements SessionRemoteDataSource {
-  String? reissueRefreshToken;
-  String? signOutRefreshToken;
-
-  @override
-  Future<SignInResponseDto> reissue(String refreshToken) async {
-    reissueRefreshToken = refreshToken;
-    return SignInResponseDto(
-      accessToken: 'access-token',
-      refreshToken: 'refresh-token',
-      accessTokenExpiresIn: DateTime(2026),
-      refreshTokenExpiresIn: DateTime(2026),
-    );
-  }
-
-  @override
-  Future<void> signOut(String refreshToken) async {
-    signOutRefreshToken = refreshToken;
-  }
-
-  @override
-  Future<SignInResponseDto> signIn(SignInRequestDto requestDto) {
-    throw UnimplementedError();
   }
 }
 

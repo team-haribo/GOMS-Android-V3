@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/late/ui/models/late_rank_student_model.dart';
+import 'package:goms/features/late/presentation/models/late_rank_student_model.dart';
 
 part 'late_rank_student_response.g.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/features/map/shared/ui/widgets/place_container.dart';
+import 'package:goms/features/map/shared/presentation/widgets/place_container.dart';
 
 void main() {
   testWidgets('후기 플레이스 컨테이너 삭제 아이콘은 컨테이너 중앙에 정렬된다', (tester) async {

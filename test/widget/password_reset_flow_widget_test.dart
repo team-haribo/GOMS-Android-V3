@@ -6,27 +6,30 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/session/ui/viewmodels/session_viewmodel.dart';
+import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
+import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
+import 'package:goms/features/auth/email_verification/data/datasources/email_verification_remote_datasource.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/confirm_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
+import 'package:goms/features/auth/email_verification/data/models/response/email_verification/confirm_email_verification_response_dto.dart';
 import 'package:goms/features/auth/email_verification/data/providers/email_verification_data_providers.dart';
-import 'package:goms/features/auth/email_verification/domain/entities/email_verification_entity.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
-import 'package:goms/features/auth/email_verification/domain/repositories/email_verification_repository.dart';
+import 'package:goms/features/auth/password_reset/data/datasources/password_reset_remote_datasource.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
-import 'package:goms/features/auth/password_reset/domain/repositories/password_reset_repository.dart';
-import 'package:goms/features/auth/login/ui/screens/login_screen.dart';
-import 'package:goms/features/auth/password_reset/ui/screens/reset_password_screen.dart';
-import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
-import 'package:goms/features/auth/shared/ui/providers/auth_flow_provider.dart';
-import 'package:goms/features/auth/shared/ui/routes/verify_route_extra.dart';
-import 'package:goms/features/auth/verification/ui/screens/verify_screen.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/auth/password_reset/data/request/password/change_password_request_dto.dart';
+import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
+import 'package:goms/features/auth/password_reset/presentation/screens/reset_password_screen.dart';
+import 'package:goms/features/auth/shared/presentation/routes/verify_route_extra.dart';
+import 'package:goms/features/auth/verification/presentation/screens/verify_screen.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
-import 'package:goms/features/profile/ui/providers/settings_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -41,7 +44,7 @@ void main() {
           settingsProvider.overrideWith(_FakeSettingsNotifier.new),
           myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
           currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
-          passwordResetRepositoryProvider.overrideWithValue(repository),
+          passwordResetRemoteDataSourceProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -109,7 +112,7 @@ void main() {
           settingsProvider.overrideWith(_FakeSettingsNotifier.new),
           myOutingStatusProvider.overrideWith(_FakeMyOutingStatusNotifier.new),
           currentMemberProvider.overrideWith(_FakeCurrentMemberNotifier.new),
-          passwordResetRepositoryProvider.overrideWithValue(repository),
+          passwordResetRemoteDataSourceProvider.overrideWithValue(repository),
           authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
         ],
       );
@@ -254,7 +257,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authFlowProvider.overrideWith(_FakeVerifiedResetFlowNotifier.new),
-          passwordResetRepositoryProvider.overrideWithValue(repository),
+          passwordResetRemoteDataSourceProvider.overrideWithValue(repository),
           authProvider.overrideWith(() => authNotifier),
         ],
       );
@@ -408,7 +411,7 @@ void main() {
       final container = ProviderContainer(
         overrides: [
           authFlowProvider.overrideWith(_FakeResetFlowNotifier.new),
-          emailVerificationRepositoryProvider.overrideWithValue(repository),
+          emailVerificationRemoteDataSourceProvider.overrideWithValue(repository),
         ],
       );
       addTearDown(container.dispose);
@@ -690,7 +693,7 @@ void main() {
   });
 }
 
-class _FakePasswordResetRepository implements PasswordResetRepository {
+class _FakePasswordResetRepository implements PasswordResetRemoteDataSource {
   String? sentEmail;
   EmailVerificationPurpose? sentPurpose;
   String? changedEmail;
@@ -698,23 +701,18 @@ class _FakePasswordResetRepository implements PasswordResetRepository {
   String? changedPassword;
 
   @override
-  Future<void> changePassword({
-    required String email,
-    required String verifiedToken,
-    required String newPassword,
-  }) async {
-    changedEmail = email;
-    changedVerifiedToken = verifiedToken;
-    changedPassword = newPassword;
+  Future<void> changePassword(ChangePasswordRequestDto requestDto) async {
+    changedEmail = requestDto.email;
+    changedVerifiedToken = requestDto.verifiedToken;
+    changedPassword = requestDto.newPassword;
   }
 
   @override
-  Future<void> sendEmailVerification({
-    required String email,
-    required EmailVerificationPurpose purpose,
-  }) async {
-    sentEmail = email;
-    sentPurpose = purpose;
+  Future<void> sendEmailVerification(
+    SendEmailVerificationRequestDto requestDto,
+  ) async {
+    sentEmail = requestDto.email;
+    sentPurpose = requestDto.purpose;
   }
 }
 
@@ -734,7 +732,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
+  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
         memberId: 1,
         status: OutingStatusType.outing,
         name: '홍길동',
@@ -746,7 +744,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
+  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '홍길동',
@@ -784,26 +782,26 @@ class _FakeAuthNotifier extends AuthNotifier {
   }
 }
 
-class _FakeEmailVerificationRepository implements EmailVerificationRepository {
+class _FakeEmailVerificationRepository
+    implements EmailVerificationRemoteDataSource {
   _FakeEmailVerificationRepository({this.confirmException});
 
   final DioException? confirmException;
 
   @override
-  Future<EmailVerificationEntity> confirmEmailVerification({
-    required String email,
-    required String code,
-    required EmailVerificationPurpose purpose,
-  }) async {
+  Future<ConfirmEmailVerificationResponseDto> confirmEmailVerification(
+    ConfirmEmailVerificationRequestDto requestDto,
+  ) async {
     if (confirmException != null) {
       throw confirmException!;
     }
-    return const EmailVerificationEntity(verifiedToken: 'verified-token');
+    return const ConfirmEmailVerificationResponseDto(
+      verifiedToken: 'verified-token',
+    );
   }
 
   @override
-  Future<void> sendEmailVerification({
-    required String email,
-    required EmailVerificationPurpose purpose,
-  }) async {}
+  Future<void> sendEmailVerification(
+    SendEmailVerificationRequestDto requestDto,
+  ) async {}
 }

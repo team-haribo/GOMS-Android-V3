@@ -9,7 +9,7 @@ import 'package:goms/features/map/domain/entities/my_review_entity.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/review/ui/screens/write_review_screen.dart';
+import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {

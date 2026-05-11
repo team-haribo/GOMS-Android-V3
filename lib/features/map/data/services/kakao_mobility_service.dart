@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/direction/ui/models/direction_state.dart';
+import 'package:goms/features/map/direction/presentation/models/direction_state.dart';
 
 class KakaoMobilityService {
   KakaoMobilityService({HttpClient? httpClient})

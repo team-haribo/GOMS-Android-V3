@@ -5,17 +5,17 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/session/ui/viewmodels/session_viewmodel.dart';
+import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
-import 'package:goms/features/auth/session/ui/providers/session_provider.dart';
-import 'package:goms/features/member/ui/models/current_member_model.dart';
-import 'package:goms/features/member/ui/providers/current_member_provider.dart';
-import 'package:goms/features/outing/ui/models/my_outing_status_model.dart';
+import 'package:goms/features/member/domain/entities/current_member_entity.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
+import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
-import 'package:goms/features/outing/ui/providers/my_outing_status_provider.dart';
-import 'package:goms/features/profile/ui/screens/my_page_screen.dart';
-import 'package:goms/features/profile/ui/providers/settings_provider.dart';
+import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
+import 'package:goms/features/profile/presentation/screens/my_page_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 
 void main() {
@@ -289,7 +289,7 @@ class _FakeSettingsNotifier extends SettingsNotifier {
 
 class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
   @override
-  Future<MyOutingStatusModel> build() async => const MyOutingStatusModel(
+  Future<MyOutingStatusEntity> build() async => const MyOutingStatusEntity(
         memberId: 1,
         status: OutingStatusType.outing,
         name: '이주언',
@@ -301,7 +301,7 @@ class _FakeMyOutingStatusNotifier extends MyOutingStatusNotifier {
 
 class _FakeCurrentMemberNotifier extends CurrentMemberNotifier {
   @override
-  Future<CurrentMemberModel?> build() async => const CurrentMemberModel(
+  Future<CurrentMemberEntity?> build() async => const CurrentMemberEntity(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '이주언',

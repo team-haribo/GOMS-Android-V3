@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:goms/app/router/route_builders.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
-import 'package:goms/features/map/discovery/ui/models/popular_place.dart';
+import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 
 void main() {
   group('redirectToMapIfPopularPlaceMissing', () {

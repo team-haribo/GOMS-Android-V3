@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/member/ui/models/member_model.dart';
+import 'package:goms/features/member/domain/entities/member_entity.dart';
 
 part 'member_dto.g.dart';
 
@@ -33,8 +33,8 @@ class MemberDto {
 
   Map<String, dynamic> toJson() => _$MemberDtoToJson(this);
 
-  MemberModel toModel() {
-    return MemberModel(
+  MemberEntity toEntity() {
+    return MemberEntity(
       id: id,
       name: name,
       studentNumber: studentNumber,

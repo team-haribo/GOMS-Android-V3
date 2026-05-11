@@ -1,6 +1,6 @@
 import 'package:goms/features/home/domain/enums/student_role_enum.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:goms/features/member/ui/models/student_council_student_model.dart';
+import 'package:goms/features/member/domain/entities/student_council_student_entity.dart';
 
 part 'student_council_students_response.g.dart';
 
@@ -19,8 +19,8 @@ class StudentCouncilStudentsResponse {
   )
   final List<StudentCouncilStudentResponse> students;
 
-  List<StudentCouncilStudentModel> toModel() {
-    return students.map((student) => student.toModel()).toList();
+  List<StudentCouncilStudentEntity> toEntity() {
+    return students.map((student) => student.toEntity()).toList();
   }
 }
 
@@ -68,8 +68,8 @@ class StudentCouncilStudentResponse {
   @JsonKey(readValue: _readStudentRole, fromJson: _studentRoleFromJson)
   final StudentRole studentRole;
 
-  StudentCouncilStudentModel toModel() {
-    return StudentCouncilStudentModel(
+  StudentCouncilStudentEntity toEntity() {
+    return StudentCouncilStudentEntity(
       memberId: memberId,
       name: name,
       grade: grade,

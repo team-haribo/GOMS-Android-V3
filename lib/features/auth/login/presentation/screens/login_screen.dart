@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
-import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/auth/login/presentation/models/login_state.dart';
 import 'package:goms/features/auth/login/presentation/viewmodels/login_viewmodel.dart';
-import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -25,17 +20,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _passwordController = TextEditingController();
   late final ProviderSubscription<LoginState> _loginSubscription;
   bool _isButtonEnabled = false;
-
-  Future<String> _resolvePostAuthRoute() async {
-    final currentMember = await ref.read(currentMemberProvider.future);
-    final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-      enabled: await SettingsStorage.getCameraLaunch(),
-      isCameraPermissionGranted: (await Permission.camera.status).isGranted,
-      role: currentMember?.role ?? RoleEnum.user,
-    );
-
-    return cameraLaunchRoute ?? RoutePath.home;
-  }
 
   void _onTextChanged() {
     final nextValue =
@@ -64,7 +48,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (next.status == LoginStatus.success) {
         try {
           await ref.read(authProvider.notifier).setAuthenticated();
-          final destination = await _resolvePostAuthRoute();
+          final destination = 
+              await ref.read(loginProvider.notifier).resolvePostLoginNavigation();
           if (!mounted) return;
           context.go(destination);
         } catch (_) {

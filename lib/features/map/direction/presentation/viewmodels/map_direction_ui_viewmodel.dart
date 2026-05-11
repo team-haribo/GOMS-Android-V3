@@ -1,22 +1,15 @@
-import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final routeSheetVisibilityViewModelProvider =
-    StateNotifierProvider.family<RouteSheetVisibilityViewModel, bool, String>(
-  (ref, routeId) => RouteSheetVisibilityViewModel(),
+    NotifierProvider.family<RouteSheetVisibilityNotifier, bool, String>(
+  (_) => RouteSheetVisibilityNotifier(),
 );
 
-class RouteSheetVisibilityViewModel extends StateNotifier<bool> {
-  RouteSheetVisibilityViewModel() : super(false);
+class RouteSheetVisibilityNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
 
-  void open() {
-    state = true;
-  }
-
-  void close() {
-    state = false;
-  }
-
-  void toggle() {
-    state = !state;
-  }
+  void open() => state = true;
+  void close() => state = false;
+  void toggle() => state = !state;
 }

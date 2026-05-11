@@ -318,7 +318,7 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
         placeId == null ? null : ref.watch(placeReviewsProvider(placeId));
     final myReviewIdsAsync = ref.watch(myReviewIdsProvider);
     final detailPlace = placeDetailAsync?.asData?.value;
-    final resolvedPlace = _resolvePlace(detailPlace);
+    final resolvedPlace = place.resolveFromDetail(detailPlace);
     final reviews =
         placeReviewsAsync?.asData?.value ?? const <PlaceReviewEntity>[];
     final isReviewLoading = placeReviewsAsync?.isLoading == true;
@@ -392,26 +392,6 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
     );
   }
 
-  PopularPlace _resolvePlace(dynamic detailPlace) {
-    if (detailPlace == null) {
-      return place;
-    }
-    return place.copyWith(
-      name: detailPlace.placeName?.trim().isNotEmpty == true
-          ? detailPlace.placeName!.trim()
-          : place.name,
-      category: detailPlace.category?.trim().isNotEmpty == true
-          ? detailPlace.category!.trim()
-          : place.category,
-      address: detailPlace.address?.trim().isNotEmpty == true
-          ? detailPlace.address!.trim()
-          : place.address,
-      review: detailPlace.reviewCount,
-      recommended: detailPlace.recommendCount,
-      isRecommended: detailPlace.recommended,
-      coordinate: detailPlace.coordinate ?? place.coordinate,
-    );
-  }
 }
 
 class _MyActivitySection extends StatelessWidget {

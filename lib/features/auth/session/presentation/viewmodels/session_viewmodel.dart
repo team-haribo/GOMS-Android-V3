@@ -106,7 +106,9 @@ class AuthNotifier extends Notifier<AuthStatus> {
             );
       }
     } on DioException catch (_) {
+      // 서버 로그아웃이 실패해도 로컬 세션은 종료한다.
     } catch (_) {
+      // 로컬 세션 종료는 항상 보장한다.
     } finally {
       await _clearSession();
     }

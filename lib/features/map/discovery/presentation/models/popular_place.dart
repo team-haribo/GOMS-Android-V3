@@ -45,3 +45,24 @@ abstract class PopularPlace with _$PopularPlace {
     );
   }
 }
+
+extension PopularPlaceDetailResolver on PopularPlace {
+  PopularPlace resolveFromDetail(dynamic detail) {
+    if (detail == null) return this;
+    return copyWith(
+      name: detail.placeName?.trim().isNotEmpty == true
+          ? detail.placeName!.trim()
+          : name,
+      category: detail.category?.trim().isNotEmpty == true
+          ? detail.category!.trim()
+          : category,
+      address: detail.address?.trim().isNotEmpty == true
+          ? detail.address!.trim()
+          : address,
+      review: detail.reviewCount,
+      recommended: detail.recommendCount,
+      isRecommended: detail.recommended,
+      coordinate: detail.coordinate ?? coordinate,
+    );
+  }
+}

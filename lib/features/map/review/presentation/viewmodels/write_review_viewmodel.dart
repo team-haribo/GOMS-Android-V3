@@ -5,11 +5,11 @@ import 'package:goms/features/map/discovery/presentation/providers/map_screen_pr
 import 'package:goms/features/map/review/presentation/models/write_review_state.dart';
 
 final writeReviewViewModelProvider =
-    NotifierProvider<WriteReviewViewModel, WriteReviewState>(
-  WriteReviewViewModel.new,
+    NotifierProvider<WriteReviewNotifier, WriteReviewState>(
+  WriteReviewNotifier.new,
 );
 
-class WriteReviewViewModel extends Notifier<WriteReviewState> {
+class WriteReviewNotifier extends Notifier<WriteReviewState> {
   static const int maxLength = 100;
 
   late final TextEditingController controller;

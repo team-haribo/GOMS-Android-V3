@@ -13,6 +13,7 @@ final deleteAccountProvider =
 );
 
 class DeleteAccountNotifier extends Notifier<DeleteAccountState> {
+  // 비밀번호: 6자 이상, 영문/숫자/특수문자 포함
   static final _passwordRegex = RegExp(
     r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&?~])[a-zA-Z\d!@#$%^&?~]{6,}$',
   );

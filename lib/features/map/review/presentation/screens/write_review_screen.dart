@@ -142,7 +142,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
     }
   }
 
-  void _onNextPressed(WriteReviewViewModel notifier) {
+  void _onNextPressed(WriteReviewNotifier notifier) {
     GomsDialog.confirm(
       title: '후기 등록',
       content: '이 후기를 등록하시겠습니까?',
@@ -277,7 +277,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                         children: [
                           TextField(
                             controller: notifier.controller,
-                            maxLength: WriteReviewViewModel.maxLength,
+                            maxLength: WriteReviewNotifier.maxLength,
                             maxLines: 5,
                             textAlignVertical: TextAlignVertical.top,
                             enabled: !isLoading,
@@ -297,7 +297,7 @@ class _WriteReviewScreenState extends ConsumerState<WriteReviewScreen> {
                           ),
                           AppGap.v4,
                           Text(
-                            '${state.reviewText.length}/${WriteReviewViewModel.maxLength}',
+                            '${state.reviewText.length}/${WriteReviewNotifier.maxLength}',
                             style: AppTextStyles.caption3.copyWith(
                               color: context.sub2Color,
                             ),

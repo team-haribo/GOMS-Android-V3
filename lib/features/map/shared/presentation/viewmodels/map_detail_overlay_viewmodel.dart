@@ -31,7 +31,7 @@ class MapDetailOverlayViewModel {
 
   Future<void> reportReview(int reviewId, String reason) async {
     await ref
-        .read(reportRepositoryProvider)
+        .read(reportRemoteDataSourceProvider)
         .createReviewReport(reviewId: reviewId, reason: reason);
   }
 }

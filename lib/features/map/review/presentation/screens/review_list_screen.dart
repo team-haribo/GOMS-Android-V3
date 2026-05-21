@@ -414,7 +414,7 @@ class _ReviewListScreenState extends ConsumerState<ReviewListScreen> {
                                                     ) =>
                                                         ref
                                                             .read(
-                                                              reportRepositoryProvider,
+                                                              reportRemoteDataSourceProvider,
                                                             )
                                                             .createReviewReport(
                                                               reviewId:

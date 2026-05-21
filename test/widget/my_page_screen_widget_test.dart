@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
 import 'package:goms/app/router/route_path.dart';
-import 'package:goms/features/auth/session/ui/viewmodels/session_viewmodel.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';

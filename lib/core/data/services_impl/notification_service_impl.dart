@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:goms/core/domain/services/notification_service.dart';
-import 'package:goms/features/notification/presentation/notification_api.dart';
+import 'package:goms/features/notification/data/datasources/notification_api.dart';
 
 /// NotificationService의 구현체
 /// 

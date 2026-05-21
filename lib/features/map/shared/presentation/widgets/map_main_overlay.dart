@@ -359,7 +359,7 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
     }
 
     Future<void> onReportReview(int reviewId, String reason) => ref
-        .read(reportRepositoryProvider)
+        .read(reportRemoteDataSourceProvider)
         .createReviewReport(reviewId: reviewId, reason: reason);
 
     return PlaceDetailSheet(

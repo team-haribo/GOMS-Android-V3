@@ -1,17 +1,20 @@
-import 'package:goms/features/notification/presentation/notification_remote_datasource.dart';
+import 'package:goms/features/notification/data/datasources/notification_remote_datasource.dart';
 import 'package:goms/features/profile/domain/repositories/notification_repository.dart';
 
-/// NotificationRepository의 구현체
 class NotificationRepositoryImpl implements NotificationRepository {
-  final NotificationRemoteDataSource _dataSource;
+  const NotificationRepositoryImpl({
+    required NotificationRemoteDataSource remoteDataSource,
+  }) : _remoteDataSource = remoteDataSource;
 
-  NotificationRepositoryImpl(this._dataSource);
-
-  @override
-  Future<void> registerDeviceToken() =>
-      _dataSource.registerDeviceToken();
+  final NotificationRemoteDataSource _remoteDataSource;
 
   @override
-  Future<void> deleteDeviceToken() =>
-      _dataSource.deleteDeviceToken();
+  Future<void> registerDeviceToken() {
+    return _remoteDataSource.registerDeviceToken();
+  }
+
+  @override
+  Future<void> deleteDeviceToken() {
+    return _remoteDataSource.deleteDeviceToken();
+  }
 }

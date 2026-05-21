@@ -8,7 +8,6 @@ import 'package:goms/features/map/data/repositories/recommended_place_repository
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
 import 'package:goms/features/map/domain/entities/recommended_place_entity.dart';
 import 'package:goms/features/map/domain/repositories/recommended_place_repository.dart';
-import 'package:goms/features/map/domain/usecases/get_recommended_places_usecase.dart';
 
 final recommendedPlaceRemoteDataSourceProvider =
     Provider<RecommendedPlaceRemoteDataSource>((ref) {
@@ -19,13 +18,6 @@ final recommendedPlaceRepositoryProvider =
     Provider<RecommendedPlaceRepository>((ref) {
   return RecommendedPlaceRepositoryImpl(
     ref.watch(recommendedPlaceRemoteDataSourceProvider),
-  );
-});
-
-final getRecommendedPlacesUseCaseProvider =
-    Provider<GetRecommendedPlacesUseCase>((ref) {
-  return GetRecommendedPlacesUseCase(
-    ref.watch(recommendedPlaceRepositoryProvider),
   );
 });
 

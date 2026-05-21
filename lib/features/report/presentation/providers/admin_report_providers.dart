@@ -19,7 +19,7 @@ final resolvedReportsProvider =
 final reportDetailProvider =
     FutureProvider.family<ReportDetailEntity, int>((ref, reportId) async {
   try {
-    return await ref.read(reportRepositoryProvider).getReportDetail(reportId);
+    return await ref.watch(reportRemoteDataSourceProvider).getReportDetail(reportId);
   } on DioException catch (error) {
     throw ReportAdminException(
       NetworkException.fromDioException(error).message,
@@ -45,14 +45,14 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
     required ReportStatus reportStatus,
   }) async {
     try {
-      await ref.read(reportRepositoryProvider).resolveReport(
+      await ref.read(reportRemoteDataSourceProvider).resolveReport(
             reportId: reportId,
             reportStatus: reportStatus,
           );
       await reload();
       ref.invalidate(resolvedReportsProvider);
       ref.invalidate(reportDetailProvider(reportId));
-      return await ref.read(reportRepositoryProvider).getReportDetail(reportId);
+      return await ref.read(reportRemoteDataSourceProvider).getReportDetail(reportId);
     } on DioException catch (error) {
       throw ReportAdminException(
         NetworkException.fromDioException(error).message,
@@ -64,7 +64,7 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
 
   Future<List<ReportSummaryEntity>> _fetch() async {
     try {
-      return await ref.read(reportRepositoryProvider).getPendingReports();
+      return await ref.watch(reportRemoteDataSourceProvider).getPendingReports();
     } on DioException catch (error) {
       throw ReportAdminException(
         NetworkException.fromDioException(error).message,
@@ -88,7 +88,7 @@ class ResolvedReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
 
   Future<List<ReportSummaryEntity>> _fetch() async {
     try {
-      return await ref.read(reportRepositoryProvider).getResolvedReports();
+      return await ref.watch(reportRemoteDataSourceProvider).getResolvedReports();
     } on DioException catch (error) {
       throw ReportAdminException(
         NetworkException.fromDioException(error).message,

@@ -1,5 +1,5 @@
 import 'package:goms/core/domain/services/settings_service.dart';
-import 'package:goms/features/notification/presentation/notification_remote_datasource.dart';
+import 'package:goms/features/profile/domain/repositories/notification_repository.dart';
 
 /// 푸시 알림 비활성화 UseCase
 ///
@@ -8,18 +8,18 @@ import 'package:goms/features/notification/presentation/notification_remote_data
 /// 2. 설정값 저장
 class DisablePushNotificationUseCase {
   final SettingsService _settingsService;
-  final NotificationRemoteDataSource _notificationDataSource;
+  final NotificationRepository _notificationRepository;
 
   DisablePushNotificationUseCase({
     required SettingsService settingsService,
-    required NotificationRemoteDataSource notificationDataSource,
+    required NotificationRepository notificationRepository,
   })  : _settingsService = settingsService,
-        _notificationDataSource = notificationDataSource;
+        _notificationRepository = notificationRepository;
 
   /// 푸시 알림 비활성화
   Future<bool> call() async {
     try {
-      await _notificationDataSource.deleteDeviceToken();
+      await _notificationRepository.deleteDeviceToken();
       await _settingsService.setOutingPushAlarm(false);
       return true;
     } catch (_) {

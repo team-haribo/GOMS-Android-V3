@@ -1,7 +1,7 @@
 import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/core/domain/services/permission_service.dart';
 import 'package:goms/core/domain/services/settings_service.dart';
-import 'package:goms/features/notification/presentation/notification_remote_datasource.dart';
+import 'package:goms/features/profile/domain/repositories/notification_repository.dart';
 
 /// 푸시 알림 활성화 UseCase
 ///
@@ -12,15 +12,15 @@ import 'package:goms/features/notification/presentation/notification_remote_data
 class EnablePushNotificationUseCase {
   final PermissionService _permissionService;
   final SettingsService _settingsService;
-  final NotificationRemoteDataSource _notificationDataSource;
+  final NotificationRepository _notificationRepository;
 
   EnablePushNotificationUseCase({
     required PermissionService permissionService,
     required SettingsService settingsService,
-    required NotificationRemoteDataSource notificationDataSource,
+    required NotificationRepository notificationRepository,
   })  : _permissionService = permissionService,
         _settingsService = settingsService,
-        _notificationDataSource = notificationDataSource;
+        _notificationRepository = notificationRepository;
 
   /// 푸시 알림 활성화
   ///
@@ -37,7 +37,7 @@ class EnablePushNotificationUseCase {
     }
 
     try {
-      await _notificationDataSource.registerDeviceToken();
+      await _notificationRepository.registerDeviceToken();
       await _settingsService.setOutingPushAlarm(true);
       return true;
     } catch (_) {

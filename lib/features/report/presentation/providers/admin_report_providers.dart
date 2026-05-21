@@ -19,7 +19,7 @@ final resolvedReportsProvider =
 final reportDetailProvider =
     FutureProvider.family<ReportDetailEntity, int>((ref, reportId) async {
   try {
-    return await ref.read(reportRemoteDataSourceProvider).getReportDetail(reportId);
+    return await ref.watch(reportRemoteDataSourceProvider).getReportDetail(reportId);
   } on DioException catch (error) {
     throw ReportAdminException(
       NetworkException.fromDioException(error).message,
@@ -64,7 +64,7 @@ class PendingReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
 
   Future<List<ReportSummaryEntity>> _fetch() async {
     try {
-      return await ref.read(reportRemoteDataSourceProvider).getPendingReports();
+      return await ref.watch(reportRemoteDataSourceProvider).getPendingReports();
     } on DioException catch (error) {
       throw ReportAdminException(
         NetworkException.fromDioException(error).message,
@@ -88,7 +88,7 @@ class ResolvedReportsNotifier extends AsyncNotifier<List<ReportSummaryEntity>> {
 
   Future<List<ReportSummaryEntity>> _fetch() async {
     try {
-      return await ref.read(reportRemoteDataSourceProvider).getResolvedReports();
+      return await ref.watch(reportRemoteDataSourceProvider).getResolvedReports();
     } on DioException catch (error) {
       throw ReportAdminException(
         NetworkException.fromDioException(error).message,

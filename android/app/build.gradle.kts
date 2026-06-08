@@ -36,7 +36,7 @@ android {
         applicationId = "com.goms.goms_android_v2"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
+        minSdk = 26
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
@@ -58,6 +58,13 @@ android {
             signingConfig =
                 signingConfigs.findByName("release")
                     ?: throw GradleException("Missing android/key.properties for release signing.")
+            // R8가 카카오 SDK 내부 클래스(JNI로 조회됨)를 제거하지 않도록 keep 룰을 적용한다.
+            // proguard-rules.pro 미적용 시 릴리즈에서 맵 진입 시 NoSuchFieldError로 크래시.
+            isMinifyEnabled = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
         }
     }
 }

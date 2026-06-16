@@ -185,7 +185,7 @@ Widget buildQrScanResultScreen(
     QrScanResultType resultType, {
       required BuildContext context,
     }) {
-  void goHome() => context.pop();
+  void goHome() => context.go(RoutePath.home);
 
   switch (resultType) {
     case QrScanResultType.outingStarted:

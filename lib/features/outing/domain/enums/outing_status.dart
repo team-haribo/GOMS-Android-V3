@@ -10,16 +10,9 @@ enum OutingStatus {
 
   factory OutingStatus.fromServer(OutingStatusType value) {
     switch (value) {
-
-    // 외출 안 한 상태 → 대기중
-      case OutingStatusType.coming:
-        return OutingStatus.waiting;
-
-    // 실제 외출 중
       case OutingStatusType.outing:
+      case OutingStatusType.coming:
         return OutingStatus.approved;
-
-    // 외출 금지
       case OutingStatusType.cannotOuting:
         return OutingStatus.rejected;
     }
@@ -29,13 +22,10 @@ enum OutingStatus {
     switch (this) {
       case OutingStatus.waiting:
         return '외출 대기 중';
-
       case OutingStatus.approved:
         return '외출중';
-
       case OutingStatus.rejected:
         return '외출 금지';
-
       case OutingStatus.admin:
         return '학생회';
     }
@@ -45,13 +35,10 @@ enum OutingStatus {
     switch (this) {
       case OutingStatus.waiting:
         return AppColors.sub1;
-
       case OutingStatus.approved:
         return AppColors.mainColor;
-
       case OutingStatus.rejected:
         return AppColors.negative;
-
       case OutingStatus.admin:
         return AppColors.admin;
     }

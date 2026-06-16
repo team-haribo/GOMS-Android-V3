@@ -14,6 +14,7 @@ import 'package:goms/features/outing/presentation/providers/current_outing_stude
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 import 'package:goms/features/outing/presentation/providers/time_provider.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
+
 // ui
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
@@ -35,6 +36,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     await Future.wait([
       ref.read(currentOutingStudentsProvider.notifier).reload(),
       ref.read(lateRankStudentsProvider.notifier).reload(),
+      ref.read(myOutingStatusProvider.notifier).reload(),
     ]);
   }
 
@@ -703,6 +705,11 @@ class MyOutingStatusCard extends ConsumerWidget {
     return myOutingStatus.when(
       skipLoadingOnRefresh: true,
       data: (value) {
+        print('===== 외출 상태 확인 =====');
+        print('name = ${value.name}');
+        print('status = ${value.status}');
+        print(value);
+
         return ProfileContainer(
           name: value.name,
           grade: value.grade,

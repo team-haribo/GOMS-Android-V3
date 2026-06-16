@@ -164,7 +164,6 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
         ref
             .read(currentMemberProvider.notifier)
             .updateProfileImageUrl(imageUrl);
-        ref.read(myOutingStatusProvider.notifier).reload();
       }
 
       _showSnackBar('프로필 사진이 변경되었어요.');

@@ -96,7 +96,13 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => context.pop(),
+                    onTap: () {
+                      if (context.canPop()) {
+                        context.pop();
+                    } else {
+                  context.go(RoutePath.home);
+                  }
+                  },
                     child:
                     const Icon(Icons.close, color: Colors.white, size: 28),
                   ),

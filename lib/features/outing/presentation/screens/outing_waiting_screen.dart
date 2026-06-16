@@ -705,10 +705,6 @@ class MyOutingStatusCard extends ConsumerWidget {
     return myOutingStatus.when(
       skipLoadingOnRefresh: true,
       data: (value) {
-        print('===== 외출 상태 확인 =====');
-        print('name = ${value.name}');
-        print('status = ${value.status}');
-        print(value);
 
         return ProfileContainer(
           name: value.name,

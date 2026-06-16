@@ -14,6 +14,7 @@ import 'package:goms/features/outing/presentation/providers/current_outing_stude
 import 'package:goms/features/outing/presentation/providers/my_outing_status_provider.dart';
 import 'package:goms/features/outing/presentation/providers/time_provider.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
+
 // ui
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
@@ -35,6 +36,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
     await Future.wait([
       ref.read(currentOutingStudentsProvider.notifier).reload(),
       ref.read(lateRankStudentsProvider.notifier).reload(),
+      ref.read(myOutingStatusProvider.notifier).reload(),
     ]);
   }
 
@@ -701,7 +703,6 @@ class MyOutingStatusCard extends ConsumerWidget {
     final myOutingStatus = ref.watch(myOutingStatusProvider);
 
     return myOutingStatus.when(
-      skipLoadingOnRefresh: true,
       data: (value) {
         return ProfileContainer(
           name: value.name,
@@ -713,9 +714,7 @@ class MyOutingStatusCard extends ConsumerWidget {
           profileImageUrl: value.profileImageUrl,
           showProfileImageErrorMessage: true,
           profileImageErrorMessage: '프로필 이미지를 불러오지 못했어요.',
-          status: role == RoleEnum.admin
-              ? OutingStatus.admin
-              : OutingStatus.fromServer(value.status),
+          status: OutingStatus.fromServer(value.status),
         );
       },
       loading: () => ProfileContainer(
@@ -726,8 +725,7 @@ class MyOutingStatusCard extends ConsumerWidget {
         showLateCount: role != RoleEnum.admin,
         showInfoBelowName: role == RoleEnum.admin,
         profileImageUrl: '',
-        status:
-            role == RoleEnum.admin ? OutingStatus.admin : OutingStatus.waiting,
+        status: OutingStatus.waiting,
       ),
       error: (error, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -740,9 +738,7 @@ class MyOutingStatusCard extends ConsumerWidget {
             showLateCount: role != RoleEnum.admin,
             showInfoBelowName: role == RoleEnum.admin,
             profileImageUrl: '',
-            status: role == RoleEnum.admin
-                ? OutingStatus.admin
-                : OutingStatus.waiting,
+            status: OutingStatus.waiting,
           ),
           AppGap.v12,
           Text(

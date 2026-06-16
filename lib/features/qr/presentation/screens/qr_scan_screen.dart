@@ -29,18 +29,20 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   void initState() {
     super.initState();
     _qrScanSubscription = ref.listenManual<QrScanState>(qrScanProvider, (
-      previous,
-      next,
-    ) {
+        previous,
+        next,
+        ) async {
       if (!mounted) return;
 
       if (next.status == QrScanStatus.failure && next.errorMessage != null) {
-        context.go(RoutePath.qrResultLocation('failure'));
+        await context.push(RoutePath.qrResultLocation('failure'));
+        if (mounted) context.pop();
         return;
       }
 
       if (next.status == QrScanStatus.success && next.resultType != null) {
-        context.go(RoutePath.qrResultLocation(next.resultType!.name));
+        await context.push(RoutePath.qrResultLocation(next.resultType!.name));
+        if (mounted) context.pop();
       }
     });
   }
@@ -94,9 +96,15 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                   ),
                   const Spacer(),
                   GestureDetector(
-                    onTap: () => context.go(RoutePath.home),
+                    onTap: () {
+                      if (context.canPop()) {
+                        context.pop();
+                    } else {
+                  context.go(RoutePath.home);
+                  }
+                  },
                     child:
-                        const Icon(Icons.close, color: Colors.white, size: 28),
+                    const Icon(Icons.close, color: Colors.white, size: 28),
                   ),
                 ],
               ),
@@ -174,9 +182,9 @@ class _OverlayPainter extends CustomPainter {
 }
 
 Widget buildQrScanResultScreen(
-  QrScanResultType resultType, {
-  required BuildContext context,
-}) {
+    QrScanResultType resultType, {
+      required BuildContext context,
+    }) {
   void goHome() => context.go(RoutePath.home);
 
   switch (resultType) {
@@ -192,9 +200,9 @@ Widget buildQrScanResultScreen(
 }
 
 Widget buildQrScanResultRouteScreen(
-  String? resultTypeName, {
-  required BuildContext context,
-}) {
+    String? resultTypeName, {
+      required BuildContext context,
+    }) {
   if (resultTypeName == 'failure') {
     return OutingFailedScreen(
       onRetryWithCamera: () => context.go(RoutePath.qr),

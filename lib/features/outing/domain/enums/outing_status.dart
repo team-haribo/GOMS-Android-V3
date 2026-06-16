@@ -5,14 +5,16 @@ import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 enum OutingStatus {
   waiting,
   approved,
-  rejected,
-  admin;
+  rejected;
 
   factory OutingStatus.fromServer(OutingStatusType value) {
     switch (value) {
-      case OutingStatusType.outing:
       case OutingStatusType.coming:
+        return OutingStatus.waiting;
+
+      case OutingStatusType.outing:
         return OutingStatus.approved;
+
       case OutingStatusType.cannotOuting:
         return OutingStatus.rejected;
     }
@@ -26,8 +28,6 @@ enum OutingStatus {
         return '외출중';
       case OutingStatus.rejected:
         return '외출 금지';
-      case OutingStatus.admin:
-        return '학생회';
     }
   }
 
@@ -39,8 +39,6 @@ enum OutingStatus {
         return AppColors.mainColor;
       case OutingStatus.rejected:
         return AppColors.negative;
-      case OutingStatus.admin:
-        return AppColors.admin;
     }
   }
 

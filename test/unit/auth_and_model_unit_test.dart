@@ -60,7 +60,7 @@ void main() {
       );
       expect(
         OutingStatus.fromServer(OutingStatusType.coming),
-        OutingStatus.approved,
+        OutingStatus.waiting,
       );
       expect(
         OutingStatus.fromServer(OutingStatusType.cannotOuting),

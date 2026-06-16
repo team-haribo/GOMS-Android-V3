@@ -4,10 +4,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/app/router/route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/features/qr/presentation/models/issued_qr_model.dart';
@@ -25,7 +23,6 @@ class QrIssueScreen extends ConsumerWidget {
       return BaseScaffold(
         showAppBar: true,
         role: role,
-        onBackPressed: () => context.go(RoutePath.home),
         body: Center(
           child: Text(
             '학생회만 QR을 발급할 수 있어요.',
@@ -41,7 +38,6 @@ class QrIssueScreen extends ConsumerWidget {
     return BaseScaffold(
       showAppBar: true,
       role: role,
-      onBackPressed: () => context.go(RoutePath.home),
       body: issuedQr.when(
         data: (value) => _QrIssuedContent(
           value: value,
@@ -128,9 +124,9 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
 
   String get _remainingText {
     final minutes =
-        _remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
+    _remaining.inMinutes.remainder(60).toString().padLeft(2, '0');
     final seconds =
-        _remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
+    _remaining.inSeconds.remainder(60).toString().padLeft(2, '0');
     return '$minutes분 $seconds초';
   }
 
@@ -145,15 +141,15 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
       builder: (context, constraints) {
         final qrSize = math
             .max(
-              180.0,
-              math.min(
-                220.0,
-                math.min(
-                  constraints.maxWidth * 0.62,
-                  constraints.maxHeight * 0.34,
-                ),
-              ),
-            )
+          180.0,
+          math.min(
+            220.0,
+            math.min(
+              constraints.maxWidth * 0.62,
+              constraints.maxHeight * 0.34,
+            ),
+          ),
+        )
             .toDouble();
 
         return Column(
@@ -194,7 +190,7 @@ class _QrIssuedContentState extends State<_QrIssuedContent> {
                     Text(
                       'QR코드 만료까지',
                       style:
-                          AppTextStyles.caption1.withColor(context.sub2Color),
+                      AppTextStyles.caption1.withColor(context.sub2Color),
                       textAlign: TextAlign.center,
                     ),
                     AppGap.v4,

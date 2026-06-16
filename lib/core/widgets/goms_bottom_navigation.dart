@@ -26,25 +26,36 @@ class GomsBottomNavigation extends StatelessWidget {
 
     return Theme(
       data: noTouchEffectTheme,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => onTap(0),
-              child: AppIcons.map(width: 24, height: 24, color: currentIndex == 0 ? selectedColor : unselectedColor),
+      child: BottomNavigationBar(
+        currentIndex: currentIndex,
+        onTap: onTap,
+        enableFeedback: false,
+        items: [
+          BottomNavigationBarItem(
+            icon: AppIcons.map(
+              width: 24,
+              height: 24,
+              color: currentIndex == 0 ? selectedColor : unselectedColor,
             ),
-            GestureDetector(
-              onTap: () => onTap(1),
-              child: AppIcons.home(width: 24, height: 24, color: currentIndex == 1 ? selectedColor : unselectedColor),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: AppIcons.home(
+              width: 24,
+              height: 24,
+              color: currentIndex == 1 ? selectedColor : unselectedColor,
             ),
-            GestureDetector(
-              onTap: () => onTap(2),
-              child: AppIcons.user(width: 24, height: 24, color: currentIndex == 2 ? selectedColor : unselectedColor),
+            label: '',
+          ),
+          BottomNavigationBarItem(
+            icon: AppIcons.user(
+              width: 24,
+              height: 24,
+              color: currentIndex == 2 ? selectedColor : unselectedColor,
             ),
-          ],
-        ),
+            label: '',
+          ),
+        ],
       ),
     );
   }

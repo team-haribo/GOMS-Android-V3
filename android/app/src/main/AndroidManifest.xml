@@ -3,6 +3,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- image_picker는 Android Photo Picker를 사용하므로 미디어 권한이 필요 없음.
          어떤 의존성이 끼워넣어도 최종 매니페스트에서 제거되도록 명시. -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" tools:node="remove"/>

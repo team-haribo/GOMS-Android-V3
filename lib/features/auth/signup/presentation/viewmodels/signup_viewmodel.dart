@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/constants/auth_validation.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/logger.dart';
 import 'package:goms/features/auth/email_verification/data/models/request/email_verification/send_email_verification_request_dto.dart';
@@ -19,9 +20,7 @@ final signupProvider = NotifierProvider<SignupNotifier, SignupState>(
 class SignupNotifier extends Notifier<SignupState> {
   static const List<int> availableGrades = <int>[8, 9, 10];
   static final _emailRegex = RegExp(r'^s\d+$');
-  static final _passwordRegex = RegExp(
-    r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&?~])[a-zA-Z\d!@#$%^&?~]{6,}$',
-  );
+  static final _passwordRegex = AuthValidation.passwordRegex;
 
   late final TextEditingController nameController;
   late final TextEditingController emailController;

@@ -72,11 +72,19 @@ class AuthNotifier extends Notifier<AuthStatus> {
       _warmUpHomeData();
       state = AuthStatus.authenticated;
       return true;
-    } on DioException catch (_) {
-      await _clearSession();
+    } on DioException catch (error) {
+      if (_isRefreshRejected(error)) {
+        // 리프레시 토큰이 서버에서 실제로 거부된 경우에만 토큰을 삭제한다.
+        await _clearSession();
+      } else {
+        // 타임아웃·연결 오류·서버 일시 오류 등에서는 토큰을 보존해
+        // 다음 실행 때 다시 재발급을 시도할 수 있게 한다.
+        _clearSessionState();
+      }
       return false;
     } catch (_) {
-      await _clearSession();
+      // 예기치 못한 오류에서도 토큰은 보존한다.
+      _clearSessionState();
       return false;
     }
   }
@@ -144,6 +152,11 @@ class AuthNotifier extends Notifier<AuthStatus> {
     unawaited(
       ref.read(lateRankStudentsProvider.notifier).reload().catchError((_) {}),
     );
+  }
+
+  bool _isRefreshRejected(DioException error) {
+    final statusCode = error.response?.statusCode;
+    return statusCode == 401 || statusCode == 403;
   }
 
   bool _hasValidToken(String? token, DateTime? expiresAt) {

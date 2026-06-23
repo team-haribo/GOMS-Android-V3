@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/constants/auth_validation.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/delete_account/presentation/models/delete_account_state.dart';
@@ -13,10 +14,8 @@ final deleteAccountProvider =
 );
 
 class DeleteAccountNotifier extends Notifier<DeleteAccountState> {
-  // 비밀번호: 6자 이상, 영문/숫자/특수문자 포함
-  static final _passwordRegex = RegExp(
-    r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&?~])[a-zA-Z\d!@#$%^&?~]{6,}$',
-  );
+  // 비밀번호: 6~15자, 영문 + 특수문자 필수, 숫자 허용
+  static final _passwordRegex = AuthValidation.passwordRegex;
 
   late final TextEditingController passwordController;
 

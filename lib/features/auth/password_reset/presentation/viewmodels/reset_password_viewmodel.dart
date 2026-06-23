@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/constants/auth_validation.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/auth/password_reset/data/request/password/change_password_request_dto.dart';
 import 'package:goms/features/auth/password_reset/data/providers/password_reset_data_providers.dart';
@@ -13,9 +14,7 @@ final resetPasswordProvider =
 );
 
 class ResetPasswordNotifier extends Notifier<ResetPasswordState> {
-  static final _passwordRegex = RegExp(
-    r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&?~])[a-zA-Z\d!@#$%^&?~]{6,}$',
-  );
+  static final _passwordRegex = AuthValidation.passwordRegex;
 
   late final TextEditingController passwordController;
   late final TextEditingController passwordConfirmController;

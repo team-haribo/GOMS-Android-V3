@@ -44,18 +44,12 @@ Future<void> main() async {
   const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
   final appEnv = AppEnv.fromValue(appEnvValue);
 
-  // dotenv must be ready before the first frame (providers read env on build);
-  // Firebase doesn't depend on it, so overlap the two to keep startup short.
   await Future.wait([
     dotenv.load(fileName: appEnv.fileName),
     _initFirebase(),
   ]);
 
   runApp(const ProviderScope(child: MyApp()));
-
-  // The Kakao Map SDK is only used on the map screen and its native init is
-  // expensive, so initialize it off the startup critical path. The map widget
-  // lazily awaits this same (idempotent) call before it renders.
   unawaited(_initKakaoMap());
 }
 

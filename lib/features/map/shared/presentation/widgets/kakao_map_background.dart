@@ -57,6 +57,12 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   String? _lastCameraSignature;
   String? _errorMessage;
   Timer? _loadingTimeout;
+  // Whether KakaoMapRuntime.initialize() has settled. Until then the SDK init
+  // (kicked off the startup critical path) may still be in flight, during which
+  // isMapAvailable is false with no unavailableReason — show a loader, not an
+  // error. Stays false on the already-available path, where build() never reads
+  // it because the map renders directly.
+  bool _initSettled = false;
 
   @override
   void initState() {
@@ -68,7 +74,7 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
     if (!KakaoMapRuntime.instance.isMapAvailable) {
       await KakaoMapRuntime.instance.initialize();
       if (!mounted) return;
-      setState(() {});
+      setState(() => _initSettled = true);
     }
     _armLoadingTimeout();
   }
@@ -413,8 +419,14 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
-    final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
+      // initialize() may still be running (it's kicked off the startup critical
+      // path), so show a loader until it settles rather than a misleading error.
+      if (!_initSettled) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),

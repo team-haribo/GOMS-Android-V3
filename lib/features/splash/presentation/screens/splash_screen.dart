@@ -22,38 +22,44 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
+    Future.microtask(_checkAuthAndNavigate);
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // 스플래시 화면 최소 표시 시간
-    await Future.delayed(const Duration(seconds: 2));
-
     debugPrint('SplashScreen: starting auth check');
 
-    final hasToken = await ref.read(authProvider.notifier).checkToken();
+    final minimumDisplay = Future<void>.delayed(const Duration(seconds: 1));
+    String destination = RoutePath.onboarding;
+
+    try {
+      final hasToken = await ref.read(authProvider.notifier).checkToken();
+
+      if (hasToken) {
+        final memberFuture = ref.read(currentMemberProvider.future);
+        final cameraLaunchFuture = SettingsStorage.getCameraLaunch();
+        final cameraPermissionFuture = Permission.camera.status;
+
+        final currentMember = await memberFuture;
+        final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+          enabled: await cameraLaunchFuture,
+          isCameraPermissionGranted: (await cameraPermissionFuture).isGranted,
+          role: currentMember?.role ?? RoleEnum.user,
+        );
+
+        destination = cameraLaunchRoute ?? RoutePath.home;
+      }
+    } catch (error, stackTrace) {
+      debugPrint('SplashScreen: auth check failed, falling back to onboarding: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      destination = RoutePath.onboarding;
+    }
+
+    await minimumDisplay;
 
     if (!mounted) return;
 
-    String destination = RoutePath.onboarding;
-
-    if (hasToken) {
-      final currentMember = await ref.read(currentMemberProvider.future);
-      final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-        enabled: await SettingsStorage.getCameraLaunch(),
-        isCameraPermissionGranted: (await Permission.camera.status).isGranted,
-        role: currentMember?.role ?? RoleEnum.user,
-      );
-
-      destination = cameraLaunchRoute ?? RoutePath.home;
-    }
-
     debugPrint('SplashScreen: navigating to $destination');
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      context.go(destination);
-    });
+    context.go(destination);
   }
 
   @override

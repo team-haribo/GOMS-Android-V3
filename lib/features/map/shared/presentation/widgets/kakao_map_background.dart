@@ -57,10 +57,20 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   String? _lastCameraSignature;
   String? _errorMessage;
   Timer? _loadingTimeout;
+  bool _initSettled = false;
 
   @override
   void initState() {
     super.initState();
+    _ensureMapRuntime();
+  }
+
+  Future<void> _ensureMapRuntime() async {
+    if (!KakaoMapRuntime.instance.isMapAvailable) {
+      await KakaoMapRuntime.instance.initialize();
+      if (!mounted) return;
+      setState(() => _initSettled = true);
+    }
     _armLoadingTimeout();
   }
 
@@ -404,8 +414,12 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
 
   @override
   Widget build(BuildContext context) {
-    final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
     if (!KakaoMapRuntime.instance.isMapAvailable) {
+      if (!_initSettled) {
+        return const Center(child: CircularProgressIndicator());
+      }
+
+      final unavailableReason = KakaoMapRuntime.instance.unavailableReason;
       return Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),

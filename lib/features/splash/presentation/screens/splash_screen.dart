@@ -27,27 +27,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _checkAuthAndNavigate() async {
     debugPrint('SplashScreen: starting auth check');
-
-    final hasToken = await ref.read(authProvider.notifier).checkToken();
-
-    if (!mounted) return;
-
     String destination = RoutePath.onboarding;
 
-    if (hasToken) {
-      final memberFuture = ref.read(currentMemberProvider.future);
-      final cameraLaunchFuture = SettingsStorage.getCameraLaunch();
-      final cameraPermissionFuture = Permission.camera.status;
+    try {
+      final hasToken = await ref.read(authProvider.notifier).checkToken();
 
-      final currentMember = await memberFuture;
-      final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-        enabled: await cameraLaunchFuture,
-        isCameraPermissionGranted: (await cameraPermissionFuture).isGranted,
-        role: currentMember?.role ?? RoleEnum.user,
-      );
+      if (hasToken) {
+        final memberFuture = ref.read(currentMemberProvider.future);
+        final cameraLaunchFuture = SettingsStorage.getCameraLaunch();
+        final cameraPermissionFuture = Permission.camera.status;
 
-      destination = cameraLaunchRoute ?? RoutePath.home;
+        final currentMember = await memberFuture;
+        final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+          enabled: await cameraLaunchFuture,
+          isCameraPermissionGranted: (await cameraPermissionFuture).isGranted,
+          role: currentMember?.role ?? RoleEnum.user,
+        );
+
+        destination = cameraLaunchRoute ?? RoutePath.home;
+      }
+    } catch (error, stackTrace) {
+      debugPrint('SplashScreen: auth check failed, falling back to onboarding: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      destination = RoutePath.onboarding;
     }
+
+    if (!mounted) return;
 
     debugPrint('SplashScreen: navigating to $destination');
 

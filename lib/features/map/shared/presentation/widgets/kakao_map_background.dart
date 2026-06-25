@@ -61,6 +61,15 @@ class _KakaoMapBackgroundState extends State<KakaoMapBackground> {
   @override
   void initState() {
     super.initState();
+    _ensureMapRuntime();
+  }
+  
+  Future<void> _ensureMapRuntime() async {
+    if (!KakaoMapRuntime.instance.isInitialized) {
+      await KakaoMapRuntime.instance.initialize();
+    }
+    if (!mounted) return;
+    setState(() {});
     _armLoadingTimeout();
   }
 

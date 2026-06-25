@@ -11,20 +11,17 @@ class KakaoMapRuntime {
   static final KakaoMapRuntime instance = KakaoMapRuntime._();
   static const MethodChannel _channel = MethodChannel('goms/device');
 
-  bool _checked = false;
   bool _initialized = false;
   String? _unavailableReason;
+  Future<void>? _initFuture;
 
   bool get isInitialized => _initialized;
   bool get isMapAvailable => _initialized;
   String? get unavailableReason => _unavailableReason;
 
-  Future<void> initialize() async {
-    if (_checked) {
-      return;
-    }
-    _checked = true;
+  Future<void> initialize() => _initFuture ??= _initialize();
 
+  Future<void> _initialize() async {
     if (!Platform.isAndroid && !Platform.isIOS) {
       _unavailableReason = '이 플랫폼에서는 카카오 지도를 지원하지 않습니다.';
       return;

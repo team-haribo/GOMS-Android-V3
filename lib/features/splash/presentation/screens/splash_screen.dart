@@ -26,9 +26,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    // 스플래시 화면 최소 표시 시간
-    await Future.delayed(const Duration(seconds: 2));
-
     debugPrint('SplashScreen: starting auth check');
 
     final hasToken = await ref.read(authProvider.notifier).checkToken();
@@ -38,10 +35,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     String destination = RoutePath.onboarding;
 
     if (hasToken) {
-      final currentMember = await ref.read(currentMemberProvider.future);
+      final memberFuture = ref.read(currentMemberProvider.future);
+      final cameraLaunchFuture = SettingsStorage.getCameraLaunch();
+      final cameraPermissionFuture = Permission.camera.status;
+
+      final currentMember = await memberFuture;
       final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-        enabled: await SettingsStorage.getCameraLaunch(),
-        isCameraPermissionGranted: (await Permission.camera.status).isGranted,
+        enabled: await cameraLaunchFuture,
+        isCameraPermissionGranted: (await cameraPermissionFuture).isGranted,
         role: currentMember?.role ?? RoleEnum.user,
       );
 

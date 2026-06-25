@@ -15,7 +15,6 @@ class KakaoMapRuntime {
   String? _unavailableReason;
   Future<void>? _initFuture;
 
-  bool get isInitialized => _initialized;
   bool get isMapAvailable => _initialized;
   String? get unavailableReason => _unavailableReason;
 

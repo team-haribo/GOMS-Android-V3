@@ -22,7 +22,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _checkAuthAndNavigate();
+    Future.microtask(_checkAuthAndNavigate);
   }
 
   Future<void> _checkAuthAndNavigate() async {

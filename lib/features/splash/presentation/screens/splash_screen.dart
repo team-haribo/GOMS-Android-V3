@@ -27,6 +27,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   Future<void> _checkAuthAndNavigate() async {
     debugPrint('SplashScreen: starting auth check');
+
+    // Keep the splash visible for at least 1s: if the auth check finishes
+    // sooner we wait out the remainder, otherwise we navigate the moment it's
+    // done. Started here so the floor counts from when the splash appears.
+    final minimumDisplay = Future<void>.delayed(const Duration(seconds: 1));
     String destination = RoutePath.onboarding;
 
     try {
@@ -51,6 +56,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       debugPrintStack(stackTrace: stackTrace);
       destination = RoutePath.onboarding;
     }
+
+    await minimumDisplay;
 
     if (!mounted) return;
 

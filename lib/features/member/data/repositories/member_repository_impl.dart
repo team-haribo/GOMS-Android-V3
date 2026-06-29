@@ -75,6 +75,11 @@ class MemberRepositoryImpl implements MemberRepository {
   }
 
   @override
+  Future<void> deleteProfileImage() {
+    return _remoteDataSource.deleteProfileImage();
+  }
+
+  @override
   Future<void> withdrawMember({required String password}) {
     return _remoteDataSource.withdrawMember({'password': password});
   }

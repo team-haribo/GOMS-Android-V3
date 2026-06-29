@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
@@ -23,6 +23,8 @@ import 'package:goms/features/profile/presentation/viewmodels/profile_image_uplo
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
+import 'package:goms/core/widgets/bottom_sheets/selection_bottom_sheet.dart';
+import 'package:goms/features/profile/presentation/widgets/profile_image_option_sheet.dart';
 import 'package:image_picker/image_picker.dart';
 
 class MyPageScreen extends ConsumerStatefulWidget {
@@ -42,30 +44,39 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
   }
 
   void _showThemePicker(BuildContext context, AppThemeOption current) {
-    showCupertinoModalPopup<void>(
+    SelectionBottomSheet.show<AppThemeOption>(
+      context,
+      title: '앱 테마 설정',
+      items: AppThemeOption.values,
+      itemLabel: (option) => option.label,
+      selected: current,
+      onSelected: (option) {
+        ref.read(themeModeProvider.notifier).setThemeMode(option.themeMode);
+      },
+    );
+  }
+
+  void _showProfileImageOptions() {
+    if (ref.read(profileImageUploadingProvider(_providerKey))) {
+      return;
+    }
+
+    showModalBottomSheet<void>(
       context: context,
-      builder: (_) => CupertinoActionSheet(
-        actions: AppThemeOption.values.map((option) {
-          return CupertinoActionSheetAction(
-            onPressed: () {
-              ref
-                  .read(themeModeProvider.notifier)
-                  .setThemeMode(option.themeMode);
-              context.pop();
-            },
-            child: Text(
-              option.label,
-              style: AppTextStyles.text2.withColor(CupertinoColors.systemBlue),
-            ),
-          );
-        }).toList(),
-        cancelButton: CupertinoActionSheetAction(
-          onPressed: () => context.pop(),
-          child: Text(
-            '취소',
-            style: AppTextStyles.text1.withColor(CupertinoColors.systemBlue),
-          ),
-        ),
+      isScrollControlled: true,
+      backgroundColor: context.surfaceColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      ),
+      builder: (sheetContext) => ProfileImageOptionSheet(
+        onPickFromGallery: () {
+          Navigator.pop(sheetContext);
+          _pickAndUploadProfileImage();
+        },
+        onUseDefault: () {
+          Navigator.pop(sheetContext);
+          _deleteProfileImage();
+        },
       ),
     );
   }
@@ -177,11 +188,44 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     }
   }
 
+  Future<void> _deleteProfileImage() async {
+    if (ref.read(profileImageUploadingProvider(_providerKey))) {
+      return;
+    }
+
+    final currentImageUrl = switch (ref.read(currentMemberProvider)) {
+      AsyncData(:final value) => value?.profileImageUrl ?? '',
+      _ => '',
+    };
+    if (currentImageUrl.isEmpty) {
+      _showSnackBar('이미 기본 프로필을 사용 중이에요.');
+      return;
+    }
+
+    _setProfileImageUploading(true);
+    try {
+      await ref.read(memberRepositoryProvider).deleteProfileImage();
+
+      if (!mounted) {
+        return;
+      }
+
+      ref.read(currentMemberProvider.notifier).updateProfileImageUrl('');
+      ref.read(myOutingStatusProvider.notifier).reload();
+      _showSnackBar('기본 프로필로 변경되었어요.');
+    } on DioException catch (error) {
+      _showDioError(error);
+    } catch (error) {
+      _showUnknownError(error);
+    } finally {
+      _setProfileImageUploading(false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final isUploadingProfileImage = ref.watch(
-      profileImageUploadingProvider(_providerKey),
-    );
+    final isUploadingProfileImage =
+        ref.watch(profileImageUploadingProvider(_providerKey));
     final role = ref.watch(roleProvider);
     final currentMember = switch (ref.watch(currentMemberProvider)) {
       AsyncData(:final value) => value,
@@ -191,10 +235,6 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
       AsyncData(:final value) => value,
       _ => null,
     };
-    final textColor = context.mainTextColor;
-    final subColor = context.sub1Color;
-    final sub2Color = context.sub2Color;
-    final surfaceColor = context.surfaceColor;
 
     final currentThemeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
@@ -213,118 +253,81 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     return BaseScaffold(
       showAppBarLogo: true,
       role: role,
-      contentPadding: EdgeInsets.fromLTRB(
-        context.horizontalPadding,
-        context.isSmallPhoneLayout ? 12 : 16,
-        context.horizontalPadding,
-        context.isSmallPhoneLayout ? 16 : 24,
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          final shouldScroll = constraints.maxHeight < 640;
-          final isDenseLayout = constraints.maxHeight < 560;
-          final dividerSpacing = isDenseLayout
-              ? context.responsive(compact: 6, normal: 8)
-              : context.responsive(compact: 12, normal: 24);
-          final sectionInnerSpacing = isDenseLayout
-              ? context.responsive(compact: 10, normal: 12)
-              : context.responsive(compact: 20, normal: 36);
-
-          final content = Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ProfileSummarySection(
-                role: role,
-                name: currentMember?.name ?? '정보 없음',
-                profileImageUrl: currentMember?.profileImageUrl ?? '',
-                onTapProfileImage: _pickAndUploadProfileImage,
-                isUploadingProfileImage: isUploadingProfileImage,
-                grade: currentMember?.grade,
-                major: currentMember?.department.name.toUpperCase(),
-                lateCount: myOutingStatus?.lateCount,
-                textColor: textColor,
-                subColor: sub2Color,
-                surfaceColor: surfaceColor,
-                isCompact: isDenseLayout,
-              ),
-              SizedBox(height: dividerSpacing),
-              const Divider(height: 1),
-              SizedBox(height: dividerSpacing),
-              SettingsSection(
-                selectedThemeOption: selectedThemeOption,
-                showClock: showClock,
-                outingPushAlarm: outingPushAlarm,
-                cameraLaunch: cameraLaunch,
-                textColor: textColor,
-                subColor: subColor,
-                surfaceColor: surfaceColor,
-                role: role,
-                sectionSpacing: sectionInnerSpacing,
-                themeTileVerticalPadding: isDenseLayout ? 8 : AppSpacing.s12,
-                onTapTheme: () =>
-                    _showThemePicker(context, selectedThemeOption),
-                onToggleShowClock: (value) {
-                  ref.read(settingsProvider.notifier).setShowClock(value);
-                },
-                onToggleOutingPushAlarm: (value) async {
-                  final granted = await ref
-                      .read(settingsProvider.notifier)
-                      .setOutingPushAlarm(value);
-                  if (!granted && mounted) {
-                    _showPermissionDeniedSnackBar('외출제 푸시 알림');
+      contentPadding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 24.h),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ProfileSummarySection(
+              role: role,
+              name: currentMember?.name ?? '정보 없음',
+              profileImageUrl: currentMember?.profileImageUrl ?? '',
+              onTapProfileImage: _showProfileImageOptions,
+              isUploadingProfileImage: isUploadingProfileImage,
+              grade: currentMember?.grade,
+              major: currentMember?.department.name.toUpperCase(),
+              lateCount: myOutingStatus?.lateCount,
+            ),
+            SizedBox(height: 24.h),
+            const Divider(height: 1),
+            SizedBox(height: 24.h),
+            SettingsSection(
+              selectedThemeOption: selectedThemeOption,
+              showClock: showClock,
+              outingPushAlarm: outingPushAlarm,
+              cameraLaunch: cameraLaunch,
+              role: role,
+              onTapTheme: () => _showThemePicker(context, selectedThemeOption),
+              onToggleShowClock: (value) {
+                ref.read(settingsProvider.notifier).setShowClock(value);
+              },
+              onToggleOutingPushAlarm: (value) async {
+                final granted = await ref
+                    .read(settingsProvider.notifier)
+                    .setOutingPushAlarm(value);
+                if (!granted && mounted) {
+                  _showPermissionDeniedSnackBar('외출제 푸시 알림');
+                }
+              },
+              onToggleCameraLaunch: (value) async {
+                final granted = await ref
+                    .read(settingsProvider.notifier)
+                    .setCameraLaunch(value);
+                if (!granted && mounted) {
+                  _showPermissionDeniedSnackBar(
+                    role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
+                  );
+                }
+              },
+            ),
+            SizedBox(height: 24.h),
+            const Divider(height: 1),
+            SizedBox(height: 24.h),
+            AccountActionsSection(
+              onTapResetPassword: () =>
+                  _startPasswordResetFlow(currentMember?.email),
+              onTapLogout: () => GomsDialog.confirm(
+                title: '로그아웃',
+                content: '\n 로그아웃 하시겠습니까?',
+                confirmText: '로그아웃',
+                onConfirm: () async {
+                  await ref.read(authProvider.notifier).logout();
+                  if (context.mounted) {
+                    context.go(RoutePath.onboarding);
                   }
                 },
-                onToggleCameraLaunch: (value) async {
-                  final granted = await ref
-                      .read(settingsProvider.notifier)
-                      .setCameraLaunch(value);
-                  if (!granted && mounted) {
-                    _showPermissionDeniedSnackBar(
-                      role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
-                    );
-                  }
-                },
-              ),
-              const SizedBox(height: AppSpacing.s24),
-              const Divider(height: 1),
-              const SizedBox(height: AppSpacing.s24),
-              AccountActionsSection(
-                textColor: textColor,
-                rowVerticalPadding: AppSpacing.s16,
-                onTapResetPassword: () =>
-                    _startPasswordResetFlow(currentMember?.email),
-                onTapLogout: () => GomsDialog.confirm(
-                  title: '로그아웃',
-                  content: '\n 로그아웃 하시겠습니까?',
-                  confirmText: '로그아웃',
-                  onConfirm: () async {
-                    await ref.read(authProvider.notifier).logout();
-                    if (context.mounted) {
-                      context.go(RoutePath.onboarding);
-                    }
-                  },
-                ).show(context),
-                onTapDeleteAccount: () => context.push(RoutePath.deleteAccount),
-              ),
-            ],
-          );
-
-          if (shouldScroll) {
-            return SingleChildScrollView(child: content);
-          }
-
-          return SizedBox(
-            height: constraints.maxHeight,
-            child: content,
-          );
-        },
+              ).show(context),
+              onTapDeleteAccount: () => context.push(RoutePath.deleteAccount),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// ProfileSummarySection (moved from widgets/profile_summary_section.dart)
+// ProfileSummarySection (Figma 569-10152)
 // ---------------------------------------------------------------------------
 
 class ProfileSummarySection extends StatelessWidget {
@@ -338,10 +341,6 @@ class ProfileSummarySection extends StatelessWidget {
     this.grade,
     this.major,
     this.lateCount,
-    required this.textColor,
-    required this.subColor,
-    required this.surfaceColor,
-    this.isCompact = false,
   });
 
   final RoleEnum role;
@@ -352,60 +351,48 @@ class ProfileSummarySection extends StatelessWidget {
   final int? grade;
   final String? major;
   final int? lateCount;
-  final Color textColor;
-  final Color subColor;
-  final Color surfaceColor;
-  final bool isCompact;
 
   @override
   Widget build(BuildContext context) {
-    final avatarRadius = isCompact ? 30.0 : 36.0;
-    final infoSpacing = isCompact ? AppGap.h12 : AppGap.h16;
-    final lateCountSpacing = isCompact ? AppGap.h8 : AppGap.h12;
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            GestureDetector(
-              onTap: onTapProfileImage,
-              child: Stack(
-                children: [
-                  ProfileAvatar(
-                    radius: avatarRadius,
-                    imageUrl: profileImageUrl,
-                    backgroundColor: surfaceColor,
-                  ),
-                  if (isUploadingProfileImage)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Center(
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        ),
+        GestureDetector(
+          onTap: onTapProfileImage,
+          child: SizedBox(
+            width: 64.r,
+            height: 64.r,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                ProfileAvatar(
+                  radius: 32.r,
+                  imageUrl: profileImageUrl,
+                  backgroundColor: context.surfaceColor,
+                ),
+                if (isUploadingProfileImage)
+                  Positioned.fill(
+                    child: Center(
+                      child: SizedBox(
+                        width: 20.r,
+                        height: 20.r,
+                        child:
+                            const CircularProgressIndicator(strokeWidth: 2),
                       ),
                     ),
-                ],
-              ),
+                  ),
+                Positioned(
+                  bottom: 0,
+                  right: -4.w,
+                  child: role == RoleEnum.admin
+                      ? AppIcons.adminEdit(width: 24.r, height: 24.r)
+                      : AppIcons.edit(width: 24.r, height: 24.r),
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: role == RoleEnum.admin
-                  ? AppIcons.adminEdit()
-                  : AppIcons.edit(),
-            ),
-          ],
+          ),
         ),
-        infoSpacing,
+        SizedBox(width: 12.w),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -414,24 +401,24 @@ class ProfileSummarySection extends StatelessWidget {
                 name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.title3.withColor(textColor),
+                style: AppTextStyles.title3.withColor(context.mainTextColor),
               ),
-              AppGap.v4,
+              SizedBox(height: 4.h),
               Text(
                 _buildStudentInfoText(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: AppTextStyles.caption1.withColor(subColor),
+                style: AppTextStyles.caption1.withColor(context.sub2Color),
               ),
             ],
           ),
         ),
-        lateCountSpacing,
+        SizedBox(width: 12.w),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Text('지각 횟수', style: AppTextStyles.text2.withColor(subColor)),
-            AppGap.v4,
+            Text('지각 횟수', style: AppTextStyles.text2.withColor(context.sub2Color)),
+            SizedBox(height: 4.h),
             RichText(
               text: TextSpan(
                 style: AppTextStyles.title3,
@@ -440,12 +427,11 @@ class ProfileSummarySection extends StatelessWidget {
                     text: lateCount == null ? '-' : '$lateCount',
                     style: AppTextStyles.title3.withColor(AppColors.negative),
                   ),
-                  const TextSpan(text: ' '),
+                  WidgetSpan(child: SizedBox(width: 2.w)),
                   TextSpan(
                     text: '번',
-                    style: AppTextStyles.title3.withColor(
-                      context.mainTextColor,
-                    ),
+                    style:
+                        AppTextStyles.title3.withColor(context.mainTextColor),
                   ),
                 ],
               ),
@@ -464,7 +450,7 @@ class ProfileSummarySection extends StatelessWidget {
 }
 
 // ---------------------------------------------------------------------------
-// SettingsSection (moved from widgets/settings_section.dart)
+// SettingsSection (Figma 569-10165)
 // ---------------------------------------------------------------------------
 
 class SettingsSection extends StatelessWidget {
@@ -474,12 +460,7 @@ class SettingsSection extends StatelessWidget {
     required this.showClock,
     required this.outingPushAlarm,
     required this.cameraLaunch,
-    required this.textColor,
-    required this.subColor,
-    required this.surfaceColor,
     required this.role,
-    required this.sectionSpacing,
-    required this.themeTileVerticalPadding,
     required this.onTapTheme,
     required this.onToggleShowClock,
     required this.onToggleOutingPushAlarm,
@@ -490,12 +471,7 @@ class SettingsSection extends StatelessWidget {
   final bool showClock;
   final bool outingPushAlarm;
   final bool cameraLaunch;
-  final Color textColor;
-  final Color subColor;
-  final Color surfaceColor;
   final RoleEnum role;
-  final double sectionSpacing;
-  final double themeTileVerticalPadding;
   final VoidCallback onTapTheme;
   final ValueChanged<bool> onToggleShowClock;
   final ValueChanged<bool> onToggleOutingPushAlarm;
@@ -510,56 +486,53 @@ class SettingsSection extends StatelessWidget {
           '앱 테마 설정',
           style: AppTextStyles.text1.withColor(context.mainTextColor),
         ),
-        AppGap.v12,
+        SizedBox(height: 12.h),
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: onTapTheme,
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.s12,
-              vertical: themeTileVerticalPadding,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
             decoration: BoxDecoration(
-              color: surfaceColor,
-              borderRadius: BorderRadius.circular(8),
+              color: context.surfaceColor,
+              borderRadius: BorderRadius.circular(8.r),
             ),
             child: Row(
               children: [
                 Expanded(
                   child: Text(
                     selectedThemeOption.label,
-                    style: AppTextStyles.text2.withColor(subColor),
+                    style: AppTextStyles.text2.withColor(context.sub1Color),
                   ),
                 ),
-                Icon(Icons.keyboard_arrow_down_rounded, color: subColor),
+                AppIcons.downArrow(
+                  width: 24.r,
+                  height: 24.r,
+                  color: context.sub1Color,
+                ),
               ],
             ),
           ),
         ),
-        SizedBox(height: sectionSpacing),
+        SizedBox(height: 14.h),
         _SettingsToggleItem(
           title: '시계 나타내기',
           description: '프로필 카드에 초 단위의 시간을 나타내요',
           value: showClock,
           onChanged: onToggleShowClock,
-          textColor: textColor,
-          subColor: subColor,
           role: role,
         ),
         if (role != RoleEnum.admin) ...[
-          SizedBox(height: sectionSpacing),
+          SizedBox(height: 14.h),
           _SettingsToggleItem(
             title: '외출제 푸시 알림',
             description: '외출할 시간이 될 때마다 알려드려요',
             value: outingPushAlarm,
             onChanged: onToggleOutingPushAlarm,
-            textColor: textColor,
-            subColor: subColor,
             role: role,
           ),
         ],
-        SizedBox(height: sectionSpacing),
+        SizedBox(height: 14.h),
         _SettingsToggleItem(
           title: role == RoleEnum.admin ? 'QR 생성 바로 켜기' : '카메라 바로 켜기',
           description: role == RoleEnum.admin
@@ -567,8 +540,6 @@ class SettingsSection extends StatelessWidget {
               : '앱을 실행하면 즉시 카메라가 켜져요',
           value: cameraLaunch,
           onChanged: onToggleCameraLaunch,
-          textColor: textColor,
-          subColor: subColor,
           role: role,
         ),
       ],
@@ -582,8 +553,6 @@ class _SettingsToggleItem extends StatelessWidget {
     required this.description,
     required this.value,
     required this.onChanged,
-    required this.textColor,
-    required this.subColor,
     required this.role,
   });
 
@@ -591,78 +560,82 @@ class _SettingsToggleItem extends StatelessWidget {
   final String description;
   final bool value;
   final ValueChanged<bool> onChanged;
-  final Color textColor;
-  final Color subColor;
   final RoleEnum role;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: AppTextStyles.text1.withColor(textColor)),
-              AppGap.v4,
+              Text(title, style: AppTextStyles.text1.withColor(context.mainTextColor)),
+              SizedBox(height: 4.h),
               Text(
                 description,
-                style: AppTextStyles.caption1.withColor(subColor),
+                style: AppTextStyles.caption1.withColor(context.sub2Color),
               ),
             ],
           ),
         ),
-        ToggleButton(type: role, value: value, onChanged: onChanged),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
+          child: ToggleButton(type: role, value: value, onChanged: onChanged),
+        ),
       ],
     );
   }
 }
 
 // ---------------------------------------------------------------------------
-// AccountActionsSection (moved from widgets/account_actions_section.dart)
+// AccountActionsSection (Figma 569-10190)
 // ---------------------------------------------------------------------------
 
 class AccountActionsSection extends StatelessWidget {
   const AccountActionsSection({
     super.key,
-    required this.textColor,
-    required this.rowVerticalPadding,
     required this.onTapResetPassword,
     required this.onTapLogout,
     required this.onTapDeleteAccount,
   });
 
-  final Color textColor;
-  final double rowVerticalPadding;
   final VoidCallback onTapResetPassword;
   final VoidCallback onTapLogout;
   final VoidCallback onTapDeleteAccount;
 
   @override
   Widget build(BuildContext context) {
+    final mainText = context.mainTextColor;
     return Column(
       children: [
         _AccountActionRow(
-          icon: AppIcons.setting(color: textColor),
+          icon: AppIcons.setting(width: 24.r, height: 24.r, color: mainText),
           title: '비밀번호 재설정',
-          textColor: textColor,
-          verticalPadding: rowVerticalPadding,
+          titleColor: mainText,
           onTap: onTapResetPassword,
         ),
+        SizedBox(height: 16.h),
         _AccountActionRow(
-          icon: AppIcons.forcedOuting(color: AppColors.negative),
+          icon: AppIcons.logout(
+            width: 24.r,
+            height: 24.r,
+            color: AppColors.negative,
+          ),
           title: '로그아웃',
-          textColor: AppColors.negative,
-          chevronColor: textColor,
-          verticalPadding: rowVerticalPadding,
+          titleColor: AppColors.negative,
           onTap: onTapLogout,
         ),
+        SizedBox(height: 16.h),
         _AccountActionRow(
-          icon: AppIcons.logout(color: AppColors.negative),
+          icon: AppIcons.user(
+            width: 24.r,
+            height: 24.r,
+            color: AppColors.negative,
+          ),
           title: '회원탈퇴',
-          textColor: AppColors.negative,
-          chevronColor: textColor,
-          verticalPadding: rowVerticalPadding,
+          titleColor: AppColors.negative,
           onTap: onTapDeleteAccount,
         ),
       ],
@@ -674,44 +647,33 @@ class _AccountActionRow extends StatelessWidget {
   const _AccountActionRow({
     required this.icon,
     required this.title,
-    required this.textColor,
-    required this.verticalPadding,
+    required this.titleColor,
     required this.onTap,
-    this.chevronColor,
   });
 
   final Widget icon;
   final String title;
-  final Color textColor;
-  final double verticalPadding;
+  final Color titleColor;
   final VoidCallback onTap;
-  final Color? chevronColor;
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       overlayColor: WidgetStateProperty.all(Colors.transparent),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: verticalPadding),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         child: Row(
           children: [
-            icon is Icon
-                ? Icon(
-                    (icon as Icon).icon,
-                    size: 24,
-                    color: textColor,
-                  )
-                : icon,
-            AppGap.h8,
+            icon,
+            SizedBox(width: 4.w),
             Expanded(
               child:
-                  Text(title, style: AppTextStyles.text2.withColor(textColor)),
+                  Text(title, style: AppTextStyles.text2.withColor(titleColor)),
             ),
-            AppIcons.arrow(color: chevronColor ?? textColor),
+            AppIcons.arrow(width: 24.r, height: 24.r, color: context.mainTextColor),
           ],
         ),
       ),

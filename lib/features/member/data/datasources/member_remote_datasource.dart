@@ -49,6 +49,9 @@ abstract class MemberRemoteDataSource {
     @Part(name: 'image') MultipartFile image,
   );
 
+  @DELETE('/api/v3/member/profile-image')
+  Future<void> deleteProfileImage();
+
   @DELETE('/api/v3/member/withdraw')
   Future<void> withdrawMember(@Body() Map<String, dynamic> body);
 }

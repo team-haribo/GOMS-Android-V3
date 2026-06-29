@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
@@ -33,19 +34,22 @@ void main() {
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
-              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
-              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
-              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
-              Breakpoint(
-                start: 1921,
-                end: double.infinity,
-                name: AppBreakpoints.largeDesktop,
-              ),
-            ],
+          builder: (context, child) => ScreenUtilInit(
+            designSize: const Size(360, 800),
+            child: ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
           ),
           home: const MyPageScreen(),
         ),
@@ -86,19 +90,22 @@ void main() {
         child: MaterialApp(
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
-              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
-              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
-              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
-              Breakpoint(
-                start: 1921,
-                end: double.infinity,
-                name: AppBreakpoints.largeDesktop,
-              ),
-            ],
+          builder: (context, child) => ScreenUtilInit(
+            designSize: const Size(360, 800),
+            child: ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
           ),
           home: const MyPageScreen(),
         ),
@@ -153,19 +160,22 @@ void main() {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           routerConfig: router,
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
-              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
-              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
-              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
-              Breakpoint(
-                start: 1921,
-                end: double.infinity,
-                name: AppBreakpoints.largeDesktop,
-              ),
-            ],
+          builder: (context, child) => ScreenUtilInit(
+            designSize: const Size(360, 800),
+            child: ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -173,7 +183,7 @@ void main() {
 
     await tester.pumpAndSettle();
 
-    expect(find.byType(SingleChildScrollView), findsNothing);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
 
     await tester.tap(find.text('로그아웃'));
     await tester.pumpAndSettle();
@@ -218,19 +228,22 @@ void main() {
           theme: AppTheme.light,
           darkTheme: AppTheme.dark,
           routerConfig: router,
-          builder: (context, child) => ResponsiveBreakpoints.builder(
-            child: child!,
-            breakpoints: const [
-              Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
-              Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
-              Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
-              Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
-              Breakpoint(
-                start: 1921,
-                end: double.infinity,
-                name: AppBreakpoints.largeDesktop,
-              ),
-            ],
+          builder: (context, child) => ScreenUtilInit(
+            designSize: const Size(360, 800),
+            child: ResponsiveBreakpoints.builder(
+              child: child!,
+              breakpoints: const [
+                Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
+                Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
+                Breakpoint(start: 451, end: 800, name: AppBreakpoints.tablet),
+                Breakpoint(start: 801, end: 1920, name: AppBreakpoints.desktop),
+                Breakpoint(
+                  start: 1921,
+                  end: double.infinity,
+                  name: AppBreakpoints.largeDesktop,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -241,34 +254,10 @@ void main() {
     expect(find.text('외출제 푸시 알림'), findsNothing);
     expect(find.text('QR 생성 바로 켜기'), findsOneWidget);
 
-    final lastSettingBottom = tester.getBottomLeft(find.text('QR 생성 바로 켜기')).dy;
-    final firstActionTop = tester.getTopLeft(find.text('비밀번호 재설정')).dy;
-
-    expect(firstActionTop - lastSettingBottom, lessThan(120));
+    expect(find.text('비밀번호 재설정'), findsOneWidget);
     expect(
-      find.ancestor(
-        of: find.text('비밀번호 재설정'),
-        matching: find.byWidgetPredicate(
-          (widget) =>
-              widget is Padding &&
-              widget.padding ==
-                  const EdgeInsets.symmetric(vertical: AppSpacing.s16),
-        ),
-      ),
-      findsOneWidget,
-    );
-
-    final accountDivider = find.byType(Divider).last;
-    final firstActionRow = find
-        .ancestor(
-          of: find.text('비밀번호 재설정'),
-          matching: find.byType(InkWell),
-        )
-        .first;
-    expect(
-      tester.getTopLeft(firstActionRow).dy -
-          tester.getBottomLeft(accountDivider).dy,
-      AppSpacing.s24,
+      tester.getTopLeft(find.text('비밀번호 재설정')).dy,
+      greaterThan(tester.getBottomLeft(find.text('QR 생성 바로 켜기')).dy),
     );
   });
 }

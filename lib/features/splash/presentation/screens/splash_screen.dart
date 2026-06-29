@@ -31,21 +31,27 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     debugPrint('SplashScreen: starting auth check');
 
-    final hasToken = await ref.read(authProvider.notifier).checkToken();
-
-    if (!mounted) return;
-
     String destination = RoutePath.onboarding;
 
-    if (hasToken) {
-      final currentMember = await ref.read(currentMemberProvider.future);
-      final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-        enabled: await SettingsStorage.getCameraLaunch(),
-        isCameraPermissionGranted: (await Permission.camera.status).isGranted,
-        role: currentMember?.role ?? RoleEnum.user,
-      );
+    try {
+      final hasToken = await ref.read(authProvider.notifier).checkToken();
+      if (!mounted) return;
 
-      destination = cameraLaunchRoute ?? RoutePath.home;
+      if (hasToken) {
+        final currentMember = await ref.read(currentMemberProvider.future);
+        final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
+          enabled: await SettingsStorage.getCameraLaunch(),
+          isCameraPermissionGranted: (await Permission.camera.status).isGranted,
+          role: currentMember?.role ?? RoleEnum.user,
+        );
+
+        destination = cameraLaunchRoute ?? RoutePath.home;
+      }
+    } catch (error, stackTrace) {
+      // 네트워크/토큰 오류 시 예외 전파로 스플래시에 멈추지 않도록 온보딩으로 폴백
+      debugPrint('SplashScreen: auth check failed, falling back to onboarding: $error');
+      debugPrintStack(stackTrace: stackTrace);
+      destination = RoutePath.onboarding;
     }
 
     debugPrint('SplashScreen: navigating to $destination');

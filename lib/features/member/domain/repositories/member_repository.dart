@@ -28,5 +28,7 @@ abstract class MemberRepository {
 
   Future<String> updateProfileImage({required String imagePath});
 
+  Future<void> deleteProfileImage();
+
   Future<void> withdrawMember({required String password});
 }

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 import 'package:goms_design_system/goms_design_system.dart';
+import 'package:goms/core/widgets/bottom_sheets/selection_bottom_sheet.dart';
 
 class SelectField<T> extends StatelessWidget {
   const SelectField({
@@ -23,7 +23,7 @@ class SelectField<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: enabled ? () => _showCupertinoPicker(context) : null,
+      onTap: enabled ? () => _showPicker(context) : null,
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -43,34 +43,14 @@ class SelectField<T> extends StatelessWidget {
     );
   }
 
-  void _showCupertinoPicker(BuildContext context) {
-    showCupertinoModalPopup<void>(
-      context: context,
-      builder: (context) {
-        return CupertinoActionSheet(
-          actions: items.map((item) {
-            return CupertinoActionSheetAction(
-              onPressed: () {
-                onChanged?.call(item);
-                context.pop(context);
-              },
-              child: Text(
-                itemLabel(item),
-                style: AppTextStyles.text2.withColor(
-                  CupertinoColors.systemBlue,
-                ),
-              ),
-            );
-          }).toList(),
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () => context.pop(context),
-            child: Text(
-              '취소',
-              style: AppTextStyles.text1.withColor(CupertinoColors.systemBlue),
-            ),
-          ),
-        );
-      },
+  void _showPicker(BuildContext context) {
+    SelectionBottomSheet.show<T>(
+      context,
+      title: hintText,
+      items: items,
+      itemLabel: itemLabel,
+      selected: value,
+      onSelected: (item) => onChanged?.call(item),
     );
   }
 }

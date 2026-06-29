@@ -19,7 +19,7 @@ final mapScreenProvider = NotifierProvider<MapScreenNotifier, MapScreenState>(
 final mapReentryRefreshSignalProvider = StateProvider<int>((ref) => 0);
 
 class MapScreenNotifier extends Notifier<MapScreenState> {
-  static const _hotPlaceDays = 7;
+  static const _hotPlaceDays = 3;
 
   @override
   MapScreenState build() {

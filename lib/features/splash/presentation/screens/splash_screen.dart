@@ -22,43 +22,45 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(_checkAuthAndNavigate);
+    _checkAuthAndNavigate();
   }
 
   Future<void> _checkAuthAndNavigate() async {
+    // 스플래시 화면 최소 표시 시간
+    await Future.delayed(const Duration(seconds: 2));
+
     debugPrint('SplashScreen: starting auth check');
 
-    final minimumDisplay = Future<void>.delayed(const Duration(seconds: 1));
     String destination = RoutePath.onboarding;
 
     try {
       final hasToken = await ref.read(authProvider.notifier).checkToken();
+      if (!mounted) return;
 
       if (hasToken) {
-        final memberFuture = ref.read(currentMemberProvider.future);
-        final cameraLaunchFuture = SettingsStorage.getCameraLaunch();
-        final cameraPermissionFuture = Permission.camera.status;
-
-        final currentMember = await memberFuture;
+        final currentMember = await ref.read(currentMemberProvider.future);
         final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(
-          enabled: await cameraLaunchFuture,
-          isCameraPermissionGranted: (await cameraPermissionFuture).isGranted,
+          enabled: await SettingsStorage.getCameraLaunch(),
+          isCameraPermissionGranted: (await Permission.camera.status).isGranted,
           role: currentMember?.role ?? RoleEnum.user,
         );
 
         destination = cameraLaunchRoute ?? RoutePath.home;
       }
     } catch (error, stackTrace) {
+      // 네트워크/토큰 오류 시 예외 전파로 스플래시에 멈추지 않도록 온보딩으로 폴백
       debugPrint('SplashScreen: auth check failed, falling back to onboarding: $error');
       debugPrintStack(stackTrace: stackTrace);
       destination = RoutePath.onboarding;
     }
 
-    await minimumDisplay;
-
-    if (!mounted) return;
-
     debugPrint('SplashScreen: navigating to $destination');
+
+    // ponytail: navigate directly — addPostFrameCallback does NOT schedule a
+    // frame, and the static splash pumps no frames in release, so the callback
+    // never fired and the app hung on splash. We're already past build here
+    // (after the delay + awaits), so calling context.go directly is safe.
+    if (!mounted) return;
     context.go(destination);
   }
 

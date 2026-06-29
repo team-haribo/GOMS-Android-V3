@@ -157,6 +157,11 @@ class _FakeMemberRepository implements MemberRepository {
   }
 
   @override
+  Future<void> deleteProfileImage() {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();
   }

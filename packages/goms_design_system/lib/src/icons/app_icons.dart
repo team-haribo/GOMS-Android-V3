@@ -160,6 +160,15 @@ class AppIcons {
         color: color,
       );
 
+  /// 이미지 추가(갤러리에서 선택) 아이콘
+  static Widget imageAdd({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/image_add.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
   /// QR 코드 로드 아이콘
   static Widget qrCodeLoad({double? width, double? height, Color? color}) =>
       _loadSvg(

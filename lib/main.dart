@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -17,14 +19,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
 
-Future<void> _bootstrapPlatformServices() async {
-  try {
-    await KakaoMapRuntime.instance.initialize();
-  } catch (error, stackTrace) {
-    debugPrint('KakaoMap bootstrap failed: $error');
-    debugPrintStack(stackTrace: stackTrace);
-  }
-
+Future<void> _initFirebase() async {
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -36,14 +31,27 @@ Future<void> _bootstrapPlatformServices() async {
   }
 }
 
+Future<void> _initKakaoMap() async {
+  try {
+    await KakaoMapRuntime.instance.initialize();
+  } catch (error, stackTrace) {
+    debugPrint('KakaoMap bootstrap failed: $error');
+    debugPrintStack(stackTrace: stackTrace);
+  }
+}
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
   final appEnv = AppEnv.fromValue(appEnvValue);
 
-  await dotenv.load(fileName: appEnv.fileName);
-  await _bootstrapPlatformServices();
+  await Future.wait([
+    dotenv.load(fileName: appEnv.fileName),
+    _initFirebase(),
+  ]);
+
   runApp(const ProviderScope(child: MyApp()));
+  unawaited(_initKakaoMap());
 }
 
 class MyApp extends ConsumerWidget {

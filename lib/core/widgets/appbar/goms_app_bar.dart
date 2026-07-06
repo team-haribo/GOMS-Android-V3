@@ -57,7 +57,10 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backAction = onBackPressed ?? () => context.pop();
+    // context.go 진입(예: 카메라 바로 켜기)으로 back stack이 없을 때 pop이
+    // 무동작이 되므로 홈으로 폴백한다.
+    final backAction = onBackPressed ??
+        () => context.canPop() ? context.pop() : context.go(RoutePath.home);
 
     return AppBar(
       automaticallyImplyLeading: false,

@@ -26,24 +26,29 @@ class GomsBottomNavigation extends StatelessWidget {
 
     return Theme(
       data: noTouchEffectTheme,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 24),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            GestureDetector(
-              onTap: () => onTap(0),
-              child: AppIcons.map(width: 24, height: 24, color: currentIndex == 0 ? selectedColor : unselectedColor),
-            ),
-            GestureDetector(
-              onTap: () => onTap(1),
-              child: AppIcons.home(width: 24, height: 24, color: currentIndex == 1 ? selectedColor : unselectedColor),
-            ),
-            GestureDetector(
-              onTap: () => onTap(2),
-              child: AppIcons.user(width: 24, height: 24, color: currentIndex == 2 ? selectedColor : unselectedColor),
-            ),
-          ],
+      // 엣지투엣지(삼성 One UI 제스처바 등)에서 시스템 하단 inset만큼 밀어올려
+      // 아이콘이 시스템 네비바 뒤로 가려지지 않게 한다.
+      child: SafeArea(
+        top: false,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () => onTap(0),
+                child: AppIcons.map(width: 24, height: 24, color: currentIndex == 0 ? selectedColor : unselectedColor),
+              ),
+              GestureDetector(
+                onTap: () => onTap(1),
+                child: AppIcons.home(width: 24, height: 24, color: currentIndex == 1 ? selectedColor : unselectedColor),
+              ),
+              GestureDetector(
+                onTap: () => onTap(2),
+                child: AppIcons.user(width: 24, height: 24, color: currentIndex == 2 ? selectedColor : unselectedColor),
+              ),
+            ],
+          ),
         ),
       ),
     );

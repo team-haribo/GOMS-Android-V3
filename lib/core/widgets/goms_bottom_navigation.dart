@@ -24,15 +24,16 @@ class GomsBottomNavigation extends StatelessWidget {
       hoverColor: Colors.transparent,
     );
 
+    // ponytail: SafeArea(padding)는 상위에서 소비되거나 기기/OS별로 0으로
+    // 리포팅되면 안 밀어올려 일부 기기에서 시스템 네비바와 겹쳤다. 소비/편차의
+    // 영향을 안 받는 물리 인셋 viewPadding을 직접 더해 기기 편차를 없앤다.
+    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+
     return Theme(
       data: noTouchEffectTheme,
-      // 엣지투엣지(삼성 One UI 제스처바 등)에서 시스템 하단 inset만큼 밀어올려
-      // 아이콘이 시스템 네비바 뒤로 가려지지 않게 한다.
-      child: SafeArea(
-        top: false,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 24),
-          child: Row(
+      child: Container(
+        padding: EdgeInsets.fromLTRB(52, 24, 52, 24 + bottomInset),
+        child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               GestureDetector(
@@ -50,7 +51,6 @@ class GomsBottomNavigation extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
 }

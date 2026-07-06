@@ -74,6 +74,8 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 style: TextButton.styleFrom(
                   padding: EdgeInsets.zero,
                   alignment: Alignment.centerLeft,
+                  splashFactory: NoSplash.splashFactory,
+                  overlayColor: Colors.transparent,
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

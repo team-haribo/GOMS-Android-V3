@@ -927,37 +927,36 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (uiState.currentRole == StudentRole.student)
-            _UserRoleBottomSheetItem(
-              title: '외출',
-              description: '학생들 외출/복귀 시켜요.',
-              trailing: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: ToggleButton(
-                  type: RoleEnum.admin,
-                  value: uiState.isOuting,
-                  onChanged: uiState.isSubmitting
-                      ? (_) {}
-                      : (_) {
-                          if (uiState.isOuting) {
-                            forcedOutingRelease(
-                              context: context,
-                              title: '강제외출 복귀',
-                              content: '\n 학생을 복귀 상태로 변경하시겠습니까?',
-                              onConfirm: _releaseForcedOuting,
-                            );
-                          } else {
-                            forcedOuting(
-                              context: context,
-                              title: '강제외출',
-                              content: '\n 이 학생을 외출 상태로 변경하시겠습니까?',
-                              onConfirm: _forceOut,
-                            );
-                          }
-                        },
-                ),
+          _UserRoleBottomSheetItem(
+            title: '외출',
+            description: '학생들 외출/복귀 시켜요.',
+            trailing: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: ToggleButton(
+                type: RoleEnum.admin,
+                value: uiState.isOuting,
+                onChanged: uiState.isSubmitting
+                    ? (_) {}
+                    : (_) {
+                        if (uiState.isOuting) {
+                          forcedOutingRelease(
+                            context: context,
+                            title: '강제외출 복귀',
+                            content: '\n 학생을 복귀 상태로 변경하시겠습니까?',
+                            onConfirm: _releaseForcedOuting,
+                          );
+                        } else {
+                          forcedOuting(
+                            context: context,
+                            title: '강제외출',
+                            content: '\n 이 학생을 외출 상태로 변경하시겠습니까?',
+                            onConfirm: _forceOut,
+                          );
+                        }
+                      },
               ),
             ),
+          ),
           if (uiState.currentRole == StudentRole.student ||
               uiState.currentRole == StudentRole.outingBanned) ...[
             AppGap.v12,

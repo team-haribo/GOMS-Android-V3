@@ -1,0 +1,45 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
+import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
+
+part 'signup_state.freezed.dart';
+
+/// 회원가입 상태
+enum SignupStatus {
+  /// 초기 상태
+  initial,
+
+  /// 로딩 중
+  loading,
+
+  /// 성공
+  success,
+
+  /// 실패
+  failure,
+}
+
+/// 회원가입 상태 모델
+@freezed
+abstract class SignupState with _$SignupState {
+  const factory SignupState({
+    @Default(SignupStatus.initial) SignupStatus status,
+    @Default('') String name,
+    @Default('') String email,
+    @Default('') String grade,
+    @Default('') String password,
+    @Default('') String passwordConfirm,
+    @Default(false) bool isPrivacyPolicyAgreed,
+    GenderType? gender,
+    DepartmentType? major,
+    String? nameError,
+    String? emailError,
+    String? gradeError,
+    String? passwordError,
+    String? passwordConfirmError,
+    String? errorMessage,
+  }) = _SignupState;
+
+  /// 초기 상태
+  factory SignupState.initial() => const SignupState();
+}

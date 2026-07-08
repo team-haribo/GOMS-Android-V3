@@ -54,5 +54,5 @@ class PermissionServiceImpl implements PermissionService {
       Permission.location.status;
 
   @override
-  Future<void> openAppSettings() async => await ph.openAppSettings();
+  Future<void> openAppSettings() => ph.openAppSettings();
 }

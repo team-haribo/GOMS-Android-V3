@@ -1,4 +1,6 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart' as ph
+    show openAppSettings;
 import 'package:goms/core/domain/services/permission_service.dart';
 
 /// PermissionService의 구현체
@@ -52,5 +54,5 @@ class PermissionServiceImpl implements PermissionService {
       Permission.location.status;
 
   @override
-  Future<void> openAppSettings() async => await openAppSettings();
+  Future<void> openAppSettings() => ph.openAppSettings();
 }

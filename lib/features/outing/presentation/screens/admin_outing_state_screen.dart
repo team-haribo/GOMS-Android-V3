@@ -927,7 +927,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (uiState.currentRole == StudentRole.student)
+          if (uiState.currentRole != StudentRole.outingBanned)
             _UserRoleBottomSheetItem(
               title: '외출',
               description: '학생들 외출/복귀 시켜요.',

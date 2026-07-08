@@ -19,6 +19,7 @@ class VerifyNotifier extends Notifier<VerifyState> {
 
   late final TextEditingController codeController;
   Timer? _timer;
+  bool _isResending = false;
 
   @override
   VerifyState build() {
@@ -118,7 +119,7 @@ class VerifyNotifier extends Notifier<VerifyState> {
   }
 
   Future<void> resend() async {
-    if (!canResend) return;
+    if (!canResend || _isResending) return;
 
     final authFlow = ref.read(authFlowProvider);
     if (authFlow.email.isEmpty || authFlow.purpose == null) {
@@ -129,14 +130,7 @@ class VerifyNotifier extends Notifier<VerifyState> {
       return;
     }
 
-    _timer?.cancel();
-    codeController.clear();
-    state = VerifyState.initial().copyWith(
-      resendCooldownSeconds: _resendCooldownDurationSeconds,
-      remainingSeconds: _verificationDurationSeconds,
-    );
-    _startTimer();
-
+    _isResending = true;
     try {
       ref.read(authFlowProvider.notifier).clearVerifiedToken();
       await ref
@@ -147,6 +141,16 @@ class VerifyNotifier extends Notifier<VerifyState> {
               purpose: authFlow.purpose!,
             ),
           );
+
+      // 요청 성공 시에만 타이머/쿨다운을 리셋한다.
+      // (실패 시 리셋하면 쿨다운에 걸려 즉시 재시도가 막히는 문제 방지)
+      _timer?.cancel();
+      codeController.clear();
+      state = VerifyState.initial().copyWith(
+        resendCooldownSeconds: _resendCooldownDurationSeconds,
+        remainingSeconds: _verificationDurationSeconds,
+      );
+      _startTimer();
     } on DioException catch (e) {
       state = state.copyWith(
         status: VerifyStatus.failure,
@@ -157,6 +161,8 @@ class VerifyNotifier extends Notifier<VerifyState> {
         status: VerifyStatus.failure,
         errorMessage: e.toString(),
       );
+    } finally {
+      _isResending = false;
     }
   }
 

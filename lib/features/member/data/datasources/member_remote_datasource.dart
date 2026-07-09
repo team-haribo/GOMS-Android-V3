@@ -18,6 +18,9 @@ abstract class MemberRemoteDataSource {
   @GET('/api/v3/member/profile')
   Future<CurrentMemberDto> getMyProfile();
 
+  @GET('/api/v3/member/myrole')
+  Future<CurrentMemberDto> getMyRole();
+
   @GET('/api/v3/student-council/member')
   Future<StudentCouncilStudentsResponse> getStudentCouncilMembers();
 

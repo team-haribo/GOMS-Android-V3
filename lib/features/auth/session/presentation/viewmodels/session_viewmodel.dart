@@ -83,6 +83,9 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<bool> _loadSession() async {
     try {
       await _fetchCurrentMember();
+      // 프로필 role은 access token claim에 의존할 수 있어, 서버 DB 기준
+      // /member/myrole로 권한을 한 번 더 보정한다. (이슈 #123)
+      await ref.read(currentMemberProvider.notifier).refreshRole();
       _warmUpHomeData();
       state = AuthStatus.authenticated;
       return true;

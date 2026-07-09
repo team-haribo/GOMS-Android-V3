@@ -10,6 +10,7 @@ import 'package:goms/features/auth/session/presentation/viewmodels/session_viewm
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
 import 'package:goms/features/member/domain/repositories/member_repository.dart';
+import 'package:goms/features/member/presentation/providers/current_member_provider.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -65,7 +66,11 @@ void main() {
       storage['refresh_token_expiry'] = future.toIso8601String();
 
       final session = _RecordingSessionDataSource();
-      final repository = _FakeMemberRepository(role: RoleEnum.user);
+      // 프로필은 stale(admin=학생회), /myrole은 서버 DB 기준 최신(user=학생).
+      final repository = _FakeMemberRepository(
+        profileRole: RoleEnum.admin,
+        myRole: RoleEnum.user,
+      );
 
       final container = ProviderContainer(
         overrides: [
@@ -82,8 +87,9 @@ void main() {
       expect(session.reissueCalls, 1);
       expect(storage['access_token'], 'renewed-access-token');
       expect(storage['refresh_token'], 'renewed-refresh-token');
-      // 최신 role이 반영된다.
       expect(container.read(authProvider), AuthStatus.authenticated);
+      // /myrole 값으로 stale 권한이 보정되어야 한다.
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
     },
   );
 }
@@ -112,17 +118,21 @@ class _RecordingSessionDataSource implements SessionRemoteDataSource {
 }
 
 class _FakeMemberRepository implements MemberRepository {
-  _FakeMemberRepository({required this.role});
+  _FakeMemberRepository({required this.profileRole, required this.myRole});
 
-  final RoleEnum role;
+  final RoleEnum profileRole;
+  final RoleEnum myRole;
 
   @override
   Future<CurrentMemberEntity> getMyProfile() async => CurrentMemberEntity(
         memberId: 1,
         email: 's24068@gsm.hs.kr',
         name: '이찬진',
-        role: role,
+        role: profileRole,
       );
+
+  @override
+  Future<RoleEnum> getMyRole() async => myRole;
 
   // 나머지 멤버는 이 테스트에서 사용하지 않으므로 noSuchMethod로 위임한다.
   @override

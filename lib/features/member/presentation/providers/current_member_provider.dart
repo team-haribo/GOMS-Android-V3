@@ -46,8 +46,18 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
 
     try {
       final role = await ref.read(memberRepositoryProvider).getMyRole();
-      if (role != currentMember.role) {
-        state = AsyncData(currentMember.copyWith(role: role));
+
+      // await 동안 상태가 바뀌었을 수 있다(로그아웃으로 clear() 호출 등).
+      // 캡처해둔 값으로 덮어쓰면 종료된 세션이 부활할 수 있으므로 최신 상태를
+      // 다시 확인하고, null이거나 다른 멤버로 바뀌었으면 보정을 중단한다.
+      final latestMember = state.asData?.value;
+      if (latestMember == null ||
+          latestMember.memberId != currentMember.memberId) {
+        return;
+      }
+
+      if (role != latestMember.role) {
+        state = AsyncData(latestMember.copyWith(role: role));
       }
     } catch (error, stackTrace) {
       // 권한 보정 실패는 세션을 막지 않고 프로필 role을 그대로 사용한다.

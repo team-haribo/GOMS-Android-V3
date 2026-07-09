@@ -92,6 +92,37 @@ void main() {
       expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
     },
   );
+
+  test(
+    'refreshRole는 await 도중 세션이 종료되면 세션을 부활시키지 않는다 (#123)',
+    () async {
+      late final ProviderContainer container;
+      final repository = _FakeMemberRepository(
+        profileRole: RoleEnum.admin,
+        myRole: RoleEnum.user,
+        // getMyRole 응답 직전에 로그아웃(clear)이 일어난 상황을 재현한다.
+        onGetMyRole: () async {
+          container.read(currentMemberProvider.notifier).clear();
+        },
+      );
+
+      container = ProviderContainer(
+        overrides: [
+          memberRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+
+      // 멤버를 먼저 로드해 상태를 채운다.
+      await container.read(currentMemberProvider.notifier).fetch();
+      expect(container.read(currentMemberProvider).value, isNotNull);
+
+      await container.read(currentMemberProvider.notifier).refreshRole();
+
+      // clear로 종료된 세션이 되살아나면 안 된다.
+      expect(container.read(currentMemberProvider).value, isNull);
+    },
+  );
 }
 
 class _RecordingSessionDataSource implements SessionRemoteDataSource {
@@ -118,10 +149,17 @@ class _RecordingSessionDataSource implements SessionRemoteDataSource {
 }
 
 class _FakeMemberRepository implements MemberRepository {
-  _FakeMemberRepository({required this.profileRole, required this.myRole});
+  _FakeMemberRepository({
+    required this.profileRole,
+    required this.myRole,
+    this.onGetMyRole,
+  });
 
   final RoleEnum profileRole;
   final RoleEnum myRole;
+
+  /// getMyRole의 await 도중 상태를 바꾸기 위한 훅.
+  final Future<void> Function()? onGetMyRole;
 
   @override
   Future<CurrentMemberEntity> getMyProfile() async => CurrentMemberEntity(
@@ -132,7 +170,10 @@ class _FakeMemberRepository implements MemberRepository {
       );
 
   @override
-  Future<RoleEnum> getMyRole() async => myRole;
+  Future<RoleEnum> getMyRole() async {
+    await onGetMyRole?.call();
+    return myRole;
+  }
 
   // 나머지 멤버는 이 테스트에서 사용하지 않으므로 noSuchMethod로 위임한다.
   @override

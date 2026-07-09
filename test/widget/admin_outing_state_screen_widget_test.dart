@@ -162,6 +162,11 @@ class _FakeMemberRepository implements MemberRepository {
   }
 
   @override
+  Future<RoleEnum> getMyRole() {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<CurrentMemberEntity> getMyProfile() {
     throw UnimplementedError();
   }

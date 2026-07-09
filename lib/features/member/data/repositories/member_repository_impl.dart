@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/member/data/datasources/member_remote_datasource.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
@@ -21,6 +22,12 @@ class MemberRepositoryImpl implements MemberRepository {
   Future<CurrentMemberEntity> getMyProfile() async {
     final currentMember = await _remoteDataSource.getMyProfile();
     return currentMember.toEntity();
+  }
+
+  @override
+  Future<RoleEnum> getMyRole() async {
+    final myRole = await _remoteDataSource.getMyRole();
+    return myRole.role;
   }
 
   @override

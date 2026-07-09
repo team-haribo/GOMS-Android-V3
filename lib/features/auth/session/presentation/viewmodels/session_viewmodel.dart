@@ -16,6 +16,12 @@ enum AuthStatus {
   checking,
 }
 
+/// 재발급(reissue) 시도 결과.
+/// - [success]: 새 토큰 저장 완료
+/// - [rejected]: 리프레시 토큰이 서버에서 거부됨(401/403) → 세션 종료
+/// - [transient]: 일시 장애(타임아웃·연결·5xx 등) → 토큰 보존
+enum _ReissueOutcome { success, rejected, transient }
+
 final authProvider = NotifierProvider<AuthNotifier, AuthStatus>(() {
   return AuthNotifier();
 });
@@ -37,55 +43,79 @@ class AuthNotifier extends Notifier<AuthStatus> {
 
   Future<bool> checkToken() async {
     state = AuthStatus.checking;
-    final accessToken = await TokenStorage.getAccessToken();
-    final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
-
-    if (_hasValidToken(accessToken, accessTokenExpiry)) {
-      try {
-        await _fetchCurrentMember();
-        _warmUpHomeData();
-        state = AuthStatus.authenticated;
-        return true;
-      } catch (_) {
-        _clearSessionState();
-        return false;
-      }
-    }
 
     final refreshToken = await TokenStorage.getRefreshToken();
     final refreshTokenExpiry = await TokenStorage.getRefreshTokenExpiry();
+    final hasValidRefresh = _hasValidToken(refreshToken, refreshTokenExpiry);
 
-    if (!_hasValidToken(refreshToken, refreshTokenExpiry)) {
-      await _clearSession();
-      return false;
+    // 리프레시 토큰이 유효하면 access token의 만료 여부와 관계없이 항상 재발급을
+    // 먼저 시도한다. 디스코드 권한 동기화 후에도 기존 access token의 role claim이
+    // 남아 이전 권한(학생회 등)이 계속 보이던 문제를 막기 위함이다. 재발급으로
+    // role claim을 최신화한 뒤 멤버 정보를 다시 불러온다. (이슈 #123)
+    if (hasValidRefresh) {
+      final outcome = await _reissue(refreshToken!);
+      if (outcome == _ReissueOutcome.success) {
+        return _loadSession();
+      }
+      if (outcome == _ReissueOutcome.rejected) {
+        // 리프레시 토큰이 서버에서 거부됨 → 세션은 이미 종료되었다.
+        return false;
+      }
+      // 일시 장애: 아직 유효한 access token이 있으면 그걸로 폴백한다.
     }
 
+    final accessToken = await TokenStorage.getAccessToken();
+    final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
+    if (_hasValidToken(accessToken, accessTokenExpiry)) {
+      return _loadSession();
+    }
+
+    if (hasValidRefresh) {
+      // 재발급이 일시적으로 실패했을 뿐 리프레시 토큰은 유효하므로 토큰을 보존해
+      // 다음 실행 때 다시 재발급을 시도할 수 있게 한다.
+      _clearSessionState();
+    } else {
+      await _clearSession();
+    }
+    return false;
+  }
+
+  Future<bool> _loadSession() async {
+    try {
+      await _fetchCurrentMember();
+      // 프로필 role은 access token claim에 의존할 수 있어, 서버 DB 기준
+      // /member/myrole로 권한을 한 번 더 보정한다. (이슈 #123)
+      await ref.read(currentMemberProvider.notifier).refreshRole();
+      _warmUpHomeData();
+      state = AuthStatus.authenticated;
+      return true;
+    } catch (_) {
+      _clearSessionState();
+      return false;
+    }
+  }
+
+  Future<_ReissueOutcome> _reissue(String refreshToken) async {
     try {
       final response = await ref.read(sessionRemoteDataSourceProvider).reissue(
-            'Bearer ${refreshToken!.trim()}',
+            'Bearer ${refreshToken.trim()}',
           );
       await TokenStorage.saveAccessToken(response.accessToken);
       await TokenStorage.saveRefreshToken(response.refreshToken);
       await TokenStorage.saveAccessTokenExpiry(response.accessTokenExpiresIn);
       await TokenStorage.saveRefreshTokenExpiry(response.refreshTokenExpiresIn);
-      await _fetchCurrentMember();
-      _warmUpHomeData();
-      state = AuthStatus.authenticated;
-      return true;
+      return _ReissueOutcome.success;
     } on DioException catch (error) {
       if (_isRefreshRejected(error)) {
         // 리프레시 토큰이 서버에서 실제로 거부된 경우에만 토큰을 삭제한다.
         await _clearSession();
-      } else {
-        // 타임아웃·연결 오류·서버 일시 오류 등에서는 토큰을 보존해
-        // 다음 실행 때 다시 재발급을 시도할 수 있게 한다.
-        _clearSessionState();
+        return _ReissueOutcome.rejected;
       }
-      return false;
+      // 타임아웃·연결 오류·서버 일시 오류 등에서는 토큰을 보존한다.
+      return _ReissueOutcome.transient;
     } catch (_) {
       // 예기치 못한 오류에서도 토큰은 보존한다.
-      _clearSessionState();
-      return false;
+      return _ReissueOutcome.transient;
     }
   }
 

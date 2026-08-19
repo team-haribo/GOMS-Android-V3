@@ -17,10 +17,7 @@ import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
 import 'package:goms/core/widgets/chips/category_chip.dart';
-import 'package:goms/core/widgets/dialogs/banned_outing_dialog.dart';
-import 'package:goms/core/widgets/dialogs/banned_outing_release_dialog.dart';
-import 'package:goms/core/widgets/dialogs/force_outing_dialog.dart';
-import 'package:goms/core/widgets/dialogs/forced_outing_release_dialog.dart';
+import 'package:goms/core/widgets/dialogs/outing_action_dialog.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 
 class AdminOutingStateScreen extends ConsumerStatefulWidget {
@@ -307,24 +304,7 @@ class MemberFilterSheetSelection {
   }
 }
 
-final _memberFilterSelectionProvider = NotifierProvider.autoDispose.family<
-    _MemberFilterSelectionNotifier,
-    MemberFilterSheetSelection,
-    (Object, MemberFilterSheetSelection)>(_MemberFilterSelectionNotifier.new);
-
-class _MemberFilterSelectionNotifier
-    extends Notifier<MemberFilterSheetSelection> {
-  _MemberFilterSelectionNotifier(this.args);
-
-  final (Object, MemberFilterSheetSelection) args;
-
-  @override
-  MemberFilterSheetSelection build() => args.$2;
-
-  void setSelection(MemberFilterSheetSelection selection) => state = selection;
-}
-
-class MemberFilterBottomSheet extends ConsumerStatefulWidget {
+class MemberFilterBottomSheet extends StatefulWidget {
   const MemberFilterBottomSheet({
     super.key,
     this.initialSelection = const MemberFilterSheetSelection(),
@@ -337,26 +317,22 @@ class MemberFilterBottomSheet extends ConsumerStatefulWidget {
   final VoidCallback? onReset;
 
   @override
-  ConsumerState<MemberFilterBottomSheet> createState() =>
+  State<MemberFilterBottomSheet> createState() =>
       _MemberFilterBottomSheetState();
 }
 
-class _MemberFilterBottomSheetState
-    extends ConsumerState<MemberFilterBottomSheet> {
-  late final Object _providerIdentity;
-
-  (Object, MemberFilterSheetSelection) get _providerKey =>
-      (_providerIdentity, widget.initialSelection);
+class _MemberFilterBottomSheetState extends State<MemberFilterBottomSheet> {
+  late MemberFilterSheetSelection _selection;
 
   @override
   void initState() {
     super.initState();
-    _providerIdentity = Object();
+    _selection = widget.initialSelection;
   }
 
   @override
   Widget build(BuildContext context) {
-    final selection = ref.watch(_memberFilterSelectionProvider(_providerKey));
+    final selection = _selection;
 
     return CommonBottomSheet(
       title: '필터',
@@ -585,21 +561,13 @@ class _MemberFilterBottomSheetState
   }
 
   void _handleReset() {
-    ref
-        .read(_memberFilterSelectionProvider(_providerKey).notifier)
-        .setSelection(const MemberFilterSheetSelection());
+    setState(() => _selection = const MemberFilterSheetSelection());
     widget.onReset?.call();
     Navigator.pop(context);
   }
 
   void _updateSelection(MemberFilterSheetSelection selection) {
-    ref
-        .read(_memberFilterSelectionProvider(_providerKey).notifier)
-        .setSelection(selection);
-    _notifySelectionChanged(selection);
-  }
-
-  void _notifySelectionChanged(MemberFilterSheetSelection selection) {
+    setState(() => _selection = selection);
     widget.onApply?.call(selection);
   }
 }
@@ -609,50 +577,7 @@ class _MemberFilterBottomSheetState
 // AdminBottomSheet eliminated — inlined as UserRoleBottomSheet(maxHeightRatio: 1)
 // ---------------------------------------------------------------------------
 
-class _AdminOutingStudentState {
-  const _AdminOutingStudentState({
-    required this.role,
-    required this.status,
-  });
-
-  final StudentRole role;
-  final String status;
-
-  _AdminOutingStudentState copyWith({
-    StudentRole? role,
-    String? status,
-  }) {
-    return _AdminOutingStudentState(
-      role: role ?? this.role,
-      status: status ?? this.status,
-    );
-  }
-}
-
-final _adminOutingStudentRoleProvider = NotifierProvider.autoDispose.family<
-    _AdminOutingStudentRoleNotifier,
-    _AdminOutingStudentState,
-    (Object, StudentRole, String)>(_AdminOutingStudentRoleNotifier.new);
-
-class _AdminOutingStudentRoleNotifier
-    extends Notifier<_AdminOutingStudentState> {
-  _AdminOutingStudentRoleNotifier(this.args);
-
-  final (Object, StudentRole, String) args;
-
-  @override
-  _AdminOutingStudentState build() =>
-      _AdminOutingStudentState(role: args.$2, status: args.$3);
-
-  void update({
-    StudentRole? role,
-    String? status,
-  }) {
-    state = state.copyWith(role: role, status: status);
-  }
-}
-
-class AdminOutingStateContainer extends ConsumerStatefulWidget {
+class AdminOutingStateContainer extends StatefulWidget {
   final int memberId;
   final String name;
   final int grade;
@@ -673,28 +598,36 @@ class AdminOutingStateContainer extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<AdminOutingStateContainer> createState() =>
+  State<AdminOutingStateContainer> createState() =>
       _AdminOutingStateContainerState();
 }
 
-class _AdminOutingStateContainerState
-    extends ConsumerState<AdminOutingStateContainer> {
-  late final Object _providerIdentity;
-
-  (Object, StudentRole, String) get _providerKey =>
-      (_providerIdentity, widget.studentRole, widget.status);
+class _AdminOutingStateContainerState extends State<AdminOutingStateContainer> {
+  late StudentRole _studentRole;
+  late String _status;
 
   @override
   void initState() {
     super.initState();
-    _providerIdentity = Object();
+    _studentRole = widget.studentRole;
+    _status = widget.status;
+  }
+
+  // 목록이 갱신돼 상위에서 새 값이 내려오면 로컬 편집 상태를 버리고 따라간다.
+  @override
+  void didUpdateWidget(covariant AdminOutingStateContainer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.studentRole != widget.studentRole) {
+      _studentRole = widget.studentRole;
+    }
+    if (oldWidget.status != widget.status) {
+      _status = widget.status;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final studentState =
-        ref.watch(_adminOutingStudentRoleProvider(_providerKey));
-    final studentRole = studentState.role;
+    final studentRole = _studentRole;
 
     return Container(
       color: context.backgroundColor,
@@ -771,26 +704,12 @@ class _AdminOutingStateContainerState
                   builder: (context) => UserRoleBottomSheet(
                     memberId: widget.memberId,
                     studentRole: studentRole,
-                    status: studentState.status,
+                    status: _status,
                     maxHeightRatio: 1,
-                    onRoleChanged: (newRole) {
-                      ref
-                          .read(
-                            _adminOutingStudentRoleProvider(
-                              _providerKey,
-                            ).notifier,
-                          )
-                          .update(role: newRole);
-                    },
-                    onStatusChanged: (newStatus) {
-                      ref
-                          .read(
-                            _adminOutingStudentRoleProvider(
-                              _providerKey,
-                            ).notifier,
-                          )
-                          .update(status: newStatus);
-                    },
+                    onRoleChanged: (newRole) =>
+                        setState(() => _studentRole = newRole),
+                    onStatusChanged: (newStatus) =>
+                        setState(() => _status = newStatus),
                   ),
                 );
               },
@@ -855,32 +774,6 @@ class _UserRoleBottomSheetStateModel {
   }
 }
 
-final _userRoleBottomSheetStateProvider = NotifierProvider.autoDispose.family<
-    _UserRoleBottomSheetStateNotifier,
-    _UserRoleBottomSheetStateModel,
-    (Object, StudentRole, String)>(
-  _UserRoleBottomSheetStateNotifier.new,
-);
-
-class _UserRoleBottomSheetStateNotifier
-    extends Notifier<_UserRoleBottomSheetStateModel> {
-  _UserRoleBottomSheetStateNotifier(this.args);
-
-  final (Object, StudentRole, String) args;
-
-  @override
-  _UserRoleBottomSheetStateModel build() =>
-      _UserRoleBottomSheetStateModel.fromRole(args.$2, args.$3);
-
-  void update(
-    _UserRoleBottomSheetStateModel Function(
-      _UserRoleBottomSheetStateModel state,
-    ) transform,
-  ) {
-    state = transform(state);
-  }
-}
-
 class UserRoleBottomSheet extends ConsumerStatefulWidget {
   const UserRoleBottomSheet({
     super.key,
@@ -905,20 +798,20 @@ class UserRoleBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
-  late final Object _providerIdentity;
-
-  (Object, StudentRole, String) get _providerKey =>
-      (_providerIdentity, widget.studentRole, widget.status);
+  late _UserRoleBottomSheetStateModel _uiState;
 
   @override
   void initState() {
     super.initState();
-    _providerIdentity = Object();
+    _uiState = _UserRoleBottomSheetStateModel.fromRole(
+      widget.studentRole,
+      widget.status,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final uiState = ref.watch(_userRoleBottomSheetStateProvider(_providerKey));
+    final uiState = _uiState;
 
     return CommonBottomSheet(
       title: '유저 권한 변경',
@@ -940,17 +833,19 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
                       ? (_) {}
                       : (_) {
                           if (uiState.isOuting) {
-                            forcedOutingRelease(
+                            showOutingActionDialog(
                               context: context,
                               title: '강제외출 복귀',
                               content: '\n 학생을 복귀 상태로 변경하시겠습니까?',
+                              confirmText: '복귀',
                               onConfirm: _releaseForcedOuting,
                             );
                           } else {
-                            forcedOuting(
+                            showOutingActionDialog(
                               context: context,
                               title: '강제외출',
                               content: '\n 이 학생을 외출 상태로 변경하시겠습니까?',
+                              confirmText: '외출',
                               onConfirm: _forceOut,
                             );
                           }
@@ -973,21 +868,23 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
                       ? (_) {}
                       : (value) {
                           if (uiState.isOutingBanned) {
-                            bannedOutingRelease(
+                            showOutingActionDialog(
                               context: context,
                               title: '외출금지',
                               content: '\n이 학생을',
                               redContent: ' 외출금지 해제 ',
                               content2: '시키겠습니까?',
+                              confirmText: '외출 해제',
                               onConfirm: () => _updateOutingAllowed(true),
                             );
                           } else {
-                            bannedOuting(
+                            showOutingActionDialog(
                               context: context,
                               title: '외출금지',
                               content: '\n이 학생을',
                               redContent: ' 외출금지 ',
                               content2: '시키겠습니까?',
+                              confirmText: '외출 금지',
                               onConfirm: () => _updateOutingAllowed(false),
                             );
                           }
@@ -1102,9 +999,7 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
     Future<void> Function() action, {
     VoidCallback? onSuccess,
   }) async {
-    if (ref
-        .read(_userRoleBottomSheetStateProvider(_providerKey))
-        .isSubmitting) {
+    if (_uiState.isSubmitting) {
       return;
     }
 
@@ -1123,20 +1018,20 @@ class _UserRoleBottomSheetState extends ConsumerState<UserRoleBottomSheet> {
   }
 
   void _showError(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.maybeOf(context)?.showSnackBar(
       SnackBar(content: Text(message)),
     );
   }
 
+  // await 이후 finally에서도 호출되므로 mounted 확인이 필요하다.
   void _updateUiState(
     _UserRoleBottomSheetStateModel Function(
       _UserRoleBottomSheetStateModel state,
     ) transform,
   ) {
-    final notifier = ref.read(
-      _userRoleBottomSheetStateProvider(_providerKey).notifier,
-    );
-    notifier.update(transform);
+    if (!mounted) return;
+    setState(() => _uiState = transform(_uiState));
   }
 }
 

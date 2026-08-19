@@ -140,6 +140,46 @@ feature/
 | `features/home/domain/enums/student_role_enum.dart` | `home`의 유일한 파일인데 실사용처는 `member`/`outing`. `core/enums/`로 |
 | `features/auth/email_verification/data/models/request/email_verification/` | 경로에 feature 이름이 두 번 들어간다 |
 
+## Git 네이밍
+
+### 브랜치
+`<타입>/#<이슈번호>-<영문 설명>`
+
+| 타입 | 용도 |
+| --- | --- |
+| `feature` | 기능 추가 |
+| `fix` | 버그 수정 |
+| `refactor` | 동작 변경 없는 구조 정리 |
+| `perf` | 성능 개선 |
+| `release` | 배포 준비 (`release/v1.4.2` 처럼 이슈번호 없이) |
+
+- 타입은 브랜치가 하는 일에 맞춘다. 리팩터링에 `feature`를 붙이지 않는다.
+- 설명은 영문 kebab-case. 예: `refactor/#108-dead-code-cleanup`
+
+### 커밋
+`:gitmoji: :: <한글 설명>`
+
+- gitmoji는 콜론 형식(`:sparkles:`)으로 쓴다. 유니코드 이모지(`✨`)를 섞지 않는다.
+- 이슈 참조가 필요하면 설명 끝에 `(#126)`.
+
+| gitmoji | 용도 |
+| --- | --- |
+| `:sparkles:` | 기능 추가 |
+| `:bug:` | 버그 수정 |
+| `:recycle:` | 리팩터링 |
+| `:zap:` | 성능 개선 |
+| `:memo:` | 문서 |
+| `:green_heart:` | CI |
+| `:bookmark:` | 버전업 |
+
+### PR 제목
+`🔀 :: (#<이슈번호>) - <한글 설명>`
+
+- PR 제목의 이모지는 변경 성격과 무관하게 항상 `🔀`다. 커밋과 달리 유니코드 이모지를 쓴다.
+- 배포 PR만 이슈번호 대신 버전을 쓴다. 예: `🔀 :: v1.4.4 - 핫플레이스 조회 기준 기간 1일로 변경`
+- base는 `develop`. `main`으로 직접 열지 않는다.
+- 본문은 `.github/PULL_REQUEST_TEMPLATE.md`를 채우고, 관련 이슈에 `Closes #N`을 남긴다.
+
 ## 예외
 - 외부 라이브러리/코드 생성기 제약이 있는 경우
 - Flutter/Firebase/Kakao SDK 규약상 이름이 고정된 경우

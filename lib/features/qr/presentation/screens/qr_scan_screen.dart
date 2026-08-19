@@ -29,21 +29,27 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
   void initState() {
     super.initState();
     _qrScanSubscription = ref.listenManual<QrScanState>(qrScanProvider, (
-        previous,
-        next,
-        ) async {
+      previous,
+      next,
+    ) async {
       if (!mounted) return;
 
-      if (next.status == QrScanStatus.failure && next.errorMessage != null) {
-        await context.push(RoutePath.qrResultLocation('failure'));
-        if (mounted) context.pop();
-        return;
-      }
+      final resultLocation = switch (next.status) {
+        QrScanStatus.failure when next.errorMessage != null =>
+          RoutePath.qrResultLocation('failure'),
+        QrScanStatus.success when next.resultType != null =>
+          RoutePath.qrResultLocation(next.resultType!.name),
+        _ => null,
+      };
+      if (resultLocation == null) return;
 
-      if (next.status == QrScanStatus.success && next.resultType != null) {
-        await context.push(RoutePath.qrResultLocation(next.resultType!.name));
-        if (mounted) context.pop();
-      }
+      await context.push(resultLocation);
+
+      // 결과 화면이 닫히고 이 화면으로 돌아온 경우에만 여기에 도달한다.
+      // 결과 화면에서 홈으로 이동했다면 이 위젯은 이미 사라진 뒤다.
+      // _onDetect에서 멈춰둔 카메라를 다시 켜지 않으면 미리보기가 검은 채로 남는다.
+      if (!mounted) return;
+      await _controller.start();
     });
   }
 
@@ -199,13 +205,26 @@ Widget buildQrScanResultScreen(
   }
 }
 
+/// 결과 화면에서 스캔 화면으로 돌아간다.
+///
+/// `context.go(RoutePath.qr)`를 쓰면 go_router가 같은 pageKey로 `/qr`을 다시
+/// 매칭해 기존 State를 재사용하기 때문에 `initState`가 다시 돌지 않고,
+/// 멈춰둔 카메라가 그대로 남는다. 스택에 스캔 화면이 있으면 pop으로 돌아간다.
+void _backToScanner(BuildContext context) {
+  if (context.canPop()) {
+    context.pop();
+    return;
+  }
+  context.go(RoutePath.qr);
+}
+
 Widget buildQrScanResultRouteScreen(
     String? resultTypeName, {
       required BuildContext context,
     }) {
   if (resultTypeName == 'failure') {
     return OutingFailedScreen(
-      onRetryWithCamera: () => context.go(RoutePath.qr),
+      onRetryWithCamera: () => _backToScanner(context),
     );
   }
 
@@ -215,7 +234,7 @@ Widget buildQrScanResultRouteScreen(
 
   if (resultType == null) {
     return OutingFailedScreen(
-      onRetryWithCamera: () => context.go(RoutePath.qr),
+      onRetryWithCamera: () => _backToScanner(context),
     );
   }
 

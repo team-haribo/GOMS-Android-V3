@@ -7,7 +7,8 @@ import 'package:goms/features/late/presentation/models/late_rank_student_model.d
 
 final lateRankStudentsProvider =
     AsyncNotifierProvider<LateRankStudentsNotifier, List<LateRankStudentModel>>(
-        LateRankStudentsNotifier.new);
+  LateRankStudentsNotifier.new,
+);
 
 class LateRankStudentsNotifier
     extends AsyncNotifier<List<LateRankStudentModel>> {

@@ -8,7 +8,7 @@ import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/core/widgets/buttons/qr_button.dart';
 import 'package:intl/intl.dart';
 import 'package:goms/core/utils/student_info_formatter.dart';
-import 'package:goms/core/widgets/dialogs/forced_return_dialog.dart';
+import 'package:goms/core/widgets/dialogs/outing_action_dialog.dart';
 import 'package:goms/features/outing/presentation/widgets/user_manage_button.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';
@@ -318,8 +318,9 @@ class SearchProfileList extends ConsumerWidget {
               padding: const EdgeInsets.only(right: 4),
               child: IconButton(
                 onPressed: () {
-                  forcedReturn(
+                  showOutingActionDialog(
                     context: context,
+                    confirmText: '복귀',
                     title: '외출 강제 복귀',
                     content: '\n외출자를 강제로 복귀시키겠습니까?',
                     onConfirm: () async {

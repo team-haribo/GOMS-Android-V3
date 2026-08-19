@@ -187,24 +187,6 @@ class _OverlayPainter extends CustomPainter {
       oldDelegate.scanRect != scanRect;
 }
 
-Widget buildQrScanResultScreen(
-    QrScanResultType resultType, {
-      required BuildContext context,
-    }) {
-  void goHome() => context.go(RoutePath.home);
-
-  switch (resultType) {
-    case QrScanResultType.outingStarted:
-      return OutingStartScreen(onConfirm: goHome);
-    case QrScanResultType.returnSuccess:
-      return ReturnSuccessScreen(onConfirm: goHome);
-    case QrScanResultType.lateReturn:
-      return LateScreen(onConfirm: goHome);
-    case QrScanResultType.cannotGoOut:
-      return CannotGoOutScreen(onGoHome: goHome);
-  }
-}
-
 /// 결과 화면에서 스캔 화면으로 돌아간다.
 ///
 /// `context.go(RoutePath.qr)`를 쓰면 go_router가 같은 pageKey로 `/qr`을 다시
@@ -218,25 +200,29 @@ void _backToScanner(BuildContext context) {
   context.go(RoutePath.qr);
 }
 
+/// `/qr/result/:resultType` 라우트가 그리는 화면.
+///
+/// 성공 결과는 [QrScanResultType]의 이름으로, 실패는 `failure`로 들어온다.
+/// 이름이 매칭되지 않는 값도 실패로 취급한다.
+///
+/// 성공은 홈으로, 실패는 스캔 화면으로 돌아간다.
 Widget buildQrScanResultRouteScreen(
-    String? resultTypeName, {
-      required BuildContext context,
-    }) {
-  if (resultTypeName == 'failure') {
-    return OutingFailedScreen(
-      onRetryWithCamera: () => _backToScanner(context),
-    );
-  }
+  String? resultTypeName, {
+  required BuildContext context,
+}) {
+  void goHome() => context.go(RoutePath.home);
 
   final resultType = QrScanResultType.values
       .where((type) => type.name == resultTypeName)
       .firstOrNull;
 
-  if (resultType == null) {
-    return OutingFailedScreen(
-      onRetryWithCamera: () => _backToScanner(context),
-    );
-  }
-
-  return buildQrScanResultScreen(resultType, context: context);
+  return switch (resultType) {
+    QrScanResultType.outingStarted => OutingStartScreen(onConfirm: goHome),
+    QrScanResultType.returnSuccess => ReturnSuccessScreen(onConfirm: goHome),
+    QrScanResultType.lateReturn => LateScreen(onConfirm: goHome),
+    QrScanResultType.cannotGoOut => CannotGoOutScreen(onGoHome: goHome),
+    null => OutingFailedScreen(
+        onRetryWithCamera: () => _backToScanner(context),
+      ),
+  };
 }

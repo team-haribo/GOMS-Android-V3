@@ -4,7 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:goms/app/router/route_path.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
-import 'package:goms/core/providers/service_providers.dart';
+import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
@@ -128,9 +128,7 @@ class LoginNotifier extends Notifier<LoginState> {
   Future<String> resolvePostLoginNavigation() async {
     try {
       final currentMember = await ref.read(currentMemberProvider.future);
-      final settingsService = ref.read(settingsServiceProvider);
-      
-      final isCameraLaunchEnabled = await settingsService.getCameraLaunch();
+      final isCameraLaunchEnabled = await SettingsStorage.getCameraLaunch();
       final cameraPermissionStatus = await Permission.camera.status;
 
       final cameraLaunchRoute = CameraLaunchDestinationResolver.resolve(

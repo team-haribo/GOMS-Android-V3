@@ -26,10 +26,30 @@
 ### 금지/비권장 이름
 - `pages` 사용 금지
   - 기존 `pages`는 점진적으로 `screens`로 이동한다.
-- `viewmodels` 사용 금지
-  - Riverpod `Notifier`, `AsyncNotifier`, `Provider`는 모두 `providers` 아래에 둔다.
-- `states` 디렉터리 사용 금지
-  - UI 상태 타입은 `models` 아래에 둔다.
+- 신규 코드는 `providers` / `models`를 쓴다.
+  - 기존 `viewmodels` / `states` 디렉터리는 그대로 두고, 그 안의 코드를 수정할 때
+    한 파일씩 옮긴다. 이름만 바꾸는 일괄 리네임은 하지 않는다.
+
+## 상태를 어디에 둘까
+
+디렉터리 이름보다 이 질문이 먼저다. Riverpod의 `Notifier`가 곧 ViewModel이므로
+"MVVM을 쓸까"가 아니라 **"이 상태가 위젯보다 오래 사는가"**로 판단한다.
+
+### 1. Provider(= ViewModel)에 둔다
+- 화면을 벗어나도 유지돼야 하거나, 둘 이상이 읽는 상태
+- 서버 호출·비동기 로딩·에러·폼 검증이 붙는 상태
+- 예: `authProvider`, `signupProvider`, `mapScreenProvider`, `settingsProvider`
+
+### 2. `setState`로 둔다
+- 위젯 하나만 읽고 쓰고, 위젯이 사라지면 같이 사라지는 상태
+- 바텀시트 안의 선택값, 토글 진행 중 플래그, 펼침/접힘 같은 것
+- provider로 올리면 `autoDispose.family` + 식별용 키가 따라붙는다.
+  그건 `setState`를 어렵게 재구현한 것이다.
+- 부모가 새 값을 내려줄 때 따라가야 하면 `didUpdateWidget`에서 명시적으로 반영한다.
+
+### 3. 만들지 않는다
+- 다른 provider의 메서드를 그대로 호출만 하는 ViewModel은 두지 않는다.
+- 위젯에서 `ref.read(대상provider.notifier)`를 직접 부른다.
 
 ## 파일 규칙
 
@@ -103,6 +123,22 @@ feature/
 - `provider`로 통일한다. `viewmodel`은 더 이상 추가하지 않는다.
 - `model`로 통일한다. `state` 전용 디렉터리는 더 이상 추가하지 않는다.
 - pass-through `usecase`는 더 이상 기본값이 아니다.
+- 저장소/서비스도 마찬가지다. 인터페이스와 구현이 1:1이고 구현이 전달만 하면
+  중간 계층 없이 `datasource` 또는 유틸을 직접 쓴다.
+  플랫폼 API를 감싸 테스트에서 갈아끼워야 하는 경우(`PermissionService`)만 예외다.
+
+## 정리 대상 (2026-08-19 기준)
+
+규칙에 맞지 않지만 아직 옮기지 않은 것들. 수정이 닿을 때 함께 정리한다.
+
+| 위치 | 내용 |
+| --- | --- |
+| `features/*/presentation/viewmodels/` | 디렉터리 11개. 안의 provider 이름은 이미 대부분 `xxxProvider`라 파일 위치만 남았다. |
+| `features/auth/verification/presentation/states/` | `models/`로 이동 |
+| `features/map/shared/presentation/widgets/` | 15개. 실제로 공용인 것만 남기고 나머지는 소유 하위 feature로 |
+| `features/map/routes/` | 다른 feature와 맞춰 `presentation/routes/`로 |
+| `features/home/domain/enums/student_role_enum.dart` | `home`의 유일한 파일인데 실사용처는 `member`/`outing`. `core/enums/`로 |
+| `features/auth/email_verification/data/models/request/email_verification/` | 경로에 feature 이름이 두 번 들어간다 |
 
 ## 예외
 - 외부 라이브러리/코드 생성기 제약이 있는 경우

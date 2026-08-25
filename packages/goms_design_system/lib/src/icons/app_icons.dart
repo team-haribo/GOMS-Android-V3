@@ -380,4 +380,22 @@ class AppIcons {
         height: height,
         color: color,
       );
+
+  /// 바텀싯/다이얼로그 닫기 X 아이콘
+  static Widget dismiss({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/dismiss.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
+
+  /// 체크 표시만 있는 아이콘 (테두리 없음)
+  static Widget checkmark({double? width, double? height, Color? color}) =>
+      _loadSvg(
+        'assets/icons/checkmark.svg',
+        width: width,
+        height: height,
+        color: color,
+      );
 }

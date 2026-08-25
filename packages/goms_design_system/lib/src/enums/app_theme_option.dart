@@ -10,7 +10,10 @@ enum AppThemeOption {
   light,
 
   @JsonValue('DARK')
-  dark,
+  dark;
+
+  /// 테마 선택 목록 노출 순서 (Figma 569-10540)
+  static const List<AppThemeOption> displayOrder = [dark, light, system];
 }
 
 extension AppThemeOptionX on AppThemeOption {
@@ -19,9 +22,9 @@ extension AppThemeOptionX on AppThemeOption {
       case AppThemeOption.system:
         return '시스템 테마 설정';
       case AppThemeOption.light:
-        return '라이트 모드';
+        return '라이트';
       case AppThemeOption.dark:
-        return '다크 모드';
+        return '다크 (기본)';
     }
   }
 

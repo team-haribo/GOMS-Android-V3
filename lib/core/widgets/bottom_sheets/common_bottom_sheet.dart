@@ -78,13 +78,19 @@ class CommonBottomSheet extends StatelessWidget {
       children: [
         Text(
           title,
-          style: AppTextStyles.title3.copyWith(
-            color: context.isLightMode ? Colors.black : Colors.white,
-          ),
+          style: AppTextStyles.title3.withColor(context.mainTextColor),
         ),
         IconButton(
           onPressed: onClose ?? () => Navigator.pop(context),
-          icon: AppIcons.cancel(),
+          // 디자인은 24px 아이콘이지만 탭 영역은 40px로 남긴다.
+          padding: EdgeInsets.zero,
+          alignment: Alignment.centerRight,
+          constraints: const BoxConstraints.tightFor(width: 40, height: 40),
+          icon: AppIcons.dismiss(
+            width: 24,
+            height: 24,
+            color: context.mainTextColor,
+          ),
         ),
       ],
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/bottom_sheets/common_bottom_sheet.dart';
 
@@ -17,16 +18,16 @@ class ProfileImageOptionSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     return CommonBottomSheet(
       title: '프로필 사진 변경',
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 42),
-      headerBottomSpacing: 16,
+      padding: EdgeInsets.fromLTRB(24.w, 24.h, 24.w, 42.h),
+      headerBottomSpacing: 16.h,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           _OptionRow(
             label: '갤러리에서 선택',
             icon: AppIcons.imageAdd(
-              width: 24,
-              height: 24,
+              width: 24.r,
+              height: 24.r,
               color: context.mainTextColor,
             ),
             onTap: onPickFromGallery,
@@ -35,8 +36,8 @@ class ProfileImageOptionSheet extends StatelessWidget {
           _OptionRow(
             label: '기본 프로필 사용',
             icon: AppIcons.user(
-              width: 24,
-              height: 24,
+              width: 24.r,
+              height: 24.r,
               color: context.mainTextColor,
             ),
             onTap: onUseDefault,
@@ -63,7 +64,7 @@ class _OptionRow extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 16.h),
         child: Row(
           children: [
             Expanded(

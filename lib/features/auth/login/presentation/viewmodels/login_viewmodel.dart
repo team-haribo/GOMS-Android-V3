@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/core/utils/settings_storage.dart';
-import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
+import 'package:goms/features/qr/presentation/routes/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
 import 'package:goms/features/auth/session/data/request/signin/signin_request_dto.dart';
@@ -137,9 +137,9 @@ class LoginNotifier extends Notifier<LoginState> {
         role: currentMember?.role ?? RoleEnum.user,
       );
 
-      return cameraLaunchRoute ?? RoutePath.home;
+      return cameraLaunchRoute ?? OutingRoutePath.home;
     } catch (_) {
-      return RoutePath.home;
+      return OutingRoutePath.home;
     }
   }
 }

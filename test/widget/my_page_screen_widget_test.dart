@@ -4,8 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
+import 'package:goms/features/profile/presentation/routes/profile_route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
@@ -139,14 +140,14 @@ void main() {
     addTearDown(container.dispose);
 
     final router = GoRouter(
-      initialLocation: RoutePath.myPage,
+      initialLocation: ProfileRoutePath.myPage,
       routes: [
         GoRoute(
-          path: RoutePath.myPage,
+          path: ProfileRoutePath.myPage,
           builder: (context, state) => const MyPageScreen(),
         ),
         GoRoute(
-          path: RoutePath.onboarding,
+          path: SplashRoutePath.onboarding,
           builder: (context, state) =>
               const Scaffold(body: Text('onboarding-screen')),
         ),
@@ -212,10 +213,10 @@ void main() {
     addTearDown(container.dispose);
 
     final router = GoRouter(
-      initialLocation: RoutePath.myPage,
+      initialLocation: ProfileRoutePath.myPage,
       routes: [
         GoRoute(
-          path: RoutePath.myPage,
+          path: ProfileRoutePath.myPage,
           builder: (context, state) => const MyPageScreen(),
         ),
       ],

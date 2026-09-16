@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
+import 'package:goms/features/qr/presentation/routes/qr_route_path.dart';
 import 'package:goms/features/qr/presentation/routes/qr_routes.dart';
 import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
 import 'package:goms/features/qr/presentation/screens/outing_start_screen.dart';
@@ -46,7 +47,7 @@ void main() {
           builder: (context, state) => const ReturnSuccessScreen(),
         ),
         GoRoute(
-          path: RoutePath.home,
+          path: OutingRoutePath.home,
           builder: (context, state) =>
               const Scaffold(body: Text('home-screen')),
         ),
@@ -76,13 +77,13 @@ void main() {
 
   testWidgets('QR 복귀 성공 결과 화면 확인 버튼은 홈으로 이동한다', (tester) async {
     final router = GoRouter(
-      initialLocation: RoutePath.qrResultLocation(
+      initialLocation: QrRoutePath.qrResultLocation(
         QrScanResultType.returnSuccess.name,
       ),
       routes: [
         ...buildQrRoutes(),
         GoRoute(
-          path: RoutePath.home,
+          path: OutingRoutePath.home,
           builder: (context, state) =>
               const Scaffold(body: Text('home-screen')),
         ),

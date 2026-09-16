@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
+import 'package:goms/features/profile/presentation/routes/profile_route_path.dart';
 import 'package:goms/features/auth/signup/presentation/viewmodels/signup_viewmodel.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/signup/presentation/screens/signup_screen.dart';
@@ -19,14 +20,14 @@ void main() {
     addTearDown(container.dispose);
 
     final router = GoRouter(
-      initialLocation: RoutePath.signUp,
+      initialLocation: AuthRoutePath.signUp,
       routes: [
         GoRoute(
-          path: RoutePath.signUp,
+          path: AuthRoutePath.signUp,
           builder: (context, state) => const SignUpScreen(),
         ),
         GoRoute(
-          path: RoutePath.privacyPolicy,
+          path: ProfileRoutePath.privacyPolicy,
           builder: (context, state) => const PrivacyPolicyScreen(),
         ),
       ],
@@ -92,7 +93,7 @@ void main() {
             builder: (context) => Scaffold(
               body: Center(
                 child: ElevatedButton(
-                  onPressed: () => context.push(RoutePath.signUp),
+                  onPressed: () => context.push(AuthRoutePath.signUp),
                   child: const Text('open signup'),
                 ),
               ),
@@ -100,11 +101,11 @@ void main() {
           ),
         ),
         GoRoute(
-          path: RoutePath.signUp,
+          path: AuthRoutePath.signUp,
           builder: (context, state) => const SignUpScreen(),
         ),
         GoRoute(
-          path: RoutePath.privacyPolicy,
+          path: ProfileRoutePath.privacyPolicy,
           builder: (context, state) => const PrivacyPolicyScreen(),
         ),
       ],
@@ -159,10 +160,10 @@ void main() {
 
   testWidgets('SignupScreen shows grade dropdown options', (tester) async {
     final router = GoRouter(
-      initialLocation: RoutePath.signUp,
+      initialLocation: AuthRoutePath.signUp,
       routes: [
         GoRoute(
-          path: RoutePath.signUp,
+          path: AuthRoutePath.signUp,
           builder: (context, state) => const SignUpScreen(),
         ),
       ],

@@ -137,7 +137,6 @@ feature/
 | `features/auth/verification/presentation/states/` | `models/`로 이동 |
 | `features/map/shared/presentation/widgets/` | 15개. 실제로 공용인 것만 남기고 나머지는 소유 하위 feature로 |
 | `features/map/routes/` | 다른 feature와 맞춰 `presentation/routes/`로 |
-| `features/home/domain/enums/student_role_enum.dart` | `home`의 유일한 파일인데 실사용처는 `member`/`outing`. `core/enums/`로 |
 | `features/auth/email_verification/data/models/request/email_verification/` | 경로에 feature 이름이 두 번 들어간다 |
 
 ## Git 네이밍

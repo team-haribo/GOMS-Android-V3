@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 
 class OnboardingScreen extends StatelessWidget {
@@ -57,7 +57,7 @@ class OnboardingScreen extends StatelessWidget {
           // 로그인 버튼
           ConfirmButton(
             text: '로그인',
-            onPressed: () => context.push(RoutePath.login),
+            onPressed: () => context.push(AuthRoutePath.login),
           ),
           AppGap.v16,
           // 구분선
@@ -94,7 +94,7 @@ class OnboardingScreen extends StatelessWidget {
           // 회원가입 하기
           GestureDetector(
             onTap: () {
-              context.push(RoutePath.signUp);
+              context.push(AuthRoutePath.signUp);
             },
             child: Text(
               '회원가입 하기',

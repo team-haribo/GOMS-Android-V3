@@ -9,6 +9,7 @@ class BaseScaffold extends ConsumerWidget {
   final bool showAppBar;
   final bool showAppBarLogo;
   final bool showAdminReportAction;
+  final VoidCallback? onAdminReportsTap;
   final RoleEnum role;
   final VoidCallback? onBackPressed;
   final List<Widget>? appBarActions;
@@ -23,6 +24,7 @@ class BaseScaffold extends ConsumerWidget {
     this.showAppBar = true,
     this.showAppBarLogo = false,
     this.showAdminReportAction = false,
+    this.onAdminReportsTap,
     this.role = RoleEnum.user,
     this.onBackPressed,
     this.appBarActions,
@@ -52,6 +54,7 @@ class BaseScaffold extends ConsumerWidget {
                 actions: appBarActions,
                 role: role,
                 showAdminReportAction: showAdminReportAction,
+                onAdminReportsTap: onAdminReportsTap,
               )
             : GomsAppBar.back(
                 onBackPressed: onBackPressed,

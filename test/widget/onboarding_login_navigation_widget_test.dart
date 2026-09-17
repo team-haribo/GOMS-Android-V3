@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:goms/features/splash/presentation/screens/onboarding_screen.dart';
@@ -13,14 +14,14 @@ void main() {
     WidgetTester tester,
   ) async {
     final router = GoRouter(
-      initialLocation: RoutePath.onboarding,
+      initialLocation: SplashRoutePath.onboarding,
       routes: [
         GoRoute(
-          path: RoutePath.onboarding,
+          path: SplashRoutePath.onboarding,
           builder: (context, state) => const OnboardingScreen(),
         ),
         GoRoute(
-          path: RoutePath.login,
+          path: AuthRoutePath.login,
           builder: (context, state) => const LoginScreen(),
         ),
       ],

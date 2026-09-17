@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/delete_account/presentation/models/delete_account_state.dart';
@@ -37,7 +37,7 @@ class _DeleteAccountScreenState extends ConsumerState<DeleteAccountScreen> {
             confirmText: '완료',
             onConfirm: () {
               if (context.mounted) {
-                context.go(RoutePath.onboarding);
+                context.go(SplashRoutePath.onboarding);
               }
             },
           ).show(context);

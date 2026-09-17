@@ -1,5 +1,5 @@
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/qr/presentation/routes/qr_route_path.dart';
 
 class CameraLaunchDestinationResolver {
   const CameraLaunchDestinationResolver._();
@@ -14,13 +14,13 @@ class CameraLaunchDestinationResolver {
     }
 
     if (role == RoleEnum.admin) {
-      return RoutePath.qrIssue;
+      return QrRoutePath.qrIssue;
     }
 
     if (!isCameraPermissionGranted) {
       return null;
     }
 
-    return RoutePath.qr;
+    return QrRoutePath.qr;
   }
 }

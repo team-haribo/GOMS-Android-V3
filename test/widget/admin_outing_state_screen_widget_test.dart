@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
+import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
@@ -12,6 +12,7 @@ import 'package:goms/features/member/domain/entities/student_council_student_ent
 import 'package:goms/features/member/domain/repositories/member_repository.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
 import 'package:goms/features/outing/presentation/screens/admin_outing_state_screen.dart';
+import 'package:goms/features/outing/presentation/widgets/admin_outing_state_container.dart';
 
 void main() {
   testWidgets('AdminOutingStateScreen renders admin members and filters search',

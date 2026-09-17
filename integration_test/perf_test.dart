@@ -6,7 +6,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'package:goms/app/router/app_router.dart' as app_router;
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/member/presentation/routes/member_route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/main.dart' as app;
 
 late IntegrationTestWidgetsFlutterBinding binding;
@@ -40,7 +41,7 @@ void main() {
     const Key('outing_state_list'),
     setUp: (tester) async {
       await _login(tester);
-      await _goTo(tester, RoutePath.outingState);
+      await _goTo(tester, OutingRoutePath.outingState);
     },
   );
 
@@ -49,7 +50,7 @@ void main() {
     const Key('member_list'),
     setUp: (tester) async {
       await _login(tester);
-      await _goTo(tester, RoutePath.members);
+      await _goTo(tester, MemberRoutePath.members);
     },
   );
 }

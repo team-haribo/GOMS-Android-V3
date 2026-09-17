@@ -59,6 +59,7 @@ class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
         color: role == RoleEnum.admin ? AppColors.admin : AppColors.mainColor,
         onRefresh: _onRefresh,
         child: CustomScrollView(
+          key: const Key('home_list'),
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
             SliverToBoxAdapter(

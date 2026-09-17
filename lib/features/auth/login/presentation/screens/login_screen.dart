@@ -110,8 +110,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       onConfirm: _handleLogin,
       onBackPressed: _handleBack,
       confirmBottomSpacing: AppSpacing.s24,
+      confirmKey: const Key('login_submit'),
       children: [
         EmailTextField(
+          key: const Key('login_id'),
           controller: _emailController,
           hintText: '이메일을 입력해주세요',
           errorText: loginState.emailError,
@@ -121,6 +123,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         AppGap.v16,
         PasswordTextField(
+          key: const Key('login_pw'),
           controller: _passwordController,
           hintText: '비밀번호를 입력해주세요',
           errorText: loginState.passwordError,

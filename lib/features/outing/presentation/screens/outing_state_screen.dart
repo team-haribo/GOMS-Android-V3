@@ -129,6 +129,7 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                     }
 
                     return ListView.separated(
+                      key: const Key('outing_state_list'),
                       physics: const AlwaysScrollableScrollPhysics(),
                       itemCount: filteredList.length,
                       itemBuilder: (context, index) {

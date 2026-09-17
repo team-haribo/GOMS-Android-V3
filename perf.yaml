@@ -1,0 +1,39 @@
+# 성능 측정/판정 설정. 자세한 근거는 perfkit 문서(docs/DESIGN.md) 참고.
+repeats: 3
+
+# 같은 device_profile 끼리만 비교한다. 러너/에뮬레이터를 바꾸면 값을 바꾸고
+# baseline 도 새로 뜬다 (다른 하드웨어의 절대값 비교는 무의미).
+device_profile: ci-emulator-api34
+
+# GOMS 실제 화면에 맞춘 시나리오. perfkit 기본 템플릿(community/gallery 등)은
+# 이 앱에 없는 화면이라 실제 화면(로그인, 홈, 외출 현황, 멤버 목록) 기준으로 다시 짰다.
+scenarios:
+  - app_startup
+  - login
+  - home_scroll
+  - outing_state_scroll
+  - member_list_scroll
+
+# 판정: |상대변화| > change_percent  AND  |Δ| > sigma*노이즈  AND  |Δ| > min_abs_delta
+# 셋을 모두 넘어야 FAIL. min_abs_delta 는 "사람이 체감 못 하는 변화" 하한선.
+sigma: 2.0
+
+thresholds:
+  default:           { change_percent: 15, min_abs_delta: 0 }
+  fps:               { change_percent: 10, min_abs_delta: 1.0 }
+  jank_rate:         { change_percent: 20, min_abs_delta: 1.0 }
+  dropped_frames:    { change_percent: 25, min_abs_delta: 2 }
+  p50_frame_time_ms: { change_percent: 20, min_abs_delta: 1.0 }
+  p90_frame_time_ms: { change_percent: 15, min_abs_delta: 1.0 }
+  p95_frame_time_ms: { change_percent: 15, min_abs_delta: 1.0 }
+  p99_frame_time_ms: { change_percent: 20, min_abs_delta: 2.0 }
+  memory_mb:         { change_percent: 20, min_abs_delta: 5.0 }
+  startup_ms:            { change_percent: 20, min_abs_delta: 50 }
+  startup_rasterized_ms: { change_percent: 20, min_abs_delta: 50 }
+  duration_ms:       { change_percent: 25, min_abs_delta: 200 }
+
+# 리포트/대시보드에서 앞에 보여줄 지표. 나머지는 접어둔다.
+headline_metrics: [fps, jank_rate, p95_frame_time_ms, memory_mb, startup_ms]
+
+# baseline 이 이보다 오래되면 리포트에 경고를 띄운다.
+baseline_max_age_days: 30

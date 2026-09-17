@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/app/router/route_path.dart';
-import 'package:goms/core/utils/camera_launch_destination_resolver.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
+import 'package:goms/features/qr/presentation/routes/camera_launch_destination_resolver.dart';
 import 'package:goms/core/utils/settings_storage.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
@@ -31,7 +32,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     debugPrint('SplashScreen: starting auth check');
 
-    String destination = RoutePath.onboarding;
+    String destination = SplashRoutePath.onboarding;
 
     try {
       final hasToken = await ref.read(authProvider.notifier).checkToken();
@@ -45,13 +46,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           role: currentMember?.role ?? RoleEnum.user,
         );
 
-        destination = cameraLaunchRoute ?? RoutePath.home;
+        destination = cameraLaunchRoute ?? OutingRoutePath.home;
       }
     } catch (error, stackTrace) {
       // 네트워크/토큰 오류 시 예외 전파로 스플래시에 멈추지 않도록 온보딩으로 폴백
       debugPrint('SplashScreen: auth check failed, falling back to onboarding: $error');
       debugPrintStack(stackTrace: stackTrace);
-      destination = RoutePath.onboarding;
+      destination = SplashRoutePath.onboarding;
     }
 
     debugPrint('SplashScreen: navigating to $destination');

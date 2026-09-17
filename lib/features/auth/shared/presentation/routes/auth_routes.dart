@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms/features/auth/delete_account/presentation/screens/delete_account_screen.dart';
 import 'package:goms/features/auth/login/presentation/screens/login_screen.dart';
 import 'package:goms/features/auth/password_reset/presentation/screens/find_password_screen.dart';
@@ -11,22 +11,22 @@ import 'package:goms/features/auth/verification/presentation/screens/verify_scre
 
 List<RouteBase> buildAuthRoutes() => [
       GoRoute(
-        path: RoutePath.login,
+        path: AuthRoutePath.login,
         name: 'login',
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: RoutePath.signUp,
+        path: AuthRoutePath.signUp,
         name: 'signUp',
         builder: (context, state) => const SignUpScreen(),
       ),
       GoRoute(
-        path: RoutePath.password,
+        path: AuthRoutePath.password,
         name: 'password',
         builder: (context, state) => const PasswordScreen(),
       ),
       GoRoute(
-        path: RoutePath.verify,
+        path: AuthRoutePath.verify,
         name: 'verify',
         builder: (context, state) {
           final extra = state.extra;
@@ -43,17 +43,17 @@ List<RouteBase> buildAuthRoutes() => [
         },
       ),
       GoRoute(
-        path: RoutePath.findPassword,
+        path: AuthRoutePath.findPassword,
         name: 'findPassword',
         builder: (context, state) => const FindPasswordScreen(),
       ),
       GoRoute(
-        path: RoutePath.resetPassword,
+        path: AuthRoutePath.resetPassword,
         name: 'resetPassword',
         builder: (context, state) => const ResetPasswordScreen(),
       ),
       GoRoute(
-        path: RoutePath.deleteAccount,
+        path: AuthRoutePath.deleteAccount,
         name: 'deleteAccount',
         builder: (context, state) => const DeleteAccountScreen(),
       ),

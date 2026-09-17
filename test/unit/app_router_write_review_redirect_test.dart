@@ -1,18 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:goms/app/router/route_builders.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/map/routes/map_route_path.dart';
 import 'package:goms/features/map/data/models/map_coordinate.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 
 void main() {
   group('redirectToMapIfPopularPlaceMissing', () {
     test('returns map path when extra is null', () {
-      expect(redirectToMapIfPopularPlaceMissing(null), RoutePath.map);
+      expect(redirectToMapIfPopularPlaceMissing(null), MapRoutePath.map);
     });
 
     test('returns map path when extra has unexpected type', () {
-      expect(redirectToMapIfPopularPlaceMissing('invalid'), RoutePath.map);
+      expect(redirectToMapIfPopularPlaceMissing('invalid'), MapRoutePath.map);
     });
 
     test('returns null when extra is PopularPlace', () {

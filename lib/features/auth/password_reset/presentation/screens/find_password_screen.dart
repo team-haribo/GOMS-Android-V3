@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/password_reset/presentation/models/find_password_state.dart';
@@ -34,10 +34,10 @@ class _FindPasswordScreenState extends ConsumerState<FindPasswordScreen> {
       if (next.status == FindPasswordStatus.success) {
         notifier.clearError();
         context.go(
-          RoutePath.verify,
+          AuthRoutePath.verify,
           extra: const VerifyRouteExtra(
-            redirectPath: RoutePath.resetPassword,
-            backPath: RoutePath.findPassword,
+            redirectPath: AuthRoutePath.resetPassword,
+            backPath: AuthRoutePath.findPassword,
           ),
         );
       } else if (next.status == FindPasswordStatus.failure &&

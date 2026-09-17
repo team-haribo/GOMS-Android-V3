@@ -1,0 +1,47 @@
+name: perf
+
+# perfkit(aiden30015/Ci-App-Performance-Measurement) 재사용 워크플로우를 불러 앱
+# 성능(프레임/메모리/시작시간)을 시나리오 단위로 측정하고 baseline 과 비교한다.
+# 실제 로직·도구는 전부 저 repo 에 있고, 여기선 이 repo 에 필요한 값(perf.yaml,
+# integration_test/perf_test.dart 는 이미 있음, 시크릿)만 넘긴다.
+#
+# secrets 는 `inherit` 대신 명시적으로 env_file 하나만 넘긴다 — inherit 를 쓰면
+# 이 repo 의 모든 시크릿이 외부(perfkit) 워크플로우 실행 컨텍스트에 그대로
+# 노출되는데, 여기선 앱이 dotenv 로 읽는 값 몇 개만 필요하기 때문이다.
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+    inputs:
+      rebaseline:
+        description: '현재 측정값으로 baseline 을 갱신하는 PR 생성'
+        type: boolean
+        default: false
+      repeats:
+        description: '반복 측정 횟수 (기본값은 perf.yaml)'
+        default: ''
+
+permissions:
+  contents: write
+  pull-requests: write
+  pages: write
+  id-token: write
+
+jobs:
+  perf:
+    uses: aiden30015/Ci-App-Performance-Measurement/.github/workflows/perf-reusable.yml@main
+    with:
+      rebaseline: ${{ inputs.rebaseline == true }}
+      repeats: ${{ inputs.repeats || '' }}
+      # main·develop 둘 다 push 트리거 대상이라, 둘 다 히스토리에 쌓고 대시보드도
+      # 갱신한다 (perfkit 기본값은 main 하나뿐이라 명시적으로 넘겨야 한다).
+      history-refs: '["main","develop"]'
+    secrets:
+      env_file: |
+        GOMS_API_BASE_URL=${{ secrets.GOMS_API_BASE_URL }}
+        KAKAO_NATIVE_APP_KEY=${{ secrets.KAKAO_NATIVE_APP_KEY }}
+        KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}
+        TEST_EMAIL=${{ secrets.TEST_EMAIL }}
+        TEST_PASSWORD=${{ secrets.TEST_PASSWORD }}

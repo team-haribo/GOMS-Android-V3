@@ -35,11 +35,28 @@ void main() {
       // 활성화된다. pump 없이 곧바로 탭하면 아직 비활성 상태라 탭이 아무
       // 효과도 없이 조용히 무시된다.
       await tester.pump();
-      // 진단용: pump 로 버튼이 실제로 활성화됐는지 확인.
+      // 진단용: pump 로 버튼이 실제로 활성화됐는지, 컨트롤러에 실제로 뭐가
+      // 들어갔는지 확인.
       final submitButton = tester.widget<ConfirmButton>(
         find.byKey(const Key('login_submit')),
       );
-      debugPrint('[perfkit-diag] submit button onPressed != null: ${submitButton.onPressed != null}');
+      final idField = tester.widget<TextFormField>(
+        find.descendant(
+          of: find.byKey(const Key('login_id')),
+          matching: find.byType(TextFormField),
+        ),
+      );
+      final pwField = tester.widget<TextFormField>(
+        find.descendant(
+          of: find.byKey(const Key('login_pw')),
+          matching: find.byType(TextFormField),
+        ),
+      );
+      debugPrint(
+        '[perfkit-diag] submit.onPressed!=null: ${submitButton.onPressed != null} '
+        'idField.controller.text.length: ${idField.controller?.text.length} '
+        'pwField.controller.text.length: ${pwField.controller?.text.length}',
+      );
       await tester.tap(find.byKey(const Key('login_submit')));
       for (var i = 0; i < 5; i++) {
         await tester.pump(const Duration(milliseconds: 500));

@@ -125,16 +125,16 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
 /// 실기기(flutter drive)에서는 tester.enterText() 만 부르면 아무 것도 입력되지
 /// 않는다 — showKeyboard() 가 실제 텍스트 입력 채널을 여는 건 필드가 먼저
 /// 포커스돼 있을 때뿐이다. 반드시 tap 으로 먼저 포커스한 뒤 텍스트를 넣는다.
+/// 실기기(flutter drive)에서는 tester.enterText() 가 신뢰할 수 없다 — tap 으로
+/// 먼저 포커스해도 컨트롤러가 비어있는 채로 남는 경우가 있었다(테스트용 mock
+/// text input 채널과 실제 기기의 IME 가 서로 다른 대상을 보는 것으로 보임).
+/// 컨트롤러를 직접 갈아끼우는 쪽이 훨씬 안정적이다.
 Future<void> _enterText(WidgetTester tester, Key key, String text) async {
-  await tester.tap(find.byKey(key));
-  await tester.pump();
-  await tester.enterText(find.byKey(key), text);
-  await tester.pump();
-  // 진단용.
   final field = tester.widget<TextFormField>(
     find.descendant(of: find.byKey(key), matching: find.byType(TextFormField)),
   );
-  debugPrint('[perfkit-diag] $key controller.text.length after enterText: ${field.controller?.text.length}');
+  field.controller!.text = text;
+  await tester.pump();
 }
 
 /// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다

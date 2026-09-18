@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:riverpod/misc.dart' show Override;
 
 import 'package:goms/app/router/app_router.dart' as app_router;
 import 'package:goms/features/member/data/providers/member_providers.dart';
@@ -77,7 +78,7 @@ void scrollScenario(
   String name,
   Key list, {
   Future<void> Function(WidgetTester)? setUp,
-  dynamic overrides = const [],
+  List<Override> overrides = const [],
 }) {
   scenario(
     name,
@@ -96,7 +97,7 @@ void scenario(
   String name,
   Future<void> Function(WidgetTester) body, {
   Future<void> Function(WidgetTester)? setUp,
-  dynamic overrides = const [],
+  List<Override> overrides = const [],
 }) {
   if (_only.isNotEmpty && !_only.split(',').contains(name)) return;
 

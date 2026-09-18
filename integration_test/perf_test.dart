@@ -122,13 +122,10 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   }
 }
 
-/// 실기기(flutter drive)에서는 tester.enterText() 만 부르면 아무 것도 입력되지
-/// 않는다 — showKeyboard() 가 실제 텍스트 입력 채널을 여는 건 필드가 먼저
-/// 포커스돼 있을 때뿐이다. 반드시 tap 으로 먼저 포커스한 뒤 텍스트를 넣는다.
 /// 실기기(flutter drive)에서는 tester.enterText() 가 신뢰할 수 없다 — tap 으로
-/// 먼저 포커스해도 컨트롤러가 비어있는 채로 남는 경우가 있었다(테스트용 mock
-/// text input 채널과 실제 기기의 IME 가 서로 다른 대상을 보는 것으로 보임).
-/// 컨트롤러를 직접 갈아끼우는 쪽이 훨씬 안정적이다.
+/// 먼저 포커스해도 컨트롤러가 계속 비어있는 채로 남는 경우가 있었다(테스트용
+/// mock text input 채널과 실제 기기의 IME 가 서로 다른 대상을 보는 것으로
+/// 보임). 컨트롤러를 직접 갈아끼우는 쪽이 훨씬 안정적이다.
 Future<void> _enterText(WidgetTester tester, Key key, String text) async {
   final field = tester.widget<TextFormField>(
     find.descendant(of: find.byKey(key), matching: find.byType(TextFormField)),
@@ -138,8 +135,8 @@ Future<void> _enterText(WidgetTester tester, Key key, String text) async {
 }
 
 /// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
-/// (토큰이 없으면 항상 온보딩 — CI 계정도 매번 이 경로를 탄다). 온보딩의
-/// "로그인" 버튼을 눌러야 login_id 가 있는 화면에 도달한다.
+/// (토큰이 없으면 항상 온보딩). 온보딩의 "로그인" 버튼을 눌러야 login_id 가
+/// 있는 화면에 도달한다.
 Future<void> _goToLoginScreen(WidgetTester tester) async {
   await _pumpUntil(tester, find.byKey(const Key('onboarding_login_button')));
   await tester.tap(find.byKey(const Key('onboarding_login_button')));
@@ -147,12 +144,22 @@ Future<void> _goToLoginScreen(WidgetTester tester) async {
   await _pumpUntil(tester, find.byKey(const Key('login_id')));
 }
 
+/// app.main() 은 시나리오마다 같은 프로세스 안에서 다시 호출된다 — 직전
+/// 시나리오에서 로그인해 저장된 토큰이 그대로 남아있으면 스플래시가 온보딩을
+/// 건너뛰고 곧장 홈으로 간다. 이미 로그인돼 있으면 다시 로그인하지 않는다.
 Future<void> _login(WidgetTester tester) async {
-  await _goToLoginScreen(tester);
+  final homeList = find.byKey(const Key('home_list'));
+  final onboardingLoginButton = find.byKey(const Key('onboarding_login_button'));
+  await _pumpUntilAny(tester, [homeList, onboardingLoginButton]);
+  if (homeList.evaluate().isNotEmpty) return;
+
+  await tester.tap(onboardingLoginButton);
+  await tester.pumpAndSettle();
+  await _pumpUntil(tester, find.byKey(const Key('login_id')));
   await _enterText(tester, const Key('login_id'), _testEmail);
   await _enterText(tester, const Key('login_pw'), _testPassword);
   await tester.tap(find.byKey(const Key('login_submit')));
-  await _pumpUntil(tester, find.byKey(const Key('home_list')));
+  await _pumpUntil(tester, homeList);
   await tester.pumpAndSettle();
 }
 
@@ -186,4 +193,25 @@ Future<void> _pumpUntil(
       .toList();
   debugPrint('[perfkit] timeout waiting for $finder, visible texts: $visibleTexts');
   throw StateError('timeout: $finder 를 기다리다 실패');
+}
+
+/// finder 여러 개 중 하나라도 나타나면 반환한다 — 이미 로그인돼 있어 온보딩을
+/// 건너뛰는 경우와 그렇지 않은 경우를 하나의 대기로 같이 처리할 때 쓴다.
+Future<void> _pumpUntilAny(
+  WidgetTester tester,
+  List<Finder> finders, {
+  Duration timeout = const Duration(seconds: 20),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(deadline)) {
+    await tester.pump(const Duration(milliseconds: 16));
+    if (finders.any((f) => f.evaluate().isNotEmpty)) return;
+  }
+  final visibleTexts = tester
+      .widgetList<Text>(find.byType(Text))
+      .map((t) => t.data)
+      .whereType<String>()
+      .toList();
+  debugPrint('[perfkit] timeout waiting for any of $finders, visible texts: $visibleTexts');
+  throw StateError('timeout: $finders 중 어느 것도 기다리다 실패');
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:goms_design_system/goms_design_system.dart';
 
 import 'package:goms/app/router/app_router.dart' as app_router;
 import 'package:goms/features/member/presentation/routes/member_route_path.dart';
@@ -29,44 +28,9 @@ void main() {
   scenario(
     'login',
     (tester) async {
-      await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
-      await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
-      // login_submit 은 두 필드가 채워져야 컨트롤러 리스너의 setState 로
-      // 활성화된다. pump 없이 곧바로 탭하면 아직 비활성 상태라 탭이 아무
-      // 효과도 없이 조용히 무시된다.
-      await tester.pump();
-      // 진단용: pump 로 버튼이 실제로 활성화됐는지, 컨트롤러에 실제로 뭐가
-      // 들어갔는지 확인.
-      final submitButton = tester.widget<ConfirmButton>(
-        find.byKey(const Key('login_submit')),
-      );
-      final idField = tester.widget<TextFormField>(
-        find.descendant(
-          of: find.byKey(const Key('login_id')),
-          matching: find.byType(TextFormField),
-        ),
-      );
-      final pwField = tester.widget<TextFormField>(
-        find.descendant(
-          of: find.byKey(const Key('login_pw')),
-          matching: find.byType(TextFormField),
-        ),
-      );
-      debugPrint(
-        '[perfkit-diag] submit.onPressed!=null: ${submitButton.onPressed != null} '
-        'idField.controller.text.length: ${idField.controller?.text.length} '
-        'pwField.controller.text.length: ${pwField.controller?.text.length}',
-      );
+      await _enterText(tester, const Key('login_id'), _testEmail);
+      await _enterText(tester, const Key('login_pw'), _testPassword);
       await tester.tap(find.byKey(const Key('login_submit')));
-      for (var i = 0; i < 5; i++) {
-        await tester.pump(const Duration(milliseconds: 500));
-        final texts = tester
-            .widgetList<Text>(find.byType(Text))
-            .map((t) => t.data)
-            .whereType<String>()
-            .toList();
-        debugPrint('[perfkit-diag] +${(i + 1) * 500}ms visible texts: $texts');
-      }
       // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
       // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
       await _pumpUntil(tester, find.byKey(const Key('home_list')));
@@ -158,6 +122,16 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   }
 }
 
+/// 실기기(flutter drive)에서는 tester.enterText() 만 부르면 아무 것도 입력되지
+/// 않는다 — showKeyboard() 가 실제 텍스트 입력 채널을 여는 건 필드가 먼저
+/// 포커스돼 있을 때뿐이다. 반드시 tap 으로 먼저 포커스한 뒤 텍스트를 넣는다.
+Future<void> _enterText(WidgetTester tester, Key key, String text) async {
+  await tester.tap(find.byKey(key));
+  await tester.pump();
+  await tester.enterText(find.byKey(key), text);
+  await tester.pump();
+}
+
 /// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
 /// (토큰이 없으면 항상 온보딩 — CI 계정도 매번 이 경로를 탄다). 온보딩의
 /// "로그인" 버튼을 눌러야 login_id 가 있는 화면에 도달한다.
@@ -170,11 +144,8 @@ Future<void> _goToLoginScreen(WidgetTester tester) async {
 
 Future<void> _login(WidgetTester tester) async {
   await _goToLoginScreen(tester);
-  await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
-  await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
-  // login_submit 은 두 필드가 채워져야 컨트롤러 리스너의 setState 로 활성화된다.
-  // pump 없이 곧바로 탭하면 아직 비활성 상태라 탭이 아무 효과도 없다.
-  await tester.pump();
+  await _enterText(tester, const Key('login_id'), _testEmail);
+  await _enterText(tester, const Key('login_pw'), _testPassword);
   await tester.tap(find.byKey(const Key('login_submit')));
   await _pumpUntil(tester, find.byKey(const Key('home_list')));
   await tester.pumpAndSettle();
@@ -200,13 +171,14 @@ Future<void> _pumpUntil(
     await tester.pump(const Duration(milliseconds: 16));
     if (finder.evaluate().isNotEmpty) return;
   }
-  // 진단용: profile 빌드에서는 앱 로거가 꺼져 있어(kDebugMode 게이팅) 실패
-  // 원인을 알 방법이 없다 — 화면에 실제로 뜬 텍스트를 그대로 찍어본다.
+  // profile 빌드에서는 앱 로거가 꺼져 있어(kDebugMode 게이팅) 실패 원인을
+  // 알 방법이 없다 — 화면에 실제로 뜬 텍스트를 그대로 찍어서 CI 로그에서
+  // 바로 원인을 좁힐 수 있게 한다.
   final visibleTexts = tester
       .widgetList<Text>(find.byType(Text))
       .map((t) => t.data)
       .whereType<String>()
       .toList();
-  debugPrint('[perfkit-diag] timeout waiting for $finder, visible texts: $visibleTexts');
+  debugPrint('[perfkit] timeout waiting for $finder, visible texts: $visibleTexts');
   throw StateError('timeout: $finder 를 기다리다 실패');
 }

@@ -25,14 +25,20 @@ void main() {
   // 따로 잰다 (integration_test 안에서는 이미 떠 있는 프로세스의 위젯 빌드
   // 시간(수 ms)일 뿐이라 콜드 스타트가 아니다).
 
-  scenario('login', (tester) async {
-    await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
-    await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
-    await tester.tap(find.byKey(const Key('login_submit')));
-    // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
-    // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
-    await _pumpUntil(tester, find.byKey(const Key('home_list')));
-  });
+  scenario(
+    'login',
+    (tester) async {
+      await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
+      await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
+      await tester.tap(find.byKey(const Key('login_submit')));
+      // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
+      // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
+      await _pumpUntil(tester, find.byKey(const Key('home_list')));
+    },
+    // 스플래시 → 온보딩 → 로그인 화면 진입은 측정 대상(로그인 자체 성능)이
+    // 아니라 setUp 에서 끝낸다.
+    setUp: _goToLoginScreen,
+  );
 
   scrollScenario('home_scroll', const Key('home_list'), setUp: _login);
 
@@ -116,15 +122,18 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   }
 }
 
-Future<void> _login(WidgetTester tester) async {
-  // 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
-  // (토큰이 없으면 항상 온보딩 — CI 계정도 매번 이 경로를 탄다). 온보딩의
-  // "로그인" 버튼을 눌러야 login_id 가 있는 화면에 도달한다.
+/// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
+/// (토큰이 없으면 항상 온보딩 — CI 계정도 매번 이 경로를 탄다). 온보딩의
+/// "로그인" 버튼을 눌러야 login_id 가 있는 화면에 도달한다.
+Future<void> _goToLoginScreen(WidgetTester tester) async {
   await _pumpUntil(tester, find.byKey(const Key('onboarding_login_button')));
   await tester.tap(find.byKey(const Key('onboarding_login_button')));
   await tester.pumpAndSettle();
-
   await _pumpUntil(tester, find.byKey(const Key('login_id')));
+}
+
+Future<void> _login(WidgetTester tester) async {
+  await _goToLoginScreen(tester);
   await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
   await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
   await tester.tap(find.byKey(const Key('login_submit')));

@@ -28,25 +28,13 @@ void main() {
   scenario(
     'login',
     (tester) async {
-      debugPrint(
-        '[perfkit-diag] dotenv.isInitialized=${dotenv.isInitialized} '
-        'dotenv.env.keys=${dotenv.isInitialized ? dotenv.env.keys.toList() : "n/a"} '
-        'testEmail.length=${_testEmail.length} testPassword.length=${_testPassword.length}',
-      );
       await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
       await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
+      // login_submit 은 두 필드가 채워져야 컨트롤러 리스너의 setState 로
+      // 활성화된다. pump 없이 곧바로 탭하면 아직 비활성 상태라 탭이 아무
+      // 효과도 없이 조용히 무시된다.
+      await tester.pump();
       await tester.tap(find.byKey(const Key('login_submit')));
-      // 진단용: 에러는 SnackBar 로 잠깐 떴다가 사라진다 — 20초 타임아웃 시점엔
-      // 이미 없어져서 못 본다. 제출 직후 몇 초를 나눠서 찍어본다.
-      for (var i = 0; i < 5; i++) {
-        await tester.pump(const Duration(milliseconds: 500));
-        final texts = tester
-            .widgetList<Text>(find.byType(Text))
-            .map((t) => t.data)
-            .whereType<String>()
-            .toList();
-        debugPrint('[perfkit-diag] +${(i + 1) * 500}ms visible texts: $texts');
-      }
       // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
       // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
       await _pumpUntil(tester, find.byKey(const Key('home_list')));
@@ -152,6 +140,9 @@ Future<void> _login(WidgetTester tester) async {
   await _goToLoginScreen(tester);
   await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
   await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
+  // login_submit 은 두 필드가 채워져야 컨트롤러 리스너의 setState 로 활성화된다.
+  // pump 없이 곧바로 탭하면 아직 비활성 상태라 탭이 아무 효과도 없다.
+  await tester.pump();
   await tester.tap(find.byKey(const Key('login_submit')));
   await _pumpUntil(tester, find.byKey(const Key('home_list')));
   await tester.pumpAndSettle();

@@ -130,6 +130,11 @@ Future<void> _enterText(WidgetTester tester, Key key, String text) async {
   await tester.pump();
   await tester.enterText(find.byKey(key), text);
   await tester.pump();
+  // 진단용.
+  final field = tester.widget<TextFormField>(
+    find.descendant(of: find.byKey(key), matching: find.byType(TextFormField)),
+  );
+  debugPrint('[perfkit-diag] $key controller.text.length after enterText: ${field.controller?.text.length}');
 }
 
 /// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다

@@ -117,9 +117,13 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
 }
 
 Future<void> _login(WidgetTester tester) async {
-  // 스플래시/세션 체크 같은 비동기 작업은 프레임을 예약하지 않는 구간이 있어서
-  // app.main() 직후의 pumpAndSettle() 만으로는 로그인 화면 도달 전에 끝날 수
-  // 있다 — login_id 가 실제로 뜰 때까지 기다린다.
+  // 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
+  // (토큰이 없으면 항상 온보딩 — CI 계정도 매번 이 경로를 탄다). 온보딩의
+  // "로그인" 버튼을 눌러야 login_id 가 있는 화면에 도달한다.
+  await _pumpUntil(tester, find.byKey(const Key('onboarding_login_button')));
+  await tester.tap(find.byKey(const Key('onboarding_login_button')));
+  await tester.pumpAndSettle();
+
   await _pumpUntil(tester, find.byKey(const Key('login_id')));
   await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
   await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);

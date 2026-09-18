@@ -40,7 +40,17 @@ Future<void> _initKakaoMap() async {
   }
 }
 
-Future<void> main() async {
+Future<void> main() async => bootstrap();
+
+/// perf 통합 테스트가 특정 repository provider 를 mock 으로 갈아끼워 돌릴 수
+/// 있도록 초기화 로직을 분리했다. 프로덕션 진입점(main())은 overrides 없이
+/// 그대로 호출한다.
+//
+// overrides 는 List<Override> 여야 하는데 Override 는 riverpod 의 public
+// 배럴 파일에서 export 되지 않는 타입이라 이름을 직접 쓸 수 없다 — dynamic 으로
+// 받아서 ProviderScope 에 그대로 흘려보낸다. perf 테스트에서만 실제 Override
+// 리스트를 넘긴다.
+Future<void> bootstrap({dynamic overrides = const []}) async {
   WidgetsFlutterBinding.ensureInitialized();
   const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
   final appEnv = AppEnv.fromValue(appEnvValue);
@@ -50,7 +60,7 @@ Future<void> main() async {
     _initFirebase(),
   ]);
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(overrides: overrides, child: const MyApp()));
   unawaited(_initKakaoMap());
 }
 

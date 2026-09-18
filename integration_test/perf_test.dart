@@ -6,9 +6,13 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'package:goms/app/router/app_router.dart' as app_router;
+import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/presentation/routes/member_route_path.dart';
+import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/main.dart' as app;
+
+import 'fakes/fake_repositories.dart';
 
 late IntegrationTestWidgetsFlutterBinding binding;
 
@@ -42,18 +46,24 @@ void main() {
 
   scrollScenario('home_scroll', const Key('home_list'), setUp: _login);
 
+  // CI 테스트 계정은 실제 외출 데이터가 없다 — 스크롤 성능만 재는 시나리오라
+  // outingRepositoryProvider 를 가짜 데이터로 갈아끼운다(로그인 자체는 여전히
+  // 실제 백엔드로 한다).
   scrollScenario(
     'outing_state_scroll',
     const Key('outing_state_list'),
+    overrides: [outingRepositoryProvider.overrideWithValue(FakeOutingRepository())],
     setUp: (tester) async {
       await _login(tester);
       await _goTo(tester, OutingRoutePath.outingState);
     },
   );
 
+  // 마찬가지로 CI 테스트 계정이 보는 멤버 목록이 비어있어서 가짜로 채운다.
   scrollScenario(
     'member_list_scroll',
     const Key('member_list'),
+    overrides: [memberRepositoryProvider.overrideWithValue(FakeMemberRepository())],
     setUp: (tester) async {
       await _login(tester);
       await _goTo(tester, MemberRoutePath.members);
@@ -67,6 +77,7 @@ void scrollScenario(
   String name,
   Key list, {
   Future<void> Function(WidgetTester)? setUp,
+  dynamic overrides = const [],
 }) {
   scenario(
     name,
@@ -75,6 +86,7 @@ void scrollScenario(
       await setUp?.call(tester);
       await _fling(tester, list, rounds: 2);
     },
+    overrides: overrides,
   );
 }
 
@@ -84,11 +96,12 @@ void scenario(
   String name,
   Future<void> Function(WidgetTester) body, {
   Future<void> Function(WidgetTester)? setUp,
+  dynamic overrides = const [],
 }) {
   if (_only.isNotEmpty && !_only.split(',').contains(name)) return;
 
   testWidgets(name, (tester) async {
-    app.main();
+    app.bootstrap(overrides: overrides);
     await tester.pumpAndSettle();
     // setUp 은 측정 밖이다. 로그인/화면 진입과 워밍업이 여기서 끝난다.
     await setUp?.call(tester);

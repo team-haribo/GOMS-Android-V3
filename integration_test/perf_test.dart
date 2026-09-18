@@ -128,14 +128,9 @@ void scenario(
 /// 측정 구간이 짧으면 p95/p99 가 노이즈로 크게 흔들린다. 왕복 10회로 표본을 확보.
 Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   final target = find.byKey(key);
-  if (target.evaluate().isEmpty) {
-    final visibleTexts = tester
-        .widgetList<Text>(find.byType(Text))
-        .map((t) => t.data)
-        .whereType<String>()
-        .toList();
-    debugPrint('[perfkit] fling target $key not found, visible texts: $visibleTexts');
-  }
+  // 화면 전환 직후엔 pumpAndSettle 이 끝났어도 타겟이 아직 트리에 없는
+  // 찰나가 있을 수 있다 — 뜰 때까지 명시적으로 기다린다.
+  await _pumpUntil(tester, target);
   for (var i = 0; i < rounds; i++) {
     await tester.fling(target, const Offset(0, -600), 4000);
     await tester.pumpAndSettle();

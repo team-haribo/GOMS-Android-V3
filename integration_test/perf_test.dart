@@ -28,6 +28,11 @@ void main() {
   scenario(
     'login',
     (tester) async {
+      debugPrint(
+        '[perfkit-diag] dotenv.isInitialized=${dotenv.isInitialized} '
+        'dotenv.env.keys=${dotenv.isInitialized ? dotenv.env.keys.toList() : "n/a"} '
+        'testEmail.length=${_testEmail.length} testPassword.length=${_testPassword.length}',
+      );
       await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
       await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
       await tester.tap(find.byKey(const Key('login_submit')));

@@ -161,5 +161,13 @@ Future<void> _pumpUntil(
     await tester.pump(const Duration(milliseconds: 16));
     if (finder.evaluate().isNotEmpty) return;
   }
+  // 진단용: profile 빌드에서는 앱 로거가 꺼져 있어(kDebugMode 게이팅) 실패
+  // 원인을 알 방법이 없다 — 화면에 실제로 뜬 텍스트를 그대로 찍어본다.
+  final visibleTexts = tester
+      .widgetList<Text>(find.byType(Text))
+      .map((t) => t.data)
+      .whereType<String>()
+      .toList();
+  debugPrint('[perfkit-diag] timeout waiting for $finder, visible texts: $visibleTexts');
   throw StateError('timeout: $finder 를 기다리다 실패');
 }

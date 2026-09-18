@@ -148,6 +148,12 @@ Future<void> _goToLoginScreen(WidgetTester tester) async {
 /// 시나리오에서 로그인해 저장된 토큰이 그대로 남아있으면 스플래시가 온보딩을
 /// 건너뛰고 곧장 홈으로 간다. 이미 로그인돼 있으면 다시 로그인하지 않는다.
 Future<void> _login(WidgetTester tester) async {
+  // app_router.router 는 전역 싱글턴이라 app.main() 을 다시 불러도 이전
+  // 시나리오에서 _goTo 로 이동해둔 위치(예: 외출 현황)가 그대로 남아있다.
+  // 확인하기 전에 먼저 홈으로 되돌려서 시작점을 고정한다.
+  app_router.router.go(OutingRoutePath.home);
+  await tester.pumpAndSettle();
+
   final homeList = find.byKey(const Key('home_list'));
   final onboardingLoginButton = find.byKey(const Key('onboarding_login_button'));
   await _pumpUntilAny(tester, [homeList, onboardingLoginButton]);

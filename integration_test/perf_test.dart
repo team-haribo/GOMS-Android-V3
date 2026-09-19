@@ -4,11 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:riverpod/misc.dart' show Override;
 
 import 'package:goms/app/router/app_router.dart' as app_router;
+import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/presentation/routes/member_route_path.dart';
+import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/main.dart' as app;
+
+import 'fakes/fake_repositories.dart';
 
 late IntegrationTestWidgetsFlutterBinding binding;
 
@@ -25,29 +30,41 @@ void main() {
   // 따로 잰다 (integration_test 안에서는 이미 떠 있는 프로세스의 위젯 빌드
   // 시간(수 ms)일 뿐이라 콜드 스타트가 아니다).
 
-  scenario('login', (tester) async {
-    await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
-    await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
-    await tester.tap(find.byKey(const Key('login_submit')));
-    // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
-    // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
-    await _pumpUntil(tester, find.byKey(const Key('home_list')));
-  });
+  scenario(
+    'login',
+    (tester) async {
+      await _enterText(tester, const Key('login_id'), _testEmail);
+      await _enterText(tester, const Key('login_pw'), _testPassword);
+      await tester.tap(find.byKey(const Key('login_submit')));
+      // 로그인은 비동기 응답을 기다린다. pumpAndSettle 은 "예약된 프레임이 없으면"
+      // 바로 반환하므로 화면 전환 전에 끝나버린다. 목표 위젯이 뜰 때까지 편다.
+      await _pumpUntil(tester, find.byKey(const Key('home_list')));
+    },
+    // 스플래시 → 온보딩 → 로그인 화면 진입은 측정 대상(로그인 자체 성능)이
+    // 아니라 setUp 에서 끝낸다.
+    setUp: _goToLoginScreen,
+  );
 
   scrollScenario('home_scroll', const Key('home_list'), setUp: _login);
 
+  // CI 테스트 계정은 실제 외출 데이터가 없다 — 스크롤 성능만 재는 시나리오라
+  // outingRepositoryProvider 를 가짜 데이터로 갈아끼운다(로그인 자체는 여전히
+  // 실제 백엔드로 한다).
   scrollScenario(
     'outing_state_scroll',
     const Key('outing_state_list'),
+    overrides: [outingRepositoryProvider.overrideWithValue(FakeOutingRepository())],
     setUp: (tester) async {
       await _login(tester);
       await _goTo(tester, OutingRoutePath.outingState);
     },
   );
 
+  // 마찬가지로 CI 테스트 계정이 보는 멤버 목록이 비어있어서 가짜로 채운다.
   scrollScenario(
     'member_list_scroll',
     const Key('member_list'),
+    overrides: [memberRepositoryProvider.overrideWithValue(FakeMemberRepository())],
     setUp: (tester) async {
       await _login(tester);
       await _goTo(tester, MemberRoutePath.members);
@@ -61,6 +78,7 @@ void scrollScenario(
   String name,
   Key list, {
   Future<void> Function(WidgetTester)? setUp,
+  List<Override> overrides = const [],
 }) {
   scenario(
     name,
@@ -69,6 +87,7 @@ void scrollScenario(
       await setUp?.call(tester);
       await _fling(tester, list, rounds: 2);
     },
+    overrides: overrides,
   );
 }
 
@@ -78,11 +97,12 @@ void scenario(
   String name,
   Future<void> Function(WidgetTester) body, {
   Future<void> Function(WidgetTester)? setUp,
+  List<Override> overrides = const [],
 }) {
   if (_only.isNotEmpty && !_only.split(',').contains(name)) return;
 
   testWidgets(name, (tester) async {
-    app.main();
+    app.bootstrap(overrides: overrides);
     await tester.pumpAndSettle();
     // setUp 은 측정 밖이다. 로그인/화면 진입과 워밍업이 여기서 끝난다.
     await setUp?.call(tester);
@@ -108,6 +128,9 @@ void scenario(
 /// 측정 구간이 짧으면 p95/p99 가 노이즈로 크게 흔들린다. 왕복 10회로 표본을 확보.
 Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   final target = find.byKey(key);
+  // 화면 전환 직후엔 pumpAndSettle 이 끝났어도 타겟이 아직 트리에 없는
+  // 찰나가 있을 수 있다 — 뜰 때까지 명시적으로 기다린다.
+  await _pumpUntil(tester, target);
   for (var i = 0; i < rounds; i++) {
     await tester.fling(target, const Offset(0, -600), 4000);
     await tester.pumpAndSettle();
@@ -116,11 +139,50 @@ Future<void> _fling(WidgetTester tester, Key key, {required int rounds}) async {
   }
 }
 
+/// 실기기(flutter drive)에서는 tester.enterText() 가 신뢰할 수 없다 — tap 으로
+/// 먼저 포커스해도 컨트롤러가 계속 비어있는 채로 남는 경우가 있었다(테스트용
+/// mock text input 채널과 실제 기기의 IME 가 서로 다른 대상을 보는 것으로
+/// 보임). 컨트롤러를 직접 갈아끼우는 쪽이 훨씬 안정적이다.
+Future<void> _enterText(WidgetTester tester, Key key, String text) async {
+  final field = tester.widget<TextFormField>(
+    find.descendant(of: find.byKey(key), matching: find.byType(TextFormField)),
+  );
+  field.controller!.text = text;
+  await tester.pump();
+}
+
+/// 앱은 스플래시 뒤 곧장 로그인 화면으로 가지 않고 온보딩을 먼저 보여준다
+/// (토큰이 없으면 항상 온보딩). 온보딩의 "로그인" 버튼을 눌러야 login_id 가
+/// 있는 화면에 도달한다.
+Future<void> _goToLoginScreen(WidgetTester tester) async {
+  await _pumpUntil(tester, find.byKey(const Key('onboarding_login_button')));
+  await tester.tap(find.byKey(const Key('onboarding_login_button')));
+  await tester.pumpAndSettle();
+  await _pumpUntil(tester, find.byKey(const Key('login_id')));
+}
+
+/// app.main() 은 시나리오마다 같은 프로세스 안에서 다시 호출된다 — 직전
+/// 시나리오에서 로그인해 저장된 토큰이 그대로 남아있으면 스플래시가 온보딩을
+/// 건너뛰고 곧장 홈으로 간다. 이미 로그인돼 있으면 다시 로그인하지 않는다.
 Future<void> _login(WidgetTester tester) async {
-  await tester.enterText(find.byKey(const Key('login_id')), _testEmail);
-  await tester.enterText(find.byKey(const Key('login_pw')), _testPassword);
+  // app_router.router 는 전역 싱글턴이라 app.main() 을 다시 불러도 이전
+  // 시나리오에서 _goTo 로 이동해둔 위치(예: 외출 현황)가 그대로 남아있다.
+  // 확인하기 전에 먼저 홈으로 되돌려서 시작점을 고정한다.
+  app_router.router.go(OutingRoutePath.home);
+  await tester.pumpAndSettle();
+
+  final homeList = find.byKey(const Key('home_list'));
+  final onboardingLoginButton = find.byKey(const Key('onboarding_login_button'));
+  await _pumpUntilAny(tester, [homeList, onboardingLoginButton]);
+  if (homeList.evaluate().isNotEmpty) return;
+
+  await tester.tap(onboardingLoginButton);
+  await tester.pumpAndSettle();
+  await _pumpUntil(tester, find.byKey(const Key('login_id')));
+  await _enterText(tester, const Key('login_id'), _testEmail);
+  await _enterText(tester, const Key('login_pw'), _testPassword);
   await tester.tap(find.byKey(const Key('login_submit')));
-  await _pumpUntil(tester, find.byKey(const Key('home_list')));
+  await _pumpUntil(tester, homeList);
   await tester.pumpAndSettle();
 }
 
@@ -144,5 +206,35 @@ Future<void> _pumpUntil(
     await tester.pump(const Duration(milliseconds: 16));
     if (finder.evaluate().isNotEmpty) return;
   }
+  // profile 빌드에서는 앱 로거가 꺼져 있어(kDebugMode 게이팅) 실패 원인을
+  // 알 방법이 없다 — 화면에 실제로 뜬 텍스트를 그대로 찍어서 CI 로그에서
+  // 바로 원인을 좁힐 수 있게 한다.
+  final visibleTexts = tester
+      .widgetList<Text>(find.byType(Text))
+      .map((t) => t.data)
+      .whereType<String>()
+      .toList();
+  debugPrint('[perfkit] timeout waiting for $finder, visible texts: $visibleTexts');
   throw StateError('timeout: $finder 를 기다리다 실패');
+}
+
+/// finder 여러 개 중 하나라도 나타나면 반환한다 — 이미 로그인돼 있어 온보딩을
+/// 건너뛰는 경우와 그렇지 않은 경우를 하나의 대기로 같이 처리할 때 쓴다.
+Future<void> _pumpUntilAny(
+  WidgetTester tester,
+  List<Finder> finders, {
+  Duration timeout = const Duration(seconds: 20),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(deadline)) {
+    await tester.pump(const Duration(milliseconds: 16));
+    if (finders.any((f) => f.evaluate().isNotEmpty)) return;
+  }
+  final visibleTexts = tester
+      .widgetList<Text>(find.byType(Text))
+      .map((t) => t.data)
+      .whereType<String>()
+      .toList();
+  debugPrint('[perfkit] timeout waiting for any of $finders, visible texts: $visibleTexts');
+  throw StateError('timeout: $finders 중 어느 것도 기다리다 실패');
 }

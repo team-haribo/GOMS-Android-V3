@@ -19,6 +19,7 @@ class MemberListSection extends StatelessWidget {
     }
 
     return ListView.separated(
+      key: const Key('member_list'),
       padding: const EdgeInsets.all(16),
       itemCount: members.length,
       separatorBuilder: (_, __) => const SizedBox(height: 8),

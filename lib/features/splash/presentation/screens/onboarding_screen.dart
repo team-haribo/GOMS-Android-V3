@@ -56,6 +56,7 @@ class OnboardingScreen extends StatelessWidget {
           const Spacer(flex: 2),
           // 로그인 버튼
           ConfirmButton(
+            key: const Key('onboarding_login_button'),
             text: '로그인',
             onPressed: () => context.push(AuthRoutePath.login),
           ),

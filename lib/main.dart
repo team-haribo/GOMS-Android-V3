@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:riverpod/misc.dart' show Override;
 import 'package:goms/core/config/app_env.dart';
 import 'package:goms/app/router/app_router.dart';
 import 'package:goms_design_system/goms_design_system.dart';
@@ -40,7 +41,12 @@ Future<void> _initKakaoMap() async {
   }
 }
 
-Future<void> main() async {
+Future<void> main() async => bootstrap();
+
+/// perf 통합 테스트가 특정 repository provider 를 mock 으로 갈아끼워 돌릴 수
+/// 있도록 초기화 로직을 분리했다. 프로덕션 진입점(main())은 overrides 없이
+/// 그대로 호출한다.
+Future<void> bootstrap({List<Override> overrides = const []}) async {
   WidgetsFlutterBinding.ensureInitialized();
   const appEnvValue = String.fromEnvironment('APP_ENV', defaultValue: 'dev');
   final appEnv = AppEnv.fromValue(appEnvValue);
@@ -50,7 +56,7 @@ Future<void> main() async {
     _initFirebase(),
   ]);
 
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(ProviderScope(overrides: overrides, child: const MyApp()));
   unawaited(_initKakaoMap());
 }
 

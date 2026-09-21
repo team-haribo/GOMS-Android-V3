@@ -37,3 +37,16 @@ headline_metrics: [fps, jank_rate, p95_frame_time_ms, memory_mb, startup_ms]
 
 # baseline 이 이보다 오래되면 리포트에 경고를 띄운다.
 baseline_max_age_days: 30
+
+# PR 에서 변경된 파일과 겹치는 시나리오만 측정한다 (perfkit select).
+# 여기 없는 경로(lib/core, main.dart, pubspec, android/, integration_test/ 등 공통·빌드
+# 변경)가 하나라도 바뀌면 안전하게 전체를 측정한다.
+selection:
+  ignore: ["**/*.md", "docs/**"]
+  scenarios:
+    app_startup: ["lib/features/splash/**"]
+    login: ["lib/features/auth/**", "lib/features/splash/**"]
+    # 홈(home_list)은 outing 의 대기 화면이다.
+    home_scroll: ["lib/features/outing/**"]
+    outing_state_scroll: ["lib/features/outing/**"]
+    member_list_scroll: ["lib/features/member/**"]

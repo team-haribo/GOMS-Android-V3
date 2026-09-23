@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/presentation/providers/student_council_members_provider.dart';
@@ -126,10 +127,11 @@ class _AdminOutingStateScreen extends ConsumerState<AdminOutingStateScreen> {
             Expanded(
               child: RefreshIndicator(
                 color: AppColors.admin,
-                onRefresh: () {
-                  return ref
-                      .read(studentCouncilMembersProvider.notifier)
-                      .reload();
+                onRefresh: () async {
+                  await Future.wait([
+                    ref.read(studentCouncilMembersProvider.notifier).reload(),
+                    ref.read(authProvider.notifier).syncRole(force: true),
+                  ]);
                 },
                 child: membersAsync.when(
                   data: (members) {

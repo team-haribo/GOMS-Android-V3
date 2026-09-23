@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/core/auth/token_refresh_gate.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
@@ -123,6 +124,83 @@ void main() {
       expect(container.read(currentMemberProvider).value, isNull);
     },
   );
+
+  group('syncRoleOnResume (#146)', () {
+    late _RecordingSessionDataSource session;
+    late _FakeMemberRepository repository;
+    late ProviderContainer container;
+
+    setUp(() {
+      final future = DateTime.now().toUtc().add(const Duration(days: 1));
+      storage['access_token'] = 'access-token';
+      storage['access_token_expiry'] = future.toIso8601String();
+      storage['refresh_token'] = 'valid-refresh-token';
+      storage['refresh_token_expiry'] = future.toIso8601String();
+
+      session = _RecordingSessionDataSource();
+      repository = _FakeMemberRepository(
+        profileRole: RoleEnum.admin,
+        myRole: RoleEnum.admin,
+      );
+      container = ProviderContainer(
+        overrides: [
+          sessionRemoteDataSourceProvider.overrideWithValue(session),
+          memberRepositoryProvider.overrideWithValue(repository),
+        ],
+      );
+      addTearDown(container.dispose);
+    });
+
+    test('앱 실행 중 회수된 권한을 복귀 시점에 반영한다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.admin);
+
+      // 앱을 켜 둔 동안 서버에서 권한이 회수됨.
+      repository.myRole = RoleEnum.user;
+      await auth.syncRoleOnResume();
+
+      expect(session.reissueCalls, 1);
+      expect(storage['access_token'], 'renewed-access-token');
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
+      expect(container.read(authProvider), AuthStatus.authenticated);
+    });
+
+    test('최소 간격 안의 반복 복귀와 동시 호출은 한 번만 동기화한다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+
+      await Future.wait([auth.syncRoleOnResume(), auth.syncRoleOnResume()]);
+      await auth.syncRoleOnResume();
+
+      expect(session.reissueCalls, 1);
+    });
+
+    test('인증되지 않은 상태에서는 아무것도 하지 않는다', () async {
+      await container.read(authProvider.notifier).syncRoleOnResume();
+
+      expect(session.reissueCalls, 0);
+      expect(container.read(currentMemberProvider).value, isNull);
+    });
+  });
+
+  test('TokenRefreshGate는 재발급을 겹치지 않게 순서대로 실행한다 (#146)', () async {
+    final events = <String>[];
+    Future<void> task(String name) => TokenRefreshGate.run(() async {
+          events.add('$name:start');
+          await Future<void>.delayed(const Duration(milliseconds: 10));
+          events.add('$name:end');
+        });
+
+    await Future.wait([
+      task('a'),
+      TokenRefreshGate.run<void>(() async => throw StateError('fail'))
+          .catchError((_) {}),
+      task('b'),
+    ]);
+
+    expect(events, ['a:start', 'a:end', 'b:start', 'b:end']);
+  });
 }
 
 class _RecordingSessionDataSource implements SessionRemoteDataSource {
@@ -156,7 +234,9 @@ class _FakeMemberRepository implements MemberRepository {
   });
 
   final RoleEnum profileRole;
-  final RoleEnum myRole;
+
+  /// 앱 실행 중 서버에서 권한이 바뀌는 상황을 재현할 수 있도록 변경 가능하게 둔다.
+  RoleEnum myRole;
 
   /// getMyRole의 await 도중 상태를 바꾸기 위한 훅.
   final Future<void> Function()? onGetMyRole;

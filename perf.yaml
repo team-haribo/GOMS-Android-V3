@@ -21,16 +21,22 @@ sigma: 2.0
 thresholds:
   default:           { change_percent: 15, min_abs_delta: 0 }
   fps:               { change_percent: 10, min_abs_delta: 1.0 }
-  jank_rate:         { change_percent: 20, min_abs_delta: 1.0 }
-  dropped_frames:    { change_percent: 25, min_abs_delta: 2 }
-  p50_frame_time_ms: { change_percent: 20, min_abs_delta: 1.0 }
-  p90_frame_time_ms: { change_percent: 15, min_abs_delta: 1.0 }
-  p95_frame_time_ms: { change_percent: 15, min_abs_delta: 1.0 }
-  p99_frame_time_ms: { change_percent: 20, min_abs_delta: 2.0 }
-  memory_mb:         { change_percent: 20, min_abs_delta: 5.0 }
-  startup_ms:            { change_percent: 20, min_abs_delta: 50 }
-  startup_rasterized_ms: { change_percent: 20, min_abs_delta: 50 }
-  duration_ms:       { change_percent: 25, min_abs_delta: 200 }
+  # 아래 min_abs_delta 는 "체감 하한"이 아니라 CI 에뮬레이터의 실행 간 편차 하한이다.
+  # perfkit 의 노이즈(sigma 게이트)는 한 실행 안의 반복 3회로만 추정해서, 에뮬레이터
+  # 부팅마다 달라지는 편차를 못 잡는다. 같은 코드의 CI 8회에서 가끔 실행 전체가 느려져
+  # 스크롤 p95 가 +7.8ms, jank 가 +14.9%p, dropped_frames 가 +16 까지 튀었다.
+  # 그 이하의 변화는 이 환경에서 코드 탓인지 구분할 수 없으므로 실패로 보지 않는다. (#148)
+  jank_rate:         { change_percent: 20, min_abs_delta: 15.0 }
+  dropped_frames:    { change_percent: 25, min_abs_delta: 17 }
+  p50_frame_time_ms: { change_percent: 20, min_abs_delta: 1.5 }
+  p90_frame_time_ms: { change_percent: 15, min_abs_delta: 7.5 }
+  p95_frame_time_ms: { change_percent: 15, min_abs_delta: 8.5 }
+  p99_frame_time_ms: { change_percent: 20, min_abs_delta: 9.5 }
+  memory_mb:         { change_percent: 20, min_abs_delta: 12.0 }
+  startup_ms:            { change_percent: 20, min_abs_delta: 150 }
+  startup_rasterized_ms: { change_percent: 20, min_abs_delta: 150 }
+  # login 은 실제 백엔드 응답을 기다리므로 네트워크 편차(+640ms)가 그대로 섞인다.
+  duration_ms:       { change_percent: 25, min_abs_delta: 700 }
 
 # 리포트/대시보드에서 앞에 보여줄 지표. 나머지는 접어둔다.
 headline_metrics: [fps, jank_rate, p95_frame_time_ms, memory_mb, startup_ms]

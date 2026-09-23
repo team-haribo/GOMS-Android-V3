@@ -125,7 +125,7 @@ void main() {
     },
   );
 
-  group('syncRoleOnResume (#146)', () {
+  group('syncRole (#146)', () {
     late _RecordingSessionDataSource session;
     late _FakeMemberRepository repository;
     late ProviderContainer container;
@@ -158,7 +158,7 @@ void main() {
 
       // 앱을 켜 둔 동안 서버에서 권한이 회수됨.
       repository.myRole = RoleEnum.user;
-      await auth.syncRoleOnResume();
+      await auth.syncRole();
 
       expect(session.reissueCalls, 1);
       expect(storage['access_token'], 'renewed-access-token');
@@ -170,14 +170,30 @@ void main() {
       final auth = container.read(authProvider.notifier);
       await auth.setAuthenticated();
 
-      await Future.wait([auth.syncRoleOnResume(), auth.syncRoleOnResume()]);
-      await auth.syncRoleOnResume();
+      await Future.wait([auth.syncRole(), auth.syncRole()]);
+      await auth.syncRole();
 
       expect(session.reissueCalls, 1);
     });
 
+    test('당겨서 새로고침(force)은 최소 간격과 관계없이 바로 반영한다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+      await auth.syncRole();
+
+      // 방금 동기화한 직후에 학생회 권한이 부여됨.
+      repository.myRole = RoleEnum.user;
+      await auth.syncRole();
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.admin);
+
+      await auth.syncRole(force: true);
+
+      expect(session.reissueCalls, 2);
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
+    });
+
     test('인증되지 않은 상태에서는 아무것도 하지 않는다', () async {
-      await container.read(authProvider.notifier).syncRoleOnResume();
+      await container.read(authProvider.notifier).syncRole();
 
       expect(session.reissueCalls, 0);
       expect(container.read(currentMemberProvider).value, isNull);

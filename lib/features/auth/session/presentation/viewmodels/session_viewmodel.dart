@@ -104,14 +104,16 @@ class AuthNotifier extends Notifier<AuthStatus> {
     }
   }
 
-  /// 앱이 포그라운드로 돌아왔을 때 바뀐 권한을 반영한다. (이슈 #146)
+  /// 앱을 켜 둔 동안 바뀐 권한을 반영한다. (이슈 #146)
   ///
   /// 앱을 켜 둔 채 권한이 부여·회수되면 스플래시의 [checkToken]이 다시 돌지 않아
   /// 이전 권한이 그대로 남는다. 재발급으로 access token의 role claim을 최신화하고,
   /// `/member/myrole`로 화면에 쓰는 role을 서버 DB 기준으로 다시 맞춘다.
-  /// 인증된 상태에서만 동작하며, 이미 진행 중이거나 [roleSyncInterval] 안에
-  /// 동기화했다면 건너뛴다.
-  Future<void> syncRoleOnResume() {
+  ///
+  /// 인증된 상태에서만 동작하고, 이미 진행 중이면 그 동기화를 기다린다.
+  /// 포그라운드 복귀처럼 자동으로 호출될 때는 [roleSyncInterval] 안에 동기화했다면
+  /// 건너뛰고, 당겨서 새로고침처럼 사용자가 직접 요청하면 [force]로 간격을 무시한다.
+  Future<void> syncRole({bool force = false}) {
     if (state != AuthStatus.authenticated) {
       return Future.value();
     }
@@ -123,7 +125,8 @@ class AuthNotifier extends Notifier<AuthStatus> {
 
     final now = DateTime.now();
     final lastSyncedAt = _lastRoleSyncAt;
-    if (lastSyncedAt != null &&
+    if (!force &&
+        lastSyncedAt != null &&
         now.difference(lastSyncedAt) < roleSyncInterval) {
       return Future.value();
     }

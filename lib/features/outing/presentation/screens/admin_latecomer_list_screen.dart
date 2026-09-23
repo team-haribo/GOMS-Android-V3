@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
 //ui
@@ -77,10 +78,13 @@ class _AdminLatecomerListScreenState
           Expanded(
             child: RefreshIndicator(
               color: AppColors.admin,
-              onRefresh: () {
-                return ref
-                    .read(studentCouncilLateStudentsProvider.notifier)
-                    .reload();
+              onRefresh: () async {
+                await Future.wait([
+                  ref
+                      .read(studentCouncilLateStudentsProvider.notifier)
+                      .reload(),
+                  ref.read(authProvider.notifier).syncRole(force: true),
+                ]);
               },
               child: lateStudents.when(
                 data: (students) {

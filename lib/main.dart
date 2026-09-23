@@ -77,7 +77,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     // 앱을 켜 둔 채 바뀐 권한을 포그라운드 복귀 시점에 반영한다. (이슈 #146)
     _lifecycleListener = AppLifecycleListener(
       onResume: () {
-        unawaited(ref.read(authProvider.notifier).syncRoleOnResume());
+        unawaited(ref.read(authProvider.notifier).syncRole());
       },
     );
   }

@@ -1,19 +1,19 @@
 {
   "schema": 1,
-  "updated_at": "2026-09-23T06:47:11+00:00",
-  "commit": "dca5caf",
+  "updated_at": "2026-09-26T08:00:42+00:00",
+  "commit": "ad50ab34f5931b41d5594a87422f0f083c82dc40",
   "device_profile": "ci-emulator-api34",
-  "repeats": 3,
+  "repeats": 15,
   "scenarios": {
     "app_startup": {
       "metrics": {
         "startup_ms": {
-          "value": 861.0,
-          "noise": 51.1497
+          "value": 895.5055,
+          "noise": 91.707
         },
         "startup_rasterized_ms": {
-          "value": 983.5,
-          "noise": 80.8017
+          "value": 1041.752,
+          "noise": 135.4162
         }
       }
     },
@@ -24,36 +24,36 @@
           "noise": 0.0
         },
         "jank_rate": {
-          "value": 4.7,
-          "noise": 1.112
-        },
-        "p95_frame_time_ms": {
-          "value": 16.05,
-          "noise": 0.7413
-        },
-        "memory_mb": {
-          "value": 329.5,
-          "noise": 1.4826
+          "value": 1.5504,
+          "noise": 2.2986
         },
         "dropped_frames": {
-          "value": 6.0,
-          "noise": 1.4826
+          "value": 2.0,
+          "noise": 2.9652
         },
         "p50_frame_time_ms": {
-          "value": 10.55,
-          "noise": 0.7413
+          "value": 10.534,
+          "noise": 0.7443
         },
         "p90_frame_time_ms": {
-          "value": 14.7,
-          "noise": 1.1119
+          "value": 13.7792,
+          "noise": 0.2953
+        },
+        "p95_frame_time_ms": {
+          "value": 14.7216,
+          "noise": 1.2682
         },
         "p99_frame_time_ms": {
-          "value": 20.05,
-          "noise": 0.7413
+          "value": 16.9813,
+          "noise": 2.0743
+        },
+        "memory_mb": {
+          "value": 326.332,
+          "noise": 1.4189
         },
         "duration_ms": {
-          "value": 16058.0,
-          "noise": 12.6021
+          "value": 16032.0,
+          "noise": 14.826
         }
       }
     },
@@ -64,36 +64,36 @@
           "noise": 0.0
         },
         "jank_rate": {
-          "value": 2.2,
-          "noise": 0.1483
-        },
-        "p95_frame_time_ms": {
-          "value": 8.4,
-          "noise": 0.7413
-        },
-        "memory_mb": {
-          "value": 299.5,
-          "noise": 5.9304
+          "value": 2.4128,
+          "noise": 0.8057
         },
         "dropped_frames": {
           "value": 1.0,
-          "noise": 0.0
+          "noise": 0.5
         },
         "p50_frame_time_ms": {
-          "value": 2.3,
-          "noise": 0.0741
+          "value": 2.1225,
+          "noise": 0.1408
         },
         "p90_frame_time_ms": {
-          "value": 5.2,
-          "noise": 0.2965
+          "value": 4.7197,
+          "noise": 0.7291
+        },
+        "p95_frame_time_ms": {
+          "value": 6.0188,
+          "noise": 1.1248
         },
         "p99_frame_time_ms": {
-          "value": 28.45,
-          "noise": 2.6687
+          "value": 28.427,
+          "noise": 5.1367
+        },
+        "memory_mb": {
+          "value": 293.6016,
+          "noise": 6.2779
         },
         "duration_ms": {
-          "value": 1628.5,
-          "noise": 191.2554
+          "value": 1500.5,
+          "noise": 189.7728
         }
       }
     },
@@ -105,35 +105,35 @@
         },
         "jank_rate": {
           "value": 0.0,
-          "noise": 0.0
-        },
-        "p95_frame_time_ms": {
-          "value": 11.85,
-          "noise": 0.593
-        },
-        "memory_mb": {
-          "value": 388.0,
-          "noise": 0.7413
+          "noise": 0.7692
         },
         "dropped_frames": {
           "value": 0.0,
-          "noise": 0.0
+          "noise": 0.5
         },
         "p50_frame_time_ms": {
-          "value": 8.75,
-          "noise": 0.2224
+          "value": 8.513,
+          "noise": 0.4641
         },
         "p90_frame_time_ms": {
-          "value": 11.35,
-          "noise": 0.593
+          "value": 10.9306,
+          "noise": 0.3923
+        },
+        "p95_frame_time_ms": {
+          "value": 11.5218,
+          "noise": 0.372
         },
         "p99_frame_time_ms": {
-          "value": 13.2,
-          "noise": 0.4448
+          "value": 12.1129,
+          "noise": 0.1863
+        },
+        "memory_mb": {
+          "value": 388.2344,
+          "noise": 5.774
         },
         "duration_ms": {
-          "value": 31235.0,
-          "noise": 9.6369
+          "value": 31233.5,
+          "noise": 21.4977
         }
       }
     },
@@ -145,35 +145,35 @@
         },
         "jank_rate": {
           "value": 0.0,
-          "noise": 0.0
-        },
-        "p95_frame_time_ms": {
-          "value": 11.55,
-          "noise": 0.9637
-        },
-        "memory_mb": {
-          "value": 365.0,
-          "noise": 4.4478
+          "noise": 5.7471
         },
         "dropped_frames": {
           "value": 0.0,
-          "noise": 0.0
+          "noise": 5.0
         },
         "p50_frame_time_ms": {
-          "value": 8.65,
-          "noise": 0.5189
+          "value": 8.422,
+          "noise": 0.6864
         },
         "p90_frame_time_ms": {
-          "value": 11.0,
-          "noise": 0.6672
+          "value": 10.8571,
+          "noise": 0.6593
+        },
+        "p95_frame_time_ms": {
+          "value": 11.3848,
+          "noise": 0.8293
         },
         "p99_frame_time_ms": {
-          "value": 13.35,
-          "noise": 1.2602
+          "value": 12.8131,
+          "noise": 1.1271
+        },
+        "memory_mb": {
+          "value": 362.4023,
+          "noise": 3.1853
         },
         "duration_ms": {
-          "value": 28902.0,
-          "noise": 8.1543
+          "value": 28890.5,
+          "noise": 5.9304
         }
       }
     }

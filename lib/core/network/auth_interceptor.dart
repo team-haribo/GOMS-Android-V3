@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
-import 'package:goms/core/auth/token_refresh_gate.dart';
 import 'package:goms/core/utils/token_storage.dart';
 
 class AuthInterceptor extends Interceptor {
@@ -114,8 +113,7 @@ class AuthInterceptor extends Interceptor {
       return inFlightRequest;
     }
 
-    // 다른 곳(포그라운드 복귀 권한 동기화 등)의 재발급과 겹치지 않도록 직렬화한다.
-    final completer = TokenRefreshGate.run<String?>(() async {
+    final completer = Future<String?>(() async {
       final refreshToken = await TokenStorage.getRefreshToken();
       if (refreshToken == null || refreshToken.trim().isEmpty) {
         return null;

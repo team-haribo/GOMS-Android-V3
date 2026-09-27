@@ -36,34 +36,30 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
     }
   }
 
-  /// 서버 DB 기준 최신 권한(role)을 조회해 현재 멤버에 덮어쓴다.
-  /// 권한 조회 실패는 무시하고 기존 프로필 role을 유지한다(best-effort 보정).
-  Future<void> refreshRole() async {
+  /// `/member/profile`을 다시 조회해 현재 멤버(권한 포함)를 최신화한다.
+  /// 조회 실패는 무시하고 기존 값을 유지한다(화면이 에러 상태로 바뀌지 않도록).
+  Future<void> refreshProfile() async {
     final currentMember = state.asData?.value;
     if (currentMember == null) {
       return;
     }
 
     try {
-      final role = await ref.read(memberRepositoryProvider).getMyRole();
+      final latestProfile =
+          await ref.read(memberRepositoryProvider).getMyProfile();
 
       // await 동안 상태가 바뀌었을 수 있다(로그아웃으로 clear() 호출 등).
-      // 캡처해둔 값으로 덮어쓰면 종료된 세션이 부활할 수 있으므로 최신 상태를
-      // 다시 확인하고, null이거나 다른 멤버로 바뀌었으면 보정을 중단한다.
+      // 최신 상태를 다시 확인하고, null이거나 다른 멤버로 바뀌었으면 반영하지 않는다.
       final latestMember = state.asData?.value;
       if (latestMember == null ||
           latestMember.memberId != currentMember.memberId) {
         return;
       }
 
-      if (role != latestMember.role) {
-        state = AsyncData(latestMember.copyWith(role: role));
-      }
+      state = AsyncData(latestProfile);
     } catch (error, stackTrace) {
-      // 권한 보정 실패는 세션을 막지 않고 프로필 role을 그대로 사용한다.
-      // 다만 원인 파악을 위해 로그는 남긴다.
       Logger.e(
-        'refreshRole failed: $error',
+        'refreshProfile failed: $error',
         tag: 'MEMBER',
         error: error,
         stackTrace: stackTrace,

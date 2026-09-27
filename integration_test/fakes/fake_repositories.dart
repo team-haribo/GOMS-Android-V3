@@ -89,9 +89,6 @@ class FakeMemberRepository implements MemberRepository {
       );
 
   @override
-  Future<RoleEnum> getMyRole() async => RoleEnum.user;
-
-  @override
   Future<List<StudentCouncilStudentEntity>> getStudentCouncilMembers({
     String? query,
   }) =>

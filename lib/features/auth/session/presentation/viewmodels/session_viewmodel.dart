@@ -32,7 +32,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
   static const roleSyncInterval = Duration(seconds: 30);
 
   DateTime? _lastRoleSyncAt;
-  Future<void>? _roleSyncInFlight;
+  Future<bool>? _roleSyncInFlight;
 
   @override
   AuthStatus build() {
@@ -101,33 +101,41 @@ class AuthNotifier extends Notifier<AuthStatus> {
   /// 인증된 상태에서만 동작하고, 이미 진행 중이면 그 동기화를 기다린다.
   /// 포그라운드 복귀처럼 자동으로 호출될 때는 [roleSyncInterval] 안에 동기화했다면
   /// 건너뛰고, 당겨서 새로고침처럼 사용자가 직접 요청하면 [force]로 간격을 무시한다.
-  Future<void> syncRole({bool force = false}) {
+  ///
+  /// 조회에 실패했을 때만 false를 돌려준다. 건너뛴 경우나 인증되지 않은 상태는
+  /// 알릴 실패가 없으므로 true다.
+  Future<bool> syncRole({bool force = false}) {
     if (state != AuthStatus.authenticated) {
-      return Future.value();
+      return Future.value(true);
     }
 
+    // force여도 진행 중인 조회가 있으면 새로 보내지 않고 그 결과를 기다린다.
+    // 방금 보낸 요청이라 결과가 같고, 같은 응답을 두 번 받을 이유가 없다.
     final inFlight = _roleSyncInFlight;
     if (inFlight != null) {
       return inFlight;
     }
 
-    final now = DateTime.now();
     final lastSyncedAt = _lastRoleSyncAt;
     if (!force &&
         lastSyncedAt != null &&
-        now.difference(lastSyncedAt) < roleSyncInterval) {
-      return Future.value();
+        DateTime.now().difference(lastSyncedAt) < roleSyncInterval) {
+      return Future.value(true);
     }
-    _lastRoleSyncAt = now;
 
     final sync = _syncRole().whenComplete(() => _roleSyncInFlight = null);
     _roleSyncInFlight = sync;
     return sync;
   }
 
-  Future<void> _syncRole() async {
+  Future<bool> _syncRole() async {
     final previousRole = ref.read(currentMemberProvider).asData?.value?.role;
-    await ref.read(currentMemberProvider.notifier).refreshProfile();
+    final refreshed =
+        await ref.read(currentMemberProvider.notifier).refreshProfile();
+    // 조회에 성공했을 때만 시각을 남긴다. 실패하면 다음 복귀 때 바로 다시 시도한다.
+    if (refreshed && state == AuthStatus.authenticated) {
+      _lastRoleSyncAt = DateTime.now();
+    }
     final currentRole = ref.read(currentMemberProvider).asData?.value?.role;
 
     // 권한에 따라 서버가 내려주는 홈 데이터가 달라질 수 있어 다시 불러온다.
@@ -136,6 +144,9 @@ class AuthNotifier extends Notifier<AuthStatus> {
         currentRole != previousRole) {
       _warmUpHomeData();
     }
+
+    // await 도중 로그아웃됐다면 알릴 실패가 아니다.
+    return refreshed || state != AuthStatus.authenticated;
   }
 
   Future<_ReissueOutcome> _reissue(String refreshToken) async {

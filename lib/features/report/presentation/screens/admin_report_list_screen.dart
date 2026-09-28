@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
+import 'package:goms/features/auth/session/presentation/utils/refresh_with_role_sync.dart';
 import 'package:goms/features/report/presentation/routes/report_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
@@ -133,13 +133,10 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
           Expanded(
             child: RefreshIndicator(
               color: AppColors.admin,
-              onRefresh: () async {
-                await Future.wait([
-                  ref.read(pendingReportsProvider.notifier).reload(),
-                  ref.read(resolvedReportsProvider.notifier).reload(),
-                  ref.read(authProvider.notifier).syncRole(force: true),
-                ]);
-              },
+              onRefresh: () => refreshWithRoleSync(context, ref, [
+                ref.read(pendingReportsProvider.notifier).reload(),
+                ref.read(resolvedReportsProvider.notifier).reload(),
+              ]),
               child: _ReportListBody(
                 pendingReportsAsync: pendingReportsAsync,
                 resolvedReportsAsync: resolvedReportsAsync,

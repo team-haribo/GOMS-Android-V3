@@ -63,10 +63,9 @@ void main() {
     final now = DateTime.now().toUtc();
     final future = now.add(const Duration(days: 1));
     storage['access_token'] = 'access-token';
-    storage['access_token_expiry'] = (accessTokenValid
-            ? future
-            : now.subtract(const Duration(minutes: 1)))
-        .toIso8601String();
+    storage['access_token_expiry'] =
+        (accessTokenValid ? future : now.subtract(const Duration(minutes: 1)))
+            .toIso8601String();
     storage['refresh_token'] = 'valid-refresh-token';
     storage['refresh_token_expiry'] = future.toIso8601String();
   }
@@ -121,6 +120,25 @@ void main() {
     expect(container.read(currentMemberProvider).value, isNull);
   });
 
+  test('refreshProfile는 await 도중 바뀐 프로필 사진을 되돌리지 않고 role만 반영한다', () async {
+    await container.read(currentMemberProvider.notifier).fetch();
+
+    // 조회 응답 직전에 프로필 사진이 바뀌고, 서버 DB 권한도 바뀐 상황을 재현한다.
+    repository.role = RoleEnum.user;
+    repository.onGetMyProfile = () async {
+      container
+          .read(currentMemberProvider.notifier)
+          .updateProfileImageUrl('new-image-url');
+    };
+    final refreshed =
+        await container.read(currentMemberProvider.notifier).refreshProfile();
+
+    final member = container.read(currentMemberProvider).value;
+    expect(refreshed, isTrue);
+    expect(member?.profileImageUrl, 'new-image-url');
+    expect(member?.role, RoleEnum.user);
+  });
+
   group('syncRole (#146)', () {
     setUp(() => saveTokens(accessTokenValid: true));
 
@@ -166,6 +184,30 @@ void main() {
       expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
     });
 
+    test('조회에 실패하면 최소 간격과 관계없이 다음 복귀 때 다시 시도한다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+
+      repository.failProfile = true;
+      expect(await auth.syncRole(force: true), isFalse);
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.admin);
+
+      repository.failProfile = false;
+      repository.role = RoleEnum.user;
+      expect(await auth.syncRole(), isTrue);
+
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
+    });
+
+    test('최소 간격 때문에 건너뛴 경우는 실패로 보지 않는다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.checkToken();
+
+      repository.failProfile = true;
+      expect(await auth.syncRole(), isTrue);
+      expect(repository.profileCalls, 1);
+    });
+
     test('인증되지 않은 상태에서는 아무것도 하지 않는다', () async {
       await container.read(authProvider.notifier).syncRole();
 
@@ -206,12 +248,18 @@ class _FakeMemberRepository implements MemberRepository {
 
   int profileCalls = 0;
 
+  /// true면 프로필 조회가 실패한다.
+  bool failProfile = false;
+
   /// getMyProfile의 await 도중 상태를 바꾸기 위한 훅.
   Future<void> Function()? onGetMyProfile;
 
   @override
   Future<CurrentMemberEntity> getMyProfile() async {
     profileCalls++;
+    if (failProfile) {
+      throw Exception('profile failed');
+    }
     await onGetMyProfile?.call();
     return CurrentMemberEntity(
       memberId: 1,

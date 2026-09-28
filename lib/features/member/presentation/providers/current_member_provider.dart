@@ -38,10 +38,11 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
 
   /// `/member/profile`을 다시 조회해 현재 멤버(권한 포함)를 최신화한다.
   /// 조회 실패는 무시하고 기존 값을 유지한다(화면이 에러 상태로 바뀌지 않도록).
-  Future<void> refreshProfile() async {
+  /// 최신 프로필을 반영했으면 true, 실패했거나 반영하지 않았으면 false를 돌려준다.
+  Future<bool> refreshProfile() async {
     final currentMember = state.asData?.value;
     if (currentMember == null) {
-      return;
+      return false;
     }
 
     try {
@@ -53,10 +54,17 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
       final latestMember = state.asData?.value;
       if (latestMember == null ||
           latestMember.memberId != currentMember.memberId) {
-        return;
+        return false;
       }
 
-      state = AsyncData(latestProfile);
+      // await 동안 프로필 사진 변경 등으로 멤버가 갱신됐다면, 요청 시점의 응답으로
+      // 그 변경을 되돌리지 않도록 role만 반영한다.
+      state = AsyncData(
+        identical(latestMember, currentMember)
+            ? latestProfile
+            : latestMember.copyWith(role: latestProfile.role),
+      );
+      return true;
     } catch (error, stackTrace) {
       Logger.e(
         'refreshProfile failed: $error',
@@ -64,6 +72,7 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
         error: error,
         stackTrace: stackTrace,
       );
+      return false;
     }
   }
 

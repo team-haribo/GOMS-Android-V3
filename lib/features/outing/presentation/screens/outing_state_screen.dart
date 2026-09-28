@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
+import 'package:goms/features/auth/session/presentation/utils/refresh_with_role_sync.dart';
 import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
@@ -97,12 +97,9 @@ class _OutingStateScreenState extends ConsumerState<OutingStateScreen> {
                 color: role == RoleEnum.admin
                     ? AppColors.admin
                     : AppColors.mainColor,
-                onRefresh: () async {
-                  await Future.wait([
-                    ref.read(currentOutingStudentsProvider.notifier).reload(),
-                    ref.read(authProvider.notifier).syncRole(force: true),
-                  ]);
-                },
+                onRefresh: () => refreshWithRoleSync(context, ref, [
+                  ref.read(currentOutingStudentsProvider.notifier).reload(),
+                ]),
                 child: outingStudents.when(
                   data: (students) {
                     final filteredList = _filterStudents(students, searchText);

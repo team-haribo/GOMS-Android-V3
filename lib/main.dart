@@ -11,6 +11,7 @@ import 'package:goms/core/config/app_env.dart';
 import 'package:goms/app/router/app_router.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/theme/theme_provider.dart';
+import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/map/data/kakao_map_runtime.dart';
 import 'package:goms/firebase_options.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -60,11 +61,35 @@ Future<void> bootstrap({List<Override> overrides = const []}) async {
   unawaited(_initKakaoMap());
 }
 
-class MyApp extends ConsumerWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  late final AppLifecycleListener _lifecycleListener;
+
+  @override
+  void initState() {
+    super.initState();
+    // 앱을 켜 둔 채 바뀐 권한을 포그라운드 복귀 시점에 반영한다. (이슈 #146)
+    _lifecycleListener = AppLifecycleListener(
+      onResume: () {
+        unawaited(ref.read(authProvider.notifier).syncRole());
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final themeMode = switch (ref.watch(themeModeProvider)) {
       AsyncData(:final value) => value,
       _ => ThemeMode.system,

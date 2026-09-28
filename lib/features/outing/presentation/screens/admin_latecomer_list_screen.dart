@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/features/auth/session/presentation/utils/refresh_with_role_sync.dart';
 import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/features/late/presentation/providers/student_council_late_students_provider.dart';
 //ui
@@ -77,11 +78,9 @@ class _AdminLatecomerListScreenState
           Expanded(
             child: RefreshIndicator(
               color: AppColors.admin,
-              onRefresh: () {
-                return ref
-                    .read(studentCouncilLateStudentsProvider.notifier)
-                    .reload();
-              },
+              onRefresh: () => refreshWithRoleSync(context, ref, [
+                ref.read(studentCouncilLateStudentsProvider.notifier).reload(),
+              ]),
               child: lateStudents.when(
                 data: (students) {
                   if (students.isEmpty) {

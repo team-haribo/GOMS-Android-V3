@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/features/auth/session/presentation/utils/refresh_with_role_sync.dart';
 import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/features/report/presentation/routes/report_route_path.dart';
@@ -33,8 +34,8 @@ class OutingWaitingScreen extends ConsumerStatefulWidget {
 }
 
 class _OutingWaitingScreenState extends ConsumerState<OutingWaitingScreen> {
-  Future<void> _onRefresh() async {
-    await Future.wait([
+  Future<void> _onRefresh() {
+    return refreshWithRoleSync(context, ref, [
       ref.read(currentOutingStudentsProvider.notifier).reload(),
       ref.read(lateRankStudentsProvider.notifier).reload(),
       ref.read(myOutingStatusProvider.notifier).reload(),

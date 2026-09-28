@@ -11,10 +11,16 @@ final currentMemberProvider =
 );
 
 class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
+  /// 로그아웃([clear])·로그인([fetch])마다 올라가는 세션 번호.
+  /// [refreshProfile]은 요청 시점의 번호와 응답 시점의 번호가 다르면 응답을 버려,
+  /// 같은 계정으로 재로그인한 경우에도 이전 세션의 응답이 새 세션을 덮지 않게 한다.
+  int _generation = 0;
+
   @override
   Future<CurrentMemberEntity?> build() async => null;
 
   Future<CurrentMemberEntity> fetch() async {
+    _generation++;
     if (!state.hasValue) {
       state = const AsyncLoading();
     }
@@ -44,16 +50,15 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
     if (currentMember == null) {
       return false;
     }
+    final generation = _generation;
 
     try {
       final latestProfile =
           await ref.read(memberRepositoryProvider).getMyProfile();
 
-      // await 동안 상태가 바뀌었을 수 있다(로그아웃으로 clear() 호출 등).
-      // 최신 상태를 다시 확인하고, null이거나 다른 멤버로 바뀌었으면 반영하지 않는다.
+      // await 동안 로그아웃·재로그인됐다면 이전 세션의 응답이므로 버린다.
       final latestMember = state.asData?.value;
-      if (latestMember == null ||
-          latestMember.memberId != currentMember.memberId) {
+      if (generation != _generation || latestMember == null) {
         return false;
       }
 
@@ -77,6 +82,7 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
   }
 
   void clear() {
+    _generation++;
     state = const AsyncData(null);
   }
 

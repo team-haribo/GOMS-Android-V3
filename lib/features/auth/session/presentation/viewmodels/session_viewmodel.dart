@@ -34,6 +34,10 @@ class AuthNotifier extends Notifier<AuthStatus> {
   DateTime? _lastRoleSyncAt;
   Future<bool>? _roleSyncInFlight;
 
+  /// 로그아웃·세션 만료마다 올라가는 세션 번호. 이전 세션에서 시작한 권한 동기화가
+  /// 새 세션에 결과를 반영하거나 실패를 알리지 않도록 구분하는 데 쓴다.
+  int _sessionGeneration = 0;
+
   @override
   AuthStatus build() {
     Future<void> handleSessionExpiry() async {
@@ -123,19 +127,30 @@ class AuthNotifier extends Notifier<AuthStatus> {
       return Future.value(true);
     }
 
-    final sync = _syncRole().whenComplete(() => _roleSyncInFlight = null);
+    late final Future<bool> sync;
+    sync = _syncRole(_sessionGeneration).whenComplete(() {
+      // 그 사이 로그아웃으로 비워졌거나 새 동기화로 바뀌었다면 건드리지 않는다.
+      if (identical(_roleSyncInFlight, sync)) {
+        _roleSyncInFlight = null;
+      }
+    });
     _roleSyncInFlight = sync;
     return sync;
   }
 
-  Future<bool> _syncRole() async {
+  Future<bool> _syncRole(int generation) async {
     final previousRole = ref.read(currentMemberProvider).asData?.value?.role;
     final refreshed =
         await ref.read(currentMemberProvider.notifier).refreshProfile();
-    // 조회에 성공했을 때만 시각을 남긴다. 실패하면 다음 복귀 때 바로 다시 시도한다.
-    if (refreshed && state == AuthStatus.authenticated) {
-      _lastRoleSyncAt = DateTime.now();
+
+    // await 도중 로그아웃됐다면 이전 세션의 결과다. 새 세션에 반영하지 않고,
+    // 알릴 실패도 아니다.
+    if (generation != _sessionGeneration) {
+      return true;
     }
+    // 조회에 성공했을 때만 시각을 남긴다. 실패하면 이전 시각도 지워, 다음 복귀 때
+    // 최소 간격과 관계없이 바로 다시 시도한다.
+    _lastRoleSyncAt = refreshed ? DateTime.now() : null;
     final currentRole = ref.read(currentMemberProvider).asData?.value?.role;
 
     // 권한에 따라 서버가 내려주는 홈 데이터가 달라질 수 있어 다시 불러온다.
@@ -145,8 +160,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
       _warmUpHomeData();
     }
 
-    // await 도중 로그아웃됐다면 알릴 실패가 아니다.
-    return refreshed || state != AuthStatus.authenticated;
+    return refreshed;
   }
 
   Future<_ReissueOutcome> _reissue(String refreshToken) async {
@@ -176,6 +190,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<void> setAuthenticated() async {
     try {
       await _fetchCurrentMember();
+      _lastRoleSyncAt = DateTime.now();
       _warmUpHomeData();
       state = AuthStatus.authenticated;
     } catch (_) {
@@ -212,7 +227,9 @@ class AuthNotifier extends Notifier<AuthStatus> {
   }
 
   void _clearSessionState() {
+    _sessionGeneration++;
     _lastRoleSyncAt = null;
+    _roleSyncInFlight = null;
     ref.read(currentMemberProvider.notifier).clear();
     ref.invalidate(currentOutingStudentsProvider);
     ref.invalidate(lateRankStudentsProvider);

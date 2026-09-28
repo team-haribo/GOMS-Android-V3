@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -139,6 +141,25 @@ void main() {
     expect(member?.role, RoleEnum.user);
   });
 
+  test('refreshProfile는 같은 계정으로 재로그인한 뒤 도착한 이전 세션 응답을 버린다', () async {
+    final notifier = container.read(currentMemberProvider.notifier);
+    await notifier.fetch();
+
+    repository.onGetMyProfile = () async {
+      repository.onGetMyProfile = null;
+      // 이전 요청의 응답 대기 중 로그아웃 후 같은 계정으로 재로그인. 새 세션은 학생 권한.
+      notifier.clear();
+      repository.role = RoleEnum.user;
+      await notifier.fetch();
+      // 이전 요청의 응답은 예전 권한(학생회)을 담고 있다.
+      repository.role = RoleEnum.admin;
+    };
+    final refreshed = await notifier.refreshProfile();
+
+    expect(refreshed, isFalse);
+    expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
+  });
+
   group('syncRole (#146)', () {
     setUp(() => saveTokens(accessTokenValid: true));
 
@@ -184,6 +205,16 @@ void main() {
       expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
     });
 
+    test('로그인 직후 첫 복귀는 프로필을 다시 조회하지 않는다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+      final callsAfterLogin = repository.profileCalls;
+
+      expect(await auth.syncRole(), isTrue);
+
+      expect(repository.profileCalls, callsAfterLogin);
+    });
+
     test('조회에 실패하면 최소 간격과 관계없이 다음 복귀 때 다시 시도한다', () async {
       final auth = container.read(authProvider.notifier);
       await auth.setAuthenticated();
@@ -206,6 +237,31 @@ void main() {
       repository.failProfile = true;
       expect(await auth.syncRole(), isTrue);
       expect(repository.profileCalls, 1);
+    });
+
+    test('로그아웃 전에 시작한 동기화는 새 세션과 공유하지 않는다', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+
+      final gate = Completer<void>();
+      repository.onGetMyProfile = () => gate.future;
+      final oldSync = auth.syncRole(force: true);
+      repository.onGetMyProfile = null;
+
+      // 이전 요청이 끝나기 전에 로그아웃 후 재로그인.
+      await auth.logout();
+      await auth.setAuthenticated();
+      final callsBeforeNewSync = repository.profileCalls;
+
+      final newSync = auth.syncRole(force: true);
+      expect(identical(newSync, oldSync), isFalse);
+      expect(repository.profileCalls, callsBeforeNewSync + 1);
+
+      gate.complete();
+      // 이전 세션의 결과는 새 세션에 실패로 알리지 않는다.
+      expect(await oldSync, isTrue);
+      expect(await newSync, isTrue);
+      expect(container.read(authProvider), AuthStatus.authenticated);
     });
 
     test('인증되지 않은 상태에서는 아무것도 하지 않는다', () async {

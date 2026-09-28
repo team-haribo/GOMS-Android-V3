@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/auth/session/presentation/utils/refresh_with_role_sync.dart';
 import 'package:goms/features/report/presentation/routes/report_route_path.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/bottom_sheets/filter_button.dart';
 import 'package:goms/features/qr/presentation/widgets/qr_button.dart';
@@ -84,11 +84,12 @@ class _AdminReportListScreenState extends ConsumerState<AdminReportListScreen> {
     final query = ref.watch(_reportSearchQueryProvider(_providerKey));
     final reportStatusFilter =
         ref.watch(_reportStatusFilterProvider(_providerKey));
+    final role = ref.watch(roleProvider);
 
     return BaseScaffold(
       showAppBar: true,
-      role: RoleEnum.admin,
-      floatingActionButton: const QRButton(type: RoleEnum.admin),
+      role: role,
+      floatingActionButton: QRButton(type: role),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

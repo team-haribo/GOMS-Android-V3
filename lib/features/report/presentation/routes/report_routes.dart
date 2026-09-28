@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_builders.dart';
-import 'package:goms/features/member/presentation/widgets/admin_route_guard.dart';
+import 'package:goms/features/member/presentation/widgets/admin_route_guard_widget.dart';
 import 'package:goms/features/report/presentation/routes/report_route_path.dart';
 import 'package:goms/features/report/presentation/screens/admin_report_detail_screen.dart';
 import 'package:goms/features/report/presentation/screens/admin_report_list_screen.dart';

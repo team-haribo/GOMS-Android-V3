@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/core/auth/access_denied_notifier.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/network/auth_interceptor.dart';
 
@@ -171,8 +172,117 @@ void main() {
       expect(storage['refresh_token'], isNull);
       expect(_sessionExpiryTriggered, isTrue);
     });
-  });
 
+    group('admin API 403 (#150)', () {
+      const adminPath = '/api/v3/student-council/late';
+      var accessDeniedCount = 0;
+      void onAccessDenied() => accessDeniedCount++;
+
+      setUp(() {
+        accessDeniedCount = 0;
+        storage['access_token'] = 'access-token';
+        storage['refresh_token'] = 'refresh-token';
+        AccessDeniedNotifier.register(onAccessDenied);
+      });
+
+      tearDown(() => AccessDeniedNotifier.unregister(onAccessDenied));
+
+      _QueuedResponse reissued() => _QueuedResponse(
+            matcher: (options) => options.path == '/api/v3/auth/reissue',
+            statusCode: 200,
+            data: {
+              'accessToken': 'renewed-access-token',
+              'refreshToken': 'renewed-refresh-token',
+              'accessTokenExpiresIn': '2026-12-31T00:00:00.000Z',
+              'refreshTokenExpiresIn': '2027-01-31T00:00:00.000Z',
+            },
+          );
+
+      Dio buildDio(_QueueHttpClientAdapter adapter) {
+        final dio = Dio(BaseOptions(baseUrl: 'https://example.com'));
+        dio.httpClientAdapter = adapter;
+        dio.interceptors.add(AuthInterceptor(dio: dio));
+        return dio;
+      }
+
+      test('권한이 부여된 뒤 이전 토큰으로 403이면 재발급 후 재시도해 성공한다', () async {
+        final adapter = _QueueHttpClientAdapter([
+          _QueuedResponse(
+            matcher: (options) =>
+                options.path == adminPath &&
+                options.headers['Authorization'] == 'Bearer access-token',
+            statusCode: 403,
+          ),
+          reissued(),
+          _QueuedResponse(
+            matcher: (options) =>
+                options.path == adminPath &&
+                options.headers['Authorization'] ==
+                    'Bearer renewed-access-token',
+            statusCode: 200,
+            data: {'ok': true},
+          ),
+        ]);
+
+        final response =
+            await buildDio(adapter).get<Map<String, dynamic>>(adminPath);
+
+        expect(response.statusCode, 200);
+        expect(storage['access_token'], 'renewed-access-token');
+        expect(accessDeniedCount, 0);
+      });
+
+      test('재발급한 토큰으로도 403이면 권한 없음을 알린다', () async {
+        final adapter = _QueueHttpClientAdapter([
+          _QueuedResponse(
+            matcher: (options) => options.path == adminPath,
+            statusCode: 403,
+          ),
+          reissued(),
+          _QueuedResponse(
+            matcher: (options) =>
+                options.path == adminPath &&
+                options.extra['auth_retry_attempted'] == true,
+            statusCode: 403,
+          ),
+        ]);
+
+        await expectLater(
+          () => buildDio(adapter).get<Map<String, dynamic>>(adminPath),
+          throwsA(
+            isA<DioException>().having(
+              (error) => error.response?.statusCode,
+              'statusCode',
+              403,
+            ),
+          ),
+        );
+
+        expect(accessDeniedCount, 1);
+        expect(adapter.requests.length, 3);
+      });
+
+      test('일반 API의 403은 재발급하지 않고 알리지도 않는다', () async {
+        final adapter = _QueueHttpClientAdapter([
+          _QueuedResponse(
+            matcher: (options) => options.path == '/api/v3/review/1',
+            statusCode: 403,
+          ),
+        ]);
+
+        await expectLater(
+          () => buildDio(adapter).delete<Map<String, dynamic>>(
+            '/api/v3/review/1',
+          ),
+          throwsA(isA<DioException>()),
+        );
+
+        expect(accessDeniedCount, 0);
+        expect(adapter.requests.length, 1);
+        expect(storage['access_token'], 'access-token');
+      });
+    });
+  });
 }
 
 bool _sessionExpiryTriggered = false;

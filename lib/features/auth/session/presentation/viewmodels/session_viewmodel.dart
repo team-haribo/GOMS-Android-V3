@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/auth/access_denied_notifier.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
@@ -44,9 +45,17 @@ class AuthNotifier extends Notifier<AuthStatus> {
       _clearSessionState();
     }
 
+    // 관리자 API가 최신 토큰으로도 403이면 권한이 회수된 것이므로 바로 다시
+    // 조회한다. (이슈 #150) 자동 동기화 간격과 무관하게 반영해야 하므로 force로 요청한다.
+    void handleAccessDenied() {
+      unawaited(syncRole(force: true));
+    }
+
     SessionExpiryNotifier.register(handleSessionExpiry);
+    AccessDeniedNotifier.register(handleAccessDenied);
     ref.onDispose(() {
       SessionExpiryNotifier.unregister(handleSessionExpiry);
+      AccessDeniedNotifier.unregister(handleAccessDenied);
     });
 
     return AuthStatus.checking;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:goms/core/enums/role_enum.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/scaffolds/base_scaffold.dart';
 import 'package:goms/features/map/review/domain/enums/report_status.dart';
@@ -45,10 +45,11 @@ class _AdminReportDetailScreenState
     final isSubmitting = ref.watch(
       _reportResolveSubmittingProvider(widget.reportId),
     );
+    final role = ref.watch(roleProvider);
 
     return BaseScaffold(
       showAppBar: true,
-      role: RoleEnum.admin,
+      role: role,
       body: detailAsync.when(
         data: (detail) => _buildContent(context, detail, isSubmitting),
         loading: () => const Center(child: CircularProgressIndicator()),

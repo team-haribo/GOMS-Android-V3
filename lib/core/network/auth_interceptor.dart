@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart';
+import 'package:goms/core/auth/access_denied_notifier.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/utils/token_storage.dart';
 
 class AuthInterceptor extends Interceptor {
   static const _authPathPrefix = '/api/v3/auth';
+  static const _adminPathPrefix = '/api/v3/student-council/';
   static const _authorizationHeader = 'Authorization';
   static const _refreshTokenHeader = 'RefreshToken';
   static const _didRetryKey = 'auth_retry_attempted';
@@ -39,10 +41,19 @@ class AuthInterceptor extends Interceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (!_shouldHandleUnauthorized(
-      err.requestOptions,
-      err.response?.statusCode,
-    )) {
+    final options = err.requestOptions;
+    final statusCode = err.response?.statusCode;
+
+    if (_isAdminAccessDenied(options, statusCode) &&
+        options.extra[_didRetryKey] == true) {
+      // 최신 권한이 담긴 토큰으로 다시 보냈는데도 거부됐다면 실제로 권한이 없다.
+      AccessDeniedNotifier.notify();
+      handler.next(err);
+      return;
+    }
+
+    if (!_shouldHandleUnauthorized(options, statusCode) &&
+        !_shouldRetryWithFreshRole(options, statusCode)) {
       handler.next(err);
       return;
     }
@@ -55,10 +66,7 @@ class AuthInterceptor extends Interceptor {
         return;
       }
 
-      final response = await _retryRequest(
-        err.requestOptions,
-        refreshedToken,
-      );
+      final response = await _retryRequest(options, refreshedToken);
       handler.resolve(response);
     } on _RefreshRejectedException {
       // 리프레시 토큰이 서버에서 실제로 거부된 경우에만 세션을 만료시킨다.
@@ -80,6 +88,21 @@ class AuthInterceptor extends Interceptor {
     }
 
     return options.path.startsWith(_authPathPrefix);
+  }
+
+  /// 학생회 전용 API의 403. 일반 API의 403(비밀번호 불일치, 후기 권한 등)은
+  /// 업무 규칙에 따른 거부라 권한 변경과 무관하므로 제외한다.
+  bool _isAdminAccessDenied(RequestOptions options, int? statusCode) {
+    return statusCode == 403 && options.path.startsWith(_adminPathPrefix);
+  }
+
+  /// 서버는 access token의 role claim으로 권한을 검사하므로, 앱 실행 중 권한이
+  /// 부여됐다면 기존 토큰으로는 403이 난다. 재발급하면 DB의 최신 권한이 담긴
+  /// 토큰을 받으므로 한 번 재발급 후 재시도한다. (이슈 #150)
+  bool _shouldRetryWithFreshRole(RequestOptions options, int? statusCode) {
+    return _isAdminAccessDenied(options, statusCode) &&
+        options.extra[_didRetryKey] != true &&
+        options.extra[_skipUnauthorizedHandlingKey] != true;
   }
 
   bool _shouldHandleUnauthorized(RequestOptions options, int? statusCode) {

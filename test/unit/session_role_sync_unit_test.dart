@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/core/auth/access_denied_notifier.dart';
 import 'package:goms/core/enums/role_enum.dart';
 import 'package:goms/features/auth/session/data/datasources/session_remote_datasource.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
@@ -201,6 +202,18 @@ void main() {
       expect(container.read(currentMemberProvider).value?.role, RoleEnum.admin);
 
       await auth.syncRole(force: true);
+
+      expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
+    });
+
+    test('API가 403으로 거부하면 최소 간격과 관계없이 권한을 다시 조회한다 (#150)', () async {
+      final auth = container.read(authProvider.notifier);
+      await auth.setAuthenticated();
+
+      // 로그인 직후(최소 간격 안)에 권한이 회수되고 관리자 API가 403을 받음.
+      repository.role = RoleEnum.user;
+      AccessDeniedNotifier.notify();
+      await pumpEventQueue();
 
       expect(container.read(currentMemberProvider).value?.role, RoleEnum.user);
     });

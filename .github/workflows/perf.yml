@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
     inputs:
       rebaseline:
-        description: '현재 측정값으로 baseline 을 갱신하는 PR 생성'
+        description: '현재 측정값으로 baseline 을 갱신해 이 브랜치에 커밋'
         type: boolean
         default: false
       repeats:
@@ -37,8 +37,10 @@ permissions:
 
 jobs:
   perf:
-    uses: aiden30015/Ci-App-Performance-Measurement/.github/workflows/perf-reusable.yml@main
+    # TODO(#148): perfkit 의 재측정·다중 러너 baseline 이 main 에 머지되면 @main 으로 되돌린다.
+    uses: aiden30015/Ci-App-Performance-Measurement/.github/workflows/perf-reusable.yml@feat/multi-runner-baseline
     with:
+      perfkit-ref: feat/multi-runner-baseline
       rebaseline: ${{ inputs.rebaseline == true }}
       repeats: ${{ inputs.repeats || '' }}
       scenarios: ${{ inputs.scenarios || '' }}

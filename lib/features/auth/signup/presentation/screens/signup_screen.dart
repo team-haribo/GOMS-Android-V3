@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
+import 'package:goms/features/profile/presentation/routes/profile_route_path.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/auth/signup/domain/enums/gender_type.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
@@ -41,8 +42,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ref.read(signupProvider.notifier).resetStatus();
         final authFlow = ref.read(authFlowProvider);
         final destination = authFlow.verifiedToken != null
-            ? RoutePath.password
-            : RoutePath.verify;
+            ? AuthRoutePath.password
+            : AuthRoutePath.verify;
         context.go(destination);
       } else if (next.status == SignupStatus.failure &&
           next.errorMessage != null) {
@@ -133,7 +134,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
             behavior: HitTestBehavior.opaque,
             onTap: () async {
               final isAgreed =
-                  await context.push<bool>(RoutePath.privacyPolicy);
+                  await context.push<bool>(ProfileRoutePath.privacyPolicy);
               if (isAgreed == true && mounted) {
                 notifier.setPrivacyPolicyAgreed(true);
               }

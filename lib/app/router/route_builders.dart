@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/map/routes/map_route_path.dart';
 import 'package:goms/features/map/discovery/presentation/models/popular_place.dart';
 
 const invalidRouteAccessMessage = '잘못된 접근입니다.';
 
 String? redirectToMapIfPopularPlaceMissing(Object? extra) {
   if (extra is! PopularPlace) {
-    return RoutePath.map;
+    return MapRoutePath.map;
   }
   return null;
 }

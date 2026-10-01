@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/map/routes/map_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/map/data/providers/recommended_place_providers.dart';
 import 'package:goms/features/map/domain/entities/place_review_entity.dart';
@@ -48,13 +48,13 @@ class MapDetailOverlay extends ConsumerWidget {
     final viewModel = ref.read(mapDetailOverlayViewModelProvider(place));
 
     Future<Object?> onArrivalPressed() =>
-        context.push(RoutePath.direction, extra: place);
+        context.push(MapRoutePath.direction, extra: place);
     Future<Object?> onDeparturePressed() => context.push(
-          '${RoutePath.direction}?start=departure',
+          '${MapRoutePath.direction}?start=departure',
           extra: resolvedPlace,
         );
     Future<Object?> onWriteReviewPressed() =>
-        context.push(RoutePath.writeReview, extra: resolvedPlace);
+        context.push(MapRoutePath.writeReview, extra: resolvedPlace);
 
     return Stack(
       children: [

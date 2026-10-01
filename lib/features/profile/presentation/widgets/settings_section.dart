@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/core/theme/theme_provider.dart';
 import 'package:goms/core/widgets/buttons/toggle_button.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';

@@ -9,7 +9,7 @@ import 'package:goms/features/profile/presentation/routes/profile_routes.dart';
 import 'package:goms/features/qr/presentation/routes/qr_routes.dart';
 import 'package:goms/features/report/presentation/routes/report_routes.dart';
 import 'package:goms/features/splash/presentation/routes/splash_routes.dart';
-import 'route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 
 export 'route_builders.dart';
 
@@ -17,7 +17,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
-  initialLocation: RoutePath.splash,
+  initialLocation: SplashRoutePath.splash,
   routes: [
     ...buildSplashRoutes(),
     ...buildAuthRoutes(),

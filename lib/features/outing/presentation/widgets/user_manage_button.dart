@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 
 class UserManageButton extends StatelessWidget {
@@ -18,7 +18,7 @@ class UserManageButton extends StatelessWidget {
     return GradientFloatingActionButton(
       size: buttonSize,
       baseColor: AppColors.admin,
-      onPressed: () => context.push(RoutePath.studentCouncilMembers),
+      onPressed: () => context.push(OutingRoutePath.studentCouncilMembers),
       child: AppIcons.userManageButton(
         width: 24,
         height: 24,

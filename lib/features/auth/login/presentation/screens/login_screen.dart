@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
@@ -90,11 +91,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   void _handleFindPassword() {
-    context.go(RoutePath.findPassword);
+    context.go(AuthRoutePath.findPassword);
   }
 
   void _handleBack() {
-    context.go(RoutePath.onboarding);
+    context.go(SplashRoutePath.onboarding);
   }
 
   @override
@@ -110,8 +111,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       onConfirm: _handleLogin,
       onBackPressed: _handleBack,
       confirmBottomSpacing: AppSpacing.s24,
+      confirmKey: const Key('login_submit'),
       children: [
         EmailTextField(
+          key: const Key('login_id'),
           controller: _emailController,
           hintText: '이메일을 입력해주세요',
           errorText: loginState.emailError,
@@ -121,6 +124,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ),
         AppGap.v16,
         PasswordTextField(
+          key: const Key('login_pw'),
           controller: _passwordController,
           hintText: '비밀번호를 입력해주세요',
           errorText: loginState.passwordError,

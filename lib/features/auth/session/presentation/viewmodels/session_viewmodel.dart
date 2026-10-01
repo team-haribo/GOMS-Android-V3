@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:goms/core/auth/access_denied_notifier.dart';
 import 'package:goms/core/auth/session_expiry_notifier.dart';
 import 'package:goms/core/utils/token_storage.dart';
 import 'package:goms/features/auth/session/data/providers/session_data_providers.dart';
@@ -27,15 +28,34 @@ final authProvider = NotifierProvider<AuthNotifier, AuthStatus>(() {
 });
 
 class AuthNotifier extends Notifier<AuthStatus> {
+  /// 포그라운드 복귀가 짧은 간격으로 반복될 때 프로필 조회가 몰리지 않도록
+  /// 두는 최소 간격.
+  static const roleSyncInterval = Duration(seconds: 30);
+
+  DateTime? _lastRoleSyncAt;
+  Future<bool>? _roleSyncInFlight;
+
+  /// 로그아웃·세션 만료마다 올라가는 세션 번호. 이전 세션에서 시작한 권한 동기화가
+  /// 새 세션에 결과를 반영하거나 실패를 알리지 않도록 구분하는 데 쓴다.
+  int _sessionGeneration = 0;
+
   @override
   AuthStatus build() {
     Future<void> handleSessionExpiry() async {
       _clearSessionState();
     }
 
+    // 관리자 API가 최신 토큰으로도 403이면 권한이 회수된 것이므로 바로 다시
+    // 조회한다. (이슈 #150) 자동 동기화 간격과 무관하게 반영해야 하므로 force로 요청한다.
+    void handleAccessDenied() {
+      unawaited(syncRole(force: true));
+    }
+
     SessionExpiryNotifier.register(handleSessionExpiry);
+    AccessDeniedNotifier.register(handleAccessDenied);
     ref.onDispose(() {
       SessionExpiryNotifier.unregister(handleSessionExpiry);
+      AccessDeniedNotifier.unregister(handleAccessDenied);
     });
 
     return AuthStatus.checking;
@@ -44,48 +64,38 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<bool> checkToken() async {
     state = AuthStatus.checking;
 
-    final refreshToken = await TokenStorage.getRefreshToken();
-    final refreshTokenExpiry = await TokenStorage.getRefreshTokenExpiry();
-    final hasValidRefresh = _hasValidToken(refreshToken, refreshTokenExpiry);
-
-    // 리프레시 토큰이 유효하면 access token의 만료 여부와 관계없이 항상 재발급을
-    // 먼저 시도한다. 디스코드 권한 동기화 후에도 기존 access token의 role claim이
-    // 남아 이전 권한(학생회 등)이 계속 보이던 문제를 막기 위함이다. 재발급으로
-    // role claim을 최신화한 뒤 멤버 정보를 다시 불러온다. (이슈 #123)
-    if (hasValidRefresh) {
-      final outcome = await _reissue(refreshToken!);
-      if (outcome == _ReissueOutcome.success) {
-        return _loadSession();
-      }
-      if (outcome == _ReissueOutcome.rejected) {
-        // 리프레시 토큰이 서버에서 거부됨 → 세션은 이미 종료되었다.
-        return false;
-      }
-      // 일시 장애: 아직 유효한 access token이 있으면 그걸로 폴백한다.
-    }
-
     final accessToken = await TokenStorage.getAccessToken();
     final accessTokenExpiry = await TokenStorage.getAccessTokenExpiry();
     if (_hasValidToken(accessToken, accessTokenExpiry)) {
       return _loadSession();
     }
 
-    if (hasValidRefresh) {
-      // 재발급이 일시적으로 실패했을 뿐 리프레시 토큰은 유효하므로 토큰을 보존해
-      // 다음 실행 때 다시 재발급을 시도할 수 있게 한다.
-      _clearSessionState();
-    } else {
+    final refreshToken = await TokenStorage.getRefreshToken();
+    final refreshTokenExpiry = await TokenStorage.getRefreshTokenExpiry();
+    if (!_hasValidToken(refreshToken, refreshTokenExpiry)) {
       await _clearSession();
+      return false;
     }
-    return false;
+
+    final outcome = await _reissue(refreshToken!);
+    switch (outcome) {
+      case _ReissueOutcome.success:
+        return _loadSession();
+      case _ReissueOutcome.rejected:
+        // 리프레시 토큰이 서버에서 거부됨 → 세션은 이미 종료되었다.
+        return false;
+      case _ReissueOutcome.transient:
+        // 재발급이 일시적으로 실패했을 뿐 리프레시 토큰은 유효하므로 토큰을 보존해
+        // 다음 실행 때 다시 재발급을 시도할 수 있게 한다.
+        _clearSessionState();
+        return false;
+    }
   }
 
   Future<bool> _loadSession() async {
     try {
       await _fetchCurrentMember();
-      // 프로필 role은 access token claim에 의존할 수 있어, 서버 DB 기준
-      // /member/myrole로 권한을 한 번 더 보정한다. (이슈 #123)
-      await ref.read(currentMemberProvider.notifier).refreshRole();
+      _lastRoleSyncAt = DateTime.now();
       _warmUpHomeData();
       state = AuthStatus.authenticated;
       return true;
@@ -93,6 +103,73 @@ class AuthNotifier extends Notifier<AuthStatus> {
       _clearSessionState();
       return false;
     }
+  }
+
+  /// 앱을 켜 둔 동안 바뀐 권한을 반영한다. (이슈 #146)
+  ///
+  /// 앱을 켜 둔 채 권한이 부여·회수되면 스플래시의 [checkToken]이 다시 돌지 않아
+  /// 이전 권한이 그대로 남는다. 서버는 토큰으로 사용자만 식별하고 권한은 DB에서
+  /// 조회하므로, 재발급 없이 `/member/profile`만 다시 불러오면 최신 권한이 반영된다.
+  ///
+  /// 인증된 상태에서만 동작하고, 이미 진행 중이면 그 동기화를 기다린다.
+  /// 포그라운드 복귀처럼 자동으로 호출될 때는 [roleSyncInterval] 안에 동기화했다면
+  /// 건너뛰고, 당겨서 새로고침처럼 사용자가 직접 요청하면 [force]로 간격을 무시한다.
+  ///
+  /// 조회에 실패했을 때만 false를 돌려준다. 건너뛴 경우나 인증되지 않은 상태는
+  /// 알릴 실패가 없으므로 true다.
+  Future<bool> syncRole({bool force = false}) {
+    if (state != AuthStatus.authenticated) {
+      return Future.value(true);
+    }
+
+    // force여도 진행 중인 조회가 있으면 새로 보내지 않고 그 결과를 기다린다.
+    // 방금 보낸 요청이라 결과가 같고, 같은 응답을 두 번 받을 이유가 없다.
+    final inFlight = _roleSyncInFlight;
+    if (inFlight != null) {
+      return inFlight;
+    }
+
+    final lastSyncedAt = _lastRoleSyncAt;
+    if (!force &&
+        lastSyncedAt != null &&
+        DateTime.now().difference(lastSyncedAt) < roleSyncInterval) {
+      return Future.value(true);
+    }
+
+    late final Future<bool> sync;
+    sync = _syncRole(_sessionGeneration).whenComplete(() {
+      // 그 사이 로그아웃으로 비워졌거나 새 동기화로 바뀌었다면 건드리지 않는다.
+      if (identical(_roleSyncInFlight, sync)) {
+        _roleSyncInFlight = null;
+      }
+    });
+    _roleSyncInFlight = sync;
+    return sync;
+  }
+
+  Future<bool> _syncRole(int generation) async {
+    final previousRole = ref.read(currentMemberProvider).asData?.value?.role;
+    final refreshed =
+        await ref.read(currentMemberProvider.notifier).refreshProfile();
+
+    // await 도중 로그아웃됐다면 이전 세션의 결과다. 새 세션에 반영하지 않고,
+    // 알릴 실패도 아니다.
+    if (generation != _sessionGeneration) {
+      return true;
+    }
+    // 조회에 성공했을 때만 시각을 남긴다. 실패하면 이전 시각도 지워, 다음 복귀 때
+    // 최소 간격과 관계없이 바로 다시 시도한다.
+    _lastRoleSyncAt = refreshed ? DateTime.now() : null;
+    final currentRole = ref.read(currentMemberProvider).asData?.value?.role;
+
+    // 권한에 따라 서버가 내려주는 홈 데이터가 달라질 수 있어 다시 불러온다.
+    if (state == AuthStatus.authenticated &&
+        currentRole != null &&
+        currentRole != previousRole) {
+      _warmUpHomeData();
+    }
+
+    return refreshed;
   }
 
   Future<_ReissueOutcome> _reissue(String refreshToken) async {
@@ -122,6 +199,7 @@ class AuthNotifier extends Notifier<AuthStatus> {
   Future<void> setAuthenticated() async {
     try {
       await _fetchCurrentMember();
+      _lastRoleSyncAt = DateTime.now();
       _warmUpHomeData();
       state = AuthStatus.authenticated;
     } catch (_) {
@@ -158,6 +236,9 @@ class AuthNotifier extends Notifier<AuthStatus> {
   }
 
   void _clearSessionState() {
+    _sessionGeneration++;
+    _lastRoleSyncAt = null;
+    _roleSyncInFlight = null;
     ref.read(currentMemberProvider.notifier).clear();
     ref.invalidate(currentOutingStudentsProvider);
     ref.invalidate(lateRankStudentsProvider);

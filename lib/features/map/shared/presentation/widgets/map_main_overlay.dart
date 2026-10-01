@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/map/routes/map_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/widgets/dialogs/goms_dialog.dart';
 import 'package:goms/features/map/data/map_constants.dart';
@@ -263,7 +263,7 @@ class _PopularPlacesSection extends StatelessWidget {
                         onPlaceTap!(place);
                         return;
                       }
-                      context.push(RoutePath.mapDetail, extra: place);
+                      context.push(MapRoutePath.mapDetail, extra: place);
                     },
                     onLikePressed: place.placeId == null
                         ? null
@@ -380,13 +380,13 @@ class _SelectedPlaceOverlay extends ConsumerWidget {
       onDismiss: onDismiss,
       onFavoritePressed: onTogglePressed,
       onArrivalPressed: () =>
-          context.push(RoutePath.direction, extra: resolvedPlace),
+          context.push(MapRoutePath.direction, extra: resolvedPlace),
       onDeparturePressed: () => context.push(
-        '${RoutePath.direction}?start=departure',
+        '${MapRoutePath.direction}?start=departure',
         extra: resolvedPlace,
       ),
       onWriteReviewPressed: () =>
-          context.push(RoutePath.writeReview, extra: resolvedPlace),
+          context.push(MapRoutePath.writeReview, extra: resolvedPlace),
       onDeleteReview: onDeletePressed,
       onReportReview: onReportReview,
     );
@@ -506,7 +506,7 @@ class _MyActivitySection extends StatelessWidget {
                     onPlaceTap!(place);
                     return;
                   }
-                  context.push(RoutePath.mapDetail, extra: place);
+                  context.push(MapRoutePath.mapDetail, extra: place);
                 },
                 onLikePressed: place.placeId == null
                     ? null

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/email_verification/domain/enums/email_verification_purpose.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
@@ -35,16 +35,16 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
       if (authFlow.email.isNotEmpty &&
           authFlow.purpose == EmailVerificationPurpose.passwordChange) {
         context.go(
-          RoutePath.verify,
+          AuthRoutePath.verify,
           extra: const VerifyRouteExtra(
-            redirectPath: RoutePath.resetPassword,
-            backPath: RoutePath.findPassword,
+            redirectPath: AuthRoutePath.resetPassword,
+            backPath: AuthRoutePath.findPassword,
           ),
         );
         return;
       }
 
-      context.go(RoutePath.findPassword);
+      context.go(AuthRoutePath.findPassword);
     });
   }
 
@@ -64,7 +64,7 @@ class _ResetPasswordScreenState extends ConsumerState<ResetPasswordScreen> {
           onConfirm: () async {
             await ref.read(authProvider.notifier).logout();
             if (context.mounted) {
-              context.go(RoutePath.login);
+              context.go(AuthRoutePath.login);
             }
           },
         ).show(context);

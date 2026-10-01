@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms_design_system/goms_design_system.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/verification/presentation/states/verify_state.dart';
 import 'package:goms/features/auth/verification/presentation/viewmodels/verify_viewmodel.dart';
@@ -35,9 +35,9 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
 
   String get _fallbackBackRoute =>
       widget.backPath ??
-      (widget.redirectPath == RoutePath.resetPassword
-          ? RoutePath.findPassword
-          : RoutePath.signUp);
+      (widget.redirectPath == AuthRoutePath.resetPassword
+          ? AuthRoutePath.findPassword
+          : AuthRoutePath.signUp);
 
   void _handleBack() {
     _clearVerificationState();
@@ -47,8 +47,8 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
       return;
     }
 
-    if (widget.redirectPath == RoutePath.resetPassword) {
-      context.go(RoutePath.findPassword);
+    if (widget.redirectPath == AuthRoutePath.resetPassword) {
+      context.go(AuthRoutePath.findPassword);
       return;
     }
 
@@ -75,14 +75,14 @@ class _VerifyScreenState extends ConsumerState<VerifyScreen> {
           if (!mounted) return;
           final notifier = ref.read(verifyProvider.notifier);
           notifier.resetStatus();
-          final isResetFlow = widget.redirectPath == RoutePath.resetPassword;
+          final isResetFlow = widget.redirectPath == AuthRoutePath.resetPassword;
           await GomsDialog.single(
             title: '인증 확인',
             content: isResetFlow
                 ? '인증이 완료되었습니다.\n비밀번호 재설정 페이지로 이동합니다.'
                 : '인증이 완료되었습니다.\n회원가입 페이지로 돌아갑니다.',
             onConfirm: () {
-              context.go(widget.redirectPath ?? RoutePath.password);
+              context.go(widget.redirectPath ?? AuthRoutePath.password);
             },
           ).show(context);
           notifier.reset();

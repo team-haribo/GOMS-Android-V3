@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/core/enums/student_role_enum.dart';
 import 'package:goms/features/member/data/providers/member_providers.dart';
 import 'package:goms/features/member/data/request/student_council_filter_request.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
@@ -149,11 +148,6 @@ class _FakeMemberRepository implements MemberRepository {
 
   @override
   Future<CurrentMemberEntity> getMyProfile() {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<RoleEnum> getMyRole() {
     throw UnimplementedError();
   }
 }

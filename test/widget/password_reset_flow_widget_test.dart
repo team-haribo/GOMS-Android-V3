@@ -4,8 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:dio/dio.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
+import 'package:goms/features/profile/presentation/routes/profile_route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/auth/shared/presentation/viewmodels/auth_flow_viewmodel.dart';
 import 'package:goms/features/profile/presentation/viewmodels/settings_viewmodel.dart';
@@ -50,14 +52,14 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.myPage,
+        initialLocation: ProfileRoutePath.myPage,
         routes: [
           GoRoute(
-            path: RoutePath.myPage,
+            path: ProfileRoutePath.myPage,
             builder: (context, state) => const MyPageScreen(),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) =>
                 const Scaffold(body: Text('verify-screen')),
           ),
@@ -119,14 +121,14 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.myPage,
+        initialLocation: ProfileRoutePath.myPage,
         routes: [
           GoRoute(
-            path: RoutePath.myPage,
+            path: ProfileRoutePath.myPage,
             builder: (context, state) => const MyPageScreen(),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) {
               final extra = state.extra;
               final routeExtra = switch (extra) {
@@ -201,19 +203,19 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.resetPassword,
+        initialLocation: AuthRoutePath.resetPassword,
         routes: [
           GoRoute(
-            path: RoutePath.resetPassword,
+            path: AuthRoutePath.resetPassword,
             builder: (context, state) => const ResetPasswordScreen(),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) =>
                 const Scaffold(body: Text('verify-screen')),
           ),
           GoRoute(
-            path: RoutePath.findPassword,
+            path: AuthRoutePath.findPassword,
             builder: (context, state) =>
                 const Scaffold(body: Text('find-password-screen')),
           ),
@@ -264,24 +266,24 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.resetPassword,
+        initialLocation: AuthRoutePath.resetPassword,
         routes: [
           GoRoute(
-            path: RoutePath.resetPassword,
+            path: AuthRoutePath.resetPassword,
             builder: (context, state) => const ResetPasswordScreen(),
           ),
           GoRoute(
-            path: RoutePath.login,
+            path: AuthRoutePath.login,
             builder: (context, state) =>
                 const Scaffold(body: Text('login-screen')),
           ),
           GoRoute(
-            path: RoutePath.findPassword,
+            path: AuthRoutePath.findPassword,
             builder: (context, state) =>
                 const Scaffold(body: Text('find-password-screen')),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) =>
                 const Scaffold(body: Text('verify-screen')),
           ),
@@ -335,14 +337,14 @@ void main() {
         'LoginScreen back button falls back to onboarding when opened as root',
         (tester) async {
       final router = GoRouter(
-        initialLocation: RoutePath.login,
+        initialLocation: AuthRoutePath.login,
         routes: [
           GoRoute(
-            path: RoutePath.login,
+            path: AuthRoutePath.login,
             builder: (context, state) => const LoginScreen(),
           ),
           GoRoute(
-            path: RoutePath.onboarding,
+            path: SplashRoutePath.onboarding,
             builder: (context, state) =>
                 const Scaffold(body: Text('onboarding-screen')),
           ),
@@ -423,7 +425,7 @@ void main() {
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             home: ResponsiveBreakpoints.builder(
-              child: const VerifyScreen(redirectPath: RoutePath.resetPassword),
+              child: const VerifyScreen(redirectPath: AuthRoutePath.resetPassword),
               breakpoints: const [
                 Breakpoint(start: 0, end: 359, name: AppBreakpoints.smallPhone),
                 Breakpoint(start: 360, end: 450, name: AppBreakpoints.mobile),
@@ -466,20 +468,20 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.verify,
+        initialLocation: AuthRoutePath.verify,
         routes: [
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) =>
-                const VerifyScreen(redirectPath: RoutePath.resetPassword),
+                const VerifyScreen(redirectPath: AuthRoutePath.resetPassword),
           ),
           GoRoute(
-            path: RoutePath.findPassword,
+            path: AuthRoutePath.findPassword,
             builder: (context, state) =>
                 const Scaffold(body: Text('find-password-screen')),
           ),
           GoRoute(
-            path: RoutePath.signUp,
+            path: AuthRoutePath.signUp,
             builder: (context, state) =>
                 const Scaffold(body: Text('signup-screen')),
           ),
@@ -539,16 +541,16 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.resetPassword,
+        initialLocation: AuthRoutePath.resetPassword,
         routes: [
           GoRoute(
-            path: RoutePath.resetPassword,
+            path: AuthRoutePath.resetPassword,
             builder: (context, state) => Scaffold(
               body: Center(
                 child: ElevatedButton(
                   onPressed: () => context.push(
-                    RoutePath.verify,
-                    extra: RoutePath.resetPassword,
+                    AuthRoutePath.verify,
+                    extra: AuthRoutePath.resetPassword,
                   ),
                   child: const Text('open-verify'),
                 ),
@@ -556,13 +558,13 @@ void main() {
             ),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) => VerifyScreen(
               redirectPath: state.extra as String?,
             ),
           ),
           GoRoute(
-            path: RoutePath.findPassword,
+            path: AuthRoutePath.findPassword,
             builder: (context, state) =>
                 const Scaffold(body: Text('find-password-screen')),
           ),
@@ -619,10 +621,10 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.findPassword,
+        initialLocation: AuthRoutePath.findPassword,
         routes: [
           GoRoute(
-            path: RoutePath.findPassword,
+            path: AuthRoutePath.findPassword,
             builder: (context, state) => Scaffold(
               body: Center(
                 child: Column(
@@ -630,7 +632,7 @@ void main() {
                   children: [
                     const Text('find-password-screen'),
                     ElevatedButton(
-                      onPressed: () => context.push(RoutePath.verify),
+                      onPressed: () => context.push(AuthRoutePath.verify),
                       child: const Text('open-verify'),
                     ),
                   ],
@@ -639,12 +641,12 @@ void main() {
             ),
           ),
           GoRoute(
-            path: RoutePath.verify,
+            path: AuthRoutePath.verify,
             builder: (context, state) =>
-                const VerifyScreen(redirectPath: RoutePath.resetPassword),
+                const VerifyScreen(redirectPath: AuthRoutePath.resetPassword),
           ),
           GoRoute(
-            path: RoutePath.password,
+            path: AuthRoutePath.password,
             builder: (context, state) =>
                 const Scaffold(body: Text('password-screen')),
           ),

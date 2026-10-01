@@ -1,4 +1,4 @@
-import 'package:goms/features/home/domain/enums/student_role_enum.dart';
+import 'package:goms/core/enums/student_role_enum.dart';
 
 class SearchProfileContainerModel {
   final String name;

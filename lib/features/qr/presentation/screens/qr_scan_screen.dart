@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/qr/presentation/routes/qr_route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
@@ -36,9 +37,9 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
 
       final resultLocation = switch (next.status) {
         QrScanStatus.failure when next.errorMessage != null =>
-          RoutePath.qrResultLocation('failure'),
+          QrRoutePath.qrResultLocation('failure'),
         QrScanStatus.success when next.resultType != null =>
-          RoutePath.qrResultLocation(next.resultType!.name),
+          QrRoutePath.qrResultLocation(next.resultType!.name),
         _ => null,
       };
       if (resultLocation == null) return;
@@ -106,7 +107,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
                       if (context.canPop()) {
                         context.pop();
                     } else {
-                  context.go(RoutePath.home);
+                  context.go(OutingRoutePath.home);
                   }
                   },
                     child:
@@ -189,7 +190,7 @@ class _OverlayPainter extends CustomPainter {
 
 /// 결과 화면에서 스캔 화면으로 돌아간다.
 ///
-/// `context.go(RoutePath.qr)`를 쓰면 go_router가 같은 pageKey로 `/qr`을 다시
+/// `context.go(QrRoutePath.qr)`를 쓰면 go_router가 같은 pageKey로 `/qr`을 다시
 /// 매칭해 기존 State를 재사용하기 때문에 `initState`가 다시 돌지 않고,
 /// 멈춰둔 카메라가 그대로 남는다. 스택에 스캔 화면이 있으면 pop으로 돌아간다.
 void _backToScanner(BuildContext context) {
@@ -197,7 +198,7 @@ void _backToScanner(BuildContext context) {
     context.pop();
     return;
   }
-  context.go(RoutePath.qr);
+  context.go(QrRoutePath.qr);
 }
 
 /// `/qr/result/:resultType` 라우트가 그리는 화면.
@@ -210,7 +211,7 @@ Widget buildQrScanResultRouteScreen(
   String? resultTypeName, {
   required BuildContext context,
 }) {
-  void goHome() => context.go(RoutePath.home);
+  void goHome() => context.go(OutingRoutePath.home);
 
   final resultType = QrScanResultType.values
       .where((type) => type.name == resultTypeName)

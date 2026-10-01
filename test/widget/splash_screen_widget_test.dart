@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
+import 'package:goms/features/outing/presentation/routes/outing_route_path.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/auth/signup/domain/enums/department_type.dart';
 import 'package:goms/features/member/domain/entities/current_member_entity.dart';
@@ -48,19 +49,19 @@ void main() {
       addTearDown(container.dispose);
 
       final router = GoRouter(
-        initialLocation: RoutePath.splash,
+        initialLocation: SplashRoutePath.splash,
         routes: [
           GoRoute(
-            path: RoutePath.splash,
+            path: SplashRoutePath.splash,
             builder: (context, state) => const SplashScreen(),
           ),
           GoRoute(
-            path: RoutePath.home,
+            path: OutingRoutePath.home,
             builder: (context, state) =>
                 const Scaffold(body: Text('home-screen')),
           ),
           GoRoute(
-            path: RoutePath.onboarding,
+            path: SplashRoutePath.onboarding,
             builder: (context, state) =>
                 const Scaffold(body: Text('onboarding-screen')),
           ),

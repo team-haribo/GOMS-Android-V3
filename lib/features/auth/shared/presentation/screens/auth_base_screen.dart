@@ -16,6 +16,7 @@ class AuthBaseScreen extends ConsumerWidget {
   final List<Widget>? appBarActions;
   final VoidCallback? onBackPressed;
   final double confirmBottomSpacing;
+  final Key? confirmKey;
 
   const AuthBaseScreen({
     super.key,
@@ -30,6 +31,7 @@ class AuthBaseScreen extends ConsumerWidget {
     this.appBarActions,
     this.onBackPressed,
     this.confirmBottomSpacing = 0,
+    this.confirmKey,
   });
 
   @override
@@ -68,6 +70,7 @@ class AuthBaseScreen extends ConsumerWidget {
                     ...children,
                     const Spacer(),
                     ConfirmButton(
+                      key: confirmKey,
                       text: confirmText,
                       isLoading: isLoading,
                       onPressed:

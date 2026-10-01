@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:goms/app/router/route_builders.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/map/routes/map_route_path.dart';
 import 'package:goms/features/map/direction/presentation/screens/direction_screen.dart';
 import 'package:goms/features/map/discovery/presentation/screens/map_screen.dart';
 import 'package:goms/features/map/review/presentation/screens/write_review_screen.dart';
@@ -9,7 +9,7 @@ import 'package:goms/features/map/shared/presentation/screens/map_base_screen.da
 
 List<RouteBase> buildMapRoutes() => [
       GoRoute(
-        path: RoutePath.writeReview,
+        path: MapRoutePath.writeReview,
         name: 'writeReview',
         redirect: (context, state) =>
             redirectToMapIfPopularPlaceMissing(state.extra),
@@ -32,7 +32,7 @@ StatefulShellBranch buildMapShellBranch() {
   return StatefulShellBranch(
     routes: [
       GoRoute(
-        path: RoutePath.map,
+        path: MapRoutePath.map,
         name: 'map',
         builder: (context, state) => const MapScreen(),
         routes: [
@@ -51,7 +51,7 @@ StatefulShellBranch buildMapShellBranch() {
         ],
       ),
       GoRoute(
-        path: RoutePath.mapDetail,
+        path: MapRoutePath.mapDetail,
         name: 'mapDetail',
         builder: (context, state) => buildPopularPlaceRouteScreen(
           extra: state.extra,

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/core/enums/role_enum.dart';
+
+/// 홈 화면으로 되돌아갈 back stack이 없을 때(예: 카메라 바로 켜기로 진입)의 폴백 경로.
+///
+/// outing 기능의 실제 라우트 상수에 대한 의존을 피하기 위해 리터럴로 둔다.
+const String _homeFallbackRoute = '/home';
 
 class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   const GomsAppBar._back({
@@ -11,13 +15,15 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.role = RoleEnum.user,
   })  : _showLogo = false,
-        showAdminReportAction = false;
+        showAdminReportAction = false,
+        onAdminReportsTap = null;
 
   const GomsAppBar._logo({
     super.key,
     this.actions,
     this.role = RoleEnum.user,
     this.showAdminReportAction = false,
+    this.onAdminReportsTap,
   })  : _showLogo = true,
         onBackPressed = null;
   factory GomsAppBar.logo({
@@ -25,12 +31,14 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     List<Widget>? actions,
     RoleEnum role = RoleEnum.user,
     bool showAdminReportAction = false,
+    VoidCallback? onAdminReportsTap,
   }) =>
       GomsAppBar._logo(
         key: key,
         actions: actions,
         role: role,
         showAdminReportAction: showAdminReportAction,
+        onAdminReportsTap: onAdminReportsTap,
       );
 
   factory GomsAppBar.back({
@@ -51,6 +59,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final RoleEnum role;
   final bool showAdminReportAction;
+  final VoidCallback? onAdminReportsTap;
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -60,7 +69,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
     // context.go 진입(예: 카메라 바로 켜기)으로 back stack이 없을 때 pop이
     // 무동작이 되므로 홈으로 폴백한다.
     final backAction = onBackPressed ??
-        () => context.canPop() ? context.pop() : context.go(RoutePath.home);
+        () => context.canPop() ? context.pop() : context.go(_homeFallbackRoute);
 
     return AppBar(
       automaticallyImplyLeading: false,
@@ -124,8 +133,7 @@ class GomsAppBar extends StatelessWidget implements PreferredSizeWidget {
                 const Spacer(),
                 if (role == RoleEnum.admin && showAdminReportAction)
                   IconButton(
-                    onPressed: () =>
-                        context.push(RoutePath.studentCouncilReports),
+                    onPressed: onAdminReportsTap,
                     icon: AppIcons.report(
                       width: 24,
                       height: 24,

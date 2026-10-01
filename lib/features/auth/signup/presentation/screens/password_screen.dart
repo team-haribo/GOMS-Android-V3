@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/shared/presentation/screens/auth_base_screen.dart';
 import 'package:goms/features/auth/signup/presentation/models/signup_state.dart';
@@ -32,7 +32,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
           content: '회원가입이 성공적으로 완료되었습니다.\n곰스에 오신걸 환영합니다!',
           onConfirm: () {
             ref.read(signupProvider.notifier).reset();
-            context.go(RoutePath.onboarding);
+            context.go(SplashRoutePath.onboarding);
           },
         ).show(context);
       } else if (next.status == SignupStatus.failure &&

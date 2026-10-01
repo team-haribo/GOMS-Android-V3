@@ -11,10 +11,16 @@ final currentMemberProvider =
 );
 
 class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
+  /// 로그아웃([clear])·로그인([fetch])마다 올라가는 세션 번호.
+  /// [refreshProfile]은 요청 시점의 번호와 응답 시점의 번호가 다르면 응답을 버려,
+  /// 같은 계정으로 재로그인한 경우에도 이전 세션의 응답이 새 세션을 덮지 않게 한다.
+  int _generation = 0;
+
   @override
   Future<CurrentMemberEntity?> build() async => null;
 
   Future<CurrentMemberEntity> fetch() async {
+    _generation++;
     if (!state.hasValue) {
       state = const AsyncLoading();
     }
@@ -36,42 +42,47 @@ class CurrentMemberNotifier extends AsyncNotifier<CurrentMemberEntity?> {
     }
   }
 
-  /// 서버 DB 기준 최신 권한(role)을 조회해 현재 멤버에 덮어쓴다.
-  /// 권한 조회 실패는 무시하고 기존 프로필 role을 유지한다(best-effort 보정).
-  Future<void> refreshRole() async {
+  /// `/member/profile`을 다시 조회해 현재 멤버(권한 포함)를 최신화한다.
+  /// 조회 실패는 무시하고 기존 값을 유지한다(화면이 에러 상태로 바뀌지 않도록).
+  /// 최신 프로필을 반영했으면 true, 실패했거나 반영하지 않았으면 false를 돌려준다.
+  Future<bool> refreshProfile() async {
     final currentMember = state.asData?.value;
     if (currentMember == null) {
-      return;
+      return false;
     }
+    final generation = _generation;
 
     try {
-      final role = await ref.read(memberRepositoryProvider).getMyRole();
+      final latestProfile =
+          await ref.read(memberRepositoryProvider).getMyProfile();
 
-      // await 동안 상태가 바뀌었을 수 있다(로그아웃으로 clear() 호출 등).
-      // 캡처해둔 값으로 덮어쓰면 종료된 세션이 부활할 수 있으므로 최신 상태를
-      // 다시 확인하고, null이거나 다른 멤버로 바뀌었으면 보정을 중단한다.
+      // await 동안 로그아웃·재로그인됐다면 이전 세션의 응답이므로 버린다.
       final latestMember = state.asData?.value;
-      if (latestMember == null ||
-          latestMember.memberId != currentMember.memberId) {
-        return;
+      if (generation != _generation || latestMember == null) {
+        return false;
       }
 
-      if (role != latestMember.role) {
-        state = AsyncData(latestMember.copyWith(role: role));
-      }
+      // await 동안 프로필 사진 변경 등으로 멤버가 갱신됐다면, 요청 시점의 응답으로
+      // 그 변경을 되돌리지 않도록 role만 반영한다.
+      state = AsyncData(
+        identical(latestMember, currentMember)
+            ? latestProfile
+            : latestMember.copyWith(role: latestProfile.role),
+      );
+      return true;
     } catch (error, stackTrace) {
-      // 권한 보정 실패는 세션을 막지 않고 프로필 role을 그대로 사용한다.
-      // 다만 원인 파악을 위해 로그는 남긴다.
       Logger.e(
-        'refreshRole failed: $error',
+        'refreshProfile failed: $error',
         tag: 'MEMBER',
         error: error,
         stackTrace: stackTrace,
       );
+      return false;
     }
   }
 
   void clear() {
+    _generation++;
     state = const AsyncData(null);
   }
 

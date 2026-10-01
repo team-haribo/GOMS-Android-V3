@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:goms/core/enums/role_enum.dart';
-import 'package:goms/core/providers/role_provider.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
 import 'package:goms/features/outing/presentation/screens/outing_state_screen.dart';
 import 'package:goms/features/outing/presentation/providers/current_outing_students_provider.dart';

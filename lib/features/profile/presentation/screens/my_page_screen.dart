@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:goms/core/providers/role_provider.dart';
-import 'package:goms/app/router/route_path.dart';
+import 'package:goms/features/member/presentation/providers/role_provider.dart';
+import 'package:goms/features/auth/shared/presentation/routes/auth_route_path.dart';
+import 'package:goms/features/profile/presentation/routes/profile_route_path.dart';
+import 'package:goms/features/splash/presentation/routes/splash_route_path.dart';
 import 'package:goms_design_system/goms_design_system.dart';
 import 'package:goms/features/auth/session/presentation/viewmodels/session_viewmodel.dart';
 import 'package:goms/features/auth/shared/presentation/routes/verify_route_extra.dart';
@@ -78,10 +80,10 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
     }
 
     context.go(
-      RoutePath.verify,
+      AuthRoutePath.verify,
       extra: const VerifyRouteExtra(
-        redirectPath: RoutePath.resetPassword,
-        backPath: RoutePath.myPage,
+        redirectPath: AuthRoutePath.resetPassword,
+        backPath: ProfileRoutePath.myPage,
       ),
     );
   }
@@ -140,11 +142,11 @@ class _MyPageScreenState extends ConsumerState<MyPageScreen> {
                 onConfirm: () async {
                   await ref.read(authProvider.notifier).logout();
                   if (context.mounted) {
-                    context.go(RoutePath.onboarding);
+                    context.go(SplashRoutePath.onboarding);
                   }
                 },
               ).show(context),
-              onTapDeleteAccount: () => context.push(RoutePath.deleteAccount),
+              onTapDeleteAccount: () => context.push(AuthRoutePath.deleteAccount),
             ),
           ],
         ),

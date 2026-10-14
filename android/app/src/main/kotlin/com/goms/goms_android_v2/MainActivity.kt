@@ -25,10 +25,11 @@ class MainActivity : FlutterActivity() {
 
     // AndroidManifest의 default_notification_channel_id와 같은 ID로 만들어야
     // 서버가 channel_id 없이 보낸 FCM 알림이 이 채널로 들어온다.
+    // 두 곳 모두 strings.xml의 같은 리소스를 참조한다.
     // 이미 있는 채널을 같은 값으로 다시 만들면 아무 일도 일어나지 않는다.
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            "high_importance_channel",
+            getString(R.string.default_notification_channel_id),
             "GOMS 알림",
             NotificationManager.IMPORTANCE_HIGH,
         )

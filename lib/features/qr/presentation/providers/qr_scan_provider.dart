@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/outing/data/mappers/outing_error_type_mapper.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/enums/outing_error_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
@@ -59,7 +60,7 @@ class QrScanNotifier extends Notifier<QrScanState> {
       state = QrScanState.failure(error.message);
     } on DioException catch (error) {
       final message = NetworkException.fromDioException(error).message;
-      final errorType = OutingErrorType.fromResponse(
+      final errorType = OutingErrorTypeMapper.fromResponse(
         statusCode: error.response?.statusCode,
         message: message,
       );
@@ -79,7 +80,7 @@ class QrScanNotifier extends Notifier<QrScanState> {
 String? _failureScreenMessageOf(OutingErrorType? errorType) {
   return switch (errorType) {
     OutingErrorType.outingTimeNotAllowed =>
-      OutingErrorType.outingTimeNotAllowed.serverMessage,
+      OutingErrorTypeMapper.outingTimeNotAllowedMessage,
     null => null,
   };
 }

@@ -7,6 +7,7 @@ import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
+import 'package:goms/features/outing/domain/enums/outing_error_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
@@ -143,7 +144,8 @@ void main() {
     test('외출 시작 시각 전 403이면 실패 화면에 서버 메시지를 전달한다', () async {
       final repository = _FakeOutingRepository(
         myStatus: _comingStatus,
-        outingError: _dioError(403, outingTimeNotAllowedMessage),
+        outingError:
+            _dioError(403, OutingErrorType.outingTimeNotAllowed.serverMessage),
       );
       final container = _containerWith(repository);
 
@@ -151,7 +153,10 @@ void main() {
 
       final state = container.read(qrScanProvider);
       expect(state.status, QrScanStatus.failure);
-      expect(state.failureScreenMessage, outingTimeNotAllowedMessage);
+      expect(
+        state.failureScreenMessage,
+        OutingErrorType.outingTimeNotAllowed.serverMessage,
+      );
     });
 
     test('같은 403이어도 시간 제한이 아니면 실패 화면 메시지를 전달하지 않는다', () async {

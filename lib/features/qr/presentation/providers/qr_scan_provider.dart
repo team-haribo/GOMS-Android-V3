@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
+import 'package:goms/features/outing/domain/enums/outing_error_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
 
@@ -58,10 +59,13 @@ class QrScanNotifier extends Notifier<QrScanState> {
       state = QrScanState.failure(error.message);
     } on DioException catch (error) {
       final message = NetworkException.fromDioException(error).message;
+      final errorType = OutingErrorType.fromResponse(
+        statusCode: error.response?.statusCode,
+        message: message,
+      );
       state = QrScanState.failure(
         message,
-        failureScreenMessage:
-            _isOutingTimeNotAllowed(error, message) ? message : null,
+        failureScreenMessage: _failureScreenMessageOf(errorType),
       );
     } on StateError catch (error) {
       state = QrScanState.failure(error.message);
@@ -71,16 +75,13 @@ class QrScanNotifier extends Notifier<QrScanState> {
   }
 }
 
-/// 백엔드 `OUTING_TIME_NOT_ALLOWED` 응답 문구.
-/// 서버가 에러 코드 없이 status와 message만 내려주므로 문구로 구분한다.
-/// 백엔드에서 문구가 바뀌면 함께 수정해야 한다. (이슈 #157)
-const outingTimeNotAllowedMessage = '외출 가능 시간이 아닙니다.';
-
-/// 학년별 외출 시작 시각 전에 QR 외출을 시도해 거부된 응답인지 확인한다.
-/// 같은 403인 외출 금지(`CANNOT_OUTING`)와는 문구로 구분한다.
-bool _isOutingTimeNotAllowed(DioException error, String message) {
-  return error.response?.statusCode == 403 &&
-      message.trim() == outingTimeNotAllowedMessage;
+/// 실패 화면 부제에 보여줄 메시지. null이면 실패 화면의 기본 문구를 쓴다.
+String? _failureScreenMessageOf(OutingErrorType? errorType) {
+  return switch (errorType) {
+    OutingErrorType.outingTimeNotAllowed =>
+      OutingErrorType.outingTimeNotAllowed.serverMessage,
+    null => null,
+  };
 }
 
 class _QrPayload {

@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:goms/features/outing/data/mappers/outing_error_type_mapper.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
 import 'package:goms/features/outing/domain/entities/my_outing_status_entity.dart';
 import 'package:goms/features/outing/domain/entities/outing_qr_result_entity.dart';
 import 'package:goms/features/outing/domain/entities/outing_student_entity.dart';
-import 'package:goms/features/outing/domain/enums/outing_error_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_action.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/outing/domain/repositories/outing_repository.dart';
@@ -145,7 +145,7 @@ void main() {
       final repository = _FakeOutingRepository(
         myStatus: _comingStatus,
         outingError:
-            _dioError(403, OutingErrorType.outingTimeNotAllowed.serverMessage),
+            _dioError(403, OutingErrorTypeMapper.outingTimeNotAllowedMessage),
       );
       final container = _containerWith(repository);
 
@@ -155,7 +155,7 @@ void main() {
       expect(state.status, QrScanStatus.failure);
       expect(
         state.failureScreenMessage,
-        OutingErrorType.outingTimeNotAllowed.serverMessage,
+        OutingErrorTypeMapper.outingTimeNotAllowedMessage,
       );
     });
 

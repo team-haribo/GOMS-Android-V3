@@ -1,34 +1,8 @@
-/// 외출 API가 내려주는 실패 응답 종류.
+/// 외출 처리 중 앱이 구분해서 다루는 실패 종류.
 ///
-/// 서버 응답에는 에러 코드 없이 `status`와 `message`만 담기므로
-/// 두 값으로 종류를 구분한다. 백엔드 `ErrorCode`의 문구가 바뀌면 함께 수정해야 한다.
+/// 서버 응답을 이 값으로 바꾸는 규칙은 data 계층의
+/// `OutingErrorTypeMapper`가 담당한다.
 enum OutingErrorType {
-  /// 백엔드 `OUTING_TIME_NOT_ALLOWED`: 학년별 외출 시작 시각 전 외출 시도 (이슈 #157)
-  outingTimeNotAllowed(
-    statusCode: 403,
-    serverMessage: '외출 가능 시간이 아닙니다.',
-  );
-
-  const OutingErrorType({
-    required this.statusCode,
-    required this.serverMessage,
-  });
-
-  final int statusCode;
-  final String serverMessage;
-
-  /// 서버 응답에 맞는 실패 종류를 찾는다. 해당하는 종류가 없으면 null.
-  static OutingErrorType? fromResponse({
-    required int? statusCode,
-    required String message,
-  }) {
-    final trimmedMessage = message.trim();
-    for (final type in values) {
-      if (type.statusCode == statusCode &&
-          type.serverMessage == trimmedMessage) {
-        return type;
-      }
-    }
-    return null;
-  }
+  /// 학년별 외출 시작 시각 전에 외출을 시도함 (이슈 #157)
+  outingTimeNotAllowed,
 }

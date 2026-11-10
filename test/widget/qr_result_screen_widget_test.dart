@@ -5,6 +5,7 @@ import 'package:goms/features/outing/presentation/routes/outing_route_path.dart'
 import 'package:goms/features/qr/presentation/routes/qr_route_path.dart';
 import 'package:goms/features/qr/presentation/routes/qr_routes.dart';
 import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
+import 'package:goms/features/qr/presentation/screens/outing_failed_screen.dart';
 import 'package:goms/features/qr/presentation/screens/outing_start_screen.dart';
 import 'package:goms/features/qr/presentation/screens/return_success_screen.dart';
 import 'package:responsive_framework/responsive_framework.dart';
@@ -160,6 +161,21 @@ void main() {
 
     expect(tapped, isTrue);
   });
+
+  testWidgets('QR 실패 결과 화면은 전달받은 메시지를 부제에 보여준다', (tester) async {
+    await _pumpQrFailureResult(tester, extra: '외출 가능 시간이 아닙니다.');
+
+    expect(find.text('외출에 실패했어요..'), findsOneWidget);
+    expect(find.text('외출 가능 시간이 아닙니다.'), findsOneWidget);
+    expect(find.text(OutingFailedScreen.defaultMessage), findsNothing);
+  });
+
+  testWidgets('QR 실패 결과 화면은 메시지가 없으면 기본 문구를 보여준다', (tester) async {
+    await _pumpQrFailureResult(tester);
+
+    expect(find.text('외출에 실패했어요..'), findsOneWidget);
+    expect(find.text(OutingFailedScreen.defaultMessage), findsOneWidget);
+  });
 }
 
 Finder _findImageAsset(String assetPath) {
@@ -169,4 +185,28 @@ Finder _findImageAsset(String assetPath) {
         widget.image is AssetImage &&
         (widget.image as AssetImage).assetName == assetPath,
   );
+}
+
+Future<void> _pumpQrFailureResult(WidgetTester tester, {Object? extra}) async {
+  final router = GoRouter(
+    initialLocation: QrRoutePath.qrResultLocation('failure'),
+    initialExtra: extra,
+    routes: buildQrRoutes(),
+  );
+
+  await tester.pumpWidget(
+    MaterialApp.router(
+      routerConfig: router,
+      builder: (context, child) => ResponsiveBreakpoints.builder(
+        child: child!,
+        breakpoints: const [
+          Breakpoint(start: 0, end: 359, name: 'SMALL_PHONE'),
+          Breakpoint(start: 360, end: 450, name: 'MOBILE'),
+          Breakpoint(start: 451, end: 800, name: 'TABLET'),
+          Breakpoint(start: 801, end: 1920, name: 'DESKTOP'),
+        ],
+      ),
+    ),
+  );
+  await tester.pumpAndSettle();
 }

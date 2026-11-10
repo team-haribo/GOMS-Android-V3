@@ -57,8 +57,11 @@ class QrScanNotifier extends Notifier<QrScanState> {
     } on FormatException catch (error) {
       state = QrScanState.failure(error.message);
     } on DioException catch (error) {
+      final message = NetworkException.fromDioException(error).message;
       state = QrScanState.failure(
-        NetworkException.fromDioException(error).message,
+        message,
+        failureScreenMessage:
+            _isOutingTimeNotAllowed(error, message) ? message : null,
       );
     } on StateError catch (error) {
       state = QrScanState.failure(error.message);
@@ -66,6 +69,18 @@ class QrScanNotifier extends Notifier<QrScanState> {
       state = const QrScanState.failure('QR 처리에 실패했어요. 다시 시도해 주세요.');
     }
   }
+}
+
+/// 백엔드 `OUTING_TIME_NOT_ALLOWED` 응답 문구.
+/// 서버가 에러 코드 없이 status와 message만 내려주므로 문구로 구분한다.
+/// 백엔드에서 문구가 바뀌면 함께 수정해야 한다. (이슈 #157)
+const outingTimeNotAllowedMessage = '외출 가능 시간이 아닙니다.';
+
+/// 학년별 외출 시작 시각 전에 QR 외출을 시도해 거부된 응답인지 확인한다.
+/// 같은 403인 외출 금지(`CANNOT_OUTING`)와는 문구로 구분한다.
+bool _isOutingTimeNotAllowed(DioException error, String message) {
+  return error.response?.statusCode == 403 &&
+      message.trim() == outingTimeNotAllowedMessage;
 }
 
 class _QrPayload {

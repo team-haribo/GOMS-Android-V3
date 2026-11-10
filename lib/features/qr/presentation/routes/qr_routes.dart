@@ -20,6 +20,7 @@ List<RouteBase> buildQrRoutes() => [
         builder: (context, state) => buildQrScanResultRouteScreen(
           state.pathParameters['resultType'],
           context: context,
+          failureMessage: state.extra is String ? state.extra as String : null,
         ),
       ),
     ];

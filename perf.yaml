@@ -21,6 +21,9 @@ sigma: 2.0
 thresholds:
   default:           { change_percent: 15, min_abs_delta: 0 }
   fps:               { change_percent: 10, min_abs_delta: 1.0 }
+  # min_abs_delta 는 "사람이 체감 못 하는 변화" 하한선이다. 실행 간 편차를 여기서 막지 않는다.
+  # 올려서 막아보니(#148 첫 시도) 오탐은 조금밖에 안 줄고 감도만 떨어졌다. 편차는
+  # 러너 여러 대로 뜬 baseline 의 noise(σ 게이트)와 perfkit 의 새 러너 재측정이 거른다.
   jank_rate:         { change_percent: 20, min_abs_delta: 1.0 }
   dropped_frames:    { change_percent: 25, min_abs_delta: 2 }
   p50_frame_time_ms: { change_percent: 20, min_abs_delta: 1.0 }
@@ -30,7 +33,9 @@ thresholds:
   memory_mb:         { change_percent: 20, min_abs_delta: 5.0 }
   startup_ms:            { change_percent: 20, min_abs_delta: 50 }
   startup_rasterized_ms: { change_percent: 20, min_abs_delta: 50 }
-  duration_ms:       { change_percent: 25, min_abs_delta: 200 }
+  # login 은 실제 백엔드 응답을 기다리므로 네트워크 편차(+640ms)가 그대로 섞인다.
+  # 이건 에뮬레이터가 아니라 네트워크 편차라 재측정으로도 안 걸러져서 하한을 유지한다.
+  duration_ms:       { change_percent: 25, min_abs_delta: 700 }
 
 # 리포트/대시보드에서 앞에 보여줄 지표. 나머지는 접어둔다.
 headline_metrics: [fps, jank_rate, p95_frame_time_ms, memory_mb, startup_ms]

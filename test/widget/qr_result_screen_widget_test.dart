@@ -163,10 +163,10 @@ void main() {
   });
 
   testWidgets('QR 실패 결과 화면은 전달받은 메시지를 부제에 보여준다', (tester) async {
-    await _pumpQrFailureResult(tester, extra: '외출 가능 시간이 아닙니다.');
+    await _pumpQrFailureResult(tester, extra: '외출 가능 시간이 아니에요.');
 
     expect(find.text('외출에 실패했어요..'), findsOneWidget);
-    expect(find.text('외출 가능 시간이 아닙니다.'), findsOneWidget);
+    expect(find.text('외출 가능 시간이 아니에요.'), findsOneWidget);
     expect(find.text(OutingFailedScreen.defaultMessage), findsNothing);
   });
 

@@ -76,11 +76,13 @@ class QrScanNotifier extends Notifier<QrScanState> {
   }
 }
 
+/// 외출 시작 시각 전 거부 시 실패 화면 부제에 보여줄 문구.
+const outingTimeNotAllowedScreenMessage = '외출 가능 시간이 아니에요.';
+
 /// 실패 화면 부제에 보여줄 메시지. null이면 실패 화면의 기본 문구를 쓴다.
 String? _failureScreenMessageOf(OutingErrorType? errorType) {
   return switch (errorType) {
-    OutingErrorType.outingTimeNotAllowed =>
-      OutingErrorTypeMapper.outingTimeNotAllowedMessage,
+    OutingErrorType.outingTimeNotAllowed => outingTimeNotAllowedScreenMessage,
     null => null,
   };
 }

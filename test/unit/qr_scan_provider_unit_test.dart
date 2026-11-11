@@ -141,7 +141,7 @@ void main() {
       expect(container.read(qrScanProvider).failureScreenMessage, isNull);
     });
 
-    test('외출 시작 시각 전 403이면 실패 화면에 서버 메시지를 전달한다', () async {
+    test('외출 시작 시각 전 403이면 실패 화면에 시간 제한 문구를 전달한다', () async {
       final repository = _FakeOutingRepository(
         myStatus: _comingStatus,
         outingError:
@@ -153,10 +153,7 @@ void main() {
 
       final state = container.read(qrScanProvider);
       expect(state.status, QrScanStatus.failure);
-      expect(
-        state.failureScreenMessage,
-        OutingErrorTypeMapper.outingTimeNotAllowedMessage,
-      );
+      expect(state.failureScreenMessage, '외출 가능 시간이 아니에요.');
     });
 
     test('같은 403이어도 시간 제한이 아니면 실패 화면 메시지를 전달하지 않는다', () async {

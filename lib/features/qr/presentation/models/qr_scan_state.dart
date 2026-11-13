@@ -12,6 +12,7 @@ class QrScanState {
     required this.status,
     this.resultType,
     this.errorMessage,
+    this.failureScreenMessage,
   });
 
   const QrScanState.idle()
@@ -31,16 +32,23 @@ class QrScanState {
           errorMessage: null,
         );
 
-  const QrScanState.failure(String errorMessage)
-      : this(
+  const QrScanState.failure(
+    String errorMessage, {
+    String? failureScreenMessage,
+  }) : this(
           status: QrScanStatus.failure,
           resultType: null,
           errorMessage: errorMessage,
+          failureScreenMessage: failureScreenMessage,
         );
 
   final QrScanStatus status;
   final QrScanResultType? resultType;
   final String? errorMessage;
+
+  /// 실패 화면 부제에 그대로 보여줄 서버 메시지.
+  /// null이면 실패 화면은 기본 문구를 보여준다.
+  final String? failureScreenMessage;
 
   bool get isProcessing => status == QrScanStatus.processing;
 }

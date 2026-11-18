@@ -44,7 +44,7 @@ class _QrScanScreenState extends ConsumerState<QrScanScreen> {
       };
       if (resultLocation == null) return;
 
-      await context.push(resultLocation);
+      await context.push(resultLocation, extra: next.failureScreenMessage);
 
       // 결과 화면이 닫히고 이 화면으로 돌아온 경우에만 여기에 도달한다.
       // 결과 화면에서 홈으로 이동했다면 이 위젯은 이미 사라진 뒤다.
@@ -207,9 +207,11 @@ void _backToScanner(BuildContext context) {
 /// 이름이 매칭되지 않는 값도 실패로 취급한다.
 ///
 /// 성공은 홈으로, 실패는 스캔 화면으로 돌아간다.
+/// [failureMessage]가 있으면 실패 화면 부제에 기본 문구 대신 표시한다.
 Widget buildQrScanResultRouteScreen(
   String? resultTypeName, {
   required BuildContext context,
+  String? failureMessage,
 }) {
   void goHome() => context.go(OutingRoutePath.home);
 
@@ -223,6 +225,7 @@ Widget buildQrScanResultRouteScreen(
     QrScanResultType.lateReturn => LateScreen(onConfirm: goHome),
     QrScanResultType.cannotGoOut => CannotGoOutScreen(onGoHome: goHome),
     null => OutingFailedScreen(
+        message: failureMessage,
         onRetryWithCamera: () => _backToScanner(context),
       ),
   };

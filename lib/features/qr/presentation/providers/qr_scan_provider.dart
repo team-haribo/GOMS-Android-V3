@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:goms/core/network/network_exception.dart';
+import 'package:goms/features/outing/data/mappers/outing_error_type_mapper.dart';
 import 'package:goms/features/outing/data/providers/outing_data_providers.dart';
+import 'package:goms/features/outing/domain/enums/outing_error_type.dart';
 import 'package:goms/features/outing/domain/enums/outing_status_type.dart';
 import 'package:goms/features/qr/presentation/models/qr_scan_state.dart';
 
@@ -57,8 +59,14 @@ class QrScanNotifier extends Notifier<QrScanState> {
     } on FormatException catch (error) {
       state = QrScanState.failure(error.message);
     } on DioException catch (error) {
+      final message = NetworkException.fromDioException(error).message;
+      final errorType = OutingErrorTypeMapper.fromResponse(
+        statusCode: error.response?.statusCode,
+        message: message,
+      );
       state = QrScanState.failure(
-        NetworkException.fromDioException(error).message,
+        message,
+        failureScreenMessage: _failureScreenMessageOf(errorType),
       );
     } on StateError catch (error) {
       state = QrScanState.failure(error.message);
@@ -66,6 +74,17 @@ class QrScanNotifier extends Notifier<QrScanState> {
       state = const QrScanState.failure('QR 처리에 실패했어요. 다시 시도해 주세요.');
     }
   }
+}
+
+/// 외출 시작 시각 전 거부 시 실패 화면 부제에 보여줄 문구.
+const outingTimeNotAllowedScreenMessage = '외출 가능 시간이 아니에요.';
+
+/// 실패 화면 부제에 보여줄 메시지. null이면 실패 화면의 기본 문구를 쓴다.
+String? _failureScreenMessageOf(OutingErrorType? errorType) {
+  return switch (errorType) {
+    OutingErrorType.outingTimeNotAllowed => outingTimeNotAllowedScreenMessage,
+    null => null,
+  };
 }
 
 class _QrPayload {

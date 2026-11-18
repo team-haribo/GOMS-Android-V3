@@ -43,6 +43,8 @@ jobs:
       repeats: ${{ inputs.repeats || '' }}
       scenarios: ${{ inputs.scenarios || '' }}
       select-changed: true
+      # 앱 CI(flutter-ci)와 같은 SDK 로 측정한다.
+      flutter-version: '3.38.0'
       # main·develop 둘 다 push 트리거 대상이라, 둘 다 히스토리에 쌓고 대시보드도
       # 갱신한다 (perfkit 기본값은 main 하나뿐이라 명시적으로 넘겨야 한다).
       history-refs: '["main","develop"]'
